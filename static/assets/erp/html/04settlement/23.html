@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ERP结算页</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="../../css/app.css">
+    <link rel="stylesheet" type="text/css" href="../../css/style.css">
+    <script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="container-fluid admin-header">
+    <div class="row">
+        <div class="col-md-2 text-center">
+            <h2>中渝爱都会店</h2>
+            <h3>营业员：张筱雨</h3>
+            <span>[退出]</span></div>
+        <div class="col-md-9">
+            <ul class="nav nav-pills navbar-right">
+                <li><a href="#">点单</a></li>
+                <li><a href="#">会员</a></li>
+                <li><a href="#">库存</a></li>
+                <li class="active"><a href="#">结算</a></li>
+                <li><a href="#">交易查询</a></li>
+                <li><a href="#">微商城订单</a></li>
+            </ul>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+<div class="container-fluid">
+    <!-- 表格 -->
+    <table class="table table-striped table-border table-hover mt20">
+        <thead>
+        <tr class="text-center">
+            <td>结算日期</td>
+            <td>合计收入额</td>
+            <td>现金支付额</td>
+            <td>刷卡支付额</td>
+            <td>微信支付额</td>
+            <td>支付宝支付额</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center">
+            <td>2015-05-01</td>
+            <td>￥50000.00</td>
+            <td>￥10000.00</td>
+            <td>￥10000.00</td>
+            <td>￥10000.00</td>
+            <td>￥10000.00</td>
+            <td>
+                <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#settlement-templ">今日结算</span>
+                <span class="btn btn-info btn-sm">今日历史</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 表格 -->
+    <table class="table table-striped table-border table-hover">
+        <thead>
+        <tr class="text-center">
+            <td>小票编号</td>
+            <td>下单时间</td>
+            <td>合计金额</td>
+            <td>合计数量</td>
+            <td>支付方式</td>
+            <td>会员卡号</td>
+            <td>优惠方式</td>
+            <td>营业员</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center">
+            <td>会员充值</td>
+            <td>2015-05-01 18:00:00</td>
+            <td>￥1800.00</td>
+            <td>10</td>
+            <td>现金支付</td>
+            <td>1234567890</td>
+            <td>无</td>
+            <td>张三</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 翻页 -->
+    <nav class="text-right">
+        <ul class="pagination">
+            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+        </ul>
+    </nav>
+</div>
+
+<!--模态框-删除-->
+<div class="modal fade" id="settlement-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-center">确定结算？</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-primary">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--模态框HTML-->
+</body>
+</html>
