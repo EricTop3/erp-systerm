@@ -32,8 +32,8 @@ import AllotOutBillsDetail from './components/instock/AllotOutBillsDetail'
 import SaleOutBills from './components/instock/SaleOutBills'
 import SaleOutBillsDetail from './components/instock/SaleOutBillsDetail'
 import AllotOut from './components/instock/AllotOut'
-import TransactionQuery from './components/transactionQuery/TransactionQuery'
-import MicroShopOrder from './components/microShopOrder/MicroShopOrder'
+import TransactionQuery from './components/transaction-query/TransactionQuery'
+import MicroShopOrder from './components/micro-shop-order/MicroShopOrder'
 Vue.filter('priceChange', priceChange)
 Vue.use(VueRouter)
 Vue.use(VueRescource)
