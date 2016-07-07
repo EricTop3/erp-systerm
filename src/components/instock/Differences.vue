@@ -20,8 +20,15 @@
         </div>
         <div class="form-group ml10">
           <label>销售时间段</label>
-          <input type="text" class="form-control date_picker" placeholder="开始时间" v-model="query.start_time"> -
-          <input type="text" class="form-control date_picker" placeholder="结束时间" v-model="query.end_time">
+          <date-picker
+            :value.sync="orderStartTime"
+          >
+          </date-picker>
+          -
+          <date-picker
+            :value.sync="orderEndTime"
+          >
+          </date-picker>
         </div>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">
@@ -50,11 +57,13 @@
   import $ from 'jquery'
   import Grid from '../common/Grid'
   import Page from '../common/Page'
+  import DatePicker from '../common/DatePicker'
   import {requestUrl} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
-      Page: Page
+      Page: Page,
+      DatePicker: DatePicker
     },
     events: {
 //    绑定翻页事件

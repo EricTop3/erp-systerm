@@ -14,7 +14,7 @@
           <label>备注</label>
           <input type="text" class="form-control" placeholder="">
           <label>收货时间</label>
-          <input type="text" class="form-control" placeholder="收货时间">
+          <date-picker :value="time"></date-picker>
         </div>
         <span class="btn btn-info" data-toggle="modal" data-target="#inventory-cite-templ"
               @click="parentIntroModal=true">引用原始数据</span>
@@ -147,6 +147,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Modal from '../common/Modal'
+  import DatePicker from  '../common/DatePicker'
   import {requestUrl} from '../../publicFunction/index'
   var deleteId = ''
   export default {
@@ -155,6 +156,7 @@
       Page: Page,
       Modal: Modal,
       Count: Count,
+      DatePicker: DatePicker,
       IntroduceData: IntroduceData
     },
     events: {
@@ -211,6 +213,7 @@
     },
     data: function () {
       return {
+        time: '',
         renderData: [],
         parentIntroModal: false,
         parentIntroModalSize: 'modal-lg',
