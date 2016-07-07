@@ -4,11 +4,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueRescource from 'vue-resource'
-import { priceChange } from './filters/'
+import {priceChange} from './filters/'
 import App from './App'
 import Login from './components/login/Login'
 import Order from './components/order/Order'
-import Billng from './components/billing/Billing'
+import Billing from './components/billing/Billing'
+import BillingHistory from './components/billing/BillingHistory'
 import MemberIndex from './components/member/MemberIndex'
 import Detail from './components/member/MemberDetail'
 import InStock from './components/instock/InStock'
@@ -69,7 +70,11 @@ router.map({
     component: Detail
   },
   '/billing': {
-    component: Billng
+    component: Billing
+  },
+  '/billing/:queryId': {
+    name: 'billing',
+    component: BillingHistory
   },
   '/instock/GoodsApply': {
     component: GoodsApply
