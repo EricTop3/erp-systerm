@@ -27,13 +27,27 @@
         </div>
         <div class="form-group ml10">
           <label>制单时间段</label>
-          <input type="text" class="form-control date_picker" placeholder="开始时间"  v-model="query.start_time1"> -
-          <input type="text" class="form-control date_picker" placeholder="结束时间"  v-model="query.end_time1">
+          <date-picker
+            :value.sync="orderStartTime"
+          >
+          </date-picker>
+          -
+          <date-picker
+            :value.sync="orderEndTime"
+          >
+          </date-picker>
         </div>
         <div class="form-group ml10">
           <label>送货时间段</label>
-          <input type="text" class="form-control date_picker" placeholder="开始时间" v-model="query.start_time2"> -
-          <input type="text" class="form-control date_picker" placeholder="结束时间" v-model="query.end_time2">
+          <date-picker
+            :value.sync="sendStartTime"
+          >
+          </date-picker>
+          -
+          <date-picker
+            :value.sync="sendEndTime"
+          >
+          </date-picker>
         </div>
         <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
         <a v-link="{ path: '/instock/Allot'}" ><span class="btn btn-primary">新建收货单</span></a>
@@ -48,12 +62,14 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Summary from  '../common/Summary'
+  import DatePicker from '../common/DatePicker'
   import {requestUrl} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
-      Summary:Summary
+      Summary:Summary,
+      DatePicker:DatePicker
     },
     events: {
 //    绑定翻页事件

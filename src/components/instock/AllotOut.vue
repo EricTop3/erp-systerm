@@ -12,7 +12,10 @@
       <form class="form-inline">
         <div class="form-group">
           <label>出货时间</label>
-          <input type="text" class="form-control date_picker" placeholder="出货时间" v-model="date">
+          <date-picker
+            :value.sync="orderStartTime"
+          >
+          </date-picker>
         </div>
         <div class="form-group">
           <label>收货仓库</label>
@@ -97,6 +100,7 @@
   import Grid from '../common/Grid'
   import Modal from '../common/Modal'
   import Page from '../common/Page'
+  import DatePicker from '../common/DatePicker'
   import {requestUrl} from '../../publicFunction/index'
   var deleteId = ''
   export default {
@@ -105,7 +109,8 @@
       Grid: Grid,
       Count: Count,
       Modal: Modal,
-      Page: Page
+      Page: Page,
+      DatePicker: DatePicker
     },
     events: {
 //   确认增加

@@ -27,31 +27,27 @@
         </div>
         <div class="form-group ml10">
           <label>制单时间段</label>
-          <datepicker
+          <date-picker
             :value.sync="orderStartTime"
-            :format="format"
           >
-          </datepicker>
+          </date-picker>
           -
-          <datepicker
+          <date-picker
             :value.sync="orderEndTime"
-            :format="format"
           >
-          </datepicker>
+          </date-picker>
         </div>
         <div class="form-group ml10">
           <label>送货时间段</label>
-          <datepicker
+          <date-picker
             :value.sync="sendStartTime"
-            :format="format"
           >
-          </datepicker>
+          </date-picker>
           -
-          <datepicker
+          <date-picker
             :value.sync="sendEndTime"
-            :format="format"
           >
-          </datepicker>
+          </date-picker>
         </div>
         <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
         <a v-link="{ path: '/instock/GoodsApply'}"><span class="btn btn-primary">申请要货</span></a>
@@ -69,17 +65,17 @@
   import Summary from '../common/Summary'
   import ListValidate from '../common/ListValidate'
   import ListDelete from '../common/ListDelete'
-  import { datepicker } from 'vue-strap'
+  import DatePicker from '../common/DatePicker'
   import { requestUrl } from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
       Summary: Summary,
-      Datepicker: datepicker,
       alert: alert,
       ListValidate: ListValidate,
-      ListDelete: ListDelete
+      ListDelete: ListDelete,
+      DatePicker: DatePicker
     },
     events: {
 //    绑定翻页事件
@@ -141,10 +137,10 @@
         detailUrl: '/#!/instock/GoodsApplyNum/',
         showRight: false,
         format: 'yyyy-MM-dd',
-        orderStartTime: '开始时间',
-        orderEndTime: '结束时间',
-        sendStartTime: '开始时间',
-        sendEndTime: '结束时间',
+        orderStartTime: '',
+        orderEndTime: '',
+        sendStartTime: '',
+        sendEndTime: '',
         list: [],
         gridOperate: true,
         gridColumns: {
