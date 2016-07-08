@@ -33,8 +33,15 @@
         </div>
         <div class="form-group ml10">
           <label>出库时间段</label>
-          <input type="text" class="form-control date_picker" placeholder="开始时间" v-model="query.start_time"> -
-          <input type="text" class="form-control date_picker" placeholder="结束时间" v-model="query.end_time">
+          <date-picker
+            :value.sync="orderStartTime"
+          >
+          </date-picker>
+          -
+          <date-picker
+            :value.sync="orderEndTime"
+          >
+          </date-picker>
         </div>
         <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
         <a v-link="{ path: '/instock/AllotOut'}" ><span class="btn btn-primary">新建出库</span></a>
@@ -48,12 +55,14 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Summary from '../common/Summary'
+  import DatePicker from '../common/DatePicker'
   import {requestUrl} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
-      Summary: Summary
+      Summary: Summary,
+      DatePicker: DatePicker
     },
     events: {
 //    绑定翻页事件

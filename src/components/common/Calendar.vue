@@ -345,7 +345,7 @@
 
 <style scope>
   .calendar {
-    width: 300px;
+    width: 240px;
     padding: 10px;
     background: #fff;
     position: absolute;
