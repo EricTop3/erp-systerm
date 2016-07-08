@@ -40,7 +40,7 @@
         </div>
         <button type="submit" class="btn btn-info ml10">搜索</button>
         <button type="submit" class="btn btn-warning">撤销搜索</button>
-        <button type="submit" class="btn btn-primary" @click="creatMemberModal=true">新会员2办理</button>
+        <button type="submit" class="btn btn-primary" @click="creatMemberModal=true">新会员办理</button>
       </form>
     </div>
     <!-- 表格 -->
@@ -262,12 +262,30 @@
   </modal>
 </template>
 <script>
+  import $ from 'jquery'
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
+  import Page from '../common/Page'
+  import {requestUrl} from '../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
+      Page: Page,
       Grid: Grid
+    },
+    ready: function () {
+      this.$http({
+        url: requestUrl + '/front-system/user',
+        method: 'get',
+        data: {
+//          member_card: member_card
+        }
+      }).then(function (response) {
+        this.page = response.data.body.pagination
+        this.gridData = response.data.body.list
+      }, function (err) {
+        console.log(err)
+      })
     },
     data: function () {
       return {
@@ -279,42 +297,17 @@
         rechargeModal: false,
         searchQuery: '',
         gridOperate: true,
-        gridColumns: ['货号', '品名', '仓库', '起初库存量', '期间入库量', '期间出库量', '期末库存量', '单位', '单位规格'],
-        gridData: [
-          {
-            '货号': 'ZYADH2016050112250801',
-            '品名': '伊利存鲜极致牛奶',
-            '仓库': '总部工厂',
-            '起初库存量': '10',
-            '期间入库量': '10',
-            '期间出库量': '20',
-            '期末库存量': '10',
-            '单位': '盒',
-            '单位规格': '1箱*20盒*250ml'
-          },
-          {
-            '货号': 'ZYADH2016050112250801',
-            '品名': '伊利存鲜极致牛奶',
-            '仓库': '总部工厂',
-            '起初库存量': '10',
-            '期间入库量': '10',
-            '期间出库量': '20',
-            '期末库存量': '10',
-            '单位': '盒',
-            '单位规格': '1箱*20盒*250ml'
-          },
-          {
-            '货号': 'ZYADH2016050112250801',
-            '品名': '伊利存鲜极致牛奶',
-            '仓库': '总部工厂',
-            '起初库存量': '10',
-            '期间入库量': '10',
-            '期间出库量': '20',
-            '期末库存量': '10',
-            '单位': '盒',
-            '单位规格': '1箱*20盒*250ml'
-          }
-        ]
+        gridData: [],
+        gridColumns: {
+          member_card: "会员卡号",
+          balances: "余额",
+          score: "积分",
+          name: "姓名",
+          phone: "手机号码",
+          birthday: "生日",
+          level: "等级",
+          open_card_store: "开卡点"
+        }
       }
     }
   }
