@@ -10,7 +10,7 @@
         required: true
       },
       amount: {
-        required: true
+        type: Number
       }
     },
     methods: {

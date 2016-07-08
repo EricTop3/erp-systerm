@@ -32,14 +32,6 @@
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
         </div>
-        <div role="tabpanel" class="tab-pane" id="summary">
-          <!--&lt;!&ndash; 表格 详情列表 &ndash;&gt;-->
-          <!--<grid :data="detailList3" :columns="gridColumns3" :operate="gridOperate3"></grid>-->
-
-          <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-          <!--<page :total="page3.total" :current.sync="page3.current_page" :display="page3.per_page"-->
-                <!--:last-page="page3.last_page"></page>-->
-        </div>
       </div>
     </div>
 

@@ -6,99 +6,15 @@
       <li class="active">收货单汇总</li>
       <li class="active">查看收货单汇总</li>
     </ol>
-
-    <!-- 表格 单条数据 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
-      <div slot="operateList">
-        <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-audit-templ">审核</span>
-        <span class="btn btn-primary btn-sm">编辑</span>
-        <span class="btn btn-warning btn-sm">删除</span>
-      </div>
-    </grid>
-
-    <!-- 表格 详情列表 -->
-    <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
-    <!--表格详情列表-->
-    <table class="table table-striped table-bordered table-hover">
-      <thead>
-      <tr class="text-center">
-        <th v-for="value in gridColumns2">
-          {{value}}
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-        <td v-for="value in columns">
-          {{entry[$key]}}
-        </td>
-        <td v-if="operate">
-          <slot name="operateList">
-            <span class="btn btn-primary btn-sm">充值</span>
-            <span class="btn btn-info btn-sm" id="show-modal">编辑</span>
-            <a v-link="{ name: 'member', params: { memberId: 123 }}"><span class="btn btn-warning btn-sm">查看明细</span></a>
-          </slot>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <!-- 翻页 -->
-    <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page"></page>
-
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :grid-operate="gridOperate" :page="page"></summary-detail>
   </div>
-
-  <!--模态框-审核-->
-  <div class="modal fade" id="inventory-audit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>审核弹出框！</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
-
-  <!--模态框-删除-->
-  <div class="modal fade" id="inventory-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>删除弹出框！</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
 </template>
-
 <script>
-  import Grid from '../common/Grid'
-  import Page from '../common/Page'
+  import SummaryDetail from '../common/SummaryDetail'
   import {requestUrl} from '../../publicFunction/index'
   export default {
     components: {
-      Grid: Grid,
-      Page: Page
+      SummaryDetail: SummaryDetail
     },
     events: {
 //    绑定翻页事件
@@ -170,3 +86,17 @@
     }
   }
 </script>
+<style scoped>
+  table thead tr th {
+    text-align: center
+  }
+
+  table thead tr th:first-child {
+    text-align: left;
+  }
+
+  table tbody tr td:first-child {
+    text-align: left;
+  }
+</style>
+
