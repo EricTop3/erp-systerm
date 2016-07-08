@@ -78,68 +78,18 @@
             <div slot="operateList">
               <span class="btn btn-primary btn-sm" data-toggle="modal"
                     data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
-              <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#inventory-checkHangingGoods-templ"
+              <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkHangingGoods-templ"
                     @click="lookDetail($event)">查看</span>
-              <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ">回款</span>
+              <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ">回款</span>
             </div>
           </grid>
           <table>
             <tr>
-              <td><input type="checkbox"></td>
-              <td>全选</td>
-              <td><span class="btn btn-sm btn-info">全部回款</span></td>
+              <td><span class="btn btn-sm btn-info" style="margin-right:15px;">全部回款</span></td>
               <td>合计回款额：<span>￥25000.00</span></td>
             </tr>
           </table>
-          <!--<table class="table table-striped table-border table-hover">
-            <thead>
-            <tr class="text-center">
-              <td><input type="checkbox"></td>
-              <td class="text-left">小票编号</td>
-              <td>下单时间</td>
-              <td>合计金额</td>
-              <td>合计数量</td>
-              <td>会员卡号</td>
-              <td>优惠方式</td>
-              <td>支付方式</td>
-              <td>售后</td>
-              <td>营业员</td>
-              <td>操作</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="text-center">
-              <td><input type="checkbox"></td>
-              <td class="text-left">ZYADHSE2016050112250801</td>
-              <td>2015-05-01</td>
-              <td>￥50000.00</td>
-              <td>10</td>
-              <td>1324567890</td>
-              <td>VIP7折</td>
-              <td>现金</td>
-              <td>无</td>
-              <td>张三</td>
-              <td>
-                <span class="btn btn-primary btn-sm" data-toggle="modal"
-                      data-target="#inventory-returnGoods-templ">退货</span>
-                <span class="btn btn-warning btn-sm">查看</span>
-                <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ">回款</span>
-              </td>
-            </tr>
-            </tbody>
-          </table>-->
-          <!-- 翻页 -->
-          <!--<nav class="text-right">
-            <ul class="pagination">
-              <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-            </ul>
-          </nav>-->
+
           <!-- 翻页 -->
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
@@ -150,93 +100,19 @@
         <div role="tabpanel" class="tab-pane" id="order-list">
           <grid :data="queryList" :columns="subscribeGridColumns" :operate="gridOperate">
             <div slot="operateList">
-              <span class="btn btn-sm btn-primary" data-toggle="modal"
+
+              <span v-if="status == '门店配送中'" class="btn btn-sm btn-primary" data-toggle="modal"
                     data-target="#inventory-notice1-templ">门店收货</span>
+              <span v-if="status == '等待签收'" class="btn btn-sm btn-primary" data-toggle="modal"
+                    data-target="#inventory-notice2-templ">客户签收</span>
+              <span v-if="status == '订单取消'" class="btn btn-sm btn-primary" data-toggle="modal"
+                    data-target="#inventory-notice3-templ">退款</span>
               <span class="btn btn-sm btn-info" data-toggle="modal" data-target="#inventory-checkSubscribeGoods-templ"
                     @click="lookDetail($event)">查看</span>
             </div>
           </grid>
-          <!--<table class="table table-striped table-border table-hover">
-            <thead>
-            <tr class="text-center">
-              <td class="text-left">小票编号</td>
-              <td>下单时间</td>
-              <td>合计金额</td>
-              <td>合计数量</td>
-              <td>会员卡号</td>
-              <td>优惠方式</td>
-              <td>支付方式</td>
-              <td>进度</td>
-              <td>营业员</td>
-              <td>操作</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="text-center">
-              <td class="text-left">ZYADHSE2016050112250801</td>
-              <td>2015-05-01</td>
-              <td>￥50000.00</td>
-              <td>10</td>
-              <td>1234567890</td>
-              <td>VIP7折</td>
-              <td>现金余额</td>
-              <td>门店配送中</td>
-              <td>张三</td>
-              <td>
-                <span class="btn btn-sm btn-primary" data-toggle="modal"
-                      data-target="#inventory-notice1-templ">门店收货</span>
-                <span class="btn btn-sm btn-info" data-toggle="modal"
-                      data-target="#inventory-checkGoods-templ">查看</span>
-              </td>
-            </tr>
-            <tr class="text-center">
-              <td class="text-left">ZYADHSE2016050112250801</td>
-              <td>2015-05-01</td>
-              <td>￥50000.00</td>
-              <td>10</td>
-              <td>1234567890</td>
-              <td>VIP7折</td>
-              <td>现金余额</td>
-              <td>门店配送中</td>
-              <td>张三</td>
-              <td>
-                <span class="btn btn-sm btn-primary" data-toggle="modal"
-                      data-target="#inventory-notice2-templ">客户签收</span>
-                <span class="btn btn-sm btn-info" data-toggle="modal"
-                      data-target="#inventory-checkGoods-templ">查看</span>
-              </td>
-            </tr>
-            <tr class="text-center">
-              <td class="text-left">ZYADHSE2016050112250801</td>
-              <td>2015-05-01</td>
-              <td>￥50000.00</td>
-              <td>10</td>
-              <td>1234567890</td>
-              <td>VIP7折</td>
-              <td>现金余额</td>
-              <td>门店配送中</td>
-              <td>张三</td>
-              <td>
-                <span class="btn btn-sm btn-primary" data-toggle="modal"
-                      data-target="#inventory-notice3-templ">退款</span>
-                <span class="btn btn-sm btn-info" data-toggle="modal"
-                      data-target="#inventory-checkGoods-templ">查看</span>
-              </td>
-            </tr>
-            </tbody>
-          </table>-->
+
           <!-- 翻页 -->
-          <!--<nav class="text-right">
-            <ul class="pagination">
-              <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-            </ul>
-          </nav>-->
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
         </div>
@@ -272,9 +148,12 @@
               <td>￥{{item.new_price}}</td>
               <td>{{item.amount}}</td>
               <td class="text-center">
-                <!--<input type="text" class="form-control text-center" style="width:70px;"
-                       v-model="returnNumber">-->
-                <count :count.sync='item.return_number'></count>
+                <!--<template v-if="item.return_number <= item.amount">-->
+                <!--<input type="text" class="form-control text-center" style="width:70px;"-->
+                <!--v-model="item.return_number">-->
+                <!--</template>-->
+
+                <count :count.sync='item.return_number' :amount.sync='item.amount'></count>
               </td>
               <td>￥{{item.return_number*item.new_price}}</td>
             </tr>
@@ -282,7 +161,8 @@
           </table>
           <div class="panel">
             <div class="panel-body">
-              <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span class="pull-right btn-primary btn">确定退货</span>
+              <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
+                class="pull-right btn-primary btn" data-dismiss="modal" @click="onlyReturnOnce">确定退货</span>
               </p>
             </div>
           </div>
@@ -464,13 +344,13 @@
           </div>
           <div class="checkbox">
             <label>
-              <input type="checkbox"> 会员卡余额￥300.00
+              <input type="checkbox"> 会员卡余额￥{{}}
             </label>
           </div>
         </div>
         <div class="modal-footer">
-          <p class="text-left" style="line-height: 33px;">合计金额：<span>￥230.00</span><span
-            class="pull-right btn-primary btn">确定回款</span></p>
+          <p class="text-left" style="line-height: 33px;">合计金额：<span>￥{{}}</span><span
+            class="pull-right btn-primary btn" data-dismiss="modal">确定回款</span></p>
         </div>
       </div>
     </div>
@@ -544,8 +424,8 @@
   import $ from 'jquery'
   import Grid from '../common/Grid'
   import Page from '../common/Page'
-  import Count from '../common/Count.vue'
-  var requestUrl = 'http://192.168.1.150:1401/mock/v1/front-system/'
+  import Count from '../common/Count'
+  import {requestUrl} from '../../publicFunction/index'
   export default {
     components: {
       Count: Count,
@@ -558,7 +438,7 @@
       var self = this
 //    交易查询
       this.$http({
-        url: requestUrl + 'order',
+        url: requestUrl + '/front-system/order',
         method: 'get',
         data: {
           order_type: orderType
@@ -573,7 +453,7 @@
       $('.nav-tabs li').click(function () {
         orderType = $(this).attr('value')
         self.$http({
-          url: requestUrl + 'order',
+          url: requestUrl + '/front-system/order',
           method: 'get',
           data: {
             order_type: orderType
@@ -590,7 +470,7 @@
       lookDetail: function (event) {
         var id = $(event.currentTarget).parents('tr').attr('id')
         this.$http({
-          url: requestUrl + 'order/' + id + '/detail',
+          url: requestUrl + '/front-system/order/' + id + '/detail',
           method: 'get'
         }).then(function (response) {
           this.listDetail = response.data.body.list
@@ -599,15 +479,23 @@
         })
       },
       returnGoods: function (event) {
+        var button = $(event.currentTarget)
         var id = $(event.currentTarget).parents('tr').attr('id')
         this.$http({
-          url: requestUrl + 'order/' + id + '/detail',
+          url: requestUrl + '/front-system/order/' + id + '/detail',
           method: 'get'
         }).then(function (response) {
           this.returnGoodsList = response.data.body.list
         }, function (err) {
           console.log(err)
         })
+
+        this.currentButton = button
+      },
+//      退货后隐藏按钮
+      onlyReturnOnce: function () {
+        $(this.currentButton).css('visibility','hidden')
+        console.log('test')
       }
     },
     data: function () {

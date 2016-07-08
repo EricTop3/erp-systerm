@@ -12,11 +12,7 @@
       <form action="" method="post" class="form-inline">
         <div class="form-group ml10">
           <label>送货时间</label>
-          <datepicker
-          :value.sync="sendStartTime"
-          :format="format"
-          :show-reset-button="true">
-          </datepicker>
+          <date-picker  :value.sync="sendStartTime"></date-picker>
         </div>
         <div class="form-group">
           <label>备注</label>
@@ -74,7 +70,7 @@
   import Grid from '../common/Grid'
   import Modal from '../common/Modal'
   import Page from '../common/Page'
-  import { datepicker } from 'vue-strap'
+  import DatePicker from '../common/DatePicker'
   import ListDelete from '../common/ListDelete'
   import {requestUrl} from '../../publicFunction/index'
   export default {
@@ -85,7 +81,7 @@
       Modal: Modal,
       Page: Page,
       ListDelete: ListDelete,
-      Datepicker: datepicker
+      DatePicker: DatePicker
     },
     events: {
 //      确认增加
@@ -130,7 +126,7 @@
       return {
         date: '',
         remarks: '',
-        sendStartTime: '送货时间',
+        sendStartTime: '',
         format: 'yyyy-MM-dd',
         instockPage: [],
         deleteModal: false,
