@@ -44,6 +44,10 @@
         <span class="btn btn-info btn-sm" @click="detail($event)">差异明细</span>
       </div>
     </grid>
+    <!--分页-->
+    <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+          :last-page="page.last_page">
+      </page>
   </div>
 </template>
 <script>
@@ -51,7 +55,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -80,13 +84,18 @@
             category: this.query.category || '',
             page: page,
             per_page: 16
-          }
+          },
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
         }, function (err) {
           console.log(err)
         })
+      },
+      detail: function (event) {
+        var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
+        window.location.href = this.detailUrl + detailId
       },
       cancel: function () {
         this.query.start_time = ''
