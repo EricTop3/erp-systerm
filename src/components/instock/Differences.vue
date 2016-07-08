@@ -31,13 +31,6 @@
       </form>
     </div>
 
-    <!--汇总列表-->
-    <summary :table-data.sync="list" :table-header.sync="gridColumns" :page.sync="page"
-             :detail-url.sync="detailUrl">
-       <div slot="operate">
-         <span class="btn btn-info btn-sm" @click="detail($event)">差异明细</span>
-       </div>
-    </summary>
     <!-- 表格 -->
     <grid :data="list" :columns="gridColumns" :operate="gridOperate">
       <div slot="operateList">
