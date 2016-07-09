@@ -638,6 +638,7 @@
 //    结算
       settlement: function () {
         var settlementData = {}
+        orderItems = []
         window.localStorage.setItem('orderType',this.order_mata_data.order_type)
         orderType= Number(window.localStorage.getItem('orderType'))
         $.each(this.checkedGoodsList, function (index, val) {
