@@ -660,7 +660,6 @@
       },
 //      零售账单结算提交成功回调函数
       setuploadFinish: function () {
-        orderItems = []
         orderType= Number(window.localStorage.getItem('orderType'))
         this.order_mata_data.paymentAmount = ''
         this.order_mata_data.settlementFlag = false
@@ -690,7 +689,8 @@
         var settlementData = {}
         settlementData = {
           'items': orderItems,
-          'order_meta_data': this.order_mata_data
+          'order_meta_data': this.order_mata_data,
+          'all_total': this.paymentAmount
         }
         this.settlementRequest(settlementData,this.setuploadFinish)
       },
