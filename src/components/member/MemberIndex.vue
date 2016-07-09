@@ -49,7 +49,7 @@
         <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#chongzhi-member-templ"
               @click="rechargeModal = true">充值</span>
         <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#edit-member-templ" id="show-modal"
-              @click="editModal = true">编辑</span>
+              @click="updateMember($event)">编辑</span>
         <a v-link="{ name: 'member', params: { memberId: memberId }}"><span
           class="btn btn-warning btn-sm">查看明细</span></a>
       </div>
@@ -70,7 +70,7 @@
   <!--创建会员弹窗-->
   <modal :show.sync="creatMemberModal" :modal-size="createModalSize">
     <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+      <button type="button" class="close" data-dismiss="modal" @click="creatMemberModal=false" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">新会员办理</h4>
     </div>
@@ -78,45 +78,45 @@
       <div class="modal-body">
         <form action="" method="post" class="form-horizontal">
           <div class="form-group">
-            <label for="carId" class="col-sm-4 control-label">会员卡号：</label>
+            <label for="" class="col-sm-4 control-label">会员卡号：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="carId" placeholder="">
+              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="member_card">
             </div>
           </div>
           <div class="form-group">
-            <label for="name" class="col-sm-4 control-label">姓名：</label>
+            <label for="" class="col-sm-4 control-label">姓名：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="name" placeholder="">
+              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="member_name">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">手机号码：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="" placeholder="手机号码为微商城登录账号！">
+              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="phone">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">微商城密码：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="" placeholder="登录密码，请谨慎填写！">
+              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="password">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="" placeholder="请填写生日，如：06.01！">
+              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
-              <select class="form-control">
+              <select class="form-control" v-model="level">
                 <option>九折会员</option>
                 <option>八折会员</option>
                 <option>七折会员</option>
@@ -129,7 +129,7 @@
 
             <div class="col-sm-8">
               <div class="form-inline">
-                <input type="text" class="form-control" id="" placeholder="" style="width:104px;">
+                <input type="text" class="form-control" v-model="balance" placeholder="请输入充值金额！" style="width:104px;">
                 <select class="form-control ml10">
                   <option>现金</option>
                   <option>支付宝</option>
@@ -144,58 +144,60 @@
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="creatMemberModal=false">关闭</button>
-      <button type="button" class="btn btn-primary">保存</button>
+      <button type="button" class="btn btn-primary" @click="creatNewMember">保存</button>
     </div>
   </modal>
+
   <!--编辑弹窗-->
   <modal :show.sync="editModal" :modal-size="editModalSize">
     <div slot="header">
-      <button type="button" class="close"></button>
+      <button type="button" class="close" data-dismiss="modal" @click="editModal=false" aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">会员编辑</h4>
     </div>
     <div slot="body">
       <div class="modal-body">
         <form action="" method="post" class="form-horizontal">
           <div class="form-group">
-            <label for="carId" class="col-sm-4 control-label">会员卡号：</label>
+            <label for="" class="col-sm-4 control-label">会员卡号：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="carId" placeholder="">
+              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="member_card">
             </div>
           </div>
           <div class="form-group">
-            <label for="name" class="col-sm-4 control-label">姓名：</label>
+            <label for="" class="col-sm-4 control-label">姓名：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="name" placeholder="">
+              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="member_name">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">手机号码：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="" placeholder="手机号码为微商城登录账号！">
+              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="phone">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">微商城密码：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="" placeholder="登录密码，请谨慎填写！">
+              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="password">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="" placeholder="请填写生日，如：06.01！">
+              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">
             </div>
           </div>
           <div class="form-group">
             <label for="" class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
-              <select class="form-control">
+              <select class="form-control" v-model="level">
                 <option>九折会员</option>
                 <option>八折会员</option>
                 <option>七折会员</option>
@@ -203,29 +205,15 @@
               </select>
             </div>
           </div>
-          <div class="form-group">
-            <label for="" class="col-sm-4 control-label">充值金额：</label>
-
-            <div class="col-sm-8">
-              <div class="form-inline">
-                <input type="text" class="form-control" id="" placeholder="" style="width:104px;">
-                <select class="form-control ml10">
-                  <option>现金</option>
-                  <option>支付宝</option>
-                  <option>微信支付</option>
-                  <option>POSE刷卡</option>
-                </select>
-              </div>
-            </div>
-          </div>
         </form>
       </div>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="editModal=false">关闭</button>
-      <button type="button" class="btn btn-primary">保存</button>
+      <button type="button" class="btn btn-primary" @click="updateMember()">保存</button>
     </div>
   </modal>
+
   <!--充值弹窗-->
   <modal :show.sync="rechargeModal" :modal-size="rechargeModalSize">
     <div slot="header">
@@ -260,6 +248,7 @@
       <button type="button" class="btn btn-primary">保存</button>
     </div>
   </modal>
+
 </template>
 <script>
   import $ from 'jquery'
@@ -277,18 +266,88 @@
       this.$http({
         url: requestUrl + '/front-system/user',
         method: 'get',
-        data: {
-//          member_card: member_card
+        headers: {
+          'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
         }
       }).then(function (response) {
         this.page = response.data.body.pagination
         this.gridData = response.data.body.list
+        $.each(this.gridData, function (index, value) {
+          if (value.status == 'start') {
+            this.status = '启用'
+          } else {
+            this.status = '停用'
+          }
+        })
       }, function (err) {
         console.log(err)
       })
     },
+    methods: {
+//      创建新会员
+      creatNewMember: function () {
+        this.$http.post(requestUrl + '/front-system/user', {
+            member_card: this.member_card,
+            name: this.member_name,
+            phone: this.phone,
+            birthday: this.birthday,
+            balance: this.balance,
+            password: this.password,
+            level: this.level
+          },
+          {
+            headers: {
+              'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+            }
+          }).then(function (response) {
+
+          this.$http({
+            url: requestUrl + '/front-system/user',
+            method: 'get',
+            headers: {
+              'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+            }
+          }).then(function (response) {
+            this.page = response.data.body.pagination
+            this.gridData = response.data.body.list
+          }, function (err) {
+            console.log(err)
+          })
+
+          this.creatMemberModal = false
+
+        }, function (err) {
+          console.log(err)
+        })
+      },
+      //      编辑会员资料
+      updateMember: function (event) {
+//      弹出模态框
+        this.editModal = true
+//      编辑数据
+        var id = Number($(event.currentTarget).parents('tr').attr('id'))
+        this.$http.put(requestUrl + '/front-system/user/' + id, {
+          headers: {
+            'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+          }
+        }).then(function (response) {
+          /*this.page = response.data.body.pagination
+           this.gridData = response.data.body.list*/
+          console.log(response)
+        }, function (err) {
+          console.log(err)
+        })
+      }
+    },
     data: function () {
       return {
+        member_card: '',
+        member_name: '',
+        phone: '',
+        birthday: '',
+        balance: '',
+        password: '',
+        level: '',
         createModalSize: 'modal-sm',
         rechargeModalSize: 'modal-sm',
         editModalSize: 'modal-sm',
@@ -300,13 +359,14 @@
         gridData: [],
         gridColumns: {
           member_card: "会员卡号",
-          balances: "余额",
+          balance: "余额",
           score: "积分",
           name: "姓名",
           phone: "手机号码",
           birthday: "生日",
           level: "等级",
-          open_card_store: "开卡点"
+          open_card_store: "开卡点",
+          status: "状态"
         }
       }
     }
