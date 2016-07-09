@@ -197,7 +197,7 @@
         <label for="" class="col-sm-4 control-label">支付金额</label>
 
         <div class="col-sm-8">
-          <input type="text" class="form-control" id="priceValidateFirst" v-model="paymentAmount"
+          <input type="text" class="form-control" id="priceValidateFirst" v-model="paymentAmount|priceChange"
                  @input=priceAjectValdate($event)>
         </div>
       </div>
@@ -206,7 +206,7 @@
                class="col-sm-4 control-label">找零</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : paymentAmount-finalPrice
+          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : paymentAmount-finalPrice|priceChange
             }}</p>
         </div>
       </div>
@@ -622,6 +622,7 @@
       setFinish : function (response){
         this.finalPrice = response.data.body.total_sum
         orderMount = response.data.body.total_sum
+        orderItems = []
         if (this.order_mata_data.settlementFlag) {
           switch (orderType) {
             case 1:
