@@ -28,11 +28,11 @@
 //    },
     props: {
       list: [],
-      flag: false,
+      flag: false
 //      validateModal: false
     },
     methods: {
-//         审核
+//    审核
       validate: function (event) {
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
         $.each(this.list, function (index, val) {

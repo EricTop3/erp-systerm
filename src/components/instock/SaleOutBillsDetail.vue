@@ -24,7 +24,7 @@
 <script>
   import Grid from '../common/Grid'
   import Page from '../common/Page'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -70,7 +70,8 @@
             operation_type: this.query.operation_type || '',
             page: page,
             per_page: 10
-          }
+          },
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list

@@ -89,7 +89,7 @@
   import Grid from '../common/Grid'
   import Modal from '../common/Modal'
   import Page from '../common/Page'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
@@ -118,7 +118,8 @@
       inventoryAll: function () {
         this.$http({
           url: requestUrl + '/front-system/stock/goods',
-          method: 'get'
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.rederStockGoods = response.data.body.list
           this.page = response.data.body.pagination
@@ -137,7 +138,8 @@
             operation_type: this.query.operation_type || '',
             page: page,
             per_page: 10
-          }
+          },
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
@@ -174,7 +176,7 @@
         this.$http({
           url: requestUrl + '/front-system/stock/inventory',
           method: 'post',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          headers: {'X-Overpowered-Token': token},
           params: {
             inventory: inventory
           }

@@ -72,7 +72,7 @@
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
   import ListDelete from '../common/ListDelete'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       StockGoods: StockGoods,
@@ -113,10 +113,15 @@
             'goods': goods,
             'date': this.sendStartTime,
             'remarks': this.remarks
+          },
+          {
+           headers:{
+            'X-Overpowered-Token':token
+          }
           }
         ).then(function (reponse) {
           var id=reponse.data.body
-          window.location.href = '/?#!/instock/GoodsApplyNum/'+id
+          window.location.href = '/?#!/instock/GoodsApplyNum/'+ id
         }, function (err) {
           console.log(err)
         })

@@ -6,9 +6,8 @@
       <li class="active">生产出库汇总</li>
       <li class="active">生产出库明细</li>
     </ol>
-
     <!-- 表格 单条数据 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
+    <grid :data="list" :columns="gridColumns">
       <div slot="operateList"></div>
     </grid>
 
@@ -24,11 +23,13 @@
 <script>
   import Grid from '../common/Grid'
   import Page from '../common/Page'
-  import {requestUrl} from '../../publicFunction/index'
+  import SummaryDetail from '../common/SummaryDetail'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
-      Page: Page
+      Page: Page,
+      SummaryDetail:SummaryDetail
     },
     events: {
 //    绑定翻页事件
@@ -52,7 +53,8 @@
       thisOneData: function () {
         this.$http({
           url: requestUrl + '/front-system/stock/products/' + this.id,
-          method: 'get'
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.list = response.data.body
         }, function (err) {
@@ -70,7 +72,8 @@
             operation_type: this.query.operation_type || '',
             page: page,
             per_page: 10
-          }
+          },
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list

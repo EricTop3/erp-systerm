@@ -32,7 +32,7 @@
   import Modal from '../common/Modal'
   import ListValidate from '../common/ListValidate'
   import ListDelete from '../common/ListDelete'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -63,7 +63,11 @@
       thisOneData: function () {
         this.$http({
           url: requestUrl + '/front-system/stock/enquiry/' + this.id,
-          method: 'get'
+          method: 'get',
+          headers:{
+            'Content-Type': 'application/json',
+            'X-Overpowered-Token':'75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+          }
         }).then(function (response) {
           this.list = response.data.body
           var self = this
@@ -94,7 +98,10 @@
       listData: function (page) {
         this.$http({
           url: requestUrl + '/front-system/stock/enquiry/' + this.id + '/detail',
-          method: 'get'
+          method: 'get',
+          headers:{
+            'X-Overpowered-Token':token
+          }
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list

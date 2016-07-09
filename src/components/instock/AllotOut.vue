@@ -13,7 +13,7 @@
         <div class="form-group">
           <label>出货时间</label>
           <date-picker
-            :value.sync="orderStartTime"
+            :value.sync="date"
           >
           </date-picker>
         </div>
@@ -29,7 +29,7 @@
         </div>
 
         <span class="btn btn-info" @click="addGoodModal=true">添加商品</span>
-        <a href="#"><span class="btn btn-primary" @click="upLoadEnquiry()">提交出货</span></a>
+        <span class="btn btn-primary" @click="upLoadEnquiry()">提交出货</span>
       </form>
     </div>
 
@@ -153,18 +153,16 @@
           goods.push(obj)
         })
 //       提交要货请求
-        this.$http({
-          url: requestUrl + '/front-system/stock/issue',
-          method: 'post',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          params: {
+        this.$http.post(requestUrl + '/front-system/stock/issue',
+          {
             goods: goods,
             date: this.date,
             remarks: this.remarks,
             receipts_store: this.receipts_store
           }
-        }).then(function (reponse) {
-          window.location.href = '/?#!/instock/AllotOutBills/'
+        ).then(function (reponse) {
+          console.log(response)
+//          window.location.href = '/?#!/instock/AllotOutBills/1'
         }, function (err) {
           console.log(err)
         })
@@ -174,7 +172,7 @@
       return {
         date: '',
         remarks: '',
-        receipts_store: '',
+        receipts_store: '金星门店',
         instockPage: [],
         deleteModal: false,
         deleteModalSize: 'modal-sm',

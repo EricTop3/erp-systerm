@@ -6,52 +6,21 @@
       <li class="active">盘点单汇总</li>
       <li class="active">查看盘点单</li>
     </ol>
-
-    <!-- 表格 单条数据 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
-      <div slot="operateList">
-        <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-audit-templ">审核</span>
-        <span class="btn btn-primary btn-sm">编辑</span>
-        <span class="btn btn-warning btn-sm">删除</span>
-      </div>
-    </grid>
-
-    <!-- 表格 详情列表 -->
-    <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
-
-    <!-- 翻页 -->
-    <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page"></page>
-
+<!--列表汇总-->
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page="page">
+    </summary-detail>
   </div>
-  <!--模态框-审核-->
-  <div class="modal fade" id="inventory-audit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>确定是否审核</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">审核</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
 </template>
 <script>
   import Grid from '../common/Grid'
   import Page from '../common/Page'
-  import {requestUrl} from '../../publicFunction/index'
+  import  SummaryDetail from '../common/SummaryDetail'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
-      Page: Page
+      Page: Page,
+      SummaryDetail: SummaryDetail
     },
     events: {
 //    绑定翻页事件
@@ -75,7 +44,8 @@
       thisOneData: function () {
         this.$http({
           url: requestUrl + '/front-system/stock/inventory/' + this.id,
-          method: 'get'
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.list = response.data.body
         }, function (err) {
@@ -87,6 +57,7 @@
         this.$http({
           url: requestUrl + '/front-system/stock/inventory/' + this.id + '/detail',
           method: 'get',
+          headers: {'X-Overpowered-Token': token},
           data: {
             start_time: this.query.start_time || '',
             end_time: this.query.end_time || '',

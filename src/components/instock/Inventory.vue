@@ -42,72 +42,24 @@
         <a v-link="{ path: '/instock/InventoryCreate'}" ><span class="btn btn-primary" style="display: inline-block; float:right;">新建盘点单</span></a>
       </form>
     </div>
-
-    <!-- 表格 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
-      <div slot="operateList">
-        <span class="btn btn-info btn-sm">审核</span>
-        <span class="btn btn-primary btn-sm" @click="detail($event)">查看</span>
-        <span class="btn btn-warning btn-sm">删除</span>
-      </div>
-    </grid>
-
-    <!-- 翻页 -->
-    <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page"></page>
+  <!--列表详情-->
+    <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page">
+    </summary>
   </div>
-
-  <!--模态框-审核-->
-  <div class="modal fade" id="inventory-audit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>审核弹出框！</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
-
-  <!--模态框-删除-->
-  <div class="modal fade" id="inventory-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>删除弹出框！</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
 </template>
 <script>
   import $ from 'jquery'
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl} from '../../publicFunction/index'
+  import Summary from '../common/Summary'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
-      DatePicker: DatePicker
+      DatePicker: DatePicker,
+      Summary: Summary
     },
     events: {
 //    绑定翻页事件
@@ -134,7 +86,8 @@
             create_person: this.query.create_person || '',
             page: page,
             per_page: 16
-          }
+          },
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
@@ -159,15 +112,16 @@
     data: function () {
       return {
         page: [],
+        detailUrl:  '/#!/instock/Inventory/',
         list: [],
         gridOperate: true,
         gridColumns: {
-          order_code: '盘点单号',
+          order_number: '盘点单号',
           check_status: '审核状态',
           create_person: '制单人',
           check_person: '审核人',
-          data: '盘点日期',
-          differ_number: '差异库存量'
+          created_at: '盘点日期',
+          difference_number: '差异库存量'
         },
         query: {
           start_time: '',

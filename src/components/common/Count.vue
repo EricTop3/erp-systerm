@@ -1,5 +1,5 @@
 <template>
-  <input type="text" class="form-control text-center" style="width:70px;" v-model="count"
+  <input type="text" class="form-control text-center count" style="width:70px;" v-model="count"
          @input="countValidate(amount)">
 </template>
 <script>
@@ -35,4 +35,7 @@
   }
 </script>
 <style scoped>
+  .count{
+    margin: 0 auto;
+  }
 </style>

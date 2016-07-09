@@ -115,7 +115,7 @@
           <div class='col-xs-9'>
             <p class='f18'>原订单金额：<span><strong>￥{{totalPrice}}</strong></span></p>
 
-            <p class='c-erp f18'>实际订单额：<span><strong>￥{{totalPrice}}</strong></span></p>
+            <p class='c-erp f18'>实际订单额：<span><strong>￥{{finalPrice|priceChange}}</strong></span></p>
           </div>
           <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal'
                                       :disabled="!order_mata_data.settlementFlag"
@@ -182,8 +182,7 @@
         <label for="" class="col-sm-4 control-label">订单金额</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{order_mata_data.isGiveZero ? parseInt(order_mata_data.oldPayment):
-            order_mata_data.oldPayment}}</p>
+          <p class="form-control-static">{{finalPrice|priceChange}}</p>
         </div>
       </div>
       <div class="form-group">
@@ -286,7 +285,9 @@
   import CountContainer from '../common/CountContainer'
   import Page from '../common/Page'
   import Slide from 'vue-slide'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
+  //  商品信息数组
+  var orderItems = []
   var deleteCheckedGoodId = ''
   var priceCheckdGoodId = ''
   export default {
@@ -325,7 +326,7 @@
       const payment = $('.pay-list')
       var $this = this
 
-      function changeActive (elem, elemSon) {
+      function changeActive(elem, elemSon) {
         var data = ''
         elem.on('click', elemSon, function () {
           $(this).addClass('active').siblings().removeClass('active')
@@ -347,12 +348,6 @@
       }
     },
     methods: {
-      slideNext: function () {
-        this.$broadcast('slideNext')
-      },
-      slidePre: function () {
-        this.$broadcast('slidePre')
-      },
 //     增加到左侧商品列表
       addOrderToList: function (event) {
         var flag = false
@@ -511,23 +506,6 @@
 //    结算
       settlement: function () {
         var orderType = this.order_mata_data.order_type
-        this.order_mata_data.oldPayment = this.totalPrice
-        if (this.order_mata_data.settlementFlag) {
-          switch (orderType) {
-            case '零售订单':
-              this.retailBill = true
-              break
-            case '挂账订单':
-              this.creditlBill = true
-              break
-          }
-        } else {
-          return false
-        }
-      },
-//      结算提交
-      settlementUpload: function () {
-        var orderItems = []
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
@@ -535,22 +513,49 @@
           obj['price'] = val.goodPrice
           orderItems.push(obj)
         })
-        this.retailBill = false
-        this.order_mata_data.paymentAmount = ''
-        this.checkedGoodsList = []
-        this.order_mata_data.settlementFlag = false
+        this.$http.post(requestUrl + '/front-system/order/order',
+          {
+            'items': orderItems,
+            'order_meta_data': this.order_mata_data,
+            'get_order_price': 1
+          },
+          {
+            headers: {
+              'X-Overpowered-Token': token
+            }
+          }).then(function (response) {
+          this.finalPrice = response.data.body.total_sum
+          console.log(this.originalPrice)
+          if (this.order_mata_data.settlementFlag) {
+            switch (orderType) {
+              case 1:
+                this.retailBill = true
+                break
+              case 2:
+                this.creditlBill = true
+                break
+            }
+          } else {
+            return false
+          }
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//      结算提交
+      settlementUpload: function () {
         this.$http.post(requestUrl + '/front-system/order/order', {
           'items': orderItems,
-          'order_meta_data': this.order_mata_data,
-          'card_numbe': '123456',
-          'order_note': '11444',
-          'after_sales': 159,
-          'operator': '王祖念',
-          'coupen_name': '七折优惠',
-          'discount': '0.7',
-          'old_price': 150,
-          'new_price': 280
+          'order_meta_data': this.order_mata_data
+        },{
+          headers: {
+            'X-Overpowered-Token': token
+          }
         }).then(function (response) {
+          this.order_mata_data.paymentAmount = ''
+          this.checkedGoodsList = []
+          this.order_mata_data.settlementFlag = false
+          this.retailBill = false
           window.location.href = '/?#!/tranquery'
         }, function (err) {
           console.log(err)
@@ -559,65 +564,30 @@
     },
     data: function () {
       return {
-        realCount: '',
-        someList: [
-          {
-            origin: 0,
-            current: 0,
-            style: {
-              'transform': 'translateX(0%)'
-            }
-          },
-          {
-            origin: 100,
-            current: 0,
-            style: {
-              'transform': 'translateX(100%)'
-            }
-          },
-          {
-            origin: 200,
-            current: 0,
-            style: {
-              'transform': 'translateX(200%)'
-            }
-          }
-        ],
-        slide: {
-          init: {
-            pageNum: 3,
-            currentPage: 1,
-            canPre: false,
-            canNext: true,
-            start: {},
-            end: {},
-            tracking: false,
-            thresholdTime: 500,
-            thresholdDistance: 100
-          }
-        },
         retailBill: false,
         retailBillSize: 'modal-sm',
         creditlBill: false,
         creditlBillSize: 'modal-sm',
+        isDelete: false,
+        deleteModalSize: 'modal-sm',
+        priceAdjectModal: false,
+        priceAdjectModalSize: 'modal-sm',
         originalPrice: 0,
+        realCount: '',
+        finalPrice: 0,
         order_mata_data: {
-          order_type: '零售订单',
+          order_type: 1,
+          coupen_name: '七折优惠',
           payment: '现金',
-          oldPayment: 0,
-          paymentAmount: '',
-          isGiveZero: false,
-          operator_id: 1,
+          discount: 0.7,
+          strategy_id: 1,
+          settlementFlag: false,
           orderFlag: true,
           settlementFlag: false
         },
         sellMark: false,
-        isDelete: false,
         priceNote: '',
         newSinglePrice: '',
-        deleteModalSize: 'modal-sm',
-        priceAdjectModal: false,
-        priceAdjectModalSize: 'modal-sm',
         count: 1,
         category: [],
         page: [],
@@ -660,7 +630,6 @@
           }
         ],
         checkedGoodsList: [],
-        orderCount: 14,
         gridOperate: true
       }
     },

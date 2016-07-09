@@ -28,24 +28,24 @@
         <div class="form-group ml10">
           <label>制单时间段</label>
           <date-picker
-            :value.sync="orderStartTime"
+            :value.sync=query.start_time1"
           >
           </date-picker>
           -
           <date-picker
-            :value.sync="orderEndTime"
+            :value.sync="query.end_time1"
           >
           </date-picker>
         </div>
         <div class="form-group ml10">
           <label>送货时间段</label>
           <date-picker
-            :value.sync="sendStartTime"
+            :value.sync="query.end_time1"
           >
           </date-picker>
           -
           <date-picker
-            :value.sync="sendEndTime"
+            :value.sync="query.end_time2"
           >
           </date-picker>
         </div>
@@ -54,8 +54,8 @@
       </form>
     </div>
     <!--汇总列表-->
-    <summary :table-data.sync="list" :table-header.sync="gridColumns" :page.sync="page"
-             :detail-url.sync="detailUrl"></summary>
+    <summary :table-data="list" :table-header="gridColumns" :page="page"
+             :detail-url="detailUrl"></summary>
   </div>
 </template>
 <script>
@@ -66,7 +66,7 @@
   import ListValidate from '../common/ListValidate'
   import ListDelete from '../common/ListDelete'
   import DatePicker from '../common/DatePicker'
-  import { requestUrl } from '../../publicFunction/index'
+  import { requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -92,17 +92,7 @@
         this.$http({
           url: requestUrl + '/front-system/stock/enquiry',
           method: 'get',
-          data: {
-            start_time1: this.query.start_time1 || '',
-            start_time2: this.query.start_time2 || '',
-            end_time1: this.query.end_time1 || '',
-            end_time2: this.query.end_time2 || '',
-            order_code: this.query.order_code || '',
-            check: this.query.check || '',
-            create_person: this.query.create_person || '',
-            page: page,
-            per_page: 16
-          }
+          headers:{'X-Overpowered-Token':token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
@@ -141,16 +131,16 @@
         orderEndTime: '',
         sendStartTime: '',
         sendEndTime: '',
-        list: [],
+        list: [111,123],
         gridOperate: true,
         gridColumns: {
-          order_code: '单号',
+          order_number: '单号',
           check: '状态',
           create_person: '制单人',
           check_person: '审核人',
           created_at: '制单日期',
           delivery_date: '送货日期',
-          number: '要货数量'
+          total_amount: '要货数量'
         },
         query: {
           start_time1: '',

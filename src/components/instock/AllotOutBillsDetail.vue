@@ -6,7 +6,8 @@
       <li class="active">收货单汇总</li>
       <li class="active">查看收货单汇总</li>
     </ol>
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :grid-operate="gridOperate" :page="page"></summary-detail>
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page="page">
+    </summary-detail>
   </div>
 </template>
 <script>

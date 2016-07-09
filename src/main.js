@@ -41,6 +41,7 @@ Vue.use(VueRescource)
 Vue.config.debug = true
 Vue.http.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 Vue.http.options.emulateJSON = true
+window.localStorage.setItem('token', '75207fdf8d926efcd2db52cd31e3073fff4f3cb2')
 // 创建一个路由器实例
 // 创建实例时可以传入配置参数进行定制，为保持简单，这里使用默认配置
 var router = new VueRouter(

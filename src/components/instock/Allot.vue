@@ -18,7 +18,7 @@
         </div>
         <span class="btn btn-info" data-toggle="modal" data-target="#inventory-cite-templ"
               @click="parentIntroModal=true">引用原始数据</span>
-        <span class="btn btn-primary" data-toggle="modal">提交入货</span>
+        <span class="btn btn-primary" data-toggle="modal" @click="goodsUpload()">提交入货</span>
       </form>
     </div>
 
@@ -148,7 +148,7 @@
   import Page from '../common/Page'
   import Modal from '../common/Modal'
   import DatePicker from  '../common/DatePicker'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
@@ -202,11 +202,33 @@
       listData: function (page) {
         this.$http({
           url: requestUrl + '/front-system/store/resource',
-          method: 'get'
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.citeData = response.data.body.list
         }, function (err) {
+          console.log(err)
+        })
+      },
+//      提交入货
+      goodsUpload: function () {
+        console.log('nbo')
+        var goods = []
+        $.each(this.rederStockGoods, function (index, val) {
+          var obj = {}
+          obj['id'] = val.id
+          obj['amount'] = val.distribution_number
+          goods.push(obj)
+        })
+        this.$http.post(requestUrl + '/front-system/stock/recipient', {
+          'goods': goods
+        },{
+          headers: {'X-Overpowered-Token': token}
+        }, function (response) {
+          console.log(response)
+          window.location.href = '?#!/instock/AllotNum/1'
+        }, function (error) {
           console.log(err)
         })
       }

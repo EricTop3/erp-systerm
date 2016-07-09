@@ -425,7 +425,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Count from '../common/Count'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Count: Count,
@@ -440,8 +440,9 @@
       this.$http({
         url: requestUrl + '/front-system/order',
         method: 'get',
-        data: {
-          order_type: orderType
+        data: {order_type: 1},
+        headers:{
+          'X-Overpowered-Token':token
         }
       }).then(function (response) {
         this.page = response.data.body.pagination
@@ -456,9 +457,12 @@
           url: requestUrl + '/front-system/order',
           method: 'get',
           data: {
-            order_type: orderType
-          }
-        }).then(function (response) {
+            order_type: 1
+          },
+        headers:{
+          'Content-Type': 'application/json',
+            'X-Overpowered-Token':'75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+        }}).then(function (response) {
           this.page = response.data.body.pagination
           this.queryList = response.data.body.list
         }, function (err) {

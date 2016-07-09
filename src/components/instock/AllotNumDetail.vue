@@ -34,7 +34,7 @@
         </div>
       </div>
     </div>
-
+^
   </div>
 
   <!--模态框-审核-->
@@ -81,7 +81,7 @@
 <script>
   import Grid from '../common/Grid'
   import Page from '../common/Page'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -109,7 +109,8 @@
       thisOneData: function () {
         this.$http({
           url: requestUrl + '/front-system/stock/recipient/' + this.id,
-          method: 'get'
+          method: 'get',
+          headers:{'X-Overpowered-Token':token}
         }).then(function (response) {
           this.list = response.data.body
         }, function (err) {
@@ -120,7 +121,8 @@
       listData: function (page) {
         this.$http({
           url: requestUrl + '/front-system/stock/recipient/' + this.id + '/detail',
-          method: 'get'
+          method: 'get',
+          headers:{'X-Overpowered-Token':token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list

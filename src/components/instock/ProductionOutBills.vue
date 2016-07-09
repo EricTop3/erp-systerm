@@ -55,7 +55,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -84,7 +84,8 @@
             category: this.query.category || '',
             page: page,
             per_page: 16
-          }
+          },
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
