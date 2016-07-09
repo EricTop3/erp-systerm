@@ -47,25 +47,16 @@
     <grid :data="gridData" :columns="gridColumns" :filter-key="searchQuery" :operate="gridOperate">
       <div slot="operateList">
         <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#chongzhi-member-templ"
-              @click="rechargeModal = true">充值</span>
+              @click="recharge($event)">充值</span>
         <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#edit-member-templ" id="show-modal"
               @click="updateMember($event)">编辑</span>
-        <a v-link="{ name: 'member', params: { memberId: memberId }}"><span
+        <a @click="checkDetail($event)"><span
           class="btn btn-warning btn-sm">查看明细</span></a>
       </div>
     </grid>
     <!-- 翻页 -->
-    <nav class="text-right">
-      <ul class="pagination">
-        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-      </ul>
-    </nav>
+    <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
+          :last-page='page.last_page'></page>
   </div>
   <!--创建会员弹窗-->
   <modal :show.sync="creatMemberModal" :modal-size="createModalSize">
@@ -159,42 +150,42 @@
       <div class="modal-body">
         <form action="" method="post" class="form-horizontal">
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">会员卡号：</label>
+            <label class="col-sm-4 control-label">会员卡号：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="member_card">
+              <input type="text" class="form-control" v-model="edit_member_card" disabled>
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">姓名：</label>
+            <label class="col-sm-4 control-label">姓名：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="member_name">
+              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="edit_member_name">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">手机号码：</label>
+            <label class="col-sm-4 control-label">手机号码：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="phone">
+              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="edit_phone" disabled>
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">微商城密码：</label>
+            <label class="col-sm-4 control-label">微商城密码：</label>
 
             <div class="col-sm-8">
-              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="password">
+              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="edit_password">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">生 日：</label>
+            <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">
+              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="edit_birthday">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">等 级：</label>
+            <label class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
               <select class="form-control" v-model="level">
@@ -208,9 +199,9 @@
         </form>
       </div>
     </div>
-    <div slot="footer">
+    <div slot="footer" :data="formData">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="editModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" @click="updateMember()">保存</button>
+      <button type="button" class="btn btn-primary" :value="member_id" @click="saveUpdateMember($event)">保存</button>
     </div>
   </modal>
 
@@ -223,7 +214,7 @@
     <div slot="body">
       <form action="" method="post" class="form-horizontal">
         <div class="form-group">
-          <label for="" class="col-sm-4 control-label">支付方式：</label>
+          <label class="col-sm-4 control-label">支付方式：</label>
 
           <div class="col-sm-8">
             <select class="form-control">
@@ -235,17 +226,17 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="" class="col-sm-4 control-label">充值金额：</label>
+          <label class="col-sm-4 control-label">充值金额：</label>
 
           <div class="col-sm-8">
-            <input type="text" class="form-control" id="">
+            <input type="text" class="form-control" v-model="edit_balance">
           </div>
         </div>
       </form>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="rechargeModal=false">关闭</button>
-      <button type="button" class="btn btn-primary">保存</button>
+      <button type="button" class="btn btn-primary" :value="rechargeId" @click="saveRecharge($event)">保存</button>
     </div>
   </modal>
 
@@ -255,36 +246,50 @@
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
   import Page from '../common/Page'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl, token} from '../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
       Page: Page,
       Grid: Grid
     },
+    events: {
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.listData(currentpage)
+      }
+    },
     ready: function () {
-      this.$http({
-        url: requestUrl + '/front-system/user',
-        method: 'get',
-        headers: {
-          'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
-        }
-      }).then(function (response) {
-        this.page = response.data.body.pagination
-        this.gridData = response.data.body.list
-        $.each(this.gridData, function (index, value) {
-          if (value.status == 'start') {
-            this.status = '启用'
-          } else {
-            this.status = '停用'
-          }
-        })
-      }, function (err) {
-        console.log(err)
-      })
+      this.listData(1)
     },
     methods: {
-//      创建新会员
+//    会员-列表数据渲染
+      listData: function (page) {
+        this.$http({
+          url: requestUrl + '/front-system/user',
+          method: 'get',
+          headers: {
+            'X-Overpowered-Token': token
+          },
+          data: {
+            page: page,
+            per_page: 16
+          }
+        }).then(function (response) {
+          this.page = response.data.body.pagination
+          this.gridData = response.data.body.list
+          $.each(this.gridData, function (index, value) {
+            if (value.status == 'start') {
+              this.status = '启用'
+            } else {
+              this.status = '停用'
+            }
+          })
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//    创建新会员
       creatNewMember: function () {
         this.$http.post(requestUrl + '/front-system/user', {
             member_card: this.member_card,
@@ -297,7 +302,7 @@
           },
           {
             headers: {
-              'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+              'X-Overpowered-Token': token
             }
           }).then(function (response) {
 
@@ -305,11 +310,10 @@
             url: requestUrl + '/front-system/user',
             method: 'get',
             headers: {
-              'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+              'X-Overpowered-Token': token
             }
           }).then(function (response) {
-            this.page = response.data.body.pagination
-            this.gridData = response.data.body.list
+            this.listData(1)
           }, function (err) {
             console.log(err)
           })
@@ -320,27 +324,86 @@
           console.log(err)
         })
       },
-      //      编辑会员资料
+//    编辑会员资料
       updateMember: function (event) {
 //      弹出模态框
         this.editModal = true
 //      编辑数据
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
-        this.$http.put(requestUrl + '/front-system/user/' + id, {
+        this.$http({
+          url: requestUrl + '/front-system/user/' + id + '/detail',
+          method: 'get',
           headers: {
-            'X-Overpowered-Token': '75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
+            'X-Overpowered-Token': token
           }
         }).then(function (response) {
-          /*this.page = response.data.body.pagination
-           this.gridData = response.data.body.list*/
-          console.log(response)
+          this.formData = response.data.body.list[0]
+          this.member_id = this.formData.id
+
+          this.edit_member_card = this.formData.member_card
+          this.edit_member_name = this.formData.name
+          this.edit_phone = this.formData.phone
+          this.edit_birthday = this.formData.birthday
+          this.edit_level = this.formData.level
         }, function (err) {
           console.log(err)
         })
+      },
+//    保存修改的会员数据
+      saveUpdateMember: function (event) {
+        var id = Number($(event.currentTarget).attr('value'))
+        this.$http.put(requestUrl + '/front-system/user/' + id, {
+            name: this.edit_member_name,
+            birthday: this.edit_birthday,
+            level: this.edit_level,
+            password: this.edit_password
+//            status: this.edit_atatus
+          },
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-Overpowered-Token': token
+            }
+          }).then(function (response) {
+          this.listData(1)
+          this.editModal = false
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//    充值金额
+      recharge: function (event) {
+        var id = Number($(event.currentTarget).parents('tr').attr('id'))
+        this.rechargeId = id
+        this.rechargeModal = true
+      },
+//    保存充值金额
+      saveRecharge: function (event) {
+        var id = Number($(event.currentTarget).attr('value'))
+        this.$http.put(requestUrl + '/front-system/user/change-money/' + id, {
+            money: this.edit_balance
+          },
+          {
+            headers: {
+              'X-Overpowered-Token': token
+            }
+          }).then(function (response) {
+          this.listData(1)
+          this.rechargeModal = false
+        }, function (err) {
+          console.log(err)
+        })
+      },
+      checkDetail: function (event) {
+        var id = Number($(event.currentTarget).parents('tr').attr('id'))
+        window.location.href = this.detailUrl + id
       }
     },
     data: function () {
       return {
+        detailUrl:'/#!/member/:memberId/detail?',
+        rechargeId: '',
+        member_id: '',
         member_card: '',
         member_name: '',
         phone: '',
@@ -348,6 +411,15 @@
         balance: '',
         password: '',
         level: '',
+        edit_member_card: '',
+        edit_member_name: '',
+        edit_phone: '',
+        edit_birthday: '',
+        edit_balance: '',
+        edit_password: '',
+        edit_level: '',
+        edit_atatus: '',
+        page: [],
         createModalSize: 'modal-sm',
         rechargeModalSize: 'modal-sm',
         editModalSize: 'modal-sm',
@@ -357,6 +429,7 @@
         searchQuery: '',
         gridOperate: true,
         gridData: [],
+        formData: [],
         gridColumns: {
           member_card: "会员卡号",
           balance: "余额",
