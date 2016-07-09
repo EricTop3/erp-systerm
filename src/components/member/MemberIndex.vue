@@ -289,7 +289,7 @@
           console.log(err)
         })
       },
-//    创建新会员
+//      创建新会员
       creatNewMember: function () {
         this.$http.post(requestUrl + '/front-system/user', {
             member_card: this.member_card,
@@ -324,7 +324,7 @@
           console.log(err)
         })
       },
-//    编辑会员资料
+//      编辑会员资料
       updateMember: function (event) {
 //      弹出模态框
         this.editModal = true
@@ -397,6 +397,7 @@
       checkDetail: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
         window.location.href = this.detailUrl + id
+
       }
     },
     data: function () {
