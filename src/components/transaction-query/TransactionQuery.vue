@@ -47,9 +47,9 @@
 
     <div>
       <ul class="nav nav-tabs" role="tablist">
-        <li value="零售单" role="presentation" class="active"><a href="#retail-list" data-toggle="tab">零售单</a></li>
-        <li value="挂账单" role="presentation"><a href="#guazhang-list" data-toggle="tab">挂账单</a></li>
-        <li value="预约单" role="presentation"><a href="#order-list" data-toggle="tab">预约单</a></li>
+        <li value="1" role="presentation" class="active"><a href="#retail-list" data-toggle="tab">零售单</a></li>
+        <li value="2" role="presentation"><a href="#guazhang-list" data-toggle="tab">挂账单</a></li>
+        <li value="3" role="presentation"><a href="#order-list" data-toggle="tab">预约单</a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -433,7 +433,7 @@
       Page: Page
     },
     ready: function () {
-      var orderType = '零售单'
+      var orderType = '1'
 
       var self = this
 //    交易查询
