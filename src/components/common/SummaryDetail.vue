@@ -16,7 +16,7 @@
       </td>
       <td  v-if="operate">
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.check==='未审核'||entry.check_status==='未审核'"></list-validate>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.check==='未审核'||entry.check_status==='未审核'" v-on:finishEdit="finishEdit"></list-validate>
           <span class="btn btn-primary btn-sm" @click="edit" v-if="entry.check==='未审核'||entry.check_status==='未审核'">编辑</span>
         </slot>
     </tr>
@@ -33,9 +33,13 @@
     </thead>
     <tbody>
       <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-        <td>{{entry.goods_code}}</td>
-        <td>{{entry.goods_name}}</td>
-        <td v-if="entry.number">{{entry.number}}</td>
+        <td v-if="entry.goods_code">{{entry.goods_code}}</td>
+        <td v-if="entry.goods_name">{{entry.goods_name}}</td>
+        <td v-if="entry.name===null">{{entry.name}}</td>
+        <td v-if="entry.amount && editFlag===false">{{entry.amount}}</td>
+        <td v-if="entry.amount && editFlag===true"><count :count="entry.amount"></count></td>
+        <td v-if="entry.number && editFlag===false">{{entry.number}}</td>
+        <td v-if="entry.number && editFlag===true"><count :count="entry.number"></count></td>
         <td v-if="entry.stock_now">{{entry.stock_now}}</td>
         <td v-if="entry.stock_system">{{entry.stock_system}}</td>
         <td v-if="entry.difference_number">{{entry.difference_number}}</td>
@@ -73,6 +77,9 @@
     methods: {
       edit: function () {
         this.editFlag = true
+      },
+      finishEdit: function () {
+        this.editFlag = false
       }
     },
     data: function () {

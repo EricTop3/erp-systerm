@@ -6,22 +6,9 @@
       <li class="active">要货汇总</li>
       <li class="active">查看要货单</li>
     </ol>
-
-    <!-- 表格 单条数据 -->
-    <grid :data="list" :columns="gridColumns" :operate="!validateFlag">
-      <div slot="operateList">
-        <span class="btn btn-primary btn-sm" >编辑</span>
-        <list-delete :delete-data="list"></list-delete>
-      </div>
-    </grid>
-
-    <!-- 表格 详情列表 -->
-    <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
-
-    <!-- 翻页 -->
-    <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page"></page>
-
+    <!--详情页面-->
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page="page">
+    </summary-detail>
   </div>
 </template>
 
@@ -30,16 +17,14 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Modal from '../common/Modal'
-  import ListValidate from '../common/ListValidate'
-  import ListDelete from '../common/ListDelete'
+  import SummaryDetail from '../common/SummaryDetail'
   import {requestUrl,token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
       Modal: Modal,
-      ListValidate: ListValidate,
-      ListDelete: ListDelete
+      SummaryDetail: SummaryDetail
     },
     events: {
 //    绑定翻页事件
@@ -49,6 +34,7 @@
       }
     },
     ready: function () {
+      console.log(this.list)
       var str = window.location.href
       var num = str.indexOf('GoodsApplyNum') + 14
       var id = str.substr(num)
@@ -64,10 +50,7 @@
         this.$http({
           url: requestUrl + '/front-system/stock/enquiry/' + this.id,
           method: 'get',
-          headers:{
-            'Content-Type': 'application/json',
-            'X-Overpowered-Token':'75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
-          }
+          headers:{'X-Overpowered-Token':token}
         }).then(function (response) {
           this.list = response.data.body
           var self = this
@@ -79,6 +62,12 @@
               case 'end':
                 val.check = '已审核'
                 self.validateFlag = true
+                break
+              case 0:
+                val.check = '已审核'
+                 break
+              case 1:
+                val.check = '未审核'
                 break
             }
             switch (val.receipts) {
@@ -99,9 +88,7 @@
         this.$http({
           url: requestUrl + '/front-system/stock/enquiry/' + this.id + '/detail',
           method: 'get',
-          headers:{
-            'X-Overpowered-Token':token
-          }
+          headers:{ 'X-Overpowered-Token':token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
@@ -133,8 +120,8 @@
         gridOperate2: false,
         gridColumns2: {
           goods_code: '货号',
-          goods_name: '品名',
-          number: '要货数量',
+          name: '品名',
+          amount: '要货数量',
           unit: '单位',
           unit_specification: '单位规格'
         }

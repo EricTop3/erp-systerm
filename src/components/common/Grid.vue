@@ -35,7 +35,9 @@
   export default{
     name: 'grid',
     props: {
-      data: Array,
+      data: {
+        required: true
+      },
       isAddFlag: false,
       check: false,
       checkAll: false,

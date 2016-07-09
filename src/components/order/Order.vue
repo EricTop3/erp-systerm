@@ -226,7 +226,7 @@
       <h4>挂账成功！</h4>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="creditlBill=false">确定</button>
+      <button type="button" class="btn btn-primary" @click="billUpload()">确定</button>
     </div>
   </modal>
   <!--删除弹窗-->
@@ -327,14 +327,40 @@
       var $this = this
 
       function changeActive(elem, elemSon) {
-        var data = ''
+        var orderTypeData = ''
+        var paymentData = ''
         elem.on('click', elemSon, function () {
           $(this).addClass('active').siblings().removeClass('active')
-          data = $(this).html()
+          switch ($(this).html()) {
+            case '零售订单':
+              orderTypeData = 1
+              break
+            case '挂账订单':
+              orderTypeData = 2
+              break
+            case '预约订单':
+              orderTypeData = 3
+              break
+            case '现金':
+              paymentData = 'cash'
+              break
+            case 'POS刷卡':
+              paymentData = 'post'
+              break
+            case '支付宝':
+              paymentData = 'alipay'
+              break
+            case '微信':
+              paymentData = 'weixin'
+              break
+            case '会员卡余额':
+              paymentData = 'balance'
+              break
+          }
           if (elem === orderType) {
-            $this.order_mata_data.order_type = data
+            $this.order_mata_data.order_type = orderTypeData
           } else {
-            $this.order_mata_data.payment = data
+            $this.order_mata_data.payment =  paymentData
           }
         })
       }
@@ -348,6 +374,33 @@
       }
     },
     methods: {
+//      结算请求
+      settlementRequest: function (data) {
+        this.$http.post(
+          requestUrl + '/front-system/order/order',
+          {
+            'items': orderItems,
+            'order_meta_data': this.order_mata_data,
+            'get_order_price': 1
+          },
+          {
+            headers: {'X-Overpowered-Token': token
+            }
+          }).then(function (response) {
+            this.finalPrice = response.data.body.total_sum
+            if (this.order_mata_data.settlementFlag) {
+              switch (orderType) {
+                case 1:
+                  this.retailBill = true
+                  break
+                case 2:
+                  this.creditlBill = true
+                  break
+              }
+            } else {
+              return false
+            }
+      },
 //     增加到左侧商品列表
       addOrderToList: function (event) {
         var flag = false
@@ -506,6 +559,7 @@
 //    结算
       settlement: function () {
         var orderType = this.order_mata_data.order_type
+        console.log(orderType)
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
@@ -513,19 +567,18 @@
           obj['price'] = val.goodPrice
           orderItems.push(obj)
         })
-        this.$http.post(requestUrl + '/front-system/order/order',
+        this.$http.post(
+          requestUrl + '/front-system/order/order',
           {
             'items': orderItems,
             'order_meta_data': this.order_mata_data,
             'get_order_price': 1
           },
           {
-            headers: {
-              'X-Overpowered-Token': token
+            headers: {'X-Overpowered-Token': token
             }
           }).then(function (response) {
           this.finalPrice = response.data.body.total_sum
-          console.log(this.originalPrice)
           if (this.order_mata_data.settlementFlag) {
             switch (orderType) {
               case 1:
@@ -542,12 +595,12 @@
           console.log(err)
         })
       },
-//      结算提交
+//      零售账单结算提交
       settlementUpload: function () {
         this.$http.post(requestUrl + '/front-system/order/order', {
           'items': orderItems,
           'order_meta_data': this.order_mata_data
-        },{
+        }, {
           headers: {
             'X-Overpowered-Token': token
           }
@@ -560,7 +613,9 @@
         }, function (err) {
           console.log(err)
         })
-      }
+      },
+//      挂账订单结算提交
+
     },
     data: function () {
       return {
@@ -573,12 +628,11 @@
         priceAdjectModal: false,
         priceAdjectModalSize: 'modal-sm',
         originalPrice: 0,
-        realCount: '',
         finalPrice: 0,
         order_mata_data: {
           order_type: 1,
           coupen_name: '七折优惠',
-          payment: '现金',
+          payment: 'cash',
           discount: 0.7,
           strategy_id: 1,
           settlementFlag: false,

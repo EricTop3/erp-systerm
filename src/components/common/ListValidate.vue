@@ -41,6 +41,7 @@
             val.check_status='已审核'
           }
         })
+        this.$dispatch("finishEdit")
       }
     }
   }
