@@ -58,12 +58,13 @@
             <div class='index-list'>
               <form class='form-inline m30'>
                 <div class='form-group'>
-                  <select class='form-control' style='width: 150px;'>
-                    <option>无优惠</option>
+                  <select class='form-control' style='width: 150px;' v-model="order_mata_data.discount" @change="select($event)">
+                    <option selected="selected" value="1">无优惠</option>
+                    <option :value="item.discount" v-for="item in couponName" :name="item.name">{{item.name}}</option>
                   </select>
                 </div>
                 <div class='form-group ml10'>
-                  <input type='email' class='form-control' placeholder='优惠备注'>
+                  <input type='email' class='form-control' placeholder='优惠备注' v-model="order_mata_data.coupon_note">
                 </div>
               </form>
             </div>
@@ -105,7 +106,7 @@
             <div class='index-list'>
               <form class='m20'>
                 <div class='form-group'>
-                  <textarea class='form-control' rows='3'></textarea>
+                  <textarea class='form-control' rows='3' v-model="order_mata_data.order_note"></textarea>
                 </div>
               </form>
             </div>
@@ -189,14 +190,14 @@
         <label for="" class="col-sm-4 control-label">订单抹零</label>
 
         <div class="col-sm-8">
-          <input type="checkbox" v-model="order_mata_data.isGiveZero">
+          <input type="checkbox" v-model="truncate" @change="truncateMethod()">
         </div>
       </div>
       <div class="form-group">
         <label for="" class="col-sm-4 control-label">支付金额</label>
 
         <div class="col-sm-8">
-          <input type="text" class="form-control" id="priceValidateFirst" v-model="order_mata_data.paymentAmount"
+          <input type="text" class="form-control" id="priceValidateFirst" v-model="paymentAmount"
                  @input=priceAjectValdate($event)>
         </div>
       </div>
@@ -205,8 +206,7 @@
                class="col-sm-4 control-label">找零</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{ order_mata_data.oldPayment > order_mata_data.paymentAmount ? 0 :
-            order_mata_data.paymentAmount-order_mata_data.oldPayment
+          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : paymentAmount-finalPrice
             }}</p>
         </div>
       </div>
@@ -288,6 +288,10 @@
   import {requestUrl,token} from '../../publicFunction/index'
   //  商品信息数组
   var orderItems = []
+//  订单类型
+  var orderType = 1
+//  订单实付金额
+  var orderMount = 0
   var deleteCheckedGoodId = ''
   var priceCheckdGoodId = ''
   export default {
@@ -301,7 +305,8 @@
 //        分类
       this.$http({
         url: requestUrl + '/front-system/order/category',
-        method: 'get'
+        method: 'get',
+        headers: { 'X-Overpowered-Token': token }
       }).then(function (response) {
         this.category = response.data.body.list
       }, function (err) {
@@ -313,19 +318,27 @@
         method: 'get',
         data: {
           per_page: 20
-        }
+        },
+        headers: { 'X-Overpowered-Token': token }
       }).then(function (response) {
         this.productFromCategory = response.data.body.list
         this.page = response.data.body.pagination
       }, function (err) {
         console.log(err)
       })
+//      优惠
+       this.$http(requestUrl + '/front-system/order/coupon',{
+         headers: { 'X-Overpowered-Token': token }
+       }).then(function(response){
+         this.couponName = response.data.body
+       },function (err) {
+         console.log(err)
+       })
     },
     ready: function () {
       const orderType = $('.ordertype-list')
       const payment = $('.pay-list')
       var $this = this
-
       function changeActive(elem, elemSon) {
         var orderTypeData = ''
         var paymentData = ''
@@ -374,7 +387,83 @@
       }
     },
     methods: {
+//       选择商品
+      select: function (event){
+        var cur=Number($(event.currentTarget).val())
+        switch(cur){
+          case  1:
+          this.order_mata_data .coupon_name ="无优惠"
+          break
+          case  0.7:
+            this.order_mata_data .coupon_name ="会员日七折"
+            break
+          case  0.9:
+            this.order_mata_data .coupon_name ="满299元减50元"
+            break
+          case  0.8:
+            this.order_mata_data .coupon_name ="满199元八折"
+            break
+        }
+      },
+//     结算请求
+      settlementRequest: function (data,callback){
+        this.$http.post(requestUrl + '/front-system/order/order',data,{
+          headers: { 'X-Overpowered-Token': token }
+        }).then(function (response){
+          callback(response)
+        },function(err){
+          console.log(err)
+        })
+      },
 //     增加到左侧商品列表
+      addOrderToList: function (event) {
+        var flag = false
+        const currentGood = $(event.currentTarget)
+        const currentGoodId = Number(currentGood.attr('id'))
+        const currentStock = Number(currentGood.attr('stock'))
+        const currentSaleMark = Number(currentGood.attr('sell_mark'))
+        const currentGoodName = currentGood.find('h4').html()
+        const currentGoodPrice = currentGood.find('.single-price').html()
+        const checkedGoodsList = this.checkedGoodsList
+        currentGood.addClass('active').siblings().removeClass('active')
+//       判断是否是特价
+        currentSaleMark === 2 ? this.saleMark = true : this.saleMark = false
+//        判断库存是否为零
+        if (currentStock <= 0) {
+          return false
+        } else {
+//          结算的状态
+          this.order_mata_data.settlementFlag = true
+        }
+//       判断是否加入商品
+        if (checkedGoodsList && checkedGoodsList.length > 0) {
+          $.each(checkedGoodsList, function (index, val) {
+            if (val.id === currentGoodId) {
+              val.count++
+              flag = true
+            }
+          })
+          if (!flag) {
+            var obj = {}
+            obj.id = currentGoodId
+            obj.goodName = currentGoodName
+            obj.goodPrice = currentGoodPrice
+            obj.saleMark = currentSaleMark
+            obj.count = this.count
+            obj.priceNote = ''
+            checkedGoodsList.push(obj)
+          }
+        } else {
+          var obj1 = {}
+          obj1.id = currentGoodId
+          obj1.goodName = currentGoodName
+          obj1.goodPrice = currentGoodPrice
+          obj1.saleMark = currentSaleMark
+          obj1.count = this.count
+          obj1.priceNote = ''
+          checkedGoodsList.push(obj1)
+        }
+      },
       addOrderToList: function (event) {
         var flag = false
         const currentGood = $(event.currentTarget)
@@ -529,10 +618,28 @@
             break
         }
       },
+//     结算请求成功后的函数
+      setFinish : function (response){
+        this.finalPrice = response.data.body.total_sum
+        orderMount = response.data.body.total_sum
+        if (this.order_mata_data.settlementFlag) {
+          switch (orderType) {
+            case 1:
+              this.retailBill = true
+              break
+            case 2:
+              this.creditlBill = true
+              break
+          }
+        } else {
+          return false
+        }
+      },
 //    结算
       settlement: function () {
-        var orderType = this.order_mata_data.order_type
-        console.log(orderType)
+        var settlementData = {}
+        window.localStorage.setItem('orderType',this.order_mata_data.order_type)
+        orderType= Number(window.localStorage.getItem('orderType'))
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
@@ -540,58 +647,60 @@
           obj['price'] = val.goodPrice
           orderItems.push(obj)
         })
-        this.$http.post(
-          requestUrl + '/front-system/order/order',
-          {
+        settlementData = {
+          'items': orderItems,
+          'order_meta_data': this.order_mata_data,
+          'get_order_price': 1
+        }
+        this.settlementRequest(settlementData,this.setFinish)
+      },
+//      零售账单结算提交成功回调函数
+      setuploadFinish: function () {
+        orderType= Number(window.localStorage.getItem('orderType'))
+        this.order_mata_data.paymentAmount = ''
+        this.order_mata_data.settlementFlag = false
+        this.retailBill = false
+        this.checkedGoodsList = []
+        window.location.href = '/?#!/tranquery'
+      },
+//      订单抹零请求后的函数
+      truncateFinish: function (response){
+        this.finalPrice = response.data.body.total_sum
+      },
+//      订单抹零
+      truncateMethod: function(){
+        if(this.truncate){
+          var settlementData = {
             'items': orderItems,
             'order_meta_data': this.order_mata_data,
-            'get_order_price': 1
-          },
-          {
-            headers: {'X-Overpowered-Token': token
-            }
-          }).then(function (response) {
-          this.finalPrice = response.data.body.total_sum
-          if (this.order_mata_data.settlementFlag) {
-            switch (orderType) {
-              case 1:
-                this.retailBill = true
-                break
-              case 2:
-                this.creditlBill = true
-                break
-            }
-          } else {
-            return false
+            'truncate': 1
           }
-        }, function (err) {
-          console.log(err)
-        })
+          this.settlementRequest(settlementData,this.truncateFinish)
+        }else{
+          this.finalPrice = orderMount
+        }
       },
 //      零售账单结算提交
       settlementUpload: function () {
-        this.$http.post(requestUrl + '/front-system/order/order', {
+        var settlementData = {}
+        settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data
-        }, {
-          headers: {
-            'X-Overpowered-Token': token
-          }
-        }).then(function (response) {
-          this.order_mata_data.paymentAmount = ''
-          this.checkedGoodsList = []
-          this.order_mata_data.settlementFlag = false
-          this.retailBill = false
-          window.location.href = '/?#!/tranquery'
-        }, function (err) {
-          console.log(err)
-        })
+        }
+        this.settlementRequest(settlementData,this.setuploadFinish)
       },
 //      挂账订单结算提交
-
+      billUpload: function() {
+//        类似零售账单
+        this. settlementUpload()
+      }
     },
     data: function () {
       return {
+        paymentAmount: '',
+        couponSelected: 0,
+        couponName: [],
+        truncate: false,
         retailBill: false,
         retailBillSize: 'modal-sm',
         creditlBill: false,
@@ -604,10 +713,12 @@
         finalPrice: 0,
         order_mata_data: {
           order_type: 1,
-          coupen_name: '七折优惠',
+          coupon_name: '无优惠',
           payment: 'cash',
-          discount: 0.7,
+          discount: 0,
           strategy_id: 1,
+          order_note: '',
+          coupon_note: '',
           settlementFlag: false,
           orderFlag: true,
           settlementFlag: false

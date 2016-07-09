@@ -47,9 +47,9 @@
 
     <div>
       <ul class="nav nav-tabs" role="tablist">
-        <li value="1" role="presentation" class="active"><a href="#retail-list" data-toggle="tab">零售单</a></li>
-        <li value="2" role="presentation"><a href="#guazhang-list" data-toggle="tab">挂账单</a></li>
-        <li value="3" role="presentation"><a href="#order-list" data-toggle="tab">预约单</a></li>
+        <li value="1" role="presentation"  :class="{'active': orderType===1}"><a href="#retail-list" data-toggle="tab">零售单</a></li>
+        <li value="2" role="presentation"  :class="{'active': orderType===2}"><a href="#guazhang-list" data-toggle="tab">挂账单</a></li>
+        <li value="3" role="presentation"  :class="{'active': orderType===3}"><a href="#order-list" data-toggle="tab">预约单</a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -134,7 +134,7 @@
         <div class="modal-body">
           <table class="table table-striped table-border table-hover">
             <thead>
-            <tr>
+            <tr class="text-aligen">
               <td>商品名称</td>
               <td>零售单价</td>
               <td>销售数量</td>
@@ -143,19 +143,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="item in returnGoodsList">
-              <td>{{item.name}}</td>
-              <td>￥{{item.new_price}}</td>
-              <td>{{item.amount}}</td>
-              <td class="text-center">
-                <!--<template v-if="item.return_number <= item.amount">-->
-                <!--<input type="text" class="form-control text-center" style="width:70px;"-->
-                <!--v-model="item.return_number">-->
-                <!--</template>-->
-
-                <count :count.sync='item.return_number' :amount.sync='item.amount'></count>
-              </td>
-              <td>￥{{item.return_number*item.new_price}}</td>
+            <tr v-for="item in returnGoodsList"  class="text-aligen">
+              <td>{{item.consumable_name}}</td>
+              <td>￥{{item.actual_price |priceChange}}</td>
+              <td>{{item.total_sell}}</td>
+              <td><count :count.sync="item.total_refund"></count></td>
+              <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
             </tr>
             </tbody>
           </table>
@@ -197,21 +190,21 @@
             </thead>
             <tbody>
             <tr v-for="item in listDetail">
-              <td>{{item.name}}</td>
-              <td>{{item.price}}</td>
-              <td>{{item.new_price}}</td>
-              <td>{{item.amount}}</td>
-              <td>{{item.return_number}}</td>
-              <td>{{item.total_sum}}</td>
+              <td>{{item.consumable_name}}</td>
+              <td>{{item.original_price | priceChange}}</td>
+              <td>{{item.actual_price | priceChange}}</td>
+              <td>{{item.total_sell }}</td>
+              <td>{{item.total_refund }}</td>
+              <td>{{item.total_sum | priceChange}}</td>
               <td>{{item.note}}</td>
             </tr>
             </tbody>
           </table>
           <div class="panel">
             <div class="panel-body">
-              <p>优惠备注：抵扣券编号QXP001</p>
+              <p>优惠备注：{{coupon_note}}</p>
 
-              <p>订单备注：快递配送至重庆市渝北区光电园冬电b区3楼3-3，联系人王小姐，联系电话18580201731</p>
+              <p>订单备注：{{order_note}}</p>
             </div>
           </div>
         </div>
@@ -219,103 +212,6 @@
     </div>
   </div>
   <!-- end查看零售单 -->
-
-  <!-- begin查看挂账单 -->
-  <div class="modal fade" id="inventory-checkHangingGoods-templ" tabindex="-1" role="dialog"
-       aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">订单明细</h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped table-border table-hover">
-            <thead>
-            <tr>
-              <td>品名</td>
-              <td>原单价</td>
-              <td>零售单价</td>
-              <td>销售数量</td>
-              <td>退货数量</td>
-              <td>小计</td>
-              <td>议价备注</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in listDetail">
-              <td>{{item.name}}</td>
-              <td>{{item.price}}</td>
-              <td>{{item.new_price}}</td>
-              <td>{{item.amount}}</td>
-              <td>{{item.return_number}}</td>
-              <td>{{item.total_sum}}</td>
-              <td>{{item.note}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="panel">
-            <div class="panel-body">
-              <p>优惠备注：抵扣券编号QXP001</p>
-
-              <p>订单备注：快递配送至重庆市渝北区光电园冬电b区3楼3-3，联系人王小姐，联系电话18580201731</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- end查看挂账单 -->
-
-  <!-- begin查看预约单 -->
-  <div class="modal fade" id="inventory-checkSubscribeGoods-templ" tabindex="-1" role="dialog"
-       aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">订单明细</h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped table-border table-hover">
-            <thead>
-            <tr>
-              <td>品名</td>
-              <td>原单价</td>
-              <td>零售单价</td>
-              <td>销售数量</td>
-              <td>退货数量</td>
-              <td>小计</td>
-              <td>议价备注</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in listDetail">
-              <td>{{item.name}}</td>
-              <td>{{item.price}}</td>
-              <td>{{item.new_price}}</td>
-              <td>{{item.amount}}</td>
-              <td>{{item.return_number}}</td>
-              <td>{{item.total_sum}}</td>
-              <td>{{item.note}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="panel">
-            <div class="panel-body">
-              <p>优惠备注：抵扣券编号QXP001</p>
-
-              <p>订单备注：快递配送至重庆市渝北区光电园冬电b区3楼3-3，联系人王小姐，联系电话18580201731</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- end查看预约单 -->
-
   <!-- begin回款 -->
   <div class="modal fade" id="inventory-huikuan-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
@@ -426,68 +322,114 @@
   import Page from '../common/Page'
   import Count from '../common/Count'
   import {requestUrl,token} from '../../publicFunction/index'
+  var detailId = 0
   export default {
     components: {
       Count: Count,
       Grid: Grid,
       Page: Page
     },
-    ready: function () {
-      var orderType = '1'
-
-      var self = this
+    route: {
+      activate: function (){
+        this.orderType = Number(window.localStorage.getItem('orderType'))
+        var self = this
 //    交易查询
-      this.$http({
-        url: requestUrl + '/front-system/order',
-        method: 'get',
-        data: {order_type: 1},
-        headers:{
-          'X-Overpowered-Token':token
+        var url =requestUrl + '/front-system/order'
+        var data ={
+          order_type: this.orderType,
         }
-      }).then(function (response) {
-        this.page = response.data.body.pagination
-        this.queryList = response.data.body.list
-      }, function (err) {
-        console.log(err)
-      })
+        this.fetchData(url,data,this.finishPage)
+      }
+    },
+    events: {
+//     分页
+      pagechange : function (current){
+        var url =requestUrl + '/front-system/order'
+        var data ={
+             order_type: this.orderType,
+             page: current
+          }
+        this.fetchData(url,data,this.finishPage)
+      }
+    },
+    ready: function () {
+      var self = this
+      var url = requestUrl + '/front-system/order'
 //      切换订单类型
       $('.nav-tabs li').click(function () {
-        orderType = $(this).attr('value')
-        self.$http({
-          url: requestUrl + '/front-system/order',
-          method: 'get',
-          data: {
-            order_type: 1
-          },
-        headers:{
-          'Content-Type': 'application/json',
-            'X-Overpowered-Token':'75207fdf8d926efcd2db52cd31e3073fff4f3cb2'
-        }}).then(function (response) {
-          this.page = response.data.body.pagination
-          this.queryList = response.data.body.list
-        }, function (err) {
-          console.log(err)
-        })
+        self.orderType = Number($(this).attr('value'))
+        var data ={
+          order_type: self.orderType
+        }
+        self.fetchData(url,data,self.finishPage)
       })
     },
     methods: {
-      lookDetail: function (event) {
-        var id = $(event.currentTarget).parents('tr').attr('id')
-        this.$http({
-          url: requestUrl + '/front-system/order/' + id + '/detail',
-          method: 'get'
-        }).then(function (response) {
-          this.listDetail = response.data.body.list
-        }, function (err) {
-          console.log(err)
+//     封装获取数据方法
+      fetchData: function (url,data,callback){
+       this.$http.get(url, data, {headers:{ 'X-Overpowered-Token':token}}).then(function(response){
+         callback(response)
+       },function(err){
+         console.log(err)
+       })
+      },
+//      对获取到的数据进行处理
+      modifyGetedData: function (data ){
+        $.each(data,function(index,val){
+          val.total_sum = ((val.total_sum)* 0.01).toFixed(2)
+          switch(val.pay_method){
+            case  'cash':
+              val.pay_method='现金'
+                  break
+            case 'alipay':
+              val.pay_method='支付宝'
+              break
+            case  'weixin':
+              val.pay_method='微信'
+              break
+            case 'post':
+              val.pay_method='post机刷卡'
+              break
+            case  'balance':
+              val.pay_method='会员卡余额'
+              break
+          }
         })
       },
+//      翻页请求完成数据和订单切换完成数据
+       finishPage: function (response){
+         this.page = response.data.body.pagination
+         this.queryList = response.data.body.list
+         this.modifyGetedData(this.queryList)
+       },
+//     查看详情获取数据完成后的函数
+      finishLookDetail: function (response) {
+        console.log(response)
+        this.listDetail = response.body.list
+        var self = this
+        $.each(this.queryList,function(index,val){
+          if(val.id === detailId){
+            self.coupon_note=val.coupon_note
+            self.order_note=val.order_note
+          }
+        })
+        console.log(response.body.list)
+      },
+//     查看详情
+      lookDetail: function (event) {
+        detailId = Number($(event.currentTarget).parents('tr').attr('id'))
+        var self = this
+        var url = requestUrl + '/front-system/order/' + detailId + '/detail'
+        this.fetchData(url, this.finishLookDetail)
+      },
+//      退货3
       returnGoods: function (event) {
         var button = $(event.currentTarget)
         var id = $(event.currentTarget).parents('tr').attr('id')
         this.$http({
           url: requestUrl + '/front-system/order/' + id + '/detail',
-          method: 'get'
+          method: 'get',
+          headers:{ 'X-Overpowered-Token':token}
         }).then(function (response) {
           this.returnGoodsList = response.data.body.list
         }, function (err) {
@@ -498,26 +440,28 @@
       },
 //      退货后隐藏按钮
       onlyReturnOnce: function () {
-        $(this.currentButton).css('visibility','hidden')
-        console.log('test')
+        $(this.currentButton).remove()
       }
     },
     data: function () {
       return {
+        coupon_note: '',
+        order_note: '',
         gridCheck: true,
         returnGoodsList: [],
         listDetail: [],
         queryList: [],
         page: [],
+        orderType: 1,
         gridOperate: true,
         retailGridColumns: {
           order_number: '小票编号',
           created_at: '下单时间',
           total_sum: '合计金额',
-          total_number: '合计数量',
+          total_amount: '合计数量',
           card_number: '会员卡号',
           coupon_name: '优惠方式',
-          payment: '支付方式',
+          pay_method: '支付方式',
           after_sales: '售后',
           operator: '营业员'
         },
@@ -550,17 +494,17 @@
         var price = 0
         var returnGoodsList = this.returnGoodsList
         $.each(returnGoodsList, function (index, value) {
-          price += Number(value.return_number) * Number(value.new_price)
+          price +=value.actual_price * value.total_refund
         })
-        return price.toFixed(2)
+        return (price*0.01).toFixed(2)
       }
     }
   }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  h1 {
-    color: #42b983;
+  .text-aligen{
+    text-align: center;
   }
 </style>
 
