@@ -206,7 +206,7 @@
                class="col-sm-4 control-label">找零</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : paymentAmount-finalPrice
+          <p class="form-control-static">￥{{ (finalPrice*0.01).toFixed(2) > paymentAmount ? 0 : paymentAmount-finalPrice*0.01
             }}</p>
         </div>
       </div>
@@ -630,6 +630,9 @@
             case 2:
               this.creditlBill = true
               break
+            case 3:
+              this.retailBill = true
+              break
           }
         } else {
           return false
@@ -638,6 +641,7 @@
 //    结算
       settlement: function () {
         var settlementData = {}
+        orderItems = []
         window.localStorage.setItem('orderType',this.order_mata_data.order_type)
         orderType= Number(window.localStorage.getItem('orderType'))
         $.each(this.checkedGoodsList, function (index, val) {
@@ -685,7 +689,8 @@
         var settlementData = {}
         settlementData = {
           'items': orderItems,
-          'order_meta_data': this.order_mata_data
+          'order_meta_data': this.order_mata_data,
+          'all_total': this.paymentAmount
         }
         this.settlementRequest(settlementData,this.setuploadFinish)
       },
