@@ -630,6 +630,9 @@
             case 2:
               this.creditlBill = true
               break
+            case 3:
+              this.retailBill = true
+              break
           }
         } else {
           return false
