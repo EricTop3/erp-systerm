@@ -374,33 +374,6 @@
       }
     },
     methods: {
-//      结算请求
-      settlementRequest: function (data) {
-        this.$http.post(
-          requestUrl + '/front-system/order/order',
-          {
-            'items': orderItems,
-            'order_meta_data': this.order_mata_data,
-            'get_order_price': 1
-          },
-          {
-            headers: {'X-Overpowered-Token': token
-            }
-          }).then(function (response) {
-            this.finalPrice = response.data.body.total_sum
-            if (this.order_mata_data.settlementFlag) {
-              switch (orderType) {
-                case 1:
-                  this.retailBill = true
-                  break
-                case 2:
-                  this.creditlBill = true
-                  break
-              }
-            } else {
-              return false
-            }
-      },
 //     增加到左侧商品列表
       addOrderToList: function (event) {
         var flag = false
