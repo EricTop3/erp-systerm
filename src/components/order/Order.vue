@@ -206,7 +206,7 @@
                class="col-sm-4 control-label">找零</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : paymentAmount-finalPrice
+          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : (paymentAmount*100-finalPrice*100)*0.01
             }}</p>
         </div>
       </div>
@@ -607,8 +607,8 @@
         console.log(flagData)
         switch (flagData) {
           case 'priceValidateFirst':
-            if (!re.test(this.order_mata_data.paymentAmount)) {
-              this.order_mata_data.paymentAmount = ""
+            if (!re.test(this.paymentAmount)) {
+              this.paymentAmount = ""
             }
             break
           case 'priceValidateSecond':
@@ -690,7 +690,7 @@
         settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,
-          'all_total': this.paymentAmount
+          'all_total': this.paymentAmount*1000
         }
         this.settlementRequest(settlementData,this.setuploadFinish)
       },
