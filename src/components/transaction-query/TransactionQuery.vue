@@ -165,52 +165,47 @@
   <!-- end退货 -->
 
   <!-- begin查看零售单 -->
-  <div class="modal fade" id="inventory-checkRetailGoods-templ" tabindex="-1" role="dialog"
-       aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">订单明细</h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped table-border table-hover">
-            <thead>
-            <tr>
-              <td>品名</td>
-              <td>原单价</td>
-              <td>零售单价</td>
-              <td>销售数量</td>
-              <td>退货数量</td>
-              <td>小计</td>
-              <td>议价备注</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in listDetail">
-              <td>{{item.consumable_name}}</td>
-              <td>{{item.original_price | priceChange}}</td>
-              <td>{{item.actual_price | priceChange}}</td>
-              <td>{{item.total_sell }}</td>
-              <td>{{item.total_refund }}</td>
-              <td>{{item.total_sum | priceChange}}</td>
-              <td>{{item.note}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="panel">
-            <div class="panel-body">
-              <p>优惠备注：{{coupon_note}}</p>
+  <modal :show.sync="deleteModal" :modal-size.sync='deleteModalSize'>
+    <div slot="header">
+      <button type="button" class="close"  aria-label="Close"><span
+        aria-hidden="true" @click="deleteModal=false">&times;</span></button>
+      <h4 class="modal-title">订单明细</h4>
+    </div>
+    <div slot="body">
+      <table class="table table-striped table-border table-hover">
+        <thead>
+        <tr>
+          <td>品名</td>
+          <td>原单价</td>
+          <td>零售单价</td>
+          <td>销售数量</td>
+          <td>退货数量</td>
+          <td>小计</td>
+          <td>议价备注</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in listDetail">
+          <td>{{item.consumable_name}}</td>
+          <td>{{item.original_price | priceChange}}</td>
+          <td>{{item.actual_price | priceChange}}</td>
+          <td>{{item.total_sell }}</td>
+          <td>{{item.total_refund }}</td>
+          <td>{{item.total_sum | priceChange}}</td>
+          <td>{{item.note}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="panel">
+        <div class="panel-body">
+          <p>优惠备注：{{coupon_note}}</p>
 
-              <p>订单备注：{{order_note}}</p>
-            </div>
-          </div>
+          <p>订单备注：{{order_note}}</p>
         </div>
       </div>
     </div>
-  </div>
-  <!-- end查看零售单 -->
+    <div slot="footer"></div>
+  </modal>
   <!-- begin回款 -->
   <div class="modal fade" id="inventory-huikuan-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
@@ -320,13 +315,15 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Count from '../common/Count'
+  import Modal from  '../common/Modal'
   import {requestUrl,token} from '../../publicFunction/index'
   var detailId = 0
   export default {
     components: {
       Count: Count,
       Grid: Grid,
-      Page: Page
+      Page: Page,
+      Modal: Modal
     },
     route: {
       activate: function (){
@@ -374,7 +371,6 @@
 //      切换订单类型
       $('.nav-tabs li').click(function () {
         self.orderType = Number($(this).attr('value'))
-
         switch(self.orderType){
           case 1:
                 self.retailShow = true
@@ -450,10 +446,10 @@
       },
 //     查看详情
       lookDetail: function (event) {
-        detailId = Number($(event.currentTarget).parents('tr').attr('id'))
-        var self = this
+        this.deleteModal = true
+        detailId= Number($(event.currentTarget).parents('tr').attr('id'))
         var url = requestUrl + '/front-system/order/' + detailId + '/detail'
-        this.fetchData(url, this.finishLookDetail)
+        this.fetchData(url,this.finishLookDetail)
       },
 //      退货3
       returnGoods: function (event) {
@@ -478,6 +474,8 @@
     },
     data: function () {
       return {
+        deleteModal: false,
+        deleteModalSize: 'modal-lg',
         guazhangShow: false,
         orderShow: false,
         retailShow: false,
