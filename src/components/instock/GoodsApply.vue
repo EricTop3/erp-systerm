@@ -100,24 +100,18 @@
     methods: {
 //      提交要货
       upLoadEnquiry: function () {
-        var goods = []
+        var items = []
         $.each(this.rederStockGoods, function (index, val) {
           var obj = {}
-          obj['id'] = val.id
+          obj['consumable_id'] = val.id
           obj['amount'] = Number(val['is_number'])
-          goods.push(obj)
+          items.push(obj)
         })
 //       提交要货请求
         this.$http.post(requestUrl + '/front-system/stock/enquiry',
           {
-            'goods': goods,
-            'date': this.sendStartTime,
-            'remarks': this.remarks
-          },
-          {
-           headers:{
-            'X-Overpowered-Token':token
-          }
+            'items': items,
+            'date': this.sendStartTime
           }
         ).then(function (reponse) {
           var id=reponse.data.body

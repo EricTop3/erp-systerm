@@ -55,7 +55,7 @@
       <!-- Tab panes -->
       <div class="tab-content">
         <!-- begin零售单 -->
-        <div role="tabpanel" class="tab-pane active" id="retail-list">
+        <div role="tabpanel" class="tab-pane active" id="retail-list" >
           <!-- 表格 -->
           <grid :data="queryList" :columns="retailGridColumns" :operate="gridOperate">
             <div slot="operateList">
@@ -68,11 +68,11 @@
           <!-- 翻页 -->
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
-        </div>
+        </div >
         <!-- end零售单 -->
 
         <!-- begin挂账单 -->
-        <div role="tabpanel" class="tab-pane" id="guazhang-list">
+        <div role="tabpanel" class="tab-pane" id="guazhang-list" v-if="guazhangShow === true">
           <!-- 表格 -->
           <grid :data="queryList" :columns="hangingGridColumns" :operate="gridOperate" :check="gridCheck">
             <div slot="operateList">
@@ -97,7 +97,7 @@
         <!-- end挂账单 -->
 
         <!-- begin预约单 -->
-        <div role="tabpanel" class="tab-pane" id="order-list">
+        <div role="tabpanel" class="tab-pane" id="order-list"  >
           <grid :data="queryList" :columns="subscribeGridColumns" :operate="gridOperate">
             <div slot="operateList">
 
@@ -355,14 +355,16 @@
     ready: function () {
       var self = this
       var url = requestUrl + '/front-system/order'
+
 //      切换订单类型
-      $('.nav-tabs li').click(function () {
-        self.orderType = Number($(this).attr('value'))
-        var data ={
-          order_type: self.orderType
-        }
-        self.fetchData(url,data,self.finishPage)
-      })
+//      $('.nav-tabs li').click(function () {
+//        self.orderType = Number($(this).attr('value'))
+////        var data ={
+////          order_type: self.orderType
+////        }
+////        console.log(self.orderType)
+////        self.fetchData(url,data,self.finishPage)
+//      })
     },
     methods: {
 //     封装获取数据方法
@@ -445,6 +447,7 @@
     },
     data: function () {
       return {
+        guazhangShow: false,
         coupon_note: '',
         order_note: '',
         gridCheck: true,
@@ -453,6 +456,7 @@
         queryList: [],
         page: [],
         orderType: 1,
+        gridCheck: true,
         gridOperate: true,
         retailGridColumns: {
           order_number: '小票编号',
