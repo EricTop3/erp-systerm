@@ -55,7 +55,7 @@
       <!-- Tab panes -->
       <div class="tab-content">
         <!-- begin零售单 -->
-        <div role="tabpanel" class="tab-pane active" id="retail-list" >
+        <div role="tabpanel" class="tab-pane active"  v-if='retailShow===true'>
           <!-- 表格 -->
           <grid :data="queryList" :columns="retailGridColumns" :operate="gridOperate">
             <div slot="operateList">
@@ -72,7 +72,7 @@
         <!-- end零售单 -->
 
         <!-- begin挂账单 -->
-        <div role="tabpanel" class="tab-pane" id="guazhang-list" v-if="guazhangShow === true">
+        <div role="tabpanel" class="tab-pane active"  v-if="guazhangShow === true">
           <!-- 表格 -->
           <grid :data="queryList" :columns="hangingGridColumns" :operate="gridOperate" :check="gridCheck">
             <div slot="operateList">
@@ -97,10 +97,9 @@
         <!-- end挂账单 -->
 
         <!-- begin预约单 -->
-        <div role="tabpanel" class="tab-pane" id="order-list"  >
+        <div role="tabpanel" class="tab-pane active"   v-if="orderShow===true">
           <grid :data="queryList" :columns="subscribeGridColumns" :operate="gridOperate">
             <div slot="operateList">
-
               <span v-if="status == '门店配送中'" class="btn btn-sm btn-primary" data-toggle="modal"
                     data-target="#inventory-notice1-templ">门店收货</span>
               <span v-if="status == '等待签收'" class="btn btn-sm btn-primary" data-toggle="modal"
@@ -333,6 +332,22 @@
       activate: function (){
         this.orderType = Number(window.localStorage.getItem('orderType'))
         var self = this
+        switch(self.orderType){
+          case 1:
+            self.retailShow = true
+            self.orderShow = false
+            self.guazhangShow = false
+            break
+          case 2:
+            self.retailShow = false
+            self.orderShow = false
+            self.guazhangShow = true
+            break
+          case 3:
+            self.retailShow = false
+            self.orderShow = true
+            self.guazhangShow = false
+        }
 //    交易查询
         var url =requestUrl + '/front-system/order'
         var data ={
@@ -357,14 +372,30 @@
       var url = requestUrl + '/front-system/order'
 
 //      切换订单类型
-//      $('.nav-tabs li').click(function () {
-//        self.orderType = Number($(this).attr('value'))
-////        var data ={
-////          order_type: self.orderType
-////        }
-////        console.log(self.orderType)
-////        self.fetchData(url,data,self.finishPage)
-//      })
+      $('.nav-tabs li').click(function () {
+        self.orderType = Number($(this).attr('value'))
+
+        switch(self.orderType){
+          case 1:
+                self.retailShow = true
+                self.orderShow = false
+                self.guazhangShow = false
+                break
+          case 2:
+            self.retailShow = false
+            self.orderShow = false
+            self.guazhangShow = true
+            break
+          case 3:
+            self.retailShow = false
+            self.orderShow = true
+            self.guazhangShow = false
+        }
+        var data ={
+          order_type: self.orderType
+        }
+        self.fetchData(url,data,self.finishPage)
+      })
     },
     methods: {
 //     封装获取数据方法
@@ -448,6 +479,8 @@
     data: function () {
       return {
         guazhangShow: false,
+        orderShow: false,
+        retailShow: false,
         coupon_note: '',
         order_note: '',
         gridCheck: true,
