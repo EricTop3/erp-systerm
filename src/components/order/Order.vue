@@ -116,7 +116,7 @@
           <div class='col-xs-9'>
             <p class='f18'>原订单金额：<span><strong>￥{{totalPrice}}</strong></span></p>
 
-            <p class='c-erp f18'>实际订单额：<span><strong>￥{{finalPrice|priceChange}}</strong></span></p>
+            <p class='c-erp f18'>实际订单额：<span><strong>￥{{finalPrice}}</strong></span></p>
           </div>
           <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal'
                                       :disabled="!order_mata_data.settlementFlag"
@@ -183,7 +183,7 @@
         <label for="" class="col-sm-4 control-label">订单金额</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">{{finalPrice|priceChange}}</p>
+          <p class="form-control-static">{{finalPrice}}</p>
         </div>
       </div>
       <div class="form-group">
@@ -206,7 +206,7 @@
                class="col-sm-4 control-label">找零</label>
 
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{ (finalPrice*0.01).toFixed(2) > paymentAmount ? 0 : paymentAmount-finalPrice*0.01
+          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : (paymentAmount*100-finalPrice*100)*0.01
             }}</p>
         </div>
       </div>
@@ -607,8 +607,8 @@
         console.log(flagData)
         switch (flagData) {
           case 'priceValidateFirst':
-            if (!re.test(this.order_mata_data.paymentAmount)) {
-              this.order_mata_data.paymentAmount = ''
+            if (!re.test(this.paymentAmount)) {
+              this.paymentAmount = ""
             }
             break
           case 'priceValidateSecond':
@@ -620,7 +620,7 @@
       },
 //     结算请求成功后的函数
       setFinish : function (response){
-        this.finalPrice = response.data.body.total_sum
+        this.finalPrice = Number((response.data.body.total_sum*0.01)).toFixed(2)
         orderMount = response.data.body.total_sum
         if (this.order_mata_data.settlementFlag) {
           switch (orderType) {
@@ -661,7 +661,7 @@
 //      零售账单结算提交成功回调函数
       setuploadFinish: function () {
         orderType= Number(window.localStorage.getItem('orderType'))
-        this.order_mata_data.paymentAmount = ''
+        this.order_mata_data.paymentAmount = ""
         this.order_mata_data.settlementFlag = false
         this.retailBill = false
         this.checkedGoodsList = []
@@ -669,7 +669,7 @@
       },
 //      订单抹零请求后的函数
       truncateFinish: function (response){
-        this.finalPrice = response.data.body.total_sum
+        this.finalPrice = Number((response.data.body.total_sum*0.01)).toFixed(2)
       },
 //      订单抹零
       truncateMethod: function(){
@@ -681,7 +681,7 @@
           }
           this.settlementRequest(settlementData,this.truncateFinish)
         }else{
-          this.finalPrice = orderMount
+          this.finalPrice = Number((orderMount*0.01)).toFixed(2)
         }
       },
 //      零售账单结算提交
@@ -690,7 +690,7 @@
         settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,
-          'all_total': this.paymentAmount
+          'all_total': this.paymentAmount*1000
         }
         this.settlementRequest(settlementData,this.setuploadFinish)
       },

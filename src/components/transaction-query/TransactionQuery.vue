@@ -47,15 +47,18 @@
 
     <div>
       <ul class="nav nav-tabs" role="tablist">
-        <li value="1" role="presentation"  :class="{'active': orderType===1}"><a href="#retail-list" data-toggle="tab">零售单</a></li>
-        <li value="2" role="presentation"  :class="{'active': orderType===2}"><a href="#guazhang-list" data-toggle="tab">挂账单</a></li>
-        <li value="3" role="presentation"  :class="{'active': orderType===3}"><a href="#order-list" data-toggle="tab">预约单</a></li>
+        <li value="1" role="presentation" :class="{'active': orderType===1}"><a href="#retail-list" data-toggle="tab">零售单</a>
+        </li>
+        <li value="2" role="presentation" :class="{'active': orderType===2}"><a href="#guazhang-list" data-toggle="tab">挂账单</a>
+        </li>
+        <li value="3" role="presentation" :class="{'active': orderType===3}"><a href="#order-list"
+                                                                                data-toggle="tab">预约单</a></li>
       </ul>
 
       <!-- Tab panes -->
       <div class="tab-content">
         <!-- begin零售单 -->
-        <div role="tabpanel" class="tab-pane active" id="retail-list">
+        <div role="tabpanel" class="tab-pane active" v-if='retailShow===true'>
           <!-- 表格 -->
           <grid :data="queryList" :columns="retailGridColumns" :operate="gridOperate">
             <div slot="operateList">
@@ -72,21 +75,23 @@
         <!-- end零售单 -->
 
         <!-- begin挂账单 -->
-        <div role="tabpanel" class="tab-pane" id="guazhang-list">
+        <div role="tabpanel" class="tab-pane active" v-if="guazhangShow === true">
           <!-- 表格 -->
-          <grid :data="queryList" :columns="hangingGridColumns" :operate="gridOperate" :check="gridCheck">
+          <grid :data="queryList" :columns="hangingGridColumns" :operate="gridOperate" :check="gridCheck"
+                v-on:change-operate="changeOperate" v-on:change-all-operate="changeAllOperate">
             <div slot="operateList">
               <span class="btn btn-primary btn-sm" data-toggle="modal"
                     data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
               <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkHangingGoods-templ"
                     @click="lookDetail($event)">查看</span>
-              <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ">回款</span>
+              <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ"
+                    @click="payment">回款</span>
             </div>
           </grid>
           <table>
             <tr>
               <td><span class="btn btn-sm btn-info" style="margin-right:15px;">全部回款</span></td>
-              <td>合计回款额：<span>￥25000.00</span></td>
+              <td>合计回款额：<span>￥{{totalPayMent}}</span></td>
             </tr>
           </table>
 
@@ -97,10 +102,9 @@
         <!-- end挂账单 -->
 
         <!-- begin预约单 -->
-        <div role="tabpanel" class="tab-pane" id="order-list">
+        <div role="tabpanel" class="tab-pane active" v-if="orderShow===true">
           <grid :data="queryList" :columns="subscribeGridColumns" :operate="gridOperate">
             <div slot="operateList">
-
               <span v-if="status == '门店配送中'" class="btn btn-sm btn-primary" data-toggle="modal"
                     data-target="#inventory-notice1-templ">门店收货</span>
               <span v-if="status == '等待签收'" class="btn btn-sm btn-primary" data-toggle="modal"
@@ -143,11 +147,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="item in returnGoodsList"  class="text-aligen">
+            <tr v-for="item in returnGoodsList" class="text-aligen">
               <td>{{item.consumable_name}}</td>
               <td>￥{{item.actual_price |priceChange}}</td>
               <td>{{item.total_sell}}</td>
-              <td><count :count.sync="item.total_refund"></count></td>
+              <td>
+                <count :count.sync="item.total_refund"></count>
+              </td>
               <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
             </tr>
             </tbody>
@@ -166,92 +172,82 @@
   <!-- end退货 -->
 
   <!-- begin查看零售单 -->
-  <div class="modal fade" id="inventory-checkRetailGoods-templ" tabindex="-1" role="dialog"
-       aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">订单明细</h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped table-border table-hover">
-            <thead>
-            <tr>
-              <td>品名</td>
-              <td>原单价</td>
-              <td>零售单价</td>
-              <td>销售数量</td>
-              <td>退货数量</td>
-              <td>小计</td>
-              <td>议价备注</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in listDetail">
-              <td>{{item.consumable_name}}</td>
-              <td>{{item.original_price | priceChange}}</td>
-              <td>{{item.actual_price | priceChange}}</td>
-              <td>{{item.total_sell }}</td>
-              <td>{{item.total_refund }}</td>
-              <td>{{item.total_sum | priceChange}}</td>
-              <td>{{item.note}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="panel">
-            <div class="panel-body">
-              <p>优惠备注：{{coupon_note}}</p>
+  <modal :show.sync="deleteModal" :modal-size.sync='deleteModalSize'>
+    <div slot="header">
+      <button type="button" class="close" aria-label="Close"><span
+        aria-hidden="true" @click="deleteModal=false">&times;</span></button>
+      <h4 class="modal-title">订单明细</h4>
+    </div>
+    <div slot="body">
+      <table class="table table-striped table-border table-hover">
+        <thead>
+        <tr>
+          <td>品名</td>
+          <td>原单价</td>
+          <td>零售单价</td>
+          <td>销售数量</td>
+          <td>退货数量</td>
+          <td>小计</td>
+          <td>议价备注</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in listDetail">
+          <td>{{item.consumable_name}}</td>
+          <td>{{item.original_price | priceChange}}</td>
+          <td>{{item.actual_price | priceChange}}</td>
+          <td>{{item.total_sell }}</td>
+          <td>{{item.total_refund }}</td>
+          <td>{{item.total_sum | priceChange}}</td>
+          <td>{{item.note}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="panel">
+        <div class="panel-body">
+          <p>优惠备注：{{coupon_note}}</p>
 
-              <p>订单备注：{{order_note}}</p>
-            </div>
-          </div>
+          <p>订单备注：{{order_note}}</p>
         </div>
       </div>
     </div>
-  </div>
-  <!-- end查看零售单 -->
-  <!-- begin回款 -->
-  <div class="modal fade" id="inventory-huikuan-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">挂账回款</h4>
-        </div>
-        <div class="modal-body">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox">现金
-            </label>
-            <label>
-              <input type="checkbox">支付宝
-            </label>
-          </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox"> Pos刷卡
-            </label>
-            <label>
-              <input type="checkbox"> 微信
-            </label>
-          </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox"> 会员卡余额￥{{}}
-            </label>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <p class="text-left" style="line-height: 33px;">合计金额：<span>￥{{}}</span><span
-            class="pull-right btn-primary btn" data-dismiss="modal">确定回款</span></p>
-        </div>
+    <div slot="footer"></div>
+  </modal>
+  <!--回款-->
+  <modal :show.sync="paymentModal" :modal-size.sync='paymentModalSize'>
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+        aria-hidden="true" @click="paymentModal=false">&times;</span></button>
+      <h4 class="modal-title">挂账回款</h4>
+    </div>
+    <div slot="body">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox">现金
+        </label>
+        <label>
+          <input type="checkbox">支付宝
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> Pos刷卡
+        </label>
+        <label>
+          <input type="checkbox"> 微信
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> 会员卡余额￥{{}}
+        </label>
       </div>
     </div>
-  </div>
-  <!-- end回款 -->
+    <div slot="footer">
+      <p class="text-left" style="line-height: 33px;">合计金额：<span>￥{{paymentAmount}}</span><span
+        class="pull-right btn-primary btn" data-dismiss="modal" @click="confirmPayment">确定回款</span></p>
+    </div>
+  </modal>
 
   <!-- begin门店收货 -->
   <div class="modal fade" id="inventory-notice1-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -321,104 +317,139 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Count from '../common/Count'
+  import Modal from  '../common/Modal'
   import {requestUrl,token} from '../../publicFunction/index'
   var detailId = 0
   export default {
     components: {
       Count: Count,
       Grid: Grid,
-      Page: Page
+      Page: Page,
+      Modal: Modal
     },
     route: {
-      activate: function (){
+      activate: function () {
         this.orderType = Number(window.localStorage.getItem('orderType'))
         var self = this
+        switch (self.orderType) {
+          case 1:
+            self.retailShow = true
+            self.orderShow = false
+            self.guazhangShow = false
+            break
+          case 2:
+            self.retailShow = false
+            self.orderShow = false
+            self.guazhangShow = true
+            break
+          case 3:
+            self.retailShow = false
+            self.orderShow = true
+            self.guazhangShow = false
+        }
 //    交易查询
-        var url =requestUrl + '/front-system/order'
-        var data ={
+        var url = requestUrl + '/front-system/order'
+        var data = {
           order_type: this.orderType,
         }
-        this.fetchData(url,data,this.finishPage)
+        this.fetchData(url, data, this.finishPage)
       }
     },
     events: {
 //     分页
-      pagechange : function (current){
-        var url =requestUrl + '/front-system/order'
-        var data ={
-             order_type: this.orderType,
-             page: current
-          }
-        this.fetchData(url,data,this.finishPage)
+      pagechange: function (current) {
+        var url = requestUrl + '/front-system/order'
+        var data = {
+          order_type: this.orderType,
+          page: current
+        }
+        this.fetchData(url, data, this.finishPage)
       }
     },
     ready: function () {
       var self = this
       var url = requestUrl + '/front-system/order'
+
 //      切换订单类型
       $('.nav-tabs li').click(function () {
         self.orderType = Number($(this).attr('value'))
-        var data ={
+        switch (self.orderType) {
+          case 1:
+            self.retailShow = true
+            self.orderShow = false
+            self.guazhangShow = false
+            break
+          case 2:
+            self.retailShow = false
+            self.orderShow = false
+            self.guazhangShow = true
+            break
+          case 3:
+            self.retailShow = false
+            self.orderShow = true
+            self.guazhangShow = false
+        }
+        var data = {
           order_type: self.orderType
         }
-        self.fetchData(url,data,self.finishPage)
+        self.fetchData(url, data, self.finishPage)
       })
     },
     methods: {
 //     封装获取数据方法
-      fetchData: function (url,data,callback){
-       this.$http.get(url, data, {headers:{ 'X-Overpowered-Token':token}}).then(function(response){
-         callback(response)
-       },function(err){
-         console.log(err)
-       })
+      fetchData: function (url, data, callback) {
+        this.$http.get(url, data, {headers: {'X-Overpowered-Token': token}}).then(function (response) {
+          callback(response)
+        }, function (err) {
+          console.log(err)
+        })
       },
 //      对获取到的数据进行处理
-      modifyGetedData: function (data ){
-        $.each(data,function(index,val){
-          val.total_sum = ((val.total_sum)* 0.01).toFixed(2)
-          switch(val.pay_method){
+      modifyGetedData: function (data) {
+        $.each(data, function (index, val) {
+          val.total_sum = ((val.total_sum) * 0.01).toFixed(2)
+          switch (val.pay_method) {
             case  'cash':
-              val.pay_method='现金'
-                  break
+              val.pay_method = '现金'
+              break
             case 'alipay':
-              val.pay_method='支付宝'
+              val.pay_method = '支付宝'
               break
             case  'weixin':
-              val.pay_method='微信'
+              val.pay_method = '微信'
               break
             case 'post':
-              val.pay_method='post机刷卡'
+              val.pay_method = 'post机刷卡'
               break
             case  'balance':
-              val.pay_method='会员卡余额'
+              val.pay_method = '会员卡余额'
               break
           }
         })
       },
 //      翻页请求完成数据和订单切换完成数据
-       finishPage: function (response){
-         this.page = response.data.body.pagination
-         this.queryList = response.data.body.list
-         this.modifyGetedData(this.queryList)
-       },
+      finishPage: function (response) {
+        this.page = response.data.body.pagination
+        this.queryList = response.data.body.list
+        this.modifyGetedData(this.queryList)
+      },
 //     查看详情获取数据完成后的函数
       finishLookDetail: function (response) {
         console.log(response)
         this.listDetail = response.body.list
         var self = this
-        $.each(this.queryList,function(index,val){
-          if(val.id === detailId){
-            self.coupon_note=val.coupon_note
-            self.order_note=val.order_note
+        $.each(this.queryList, function (index, val) {
+          if (val.id === detailId) {
+            self.coupon_note = val.coupon_note
+            self.order_note = val.order_note
           }
         })
         console.log(response.body.list)
       },
 //     查看详情
       lookDetail: function (event) {
+        this.deleteModal = true
         detailId = Number($(event.currentTarget).parents('tr').attr('id'))
-        var self = this
         var url = requestUrl + '/front-system/order/' + detailId + '/detail'
         this.fetchData(url, this.finishLookDetail)
       },
@@ -429,7 +460,7 @@
         this.$http({
           url: requestUrl + '/front-system/order/' + id + '/detail',
           method: 'get',
-          headers:{ 'X-Overpowered-Token':token}
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.returnGoodsList = response.data.body.list
         }, function (err) {
@@ -441,10 +472,61 @@
 //      退货后隐藏按钮
       onlyReturnOnce: function () {
         $(this.currentButton).remove()
+      },
+//     回款
+      payment: function () {
+        var button = $(event.currentTarget)
+        this.currentButton = button
+        this.paymentModal = true
+        var id = Number($(event.currentTarget).parents('tr').attr('id'))
+        var self = this
+        $.each(this.queryList, function (index, val) {
+          if (id === val.id) {
+            self.paymentAmount = val.total_sum
+          }
+        })
+      },
+//      选择回款
+      changeOperate: function (currentId, currentObjCheck) {
+        var self = this
+        $.each(this.queryList, function (index, val) {
+          if (Number(Number(currentId) === val.id)) {
+            if (currentObjCheck) {
+              self.totalPayMent = self.totalPayMent + parseFloat(val.total_sum)
+            } else {
+              self.totalPayMent = self.totalPayMent - parseFloat(val.total_sum)
+            }
+          }
+        })
+      },
+//      全部选择回款
+      changeAllOperate: function (checkall) {
+        var self = this
+        if (checkall) {
+          $.each(this.queryList, function (index, val) {
+            self.totalPayMent = self.totalPayMent + parseFloat(val.total_sum)
+          })
+        }else{
+          self.totalPayMent = 0
+        }
+      },
+//       确定回款
+      confirmPayment: function () {
+        this.paymentModal = false
+        $(this.currentButton).remove()
       }
     },
     data: function () {
       return {
+        deleteModal: false,
+        deleteModalSize: 'modal-lg',
+        paymentModal: false,
+        paymentModalSize: 'modal-sm',
+        totalPayMent: 0,
+        paymentAmount: 0,
+        guazhangShow: false,
+        orderShow: false,
+        retailShow: false,
         coupon_note: '',
         order_note: '',
         gridCheck: true,
@@ -453,6 +535,7 @@
         queryList: [],
         page: [],
         orderType: 1,
+        gridCheck: true,
         gridOperate: true,
         retailGridColumns: {
           order_number: '小票编号',
@@ -494,16 +577,16 @@
         var price = 0
         var returnGoodsList = this.returnGoodsList
         $.each(returnGoodsList, function (index, value) {
-          price +=value.actual_price * value.total_refund
+          price += value.actual_price * value.total_refund
         })
-        return (price*0.01).toFixed(2)
+        return (price * 0.01).toFixed(2)
       }
     }
   }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .text-aligen{
+  .text-aligen {
     text-align: center;
   }
 </style>
