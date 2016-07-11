@@ -479,6 +479,12 @@
         this.currentButton = button
         this.paymentModal = true
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
+        this.$http.put(requestUrl + '/front-system/order/back-money/' + id, {headers: {'X-Overpowered-Token': token}})
+          .then(function (response) {
+           console.log(response)
+        },function (err){
+            console.log(err)
+        })
         var self = this
         $.each(this.queryList, function (index, val) {
           if (id === val.id) {

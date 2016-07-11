@@ -523,6 +523,7 @@
             obj.goodPrice = currentGoodPrice
             obj.saleMark = currentSaleMark
             obj.count = this.count
+            obj.note = ''
             obj.priceNote = ''
             checkedGoodsList.push(obj)
           }
@@ -533,6 +534,7 @@
           obj1.goodPrice = currentGoodPrice
           obj1.saleMark = currentSaleMark
           obj1.count = this.count
+          obj1.note = ''
           obj1.priceNote = ''
           checkedGoodsList.push(obj1)
         }
@@ -573,6 +575,7 @@
             obj.goodPrice = currentGoodPrice
             obj.saleMark = currentSaleMark
             obj.count = this.count
+            obj.note = ''
             obj.priceNote = ''
             checkedGoodsList.push(obj)
           }
@@ -582,6 +585,7 @@
           obj1.goodName = currentGoodName
           obj1.goodPrice = currentGoodPrice
           obj1.saleMark = currentSaleMark
+          obj1.note = ''
           obj1.count = this.count
           obj1.priceNote = ''
           checkedGoodsList.push(obj1)
@@ -725,6 +729,7 @@
           obj['goods_id'] = val.id
           obj['amount'] = val.count
           obj['price'] = val.goodPrice
+          obj['note'] = val.priceNote
           orderItems.push(obj)
         })
         settlementData = {
@@ -778,6 +783,7 @@
     },
     data: function () {
       return {
+        goodsNote: '',
         paymentAmount: '',
         couponSelected: 0,
         couponName: [],
