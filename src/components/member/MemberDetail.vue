@@ -72,11 +72,9 @@
             <label class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
-              <select class="form-control" v-model="level">
-                <option>九折会员</option>
-                <option>八折会员</option>
-                <option>七折会员</option>
-                <option>五折会员</option>
+              <select class="form-control" v-model="edit_level">
+                <option selected>请选择会员等级</option>
+                <option v-for="value in member_level_group">{{value.name}}</option>
               </select>
             </div>
           </div>
@@ -101,11 +99,12 @@
           <label class="col-sm-4 control-label">支付方式：</label>
 
           <div class="col-sm-8">
-            <select class="form-control">
-              <option>现金</option>
-              <option>支付宝</option>
-              <option>微信支付</option>
-              <option>POSE刷卡</option>
+            <select class="form-control" v-model="edit_payment">
+              <option value="cash">现金</option>
+              <option value="alipay">支付宝</option>
+              <option value="weixin">微信支付</option>
+              <option value="vip">会员支付</option>
+              <option value="post">POSE刷卡</option>
             </select>
           </div>
         </div>
@@ -199,7 +198,7 @@
           console.log(err)
         })
       },
-      //    编辑会员资料
+//    编辑会员资料
       updateMember: function (event) {
 //      弹出模态框
         this.editModal = true
@@ -220,6 +219,7 @@
           this.edit_phone = this.formData.phone
           this.edit_birthday = this.formData.birthday
           this.edit_level = this.formData.level
+          this.edit_payment = this.formData.payment
         }, function (err) {
           console.log(err)
         })
@@ -253,14 +253,20 @@
 //    充值金额
       recharge: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
+        var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
         this.rechargeId = id
+        this.edit_member_card = card_number.replace(/(^\s*)|(\s*$)/g,'')
+        console.log(this.edit_member_card)
+
         this.rechargeModal = true
       },
 //    保存充值金额
       saveRecharge: function (event) {
         var id = Number($(event.currentTarget).attr('value'))
         this.$http.put(requestUrl + '/front-system/user/change-money/' + id, {
-            money: this.edit_balance
+            money: this.edit_balance,
+            payment: this.edit_payment,
+            member_card: this.edit_member_card
           },
           {
             headers: {
@@ -280,6 +286,7 @@
     },
     data: function () {
       return {
+        member_level_group: [],
         rechargeModalSize: 'modal-sm',
         editModalSize: 'modal-sm',
         editModal: false,
@@ -293,6 +300,7 @@
         balance: '',
         password: '',
         level: '',
+        payment: '',
         edit_member_card: '',
         edit_member_name: '',
         edit_phone: '',
@@ -301,6 +309,7 @@
         edit_password: '',
         edit_level: '',
         edit_atatus: '',
+        edit_payment: '',
         page: [],
         gridData: [],
         gridColumns: {
@@ -325,6 +334,18 @@
           open_card_store: "开卡点"
         }
       }
+    },
+    compiled: function () {
+//    新增会员获取会员等级
+      this.$http({
+        url: requestUrl + '/front-system/user/level',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token}
+      }).then(function (response) {
+        this.member_level_group = response.data.body
+      }, function (err) {
+        console.log(err)
+      })
     }
   }
 </script>
