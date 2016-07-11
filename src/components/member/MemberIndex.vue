@@ -38,9 +38,9 @@
             <option>启用</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-info ml10">搜索</button>
-        <button type="submit" class="btn btn-warning">撤销搜索</button>
-        <button type="submit" class="btn btn-primary" @click="creatMemberModal=true">新会员办理</button>
+        <span type="submit" class="btn btn-info ml10">搜索</span>
+        <span type="submit" class="btn btn-warning">撤销搜索</span>
+        <span type="submit" class="btn btn-primary" @click="creatMemberModal=true">新会员办理</span>
       </form>
     </div>
     <!-- 表格 -->
@@ -400,7 +400,7 @@
     },
     data: function () {
       return {
-        detailUrl: '/#!/member/:memberId/detail?',
+        detailUrl: '/#!/member/',
         member_level_group: [],
         rechargeId: '',
         member_id: '',

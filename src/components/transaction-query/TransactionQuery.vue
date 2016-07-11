@@ -80,12 +80,12 @@
           <grid :data="queryList" :columns="hangingGridColumns" :operate="gridOperate" :check="gridCheck"
                 v-on:change-operate="changeOperate" v-on:change-all-operate="changeAllOperate">
             <div slot="operateList">
-              <span class="btn btn-primary btn-sm" data-toggle="modal"
-                    data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
+              <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ"
+                    @click="payment">回款</span>
               <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkHangingGoods-templ"
                     @click="lookDetail($event)">查看</span>
-              <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ"
-                    @click="payment">回款</span>
+              <span class="btn btn-warning btn-sm" data-toggle="modal"
+                    data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
             </div>
           </grid>
           <table>

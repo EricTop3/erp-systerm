@@ -47,7 +47,7 @@
     <!--分页-->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
           :last-page="page.last_page">
-      </page>
+    </page>
   </div>
 </template>
 <script>
@@ -55,7 +55,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl, token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,

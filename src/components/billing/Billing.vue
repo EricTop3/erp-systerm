@@ -3,17 +3,16 @@
     <!--测试-->
 
 
-
     <!-- 表格 -->
     <table class="table table-striped table-border table-hover mt20">
       <thead>
       <tr class="text-center">
         <td>结算日期</td>
-         <td>合计收入额</td>
+        <td>合计收入额</td>
         <td>现金支付额</td>
         <td>刷卡支付额</td>
         <td>微信支付额</td>
-        <td>支付宝支付额 </td>
+        <td>支付宝支付额</td>
         <td>操作</td>
       </tr>
       </thead>
@@ -27,7 +26,7 @@
         <td>￥10000.00</td>
         <td>
           <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#settlement-templ">今日结算</span>
-          <span class="btn btn-info btn-sm">结算历史</span>
+          <span class="btn btn-info btn-sm" @click="detail($event)">结算历史</span>
         </td>
       </tr>
       </tbody>
@@ -80,7 +79,8 @@
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">提示</h4>
         </div>
         <div class="modal-body">
@@ -96,14 +96,20 @@
   <!--模态框HTML-->
 </template>
 <script>
+  import $ from 'jquery'
+  import Grid from '../common/Grid'
+  import Page from '../common/Page'
+  import {requestUrl, token} from '../../publicFunction/index'
   export default {
+    methods: {
+      detail: function (event) {
+        var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
+        window.location.href = this.detailUrl + detailId
+      }
+    },
     data: function () {
       return {
-        // note: changing this line won't causes changes
-        // with hot-reload because the reloaded component
-        // preserves its current state and we are modifying
-        // its initial state.
-        msg: 'this is billing vue'
+        detailUrl: '/#!/billing/'
       }
     }
   }

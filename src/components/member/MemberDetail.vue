@@ -152,9 +152,9 @@
     methods: {
 //    单条数据渲染
       thisOneData: function () {
-        var idstr = window.location.href
-        var idIdx = idstr.indexOf('?')
-        var id = idstr.substring(idIdx + 1)
+        var str = window.location.href
+        var num = str.indexOf('member') + 7
+        var id = str.substr(num)
         console.log(id)
         this.$http({
           url: requestUrl + '/front-system/user/' + id,
@@ -172,10 +172,9 @@
       },
 //    会员详情-列表数据渲染
       listData: function (page) {
-        var idstr = window.location.href
-        var idIdx = idstr.indexOf('?')
-        var id = idstr.substring(idIdx + 1)
-        console.log(id)
+        var str = window.location.href
+        var num = str.indexOf('member') + 7
+        var id = str.substr(num)
         this.$http({
           url: requestUrl + '/front-system/user/' + id + '/detail',
           method: 'get',

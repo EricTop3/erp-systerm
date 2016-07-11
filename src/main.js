@@ -11,7 +11,7 @@ import Order from './components/order/Order'
 import Billing from './components/billing/Billing'
 import BillingHistory from './components/billing/BillingHistory'
 import MemberIndex from './components/member/MemberIndex'
-import Detail from './components/member/MemberDetail'
+import MemberDetail from './components/member/MemberDetail'
 import InStock from './components/instock/InStock'
 import GoodsApply from './components/instock/GoodsApply'
 import GoodsApplyNum from './components/instock/GoodsApplyNum'
@@ -66,9 +66,9 @@ router.map({
   '/member': {
     component: MemberIndex
   },
-  '/member/:memberId/detail': {
+  '/member/:queryId': {
     name: 'member',
-    component: Detail
+    component: MemberDetail
   },
   '/billing': {
     component: Billing
