@@ -69,54 +69,52 @@
       <div class="modal-body">
         <form action="" method="post" class="form-horizontal">
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">会员卡号：</label>
+            <label class="col-sm-4 control-label">会员卡号：</label>
 
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="member_card">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">姓名：</label>
+            <label class="col-sm-4 control-label">姓名：</label>
 
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="member_name">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">手机号码：</label>
+            <label class="col-sm-4 control-label">手机号码：</label>
 
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="phone">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">微商城密码：</label>
+            <label class="col-sm-4 control-label">微商城密码：</label>
 
             <div class="col-sm-8">
               <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="password">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">生 日：</label>
+            <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">等 级：</label>
+            <label class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
               <select class="form-control" v-model="level">
-                <option>九折会员</option>
-                <option>八折会员</option>
-                <option>七折会员</option>
-                <option>五折会员</option>
+                <option selected>请选择会员等级</option>
+                <option v-for="value in member_level_group">{{value.name}}</option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label for="" class="col-sm-4 control-label">充值金额：</label>
+            <label class="col-sm-4 control-label">充值金额：</label>
 
             <div class="col-sm-8">
               <div class="form-inline">
@@ -188,11 +186,9 @@
             <label class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
-              <select class="form-control" v-model="level">
-                <option>九折会员</option>
-                <option>八折会员</option>
-                <option>七折会员</option>
-                <option>五折会员</option>
+              <select class="form-control" v-model="edit_level">
+                <option selected>请选择会员等级</option>
+                <option v-for="value in member_level_group">{{value.name}}</option>
               </select>
             </div>
           </div>
@@ -218,10 +214,10 @@
 
           <div class="col-sm-8">
             <select class="form-control">
-              <option>现金</option>
-              <option>支付宝</option>
-              <option>微信支付</option>
-              <option>POSE刷卡</option>
+              <option value="">现金</option>
+              <option value="">支付宝</option>
+              <option value="">微信支付</option>
+              <option value="">POSE刷卡</option>
             </select>
           </div>
         </div>
@@ -381,7 +377,9 @@
       saveRecharge: function (event) {
         var id = Number($(event.currentTarget).attr('value'))
         this.$http.put(requestUrl + '/front-system/user/change-money/' + id, {
-            money: this.edit_balance
+            money: this.edit_balance,
+            payment: this.edit_payment,
+            member_card: this.edit_member_card
           },
           {
             headers: {
@@ -402,7 +400,8 @@
     },
     data: function () {
       return {
-        detailUrl:'/#!/member/:memberId/detail?',
+        detailUrl: '/#!/member/:memberId/detail?',
+        member_level_group: [],
         rechargeId: '',
         member_id: '',
         member_card: '',
@@ -443,6 +442,18 @@
           status: "状态"
         }
       }
+    },
+    compiled: function () {
+//    新增会员获取会员等级
+      this.$http({
+        url: requestUrl + '/front-system/user/level',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token}
+      }).then(function (response) {
+        this.member_level_group = response.data.body
+      }, function (err) {
+        console.log(err)
+      })
     }
   }
 </script>

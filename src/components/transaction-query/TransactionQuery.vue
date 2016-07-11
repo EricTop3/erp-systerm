@@ -152,7 +152,7 @@
               <td>￥{{item.actual_price |priceChange}}</td>
               <td>{{item.total_sell}}</td>
               <td>
-                <count :count.sync="item.total_refund"></count>
+                <count :count.sync="item.total_refund" :amount.sync='item.total_sell'></count>
               </td>
               <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
             </tr>
@@ -542,7 +542,7 @@
           created_at: '下单时间',
           total_sum: '合计金额',
           total_amount: '合计数量',
-          card_number: '会员卡号',
+          member_card_number: '会员卡号',
           coupon_name: '优惠方式',
           pay_method: '支付方式',
           after_sales: '售后',
@@ -552,10 +552,10 @@
           order_number: '小票编号',
           created_at: '下单时间',
           total_sum: '合计金额',
-          total_number: '合计数量',
-          card_number: '会员卡号',
+          total_amount: '合计数量',
+          member_card_number: '会员卡号',
           coupon_name: '优惠方式',
-          payment: '支付方式',
+          pay_method: '支付方式',
           after_sales: '售后',
           operator: '营业员'
         },
@@ -563,10 +563,10 @@
           order_number: '小票编号',
           created_at: '下单时间',
           total_sum: '合计金额',
-          total_number: '合计数量',
-          card_number: '会员卡号',
+          total_amount: '合计数量',
+          member_card_number: '会员卡号',
           coupon_name: '优惠方式',
-          payment: '支付方式',
+          pay_method: '支付方式',
           status: '进度',
           operator: '营业员'
         }

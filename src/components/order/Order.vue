@@ -116,7 +116,7 @@
           <div class='col-xs-9'>
             <p class='f18'>原订单金额：<span><strong>￥{{totalPrice}}</strong></span></p>
 
-            <p class='c-erp f18'>实际订单额：<span><strong>￥{{finalPrice}}</strong></span></p>
+            <p class='c-erp f18'>实际订单额：<span><strong>￥{{finalPrice || totalPrice}}</strong></span></p>
           </div>
           <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal'
                                       :disabled="!order_mata_data.settlementFlag"
@@ -143,7 +143,7 @@
       <hr>
       <ul class='index-list-porducts'>
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'disabled':item.sell_unit_stock<=0}" :stock='item.sell_unit_stock'
+            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<=0}" :stock='item.sell_unit_stock'
             :sell_mark='item.sell_mark'>
           <h4>{{item.name}}</h4>
           <span>{{item.code}}</span>
@@ -404,6 +404,29 @@
             this.order_mata_data .coupon_name ="满199元八折"
             break
         }
+
+        var settlementData = {}
+        orderItems = []
+        window.localStorage.setItem('orderType',this.order_mata_data.order_type)
+        orderType= Number(window.localStorage.getItem('orderType'))
+        $.each(this.checkedGoodsList, function (index, val) {
+          var obj = {}
+          obj['goods_id'] = val.id
+          obj['amount'] = val.count
+          obj['price'] = val.goodPrice
+          orderItems.push(obj)
+        })
+        settlementData = {
+          'items': orderItems,
+          'order_meta_data': this.order_mata_data,
+          'get_order_price': 1
+        }
+        this.settlementRequest(settlementData,this.select_money)
+      },
+//     选择优惠计算金额
+      select_money: function (response) {
+        this.finalPrice = Number((response.data.body.total_sum*0.01)).toFixed(2)
+        orderMount = response.data.body.total_sum
       },
 //     结算请求
       settlementRequest: function (data,callback){
@@ -426,8 +449,10 @@
         const currentGoodPrice = currentGood.find('.single-price').html()
         const checkedGoodsList = this.checkedGoodsList
         currentGood.addClass('active').siblings().removeClass('active')
-//       判断是否是特价
-        currentSaleMark === 2 ? this.saleMark = true : this.saleMark = false
+//       判断是否是特价或不可议价
+        currentSaleMark !== 1 ? this.saleMark = true : this.saleMark = false
+/*//       判断是否为不可议价
+        currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
         if (currentStock <= 0) {
           return false
@@ -474,8 +499,10 @@
         const currentGoodPrice = currentGood.find('.single-price').html()
         const checkedGoodsList = this.checkedGoodsList
         currentGood.addClass('active').siblings().removeClass('active')
-//       判断是否是特价
-        currentSaleMark === 2 ? this.saleMark = true : this.saleMark = false
+//       判断是否是特价或不可议价
+        currentSaleMark !== 1 ? this.saleMark = true : this.saleMark = false
+/*//       判断是否为不可议价
+        currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
         if (currentStock <= 0) {
           return false
@@ -557,7 +584,7 @@
         $.each(checkedGoodsList, function (index, val) {
           if (val.id === priceCheckdGoodId) {
             originalPrice = val.goodPrice
-            if (val.saleMark === 2) {
+            if (val.saleMark !== 1) {
               flag = true
             }
           }

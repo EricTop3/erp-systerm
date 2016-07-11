@@ -10,7 +10,7 @@
         required: true
       },
       amount: {
-        type: Number
+        required: true
       }
     },
     methods: {
@@ -25,17 +25,17 @@
     events: {
 //      判断退货数量是否大于销售数量
       calc: function (count, amount) {
-        if (count > amount) {
+        if (Number(count) > amount) {
           this.count = 0
-          /*countValidate(count)
-           console.log(count + ',' + amount)*/
+          this.countValidate(count)
+          console.log(count + ',' + amount)
         }
       }
     }
   }
 </script>
 <style scoped>
-  .count{
+  .count {
     margin: 0 auto;
   }
 </style>
