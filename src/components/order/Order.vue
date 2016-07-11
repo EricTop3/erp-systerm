@@ -730,6 +730,7 @@
           obj['amount'] = val.count
           obj['price'] = val.goodPrice
           obj['note'] = val.priceNote
+
           orderItems.push(obj)
         })
         settlementData = {
