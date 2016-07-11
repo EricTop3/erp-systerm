@@ -90,7 +90,7 @@
           </grid>
           <table>
             <tr>
-              <td><span class="btn btn-sm btn-info" style="margin-right:15px;">全部回款</span></td>
+              <td><span class="btn btn-sm btn-info" style="margin-right:15px;" @click="paymentAll()">全部回款</span></td>
               <td>合计回款额：<span>￥{{totalPayMent}}</span></td>
             </tr>
           </table>
@@ -221,25 +221,25 @@
       <h4 class="modal-title">挂账回款</h4>
     </div>
     <div slot="body">
-      <div class="checkbox">
+      <div class="radio">
         <label>
-          <input type="checkbox">现金
+          <input type="radio" value="现金">现金
         </label>
         <label>
-          <input type="checkbox">支付宝
-        </label>
-      </div>
-      <div class="checkbox">
-        <label>
-          <input type="checkbox"> Pos刷卡
-        </label>
-        <label>
-          <input type="checkbox"> 微信
+          <input type="radio" value="支付宝">支付宝
         </label>
       </div>
-      <div class="checkbox">
+      <div class="radio">
         <label>
-          <input type="checkbox"> 会员卡余额￥{{}}
+          <input type="radio" value="pos刷卡"> pos刷卡
+        </label>
+        <label>
+          <input type="radio" value="微信"> 微信
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="会员卡余额￥{{}}"> 会员卡余额￥{{}}
         </label>
       </div>
     </div>
@@ -510,9 +510,15 @@
           self.totalPayMent = 0
         }
       },
+//      点击全部回款金额
+      paymentAll: function () {
+        this.paymentModal = true
+        this.paymentAmount = this.totalPayMent
+      },
 //       确定回款
       confirmPayment: function () {
         this.paymentModal = false
+
         $(this.currentButton).remove()
       }
     },
