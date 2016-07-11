@@ -119,6 +119,7 @@
             <p class='f18'>原订单金额：<span><strong>￥{{totalPrice}}</strong></span></p>
 
             <p class='c-erp f18'>实际订单额：<span><strong>￥{{finalPrice || totalPrice}}</strong></span></p>
+
           </div>
           <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal'
                                       :disabled="!order_mata_data.settlementFlag"
@@ -215,7 +216,7 @@
       </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="settlementUpload($event)">提交</button>
+      <button type="button" class="btn btn-primary" :disabled="isRightMoney()" @click="settlementUpload($event)">提交</button>
     </div>
   </modal>
   <!--结算挂账账单弹窗-->
@@ -391,6 +392,10 @@
       }
     },
     methods: {
+//      判断订单的支付金额
+      isRightMoney: function () {
+        return Number(this.finalPrice) <= Number(this.paymentAmount) ? false : true
+      },
 //       选择商品
       select: function (event) {
         var cur = Number($(event.currentTarget).val())
