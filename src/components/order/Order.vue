@@ -58,9 +58,10 @@
             <div class='index-list'>
               <form class='form-inline m30'>
                 <div class='form-group'>
-                  <select class='form-control' style='width: 150px;' v-model="order_mata_data.discount" @change="select($event)">
-                    <option selected="selected" value="1">无优惠</option>
-                    <option :value="item.discount" v-for="item in couponName" :name="item.name">{{item.name}}</option>
+                  <select class='form-control' style='width: 150px;' v-model="order_mata_data.strategy_id"
+                          @change="select($event)">
+                    <option selected="selected" value="0">无优惠</option>
+                    <option :value="item.id" v-for="item in couponName" :name="item.name">{{item.name}}</option>
                   </select>
                 </div>
                 <div class='form-group ml10'>
@@ -69,6 +70,7 @@
               </form>
             </div>
           </div>
+
           <div role='tabpanel' class='tab-pane panel panel-default' id='orderType'>
             <ul class='index-list ordertype-list'>
               <li class='active'>零售订单</li>
@@ -143,7 +145,8 @@
       <hr>
       <ul class='index-list-porducts'>
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<=0}" :stock='item.sell_unit_stock'
+            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<=0}"
+            :stock='item.sell_unit_stock'
             :sell_mark='item.sell_mark'>
           <h4>{{item.name}}</h4>
           <span>{{item.code}}</span>
@@ -212,7 +215,7 @@
       </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="settlementUpload()">提交</button>
+      <button type="button" class="btn btn-primary" @click="settlementUpload($event)">提交</button>
     </div>
   </modal>
   <!--结算挂账账单弹窗-->
@@ -285,12 +288,12 @@
   import CountContainer from '../common/CountContainer'
   import Page from '../common/Page'
   import Slide from 'vue-slide'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl, token} from '../../publicFunction/index'
   //  商品信息数组
   var orderItems = []
-//  订单类型
+  //  订单类型
   var orderType = 1
-//  订单实付金额
+  //  订单实付金额
   var orderMount = 0
   var deleteCheckedGoodId = ''
   var priceCheckdGoodId = ''
@@ -306,7 +309,7 @@
       this.$http({
         url: requestUrl + '/front-system/order/category',
         method: 'get',
-        headers: { 'X-Overpowered-Token': token }
+        headers: {'X-Overpowered-Token': token}
       }).then(function (response) {
         this.category = response.data.body.list
       }, function (err) {
@@ -319,7 +322,7 @@
         data: {
           per_page: 20
         },
-        headers: { 'X-Overpowered-Token': token }
+        headers: {'X-Overpowered-Token': token}
       }).then(function (response) {
         this.productFromCategory = response.data.body.list
         this.page = response.data.body.pagination
@@ -327,18 +330,19 @@
         console.log(err)
       })
 //      优惠
-       this.$http(requestUrl + '/front-system/order/coupon',{
-         headers: { 'X-Overpowered-Token': token }
-       }).then(function(response){
-         this.couponName = response.data.body
-       },function (err) {
-         console.log(err)
-       })
+      this.$http(requestUrl + '/front-system/order/coupon', {
+        headers: {'X-Overpowered-Token': token}
+      }).then(function (response) {
+        this.couponName = response.data.body
+      }, function (err) {
+        console.log(err)
+      })
     },
     ready: function () {
       const orderType = $('.ordertype-list')
       const payment = $('.pay-list')
       var $this = this
+
       function changeActive(elem, elemSon) {
         var orderTypeData = ''
         var paymentData = ''
@@ -373,7 +377,7 @@
           if (elem === orderType) {
             $this.order_mata_data.order_type = orderTypeData
           } else {
-            $this.order_mata_data.payment =  paymentData
+            $this.order_mata_data.payment = paymentData
           }
         })
       }
@@ -388,27 +392,30 @@
     },
     methods: {
 //       选择商品
-      select: function (event){
-        var cur=Number($(event.currentTarget).val())
-        switch(cur){
+      select: function (event) {
+        var cur = Number($(event.currentTarget).val())
+        switch (cur) {
+          case  0:
+            this.order_mata_data.coupon_name = "无优惠"
+            break
           case  1:
-          this.order_mata_data .coupon_name ="无优惠"
-          break
-          case  0.7:
-            this.order_mata_data .coupon_name ="会员日七折"
+            this.order_mata_data.coupon_name = "会员日七折"
             break
-          case  0.9:
-            this.order_mata_data .coupon_name ="满299元减50元"
+          case  2:
+            this.order_mata_data.coupon_name = "会员日九折"
             break
-          case  0.8:
-            this.order_mata_data .coupon_name ="满199元八折"
+          case  3:
+            this.order_mata_data.coupon_name = "满299元减50元"
+            break
+          case  4:
+            this.order_mata_data.coupon_name = "满199元八折"
             break
         }
-
         var settlementData = {}
+        this.order_mata_data.strategy_id = $(event.currentTarget).val()
         orderItems = []
-        window.localStorage.setItem('orderType',this.order_mata_data.order_type)
-        orderType= Number(window.localStorage.getItem('orderType'))
+        window.localStorage.setItem('orderType', this.order_mata_data.order_type)
+        orderType = Number(window.localStorage.getItem('orderType'))
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
@@ -421,20 +428,20 @@
           'order_meta_data': this.order_mata_data,
           'get_order_price': 1
         }
-        this.settlementRequest(settlementData,this.select_money)
+        this.settlementRequest(settlementData, this.select_money)
       },
 //     选择优惠计算金额
       select_money: function (response) {
-        this.finalPrice = Number((response.data.body.total_sum*0.01)).toFixed(2)
+        this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
         orderMount = response.data.body.total_sum
       },
 //     结算请求
-      settlementRequest: function (data,callback){
-        this.$http.post(requestUrl + '/front-system/order/order',data,{
-          headers: { 'X-Overpowered-Token': token }
-        }).then(function (response){
+      settlementRequest: function (data, callback) {
+        this.$http.post(requestUrl + '/front-system/order/order', data, {
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
           callback(response)
-        },function(err){
+        }, function (err) {
           console.log(err)
         })
       },
@@ -451,8 +458,8 @@
         currentGood.addClass('active').siblings().removeClass('active')
 //       判断是否是特价或不可议价
         currentSaleMark !== 1 ? this.saleMark = true : this.saleMark = false
-/*//       判断是否为不可议价
-        currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
+        /*//       判断是否为不可议价
+         currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
         if (currentStock <= 0) {
           return false
@@ -501,8 +508,8 @@
         currentGood.addClass('active').siblings().removeClass('active')
 //       判断是否是特价或不可议价
         currentSaleMark !== 1 ? this.saleMark = true : this.saleMark = false
-/*//       判断是否为不可议价
-        currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
+        /*//       判断是否为不可议价
+         currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
         if (currentStock <= 0) {
           return false
@@ -646,8 +653,8 @@
         }
       },
 //     结算请求成功后的函数
-      setFinish : function (response){
-        this.finalPrice = Number((response.data.body.total_sum*0.01)).toFixed(2)
+      setFinish: function (response) {
+        this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
         orderMount = response.data.body.total_sum
         if (this.order_mata_data.settlementFlag) {
           switch (orderType) {
@@ -669,8 +676,8 @@
       settlement: function () {
         var settlementData = {}
         orderItems = []
-        window.localStorage.setItem('orderType',this.order_mata_data.order_type)
-        orderType= Number(window.localStorage.getItem('orderType'))
+        window.localStorage.setItem('orderType', this.order_mata_data.order_type)
+        orderType = Number(window.localStorage.getItem('orderType'))
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
@@ -683,11 +690,11 @@
           'order_meta_data': this.order_mata_data,
           'get_order_price': 1
         }
-        this.settlementRequest(settlementData,this.setFinish)
+        this.settlementRequest(settlementData, this.setFinish)
       },
 //      零售账单结算提交成功回调函数
       setuploadFinish: function () {
-        orderType= Number(window.localStorage.getItem('orderType'))
+        orderType = Number(window.localStorage.getItem('orderType'))
         this.order_mata_data.paymentAmount = ""
         this.order_mata_data.settlementFlag = false
         this.retailBill = false
@@ -695,36 +702,36 @@
         window.location.href = '/?#!/tranquery'
       },
 //      订单抹零请求后的函数
-      truncateFinish: function (response){
-        this.finalPrice = Number((response.data.body.total_sum*0.01)).toFixed(2)
+      truncateFinish: function (response) {
+        this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
       },
 //      订单抹零
-      truncateMethod: function(){
-        if(this.truncate){
+      truncateMethod: function () {
+        if (this.truncate) {
           var settlementData = {
             'items': orderItems,
             'order_meta_data': this.order_mata_data,
             'truncate': 1
           }
-          this.settlementRequest(settlementData,this.truncateFinish)
-        }else{
-          this.finalPrice = Number((orderMount*0.01)).toFixed(2)
+          this.settlementRequest(settlementData, this.truncateFinish)
+        } else {
+          this.finalPrice = Number((orderMount * 0.01)).toFixed(2)
         }
       },
 //      零售账单结算提交
-      settlementUpload: function () {
+      settlementUpload: function (event) {
         var settlementData = {}
         settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,
-          'all_total': this.paymentAmount*1000
+          'all_total': this.paymentAmount * 1000
         }
-        this.settlementRequest(settlementData,this.setuploadFinish)
+        this.settlementRequest(settlementData, this.setuploadFinish)
       },
 //      挂账订单结算提交
-      billUpload: function() {
+      billUpload: function () {
 //        类似零售账单
-        this. settlementUpload()
+        this.settlementUpload()
       }
     },
     data: function () {
@@ -748,7 +755,7 @@
           coupon_name: '无优惠',
           payment: 'cash',
           discount: 0,
-          strategy_id: 1,
+          strategy_id: '',
           order_note: '',
           coupon_note: '',
           settlementFlag: false,
