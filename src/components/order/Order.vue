@@ -161,10 +161,10 @@
         <div class='col-lg-6'>
           <form class='form-inline'>
             <div class='form-group'>
-              <input type='text' class='form-control' placeholder='请输入商品名或商品编号'>
+              <input type='text' class='form-control' placeholder='请输入商品名或商品编号' v-model="search">
             </div>
-            <button type='submit' class='btn btn-primary'>搜索</button>
-            <span class='btn btn-warning'>撤销搜索</span>
+            <button type='submit' class='btn btn-primary' @click="searchProduct">搜索</button>
+            <span class='btn btn-warning' @click="cancelSearchProduct">撤销搜索</span>
           </form>
         </div>
         <div class='col-lg-6'>
@@ -343,7 +343,7 @@
       const orderType = $('.ordertype-list')
       const payment = $('.pay-list')
       var $this = this
-
+      this.checkedGoodsList = []
       function changeActive(elem, elemSon) {
         var orderTypeData = ''
         var paymentData = ''
@@ -392,6 +392,40 @@
       }
     },
     methods: {
+//      搜索
+      searchProduct: function(){
+        console.log('yes')
+        this.$http({
+          url: requestUrl + '/front-system/order/product',
+          method: 'get',
+          data: {
+            search: this.search
+          },
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.productFromCategory = response.data.body.list
+          this.page = response.data.body.pagination
+          this.search = ''
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//     取消搜索
+      cancelSearchProduct: function () {
+        this.$http({
+          url: requestUrl + '/front-system/order/product',
+          method: 'get',
+          data: {
+            search: ''
+          },
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.productFromCategory = response.data.body.list
+          this.page = response.data.body.pagination
+        }, function (err) {
+          console.log(err)
+        })
+      },
 //      判断订单的支付金额
       isRightMoney: function () {
         return Number(this.finalPrice) <= Number(this.paymentAmount) ? false : true
@@ -489,6 +523,7 @@
             obj.goodPrice = currentGoodPrice
             obj.saleMark = currentSaleMark
             obj.count = this.count
+            obj.note = ''
             obj.priceNote = ''
             checkedGoodsList.push(obj)
           }
@@ -499,6 +534,7 @@
           obj1.goodPrice = currentGoodPrice
           obj1.saleMark = currentSaleMark
           obj1.count = this.count
+          obj1.note = ''
           obj1.priceNote = ''
           checkedGoodsList.push(obj1)
         }
@@ -539,6 +575,7 @@
             obj.goodPrice = currentGoodPrice
             obj.saleMark = currentSaleMark
             obj.count = this.count
+            obj.note = ''
             obj.priceNote = ''
             checkedGoodsList.push(obj)
           }
@@ -548,6 +585,7 @@
           obj1.goodName = currentGoodName
           obj1.goodPrice = currentGoodPrice
           obj1.saleMark = currentSaleMark
+          obj1.note = ''
           obj1.count = this.count
           obj1.priceNote = ''
           checkedGoodsList.push(obj1)
@@ -691,6 +729,7 @@
           obj['goods_id'] = val.id
           obj['amount'] = val.count
           obj['price'] = val.goodPrice
+          obj['note'] = val.priceNote
           orderItems.push(obj)
         })
         settlementData = {
@@ -744,6 +783,7 @@
     },
     data: function () {
       return {
+        goodsNote: '',
         paymentAmount: '',
         couponSelected: 0,
         couponName: [],
@@ -756,6 +796,7 @@
         deleteModalSize: 'modal-sm',
         priceAdjectModal: false,
         priceAdjectModalSize: 'modal-sm',
+        search: '',
         originalPrice: 0,
         finalPrice: 0,
         order_mata_data: {
