@@ -46,7 +46,7 @@
     <!-- 表格 -->
     <grid :data="gridData" :columns="gridColumns" :filter-key="searchQuery" :operate="gridOperate">
       <div slot="operateList">
-        <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#chongzhi-member-templ"
+        <span :value="member_card" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#chongzhi-member-templ"
               @click="recharge($event)">充值</span>
         <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#edit-member-templ" id="show-modal"
               @click="updateMember($event)">编辑</span>
@@ -54,6 +54,7 @@
           class="btn btn-warning btn-sm">查看明细</span></a>
       </div>
     </grid>
+
     <!-- 翻页 -->
     <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
           :last-page='page.last_page'></page>
@@ -119,11 +120,12 @@
             <div class="col-sm-8">
               <div class="form-inline">
                 <input type="text" class="form-control" v-model="balance" placeholder="请输入充值金额！" style="width:104px;">
-                <select class="form-control ml10">
-                  <option>现金</option>
-                  <option>支付宝</option>
-                  <option>微信支付</option>
-                  <option>POSE刷卡</option>
+                <select class="form-control ml10" v-model="payment">
+                  <option value="cash">现金</option>
+                  <option value="alipay">支付宝</option>
+                  <option value="weixin">微信支付</option>
+                  <option value="vip">会员支付</option>
+                  <option value="post">POSE刷卡</option>
                 </select>
               </div>
             </div>
@@ -213,11 +215,12 @@
           <label class="col-sm-4 control-label">支付方式：</label>
 
           <div class="col-sm-8">
-            <select class="form-control">
-              <option value="">现金</option>
-              <option value="">支付宝</option>
-              <option value="">微信支付</option>
-              <option value="">POSE刷卡</option>
+            <select class="form-control" v-model="edit_payment">
+              <option value="cash">现金</option>
+              <option value="alipay">支付宝</option>
+              <option value="weixin">微信支付</option>
+              <option value="vip">会员支付</option>
+              <option value="post">POSE刷卡</option>
             </select>
           </div>
         </div>
@@ -275,6 +278,7 @@
           this.page = response.data.body.pagination
           this.gridData = response.data.body.list
           $.each(this.gridData, function (index, value) {
+
             if (value.status == 'start') {
               this.status = '启用'
             } else {
@@ -285,7 +289,7 @@
           console.log(err)
         })
       },
-//      创建新会员
+//    创建新会员
       creatNewMember: function () {
         this.$http.post(requestUrl + '/front-system/user', {
             member_card: this.member_card,
@@ -294,7 +298,8 @@
             birthday: this.birthday,
             balance: this.balance,
             password: this.password,
-            level: this.level
+            level: this.level,
+            payment: this.payment
           },
           {
             headers: {
@@ -320,7 +325,7 @@
           console.log(err)
         })
       },
-//      编辑会员资料
+//    编辑会员资料
       updateMember: function (event) {
 //      弹出模态框
         this.editModal = true
@@ -341,6 +346,7 @@
           this.edit_phone = this.formData.phone
           this.edit_birthday = this.formData.birthday
           this.edit_level = this.formData.level
+          this.edit_payment = this.formData.payment
         }, function (err) {
           console.log(err)
         })
@@ -370,7 +376,11 @@
 //    充值金额
       recharge: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
+        var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
         this.rechargeId = id
+        this.edit_member_card = card_number.replace(/(^\s*)|(\s*$)/g,'')
+        console.log(this.edit_member_card)
+
         this.rechargeModal = true
       },
 //    保存充值金额
@@ -411,6 +421,7 @@
         balance: '',
         password: '',
         level: '',
+        payment: '',
         edit_member_card: '',
         edit_member_name: '',
         edit_phone: '',
@@ -419,6 +430,7 @@
         edit_password: '',
         edit_level: '',
         edit_atatus: '',
+        edit_payment: '',
         page: [],
         createModalSize: 'modal-sm',
         rechargeModalSize: 'modal-sm',
