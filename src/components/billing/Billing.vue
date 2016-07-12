@@ -119,21 +119,18 @@
       },
 //    确定结算
       yesSettlement: function (event) {
-        this.$http({
-          url: requestUrl + '/front-system/settlement/create',
-          method: 'get',
-          headers: {
-            'X-Overpowered-Token': token
-          }
-        }).then(function (response) {
+        this.$http.post(requestUrl + '/front-system/settlement/create', {
+          headers: {'X-Overpowered-Token': token}
+        }, function (response) {
           $('#todaySet').hide()
           this.settlementModal = false
-        }, function (err) {
-          console.log(err)
+        }, function (error) {
+          console.log(error)
+
         })
       },
       detail: function (event) {
-         window.location.href = '#!/billing/BillingHistory'
+        window.location.href = '#!/billing/BillingHistory'
       }
     },
     data: function () {

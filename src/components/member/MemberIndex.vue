@@ -9,37 +9,37 @@
       <form class="form-inline">
         <div class="form-group">
           <label>会员卡号</label>
-          <input type="text" class="form-control" placeholder="">
+          <input type="text" class="form-control" placeholder="" v-model="search_memberCard">
         </div>
         <div class="form-group ml10">
           <label>会员姓名</label>
-          <input type="text" class="form-control" placeholder="">
+          <input type="text" class="form-control" placeholder="" v-model="search_memberName">
         </div>
         <div class="form-group ml10">
           <label>会员手机号</label>
-          <input type="text" class="form-control" placeholder="">
+          <input type="text" class="form-control" placeholder="" v-model="search_phone">
         </div>
         <div class="form-group ml10">
           <label>会员生日</label>
-          <input type="text" class="form-control" placeholder="">
+          <input type="text" class="form-control" placeholder="" v-model="search_birthday">
         </div>
         <div class="form-group ml10">
           <label>开卡点</label>
-          <select class="form-control">
-            <option>请选择</option>
-            <option>水星店</option>
-            <option>万达店</option>
+          <select class="form-control" v-model="search_open_card_store">
+            <option></option>
+            <option>水星</option>
+            <option>万达</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>状态搜索</label>
-          <select class="form-control">
-            <option>停用</option>
+          <select class="form-control" v-model="search_status">
             <option>启用</option>
+            <option>停用</option>
           </select>
         </div>
-        <span type="submit" class="btn btn-info ml10">搜索</span>
-        <span type="submit" class="btn btn-warning">撤销搜索</span>
+        <span type="submit" class="btn btn-info ml10" @click="searchProduct">搜索</span>
+        <span type="submit" class="btn btn-warning" @click="cancelSearchProduct">撤销搜索</span>
         <span type="submit" class="btn btn-primary" @click="creatMemberModal=true">新会员办理</span>
       </form>
     </div>
@@ -246,7 +246,7 @@
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
   import Page from '../common/Page'
-  import {requestUrl, token} from '../../publicFunction/index'
+  import {requestUrl, token, searchRequest} from '../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -396,10 +396,58 @@
           console.log(err)
         })
       },
+//    查看明细
       checkDetail: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
         window.location.href = this.detailUrl + id
-
+      },
+//    搜索
+      searchProduct: function () {
+        var self = this
+        if (this.search_status == '启用') {
+          this.search_status = 'start'
+        }
+        if (this.search_status == '停用') {
+          this.search_status = 'stop'
+        }
+        searchRequest(
+          requestUrl + '/front-system/user',
+          {
+            phone: this.search_phone,
+            birthday: this.search_birthday,
+            status: this.search_status,
+            open_card_store: this.search_open_card_store,
+            name: this.search_memberName,
+            member_card: this.search_memberCard
+          },
+          function (response) {
+            self.gridData = response.data.body.list
+            self.page = response.data.body.pagination
+            self.search_phone = ''
+            self.search_birthday = ''
+            self.search_status = ''
+            self.search_open_card_store = ''
+            self.search_memberName = ''
+            self.search_memberCard = ''
+          })
+      },
+//    取消搜索
+      cancelSearchProduct: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/user',
+          {
+            phone: '',
+            birthday: '',
+            status: '',
+            open_card_store: '',
+            name: '',
+            member_card: ''
+          },
+          function (response) {
+            self.gridData = response.data.body.list
+            self.page = response.data.body.pagination
+          })
       }
     },
     data: function () {
@@ -422,6 +470,12 @@
         editModal: false,
         rechargeModal: false,
         searchQuery: '',
+        search_phone: '',
+        search_birthday: '',
+        search_memberCard: '',
+        search_memberName: '',
+        search_status: '',
+        search_open_card_store: '',
         gridOperate: true,
         gridData: [],
         formData: {
