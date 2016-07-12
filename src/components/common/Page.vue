@@ -7,7 +7,7 @@
         <a href="javascript:;" @click="setCurrent(p.val)">{{p.text}}</a>
       </li>
       <li @click="setCurrent(current + 1)"><a aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-      <li><a href="#">共{{lastPage}}页</a></li>
+      <li><a href="javascript:void(0)">共{{lastPage}}页</a></li>
     </ul>
   </nav>
 </template>

@@ -40,8 +40,8 @@
           <date-picker  :value.sync="startTime"></date-picker> -
           <date-picker  :value.sync="endTime"></date-picker>
         </div>
-        <button type="submit" class="btn btn-info">搜索</button>
-        <span class="btn btn-warning">撤销搜索</span>
+        <button type="submit" class="btn btn-info" @click="search">搜索</button>
+        <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
       </form>
     </div>
 
@@ -91,7 +91,7 @@
           <table>
             <tr>
               <td><span class="btn btn-sm btn-info" style="margin-right:15px;" @click="paymentAll()">全部回款</span></td>
-              <td>合计回款额：<span>￥{{totalPayMent}}</span></td>
+              <td>合计回款额：<span>￥{{totalPayMent|priceChange}}</span></td>
             </tr>
           </table>
 
@@ -223,23 +223,23 @@
     <div slot="body">
       <div class="radio">
         <label>
-          <input type="radio" value="现金">现金
+          <input type="radio" value="cash"  name="payment">现金
         </label>
         <label>
-          <input type="radio" value="支付宝">支付宝
-        </label>
-      </div>
-      <div class="radio">
-        <label>
-          <input type="radio" value="pos刷卡"> pos刷卡
-        </label>
-        <label>
-          <input type="radio" value="微信"> 微信
+          <input type="radio" value="alipay" name="payment">支付宝
         </label>
       </div>
       <div class="radio">
         <label>
-          <input type="radio" value="会员卡余额￥{{}}"> 会员卡余额￥{{}}
+          <input type="radio" value="post" name="payment"> post刷卡
+        </label>
+        <label>
+          <input type="radio" value="weixin" name="payment"> 微信
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="vip" name="payment"> 会员卡余额
         </label>
       </div>
     </div>
@@ -319,8 +319,7 @@
   import Count from '../common/Count'
   import DatePicker from '../common/DatePicker'
   import Modal from  '../common/Modal'
-  import DatePicker from '../common/DatePicker'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl,token,search} from '../../publicFunction/index'
   var detailId = 0
   export default {
     components: {
@@ -399,10 +398,14 @@
       })
     },
     methods: {
+//      搜索
+      search: function (){
+        search()
+      },
 //     封装获取数据方法
       fetchData: function (url, data, callback) {
         this.$http.get(url, data, {headers: {'X-Overpowered-Token': token}}).then(function (response) {
-          callback(response)
+          callback && callback(response)
         }, function (err) {
           console.log(err)
         })
@@ -410,7 +413,7 @@
 //      对获取到的数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, val) {
-          val.total_sum = ((val.total_sum) * 0.01).toFixed(2)
+          val.total_sum = Number((val.total_sum) * 0.01).toFixed(2)
           switch (val.pay_method) {
             case  'cash':
               val.pay_method = '现金'
@@ -424,7 +427,7 @@
             case 'post':
               val.pay_method = 'post机刷卡'
               break
-            case  'balance':
+            case  'vip':
               val.pay_method = '会员卡余额'
               break
           }
@@ -501,9 +504,9 @@
         $.each(this.queryList, function (index, val) {
           if (Number(Number(currentId) === val.id)) {
             if (currentObjCheck) {
-              self.totalPayMent = self.totalPayMent + parseFloat(val.total_sum)
+              self.totalPayMent = self.totalPayMent + val.total_sum*100
             } else {
-              self.totalPayMent = self.totalPayMent - parseFloat(val.total_sum)
+              self.totalPayMent =  self.totalPayMent + val.total_sum*100
             }
           }
         })
@@ -513,7 +516,7 @@
         var self = this
         if (checkall) {
           $.each(this.queryList, function (index, val) {
-            self.totalPayMent = self.totalPayMent + parseFloat(val.total_sum)
+            self.totalPayMent = self.totalPayMent + val.total_sum*100
           })
         }else{
           self.totalPayMent = 0
@@ -522,7 +525,7 @@
 //      点击全部回款金额
       paymentAll: function () {
         this.paymentModal = true
-        this.paymentAmount = this.totalPayMent
+        this.paymentAmount = (this.totalPayMent*0.01).toFixed(2)
       },
 //       确定回款
       confirmPayment: function () {

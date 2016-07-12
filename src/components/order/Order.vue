@@ -84,13 +84,13 @@
               <form class='form-inline m20'>
                 <div class='form-group'>
                   <label>会员卡号</label>
-                  <input type='text' class='form-control' placeholder='请填写会员卡号'>
+                  <input type='text' class='form-control' placeholder='请填写会员卡号' v-model="member.memberCode">
                 </div>
-                <div class='form-group ml10'>
-                  <label>会员密码</label>
-                  <input type='email' class='form-control'>
-                </div>
-                <button type='submit' class='btn btn-primary ml10'>确定</button>
+                <!--<div class='form-group ml10'>-->
+                <!--<label>会员密码</label>-->
+                <!--<input type='email' class='form-control'>-->
+                <!--</div>-->
+                <button type='submit' class='btn btn-primary ml10' @click="memberRequest">确定</button>
               </form>
             </div>
             <ul class='index-list-member'>
@@ -122,8 +122,8 @@
 
           </div>
           <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal'
-                                      :disabled="!order_mata_data.settlementFlag"
-                                      :class="{'btn-primary':order_mata_data.settlementFlag,'btn-warning':!order_mata_data.settlementFlag}"
+                                      :disabled="!settlementFlag"
+                                      :class="{'btn-primary':settlementFlag,'btn-warning':!settlementFlag}"
                                       data-target='#order-settlement-templ' @click="settlement()">结算</span></div>
           <div class='clearboth'></div>
         </div>
@@ -216,7 +216,8 @@
       </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" :disabled="isRightMoney()" @click="settlementUpload($event)">提交</button>
+      <button type="button" class="btn btn-primary" :disabled="isRightMoney()" @click="settlementUpload($event)">提交
+      </button>
     </div>
   </modal>
   <!--结算挂账账单弹窗-->
@@ -282,6 +283,41 @@
       <button type='button' class='btn btn-primary' @click='priceAjectUpload()'>提交</button>
     </div>
   </modal>
+  <!--会员弹窗-->
+  <modal :show.sync='memberModal' :modal-size='memberModalSize' class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
+        aria-hidden='true' @click="memberModal=false">&times;</span></button>
+      <h4 class='modal-title'>会员支付</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">会员余额 <span>{{memberCount|priceChange}}</span></p>
+
+        <p class="modal-body color">订单金额 <span>{{finalPrice}}</span></p>
+      </div>
+    </div>
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='memberUpload'>结算</button>
+    </div>
+  </modal>
+  <!--错误信息弹出-->
+  <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
+        aria-hidden='true' @click="messageTipModal=false">&times;</span></button>
+      <h4 class='modal-title'>结算提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{messageTip}}</p>
+      </div>
+    </div>
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='messageTipModal = false' v-if="error">关闭</button>
+      <button type='button' class='btn btn-primary' @click="settlementUpload($event)" v-if="!error">确定</button>
+    </div>
+  </modal>
 </template>
 <script>
   import $ from 'jquery'
@@ -289,7 +325,7 @@
   import CountContainer from '../common/CountContainer'
   import Page from '../common/Page'
   import Slide from 'vue-slide'
-  import {requestUrl, token} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest} from '../../publicFunction/index'
   //  商品信息数组
   var orderItems = []
   //  订单类型
@@ -372,13 +408,17 @@
               paymentData = 'weixin'
               break
             case '会员卡余额':
-              paymentData = 'balance'
+              paymentData = 'vip'
+              if($this.memberFlag === false){
+                $this.settlementFlag =  false
+              }
               break
           }
           if (elem === orderType) {
             $this.order_mata_data.order_type = orderTypeData
           } else {
             $this.order_mata_data.payment = paymentData
+            console.log($this.order_mata_data.payment)
           }
         })
       }
@@ -393,38 +433,27 @@
     },
     methods: {
 //      搜索
-      searchProduct: function(){
-        console.log('yes')
-        this.$http({
-          url: requestUrl + '/front-system/order/product',
-          method: 'get',
-          data: {
-            search: this.search
-          },
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.productFromCategory = response.data.body.list
-          this.page = response.data.body.pagination
-          this.search = ''
-        }, function (err) {
-          console.log(err)
-        })
+      searchProduct: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/order/product',
+          { search: this.search },
+          function(response){
+            self.productFromCategory = response.data.body.list
+            self.page = response.data.body.pagination
+            self.search = ''
+         })
       },
 //     取消搜索
       cancelSearchProduct: function () {
-        this.$http({
-          url: requestUrl + '/front-system/order/product',
-          method: 'get',
-          data: {
-            search: ''
-          },
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.productFromCategory = response.data.body.list
-          this.page = response.data.body.pagination
-        }, function (err) {
-          console.log(err)
-        })
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/order/product',
+          { search: "" },
+          function(response){
+            self.productFromCategory = response.data.body.list
+            self.page = response.data.body.pagination
+          })
       },
 //      判断订单的支付金额
       isRightMoney: function () {
@@ -460,7 +489,7 @@
           obj['goods_id'] = val.id
           obj['amount'] = val.count
           obj['price'] = val.goodPrice
-          obj['note']  = val.priceNote
+          obj['note'] = val.priceNote
           orderItems.push(obj)
         })
         settlementData = {
@@ -482,7 +511,7 @@
         this.$http.post(requestUrl + '/front-system/order/order', data, {
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          callback(response)
+          callback && callback(response)
         }, function (err) {
           console.log(err)
         })
@@ -507,7 +536,7 @@
           return false
         } else {
 //          结算的状态
-          this.order_mata_data.settlementFlag = true
+          this.settlementFlag = true
         }
 //       判断是否加入商品
         if (checkedGoodsList && checkedGoodsList.length > 0) {
@@ -558,8 +587,10 @@
         if (currentStock <= 0) {
           return false
         } else {
-//          结算的状态
-          this.order_mata_data.settlementFlag = true
+//          判断是否是会员余额支付
+          if(this.order_mata_data.payment !== 'vip'){
+            this.settlementFlag = true
+          }
         }
 //       判断是否加入商品
         if (checkedGoodsList && checkedGoodsList.length > 0) {
@@ -625,7 +656,7 @@
           }
         })
         if (this.checkedGoodsList.length < 1) {
-          this.order_mata_data.settlementFlag = false
+          this.settlementFlag = false
         }
       },
 //      价格调整
@@ -698,22 +729,78 @@
             break
         }
       },
+//      会员请求数据
+      memberRequest: function () {
+        this.$http({
+            url: requestUrl + '/front-system/user/show/' + this.member.memberCode,
+            headers: {
+              'X-Overpowered-Token': token
+            }
+          })
+          .then(function (response) {
+              this.member.memberId = response.data.body.id
+            this.memberCount = response.data.body.balance
+            this.settlementFlag = true
+//            是否点击会员的确定
+            this.memberFlag = true
+          }, function (err) {
+            console.log(err)
+          })
+      },
+//      会员结算
+      memberUpload: function () {
+        this.messageTipModal = false
+        this.memberModal = false
+        switch (orderType) {
+          case 1:
+            this.messageTipModal = true
+            this.messageTip = '支付成功'
+            break
+          case 2:
+            this.creditlBill = true
+            break
+          case 3:
+            this.messageTip = '支付成功'
+            break
+        }
+      },
 //     结算请求成功后的函数
       setFinish: function (response) {
         this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
         Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
         orderMount = response.data.body.total_sum
-        if (this.order_mata_data.settlementFlag) {
-          switch (orderType) {
-            case 1:
-              this.retailBill = true
-              break
-            case 2:
-              this.creditlBill = true
-              break
-            case 3:
-              this.retailBill = true
-              break
+        if (this.settlementFlag) {
+//          判断支付方式是不是会员余额支付
+          if (this.order_mata_data.payment === 'vip') {
+            if (this.member.memberCode === '') {
+              this.messageTip = '您需要填写您的会员信息'
+              this.messageTipModal = true
+              this.error = true
+            } else {
+              this.messageTipModal = false
+              this.error = false
+              if(this.memberCount < this.finalPrice*100){
+                this.error = true
+                this.messageTipModal = true
+                this.messageTip = '您的会员卡余额不足请充值'
+              } else {
+                this.error = false
+                this.messageTipModal = false
+                this.memberModal = true
+              }
+            }
+          } else {
+            switch (orderType) {
+              case 1:
+                this.retailBill = true
+                break
+              case 2:
+                this.creditlBill = true
+                break
+              case 3:
+                this.retailBill = true
+                break
+            }
           }
         } else {
           return false
@@ -721,6 +808,7 @@
       },
 //    结算
       settlement: function () {
+        this.order_mata_data.user_id = this.member.memberId
         var settlementData = {}
         orderItems = []
         window.localStorage.setItem('orderType', this.order_mata_data.order_type)
@@ -744,7 +832,7 @@
       setuploadFinish: function () {
         orderType = Number(window.localStorage.getItem('orderType'))
         this.order_mata_data.paymentAmount = ""
-        this.order_mata_data.settlementFlag = false
+        this.settlementFlag = false
         this.retailBill = false
         this.checkedGoodsList = []
         window.location.href = '/?#!/tranquery'
@@ -784,11 +872,13 @@
     },
     data: function () {
       return {
+        memberCount: 0,
         goodsNote: '',
         paymentAmount: '',
         couponSelected: 0,
         couponName: [],
         truncate: false,
+        error: false,
         retailBill: false,
         retailBillSize: 'modal-sm',
         creditlBill: false,
@@ -797,21 +887,29 @@
         deleteModalSize: 'modal-sm',
         priceAdjectModal: false,
         priceAdjectModalSize: 'modal-sm',
+        memberModal: false,
+        memberModalSize: 'modal-sm',
+        messageTipModal: false,
+        messageTipModalSize: 'modal-sm',
+        messageTip: 'high，这是友情提示框',
+        memberFlag: false,
+        member: {
+          memberCode: '',
+          memberId: ''
+        },
         search: '',
         originalPrice: 0,
         finalPrice: 0,
         order_mata_data: {
           order_type: 1,
           coupon_name: '无优惠',
+          user_id: '',
           payment: 'cash',
-          discount: 0,
           strategy_id: '',
           order_note: '',
-          coupon_note: '',
-          settlementFlag: false,
-          orderFlag: true,
-          settlementFlag: false
+          coupon_note: ''
         },
+        settlementFlag: false,
         sellMark: false,
         priceNote: '',
         newSinglePrice: '',
@@ -876,6 +974,19 @@
 <style scoped>
   .index-list-porducts {
     height: 442px;
+  }
+
+  .modal-body {
+    text-align: center;
+    height: 15px;
+  }
+
+  .modal-body span {
+    margin-left: 20px;
+  }
+
+  .color {
+    color: red
   }
 </style>
 
