@@ -178,7 +178,7 @@
   <!--结算零售账单弹窗-->
   <modal :show.sync="retailBill" :modal-size="retailBillSize" class="form-horizontal">
     <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+      <button type="button" class="close" data-dismiss="modal" @click="retailBill=false" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">支付</h4>
     </div>
@@ -222,7 +222,7 @@
   <!--结算挂账账单弹窗-->
   <modal :show.sync="creditlBill" :modal-size="creditlBillSize">
     <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+      <button type="button" class="close" data-dismiss="modal" @click="creditlBill=false" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">结算提示</h4>
     </div>
@@ -250,7 +250,7 @@
   <!--价格调整弹窗-->
   <modal :show.sync='priceAdjectModal' :modal-size='priceAdjectModalSize' class='form-horizontal'>
     <div slot='header'>
-      <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span
+      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
         aria-hidden='true'>&times;</span></button>
       <h4 class='modal-title'>单价调整</h4>
     </div>
