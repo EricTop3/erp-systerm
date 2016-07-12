@@ -122,7 +122,7 @@
               <div class="form-inline">
                 <input type="text" class="form-control" v-model="balance" placeholder="请输入充值金额！" style="width:104px;">
                 <select class="form-control ml10" v-model="payment">
-                  <option value="cash">现金</option>
+                  <option value="cash" selected>现金</option>
                   <option value="alipay">支付宝</option>
                   <option value="weixin">微信支付</option>
                   <option value="vip">会员支付</option>
@@ -217,7 +217,7 @@
 
           <div class="col-sm-8">
             <select class="form-control" v-model="formData.payment">
-              <option value="cash">现金</option>
+              <option value="cash" selected>现金</option>
               <option value="alipay">支付宝</option>
               <option value="weixin">微信支付</option>
               <option value="vip">会员支付</option>
