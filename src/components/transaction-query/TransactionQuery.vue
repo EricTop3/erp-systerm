@@ -19,7 +19,7 @@
         </div>
         <div class="form-group ml10">
           <label>支付方式</label>
-          <select class="form-control" v-model="payment">
+          <select class="form-control" v-model="selected">
             <option value="现金" checked>现金</option>
             <option value="支付宝">支付宝</option>
             <option value="post刷卡">post刷卡</option>
@@ -409,7 +409,7 @@
           requestUrl + '/front-system/order',
           {
             order_number: this.orderNumber,
-            payment: this.payment,
+            payment: this.selected,
             card_number: this.cardNumber,
             operator: this.operator,
             order_type: this.orderType
@@ -580,9 +580,7 @@
         guazhangShow: false,
         orderShow: false,
         retailShow: false,
-        operator: '',
-        cardNumber: '',
-        payment: '',
+        selcted: '',
         coupon_note: '',
         order_note: '',
         gridCheck: true,

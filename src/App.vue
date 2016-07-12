@@ -1,4 +1,5 @@
 <template>
+  <div>
     <div class="container-fluid admin-header" v-if="font===true">
       <div class="row">
         <div class="col-md-2 text-center">
@@ -17,6 +18,7 @@
         </div>
         <div class="col-md-1"></div>
       </div>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -24,8 +26,7 @@
   export default{
     data: function () {
       return {
-        font: true,
-        admin: true
+        font: true
       }
     }
   }
