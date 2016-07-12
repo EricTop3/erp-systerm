@@ -37,42 +37,42 @@
             <label class="col-sm-4 control-label">会员卡号：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" v-model="edit_member_card" disabled>
+              <input type="text" class="form-control" v-model="formData.member_card" disabled>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">姓名：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="edit_member_name">
+              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="formData.name">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">手机号码：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="edit_phone" disabled>
+              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="formData.phone" disabled>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">微商城密码：</label>
 
             <div class="col-sm-8">
-              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="edit_password">
+              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="formData.password">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="edit_birthday">
+              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="formData.birthday">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
-              <select class="form-control" v-model="edit_level">
+              <select class="form-control" v-model="formData.level">
                 <option selected>请选择会员等级</option>
                 <option v-for="value in member_level_group">{{value.name}}</option>
               </select>
@@ -81,9 +81,9 @@
         </form>
       </div>
     </div>
-    <div slot="footer" :data="formData">
+    <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="editModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="member_id" @click="saveUpdateMember($event)">保存</button>
+      <button type="button" class="btn btn-primary" :value="formData.id" @click="saveUpdateMember($event)">保存</button>
     </div>
   </modal>
 
@@ -99,7 +99,7 @@
           <label class="col-sm-4 control-label">支付方式：</label>
 
           <div class="col-sm-8">
-            <select class="form-control" v-model="edit_payment">
+            <select class="form-control" v-model="formData.payment">
               <option value="cash">现金</option>
               <option value="alipay">支付宝</option>
               <option value="weixin">微信支付</option>
@@ -112,14 +112,14 @@
           <label class="col-sm-4 control-label">充值金额：</label>
 
           <div class="col-sm-8">
-            <input type="text" class="form-control" v-model="edit_balance">
+            <input type="text" class="form-control" v-model="formData.balance">
           </div>
         </div>
       </form>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="rechargeModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="rechargeId" @click="saveRecharge($event)">保存</button>
+      <button type="button" class="btn btn-primary" :value="formData.id" @click="saveRecharge($event)">保存</button>
     </div>
   </modal>
 
@@ -163,7 +163,9 @@
           }
         }).then(function (response) {
           this.memberData = response.data.body
-          console.log(this.memberData)
+          $.each(this.memberData, function (index, value) {
+            value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
+          })
 
         }, function (err) {
           console.log(err)
@@ -187,13 +189,11 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.gridData = response.data.body.list
+
           $.each(this.gridData, function (index, value) {
-            if (value.status == 'start') {
-              this.status = '启用'
-            } else {
-              this.status = '停用'
-            }
+            value.new_money = Number(Number(value.new_money) * 0.01).toFixed(2)
           })
+
         }, function (err) {
           console.log(err)
         })
@@ -204,35 +204,27 @@
         this.editModal = true
 //      编辑数据
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
-        this.$http({
-          url: requestUrl + '/front-system/user/' + id + '/detail',
-          method: 'get',
-          headers: {
-            'X-Overpowered-Token': token
-          }
-        }).then(function (response) {
-          this.formData = response.data.body.list[0]
-          this.member_id = this.formData.id
+        var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
+        var name = $(event.currentTarget).parents('tr').find('td:nth-child(4)').text()
+        var phone = $(event.currentTarget).parents('tr').find('td:nth-child(5)').text()
+        var birthday = $(event.currentTarget).parents('tr').find('td:nth-child(6)').text()
+        var level = $(event.currentTarget).parents('tr').find('td:nth-child(7)').text()
 
-          this.edit_member_card = this.formData.member_card
-          this.edit_member_name = this.formData.name
-          this.edit_phone = this.formData.phone
-          this.edit_birthday = this.formData.birthday
-          this.edit_level = this.formData.level
-          this.edit_payment = this.formData.payment
-        }, function (err) {
-          console.log(err)
-        })
+        this.formData.id = id
+        this.formData.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
+        this.formData.name = name.replace(/(^\s*)|(\s*$)/g, '')
+        this.formData.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
+        this.formData.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
+        this.formData.level = level.replace(/(^\s*)|(\s*$)/g, '')
       },
 //    保存修改的会员数据
       saveUpdateMember: function (event) {
         var id = Number($(event.currentTarget).attr('value'))
         this.$http.put(requestUrl + '/front-system/user/' + id, {
-            name: this.edit_member_name,
-            birthday: this.edit_birthday,
-            level: this.edit_level,
-            password: this.edit_password
-//            status: this.edit_atatus
+            name: this.formData.name,
+            birthday: this.formData.birthday,
+            level: this.formData.level,
+            password: this.formData.password
           },
           {
             headers: {
@@ -254,9 +246,8 @@
       recharge: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
         var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
-        this.rechargeId = id
-        this.edit_member_card = card_number.replace(/(^\s*)|(\s*$)/g,'')
-        console.log(this.edit_member_card)
+        this.formData.id = id
+        this.formData.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
 
         this.rechargeModal = true
       },
@@ -264,9 +255,9 @@
       saveRecharge: function (event) {
         var id = Number($(event.currentTarget).attr('value'))
         this.$http.put(requestUrl + '/front-system/user/change-money/' + id, {
-            money: this.edit_balance,
-            payment: this.edit_payment,
-            member_card: this.edit_member_card
+            money: this.formData.balance,
+            payment: this.formData.payment,
+            member_card: this.formData.member_card
           },
           {
             headers: {
@@ -291,8 +282,6 @@
         editModalSize: 'modal-sm',
         editModal: false,
         rechargeModal: false,
-        rechargeId: '',
-        member_id: '',
         member_card: '',
         member_name: '',
         phone: '',
@@ -301,16 +290,18 @@
         password: '',
         level: '',
         payment: '',
-        edit_member_card: '',
-        edit_member_name: '',
-        edit_phone: '',
-        edit_birthday: '',
-        edit_balance: '',
-        edit_password: '',
-        edit_level: '',
-        edit_atatus: '',
-        edit_payment: '',
         page: [],
+        formData: {
+          id: '',
+          name: '',
+          birthday: '',
+          password: '',
+          level: '',
+          status: '',
+          phone: '',
+          member_card: '',
+          payment: ''
+        },
         gridData: [],
         gridColumns: {
           operation_type: "操作类型",

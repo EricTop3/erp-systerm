@@ -37,8 +37,8 @@
         </div>
         <div class="form-group ml10">
           <label>下单时间段</label>
-          <input type="text" class="form-control date_picker" placeholder="开始时间"> -
-          <input type="text" class="form-control date_picker" placeholder="结束时间">
+          <date-picker  :value.sync="startTime"></date-picker> -
+          <date-picker  :value.sync="endTime"></date-picker>
         </div>
         <button type="submit" class="btn btn-info">搜索</button>
         <span class="btn btn-warning">撤销搜索</span>
@@ -318,6 +318,7 @@
   import Page from '../common/Page'
   import Count from '../common/Count'
   import Modal from  '../common/Modal'
+  import DatePicker from '../common/DatePicker'
   import {requestUrl,token} from '../../publicFunction/index'
   var detailId = 0
   export default {
@@ -325,7 +326,8 @@
       Count: Count,
       Grid: Grid,
       Page: Page,
-      Modal: Modal
+      Modal: Modal,
+      DatePicker: DatePicker
     },
     route: {
       activate: function () {
@@ -530,6 +532,8 @@
     },
     data: function () {
       return {
+        startTime: '',
+        endTime: '',
         deleteModal: false,
         deleteModalSize: 'modal-lg',
         paymentModal: false,
