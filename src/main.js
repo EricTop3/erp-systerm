@@ -73,8 +73,7 @@ router.map({
   '/billing': {
     component: Billing
   },
-  '/billing/:queryId': {
-    name: 'billing',
+  '/billing/BillingHistory': {
     component: BillingHistory
   },
   '/instock/GoodsApply': {

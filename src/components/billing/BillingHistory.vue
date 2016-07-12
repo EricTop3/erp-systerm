@@ -1,109 +1,97 @@
 <template>
   <div class="container-fluid">
-    <!--测试-->
+    <!-- 路径导航 -->
+    <ol class="breadcrumb">
+      <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：结算首页</li>
+      <li class="active">结算历史</li>
+    </ol>
 
-
-
-    <!-- 表格 -->
-    <table class="table table-striped table-border table-hover mt20">
-      <thead>
-      <tr class="text-center">
-        <td>结算日期</td>
-         <td>合计收入额</td>
-        <td>现金支付额</td>
-        <td>刷卡支付额</td>
-        <td>微信支付额</td>
-        <td>支付宝支付额 </td>
-        <td>操作</td>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class="text-center">
-        <td>2015-05-01</td>
-        <td>￥50000.00</td>
-        <td>￥10000.00</td>
-        <td>￥10000.00</td>
-        <td>￥10000.00</td>
-        <td>￥10000.00</td>
-        <td>
-          <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#settlement-templ">今日结算</span>
-          <span class="btn btn-info btn-sm">结算历史</span>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <!-- 页头 -->
+    <div class="page-header">
+      <form class="form-inline text-center">
+        <div class="form-group">
+          <label>时间段</label>
+          <date-picker  :value.sync="startTime"></date-picker> -
+          <date-picker  :value.sync="endTime"></date-picker>
+        </div>
+        <span type="submit" class="btn btn-info ml10">搜索</span>
+        <span type="submit" class="btn btn-warning">撤销搜索</span>
+      </form>
+    </div>
 
     <!-- 表格 -->
-    <table class="table table-striped table-border table-hover">
-      <thead>
-      <tr class="text-center">
-        <td>小票编号</td>
-        <td>下单时间</td>
-        <td>合计金额</td>
-        <td>合计数量</td>
-        <td>支付方式</td>
-        <td>会员卡号</td>
-        <td>优惠方式</td>
-        <td>营业员</td>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class="text-center">
-        <td>会员充值</td>
-        <td>2015-05-01 18:00:00</td>
-        <td>￥1800.00</td>
-        <td>10</td>
-        <td>现金支付</td>
-        <td>1234567890</td>
-        <td>无</td>
-        <td>张三</td>
-      </tr>
-      </tbody>
-    </table>
+    <grid :data="historyGridData" :columns="historyGridColumns" :filter-key="searchQuery" :operate="gridOperate">
+      <div slot="operateList">
+        <span class="btn btn-warning btn-sm">结算明细</span>
+      </div>
+    </grid>
 
     <!-- 翻页 -->
-    <nav class="text-right">
-      <ul class="pagination">
-        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-      </ul>
-    </nav>
+    <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
+          :last-page='page.last_page'></page>
   </div>
-
-  <!--模态框-删除-->
-  <div class="modal fade" id="settlement-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">提示</h4>
-        </div>
-        <div class="modal-body">
-          <h4 class="text-center">确定结算？</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
 </template>
 <script>
+  import $ from 'jquery'
+  import Grid from '../common/Grid'
+  import Page from '../common/Page'
+  import DatePicker from '../common/DatePicker'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
+    components: {
+      Grid: Grid,
+      Page: Page,
+      DatePicker: DatePicker
+    },
+    events: {
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.setMentListData(currentpage)
+      }
+    },
+    ready: function () {
+//    渲染结算历史列表
+      this.setMentListData(1)
+    },
+    methods: {
+//    渲染结算历史列表
+      setMentListData: function (page) {
+        this.$http({
+          url: requestUrl + '/front-system/settlement/list',
+          method: 'get',
+          headers: {
+            'X-Overpowered-Token': token
+          },
+          data: {
+            page: page,
+            per_page: 16
+          }
+        }).then(function (response) {
+          this.page = response.data.body.pagination
+          this.historyGridData = response.data.body.list
+        }, function (err) {
+          console.log(err)
+        })
+      }
+    },
     data: function () {
       return {
-        // note: changing this line won't causes changes
-        // with hot-reload because the reloaded component
-        // preserves its current state and we are modifying
-        // its initial state.
-        msg: 'this is billing vue'
+        searchQuery: '',
+        gridOperate: true,
+        startTime: '',
+        endTime: '',
+        page: [],
+        historyGridData: [],
+        historyGridColumns: {
+          settlement_code: "结算编号",
+          settlement_date: "结算时间",
+          total_sum: "合计收入额",
+          cash_money: "现金支付额",
+          vip_money: "会员卡支付额",
+          post_money: "刷卡支付额",
+          weixin_money: "微信支付额",
+          alipay_money: "支付宝支付额"
+        }
       }
     }
   }
