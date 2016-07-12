@@ -156,7 +156,7 @@
               <td>￥{{item.actual_price |priceChange}}</td>
               <td>{{item.total_sell}}</td>
               <td>
-                <count :count.sync="item.total_refund" :amount.sync='item.total_sell'></count>
+                <count :count="item.total_sell" :amount.sync='item.total_sell'></count>
               </td>
               <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
             </tr>
@@ -165,7 +165,8 @@
           <div class="panel">
             <div class="panel-body">
               <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
-                class="pull-right btn-primary btn" data-dismiss="modal" @click="onlyReturnOnce">确定退货</span>
+                class="pull-right btn-primary btn" data-dismiss="modal" @click="onlyReturnOnce"  :disabled="!refundFlag"
+                :class="{'btn-primary':refundFlag,'btn-warning':!refundFlag}">确定退货</span>
               </p>
             </div>
           </div>
@@ -203,15 +204,15 @@
           <td>{{item.total_sell }}</td>
           <td>{{item.total_refund }}</td>
           <td>{{item.total_sum | priceChange}}</td>
-          <td>{{item.note}}</td>
+          <td>{{ item.note===""  ? '无备注' : item.note }}</td>
         </tr>
         </tbody>
       </table>
       <div class="panel">
         <div class="panel-body">
-          <p>优惠备注：{{coupon_note}}</p>
+          <p>优惠备注：{{coupon_note===""? '无备注' : coupon_note }}</p>
 
-          <p>订单备注：{{order_note}}</p>
+          <p>订单备注：{{order_note===""? '无备注' : order_note }}</p>
         </div>
       </div>
     </div>
@@ -325,6 +326,7 @@
   import Modal from  '../common/Modal'
   import {requestUrl,token,searchRequest} from '../../publicFunction/index'
   var detailId = 0
+  var paymentid = 0
   export default {
     components: {
       Count: Count,
@@ -469,6 +471,11 @@
       finishPage: function (response) {
         this.page = response.data.body.pagination
         this.queryList = response.data.body.list
+        $.each(this.queryList,function(index,val){
+          if(val.status === 'at00'){
+            val.status ='已提交'
+          }
+        })
         this.modifyGetedData(this.queryList)
       },
 //     查看详情获取数据完成后的函数
@@ -511,21 +518,15 @@
       onlyReturnOnce: function () {
         $(this.currentButton).remove()
       },
-//     回款
+//      确定回款
       payment: function () {
         var button = $(event.currentTarget)
         this.currentButton = button
         this.paymentModal = true
-        var id = Number($(event.currentTarget).parents('tr').attr('id'))
-        this.$http.put(requestUrl + '/front-system/order/back-money/' + id, {headers: {'X-Overpowered-Token': token}})
-          .then(function (response) {
-           console.log(response)
-        },function (err){
-            console.log(err)
-        })
         var self = this
+        paymentid = Number($(event.currentTarget).parents('tr').attr('id'))
         $.each(this.queryList, function (index, val) {
-          if (id === val.id) {
+          if (paymentid === val.id) {
             self.paymentAmount = val.total_sum
           }
         })
@@ -561,9 +562,15 @@
       },
 //       确定回款
       confirmPayment: function () {
-        this.paymentModal = false
-
-        $(this.currentButton).remove()
+        this.$http.put(
+          requestUrl + '/front-system/order/back-money/' + paymentid, {headers: {'X-Overpowered-Token': token}})
+          .then(function (response) {
+            window.location.reload()
+            this.paymentModal = false
+            $(this.currentButton).remove()
+          },function (err){
+            console.log(err)
+          })
       }
     },
     data: function () {
