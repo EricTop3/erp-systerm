@@ -11,21 +11,25 @@
       <form class="form-inline">
         <div class="form-group">
           <label>小票编号</label>
-          <input type="text" class="form-control" placeholder="">
+          <input type="text" class="form-control" placeholder="" v-model="orderNumber">
         </div>
         <div class="form-group">
           <label>会员卡号</label>
-          <input type="text" class="form-control" placeholder="">
+          <input type="text" class="form-control" placeholder="" v-model="cardNumber">
         </div>
         <div class="form-group ml10">
           <label>支付方式</label>
-          <select class="form-control">
-            <option>请选择</option>
+          <select class="form-control" v-model="payment">
+            <option value="现金" checked>现金</option>
+            <option value="支付宝">支付宝</option>
+            <option value="post刷卡">post刷卡</option>
+            <option value="微信">微信</option>
+            <option value="会员余额">会员余额</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>营业员</label>
-          <select class="form-control">
+          <select class="form-control" v-model="operator">
             <option>全部</option>
           </select>
         </div>
@@ -319,7 +323,7 @@
   import Count from '../common/Count'
   import DatePicker from '../common/DatePicker'
   import Modal from  '../common/Modal'
-  import {requestUrl,token,search} from '../../publicFunction/index'
+  import {requestUrl,token,searchRequest} from '../../publicFunction/index'
   var detailId = 0
   export default {
     components: {
@@ -400,7 +404,35 @@
     methods: {
 //      搜索
       search: function (){
-        search()
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/order',
+          {
+            order_number: this.orderNumber,
+            payment: this.payment,
+            card_number: this.cardNumber,
+            operator: this.operator,
+            order_type: this.orderType
+          },
+          function (response) {
+            self.queryList = response.data.body.list
+            self.page = response.data.body.pagination
+          }
+        )
+      },
+      cancelSearch: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/order',
+          {
+            order_number: '',
+            order_type: this.orderType
+          },
+          function (response) {
+            self.queryList = response.data.body.list
+            self.page = response.data.body.pagination
+          }
+        )
       },
 //     封装获取数据方法
       fetchData: function (url, data, callback) {
@@ -537,6 +569,7 @@
     data: function () {
       return {
         startTime: '',
+        orderNumber: '',
         endTime: '',
         deleteModal: false,
         deleteModalSize: 'modal-lg',
@@ -547,6 +580,9 @@
         guazhangShow: false,
         orderShow: false,
         retailShow: false,
+        operator: '',
+        cardNumber: '',
+        payment: '',
         coupon_note: '',
         order_note: '',
         gridCheck: true,

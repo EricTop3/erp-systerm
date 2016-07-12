@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <div class="container-fluid admin-header">
+    <div class="container-fluid admin-header" v-if="font===true">
       <div class="row">
         <div class="col-md-2 text-center">
           <h2>中渝爱都会店</h2>
@@ -18,11 +17,18 @@
         </div>
         <div class="col-md-1"></div>
       </div>
-    </div>
     <router-view></router-view>
   </div>
 </template>
 <script>
+  export default{
+    data: function () {
+      return {
+        font: true,
+        admin: true
+      }
+    }
+  }
 </script>
 
 <style scoped>
