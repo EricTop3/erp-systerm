@@ -385,6 +385,11 @@
         var paymentData = ''
         elem.on('click', elemSon, function () {
           $(this).addClass('active').siblings().removeClass('active')
+          if($(this).html() !=="会员卡余额"){
+            if($this.settlementFlag === false){
+              $this.settlementFlag =  true
+            }
+          }
           switch ($(this).html()) {
             case '零售订单':
               orderTypeData = 1
