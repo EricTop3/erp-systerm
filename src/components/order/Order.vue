@@ -319,7 +319,6 @@
     </div>
   </modal>
 </template>
-
 <script>
   import $ from 'jquery'
   import Modal from '../common/Modal'
