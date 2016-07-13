@@ -11,31 +11,46 @@
       <form class="form-inline">
         <div class="form-group">
           <label>单号</label>
-          <input type="text" class="form-control" placeholder="" v-model="query.order_code">
+          <input type="text" class="form-control" placeholder="" v-model="orderNumber">
         </div>
         <div class="form-group ml10">
-          <label>审核状态</label>
-          <select class="form-control">
-            <option>请选择</option>
+          <label>状态</label>
+          <select class="form-control" v-model="selectedCheck">
+            <option value="1">已审核</option>
+            <option value="0">未审核</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
-          <select class="form-control">
-            <option>全部</option>
+          <select class="form-control" v-model="createPersonId">
+            <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单时间段</label>
-          <date-picker :value.sync="orderStartTime"></date-picker>-
-          <date-picker :value.sync="orderEndTime"></date-picker>
+          <date-picker
+            :value.sync=query.start_time1"
+          >
+          </date-picker>
+          -
+          <date-picker
+            :value.sync="query.end_time1"
+          >
+          </date-picker>
         </div>
         <div class="form-group ml10">
           <label>送货时间段</label>
-          <date-picker :value.sync="sendStartTime"></date-picker>-
-          <date-picker :value.sync="sendEndTime"></date-picker>
+          <date-picker
+            :value.sync="query.end_time1"
+          >
+          </date-picker>
+          -
+          <date-picker
+            :value.sync="query.end_time2"
+          >
+          </date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
+        <button type="submit" class="btn btn-info" @click="search">搜索</button>
         <a v-link="{ path: '/instock/Allot'}"><span class="btn btn-primary">新建收货单</span></a>
       </form>
     </div>
@@ -49,7 +64,7 @@
   import Page from '../common/Page'
   import Summary from  '../common/Summary'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl, token} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -65,6 +80,16 @@
     },
     ready: function () {
       this.listData(1)
+//      获取制单人
+      this.$http({
+        url: requestUrl + '/front-system/create/order/users',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.creators = response.data.body
+      }, function (err) {
+        console.log(err)
+      })
     },
     methods: {
 //    收货单汇总-列表数据渲染
@@ -87,23 +112,66 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
+          $.each(this.list, function (index, val) {
+            switch (val.checked) {
+              case 1:
+                val.checked = '已审核'
+                break
+              case 0:
+                val.checked = '未审核'
+                self.validateFlag = true
+                break
+            }
+          })
         }, function (err) {
           console.log(err)
         })
+      },
+//      搜索页面
+      search: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/stock/recipient',
+          {
+            order_number: this.orderNumber,
+            checked: Number(this.selectedCheck),
+            creator_id: this.createPersonId,
+            per_page: 16
+          },
+          function (response) {
+            self.list = response.data.body.list
+            self.page = response.data.body.pagination
+            $.each(self.list, function (index, val) {
+              switch (val.checked) {
+                case 1:
+                  val.checked = '已审核'
+                  break
+                case 0:
+                  val.checked = '未审核'
+                  self.validateFlag = true
+                  break
+              }
+            })
+          }
+        )
       }
     },
     data: function () {
       return {
         page: [],
         list: [],
+        creators: [],
+        orderNumber: '',
+        selectedCheck: '',
+        createPersonId: '',
         detailUrl: '/#!/instock/AllotNum/',
         gridColumns: {
-          order_code: '单号',
-          check_status: '审核状态',
-          create_person: '制单人',
-          check_person: '审核人',
+          order_number: '单号',
+          checked: '审核状态',
+          creator: '制单人',
+          auditor: '审核人',
           date: '收货日期',
-          number: '收货数量'
+          amount: '收货数量'
         },
         query: {
           start_time1: '',

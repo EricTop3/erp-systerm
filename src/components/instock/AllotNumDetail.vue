@@ -7,16 +7,28 @@
       <li class="active">查看收货单</li>
     </ol>
 
-    <!-- 表格 单条数据 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
-      <div slot="operateList">
-        <button class="btn btn-info btn-sm" data-toggle="modal"
-                @click="inventory()">审核
-        </button>
-        <span class="btn btn-primary btn-sm">编辑</span>
-        <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#inventory-del-templ">删除</span>
-      </div>
-    </grid>
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+      <tr class="text-center">
+        <th v-for="value in gridColumns">
+          {{value}}
+        </th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="text-center" v-for="entry in  list" track-by="$index" :id="[entry.id ? entry.id : '']">
+        <td v-for="value in gridColumns">
+          {{entry[$key]}}
+        </td>
+        <td>
+          <slot name="operate">
+            <list-validate :list.sync="list" :flag.sync="validateFlag" v-if="entry.checked==='未审核'" v-on:finishEdit="finishEdit"></list-validate>
+            <span class="btn btn-primary btn-sm" @click="edit" v-if="entry.checked==='未审核'">编辑</span>
+          </slot>
+      </tr>
+      </tbody>
+    </table>
 
     <div>
       <ul class="nav nav-tabs" role="tablist">
@@ -49,43 +61,6 @@
     </div>
 
   </div>
-
-  <!--模态框-审核-->
-  <modal :show.sync="inventoryAuditModal" :modal-size="inventoryAuditModalSize">
-    <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">审核</h4>
-    </div>
-    <div slot="body">
-      <h4>审核弹出框！</h4>
-    </div>
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-      <button type="button" class="btn btn-primary" @click="sureInventory">保存</button>
-    </div>
-  </modal>
-  <!--模态框HTML-->
-
-  <!--模态框-删除-->
-  <div class="modal fade" id="inventory-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>删除弹出框！</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
   <!--模态框HTML-->
 </template>
 
@@ -94,12 +69,14 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Modal from '../common/Modal'
-  import {requestUrl, token} from '../../publicFunction/index'
+  import ListValidate from '../common/ListValidate'
+  import {requestUrl, token,searchRequest } from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
-      Modal: Modal
+      Modal: Modal,
+      ListValidate: ListValidate
     },
     events: {
 //    绑定翻页事件
@@ -222,3 +199,16 @@
     }
   }
 </script>
+<style scoped>
+  table thead tr th {
+    text-align: center
+  }
+
+  table thead tr th:first-child {
+    text-align: left;
+  }
+
+  table tbody tr td:first-child {
+    text-align: left;
+  }
+</style>

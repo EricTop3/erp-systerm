@@ -185,9 +185,9 @@
     data: function () {
       return {
         page: [],
-        creators: [],
         detailUrl: '/#!/instock/GoodsApplyNum/',
         showRight: false,
+        creators: [],
         orderNumber: '',
         selectedCheck: '',
         createPersonId: '',

@@ -37,6 +37,7 @@
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
         $.each(this.list, function (index, val) {
           if (val.id === currentId) {
+            console.log('wzk')
             val.checked = '已审核'
           }
         })

@@ -16,8 +16,8 @@
       </td>
       <td>
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.check==='未审核'||entry.check_status==='未审核'"></list-validate>
-          <list-finish  :list.sync="tableData"  v-if="entry.check==='已审核'||entry.check_status==='已审核'" ></list-finish>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.checked==='未审核'"></list-validate>
+          <list-finish  :list.sync="tableData"  v-if="entry.checked=='已审核'" ></list-finish>
           <span class="btn btn-info btn-sm" @click="detail($event)">查看</span>
           <list-delete :delete-data.sync="tableData"></list-delete>
         </slot>
