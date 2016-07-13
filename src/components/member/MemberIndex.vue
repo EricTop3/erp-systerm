@@ -110,8 +110,8 @@
 
             <div class="col-sm-8">
               <select class="form-control" v-model="level">
-                <option selected>请选择会员等级</option>
-                <option v-for="value in member_level_group">{{value.name}}</option>
+                <!--<option selected>请选择会员等级</option>-->
+                <option v-for="value in member_level_group" value="{{value.id}}" name="{{value.name}}">{{value.name}}</option>
               </select>
             </div>
           </div>
@@ -190,8 +190,8 @@
 
             <div class="col-sm-8">
               <select class="form-control" v-model="formData.level">
-                <option selected>请选择会员等级</option>
-                <option v-for="value in member_level_group">{{value.name}}</option>
+                <!--<option selected>请选择会员等级</option>-->
+                <option v-for="value in member_level_group" value="{{value.id}}" name="{{value.name}}">{{value.name}}</option>
               </select>
             </div>
           </div>
@@ -294,6 +294,7 @@
       },
 //    创建新会员
       creatNewMember: function () {
+        console.log(this.level)
         this.$http.post(requestUrl + '/front-system/user', {
             member_card: this.member_card,
             name: this.member_name,
