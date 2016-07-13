@@ -23,7 +23,7 @@
           <div class="col-sm-2" role="navigation" style="padding:0;">
             <ul class="nav nav-stacked sidebar">
               <li class="header">商品分类</li>
-              <li v-for="item in category" track-by="$index" :class="{'active':$index===0}" @click="fetchStockGood($event)">
+              <li v-for="item in category" track-by="$index" :class="{'active':$index===0}" @click="fetchStockGood($event)" :id="item.id">
                 <a href="javascript:void(0)">{{item.display_name}}<span
                   class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
@@ -131,7 +131,7 @@
 //    根据分类进行产品请求
       fetchStockGood: function (event) {
         var currentObj = $(event.currentTarget)
-        this.query.category = currentObj.find('a').html()
+        this.query.category = Number(currentObj.attr('id'))
         var data = {
           category: this.query.category
         }
