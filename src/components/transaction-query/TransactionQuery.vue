@@ -131,49 +131,48 @@
   </div>
 
   <!-- begin退货 -->
-  <div class="modal fade" id="inventory-returnGoods-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">退货</h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped table-border table-hover">
-            <thead>
-            <tr class="text-aligen">
-              <td>商品名称</td>
-              <td>零售单价</td>
-              <td>销售数量</td>
-              <td>退货数量</td>
-              <td>小计退额款</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in returnGoodsList" class="text-aligen">
-              <td>{{item.consumable_name}}</td>
-              <td>￥{{item.actual_price |priceChange}}</td>
-              <td>{{item.total_sell}}</td>
-              <td>
-                <count :count="item.total_sell" :amount.sync='item.total_sell'></count>
-              </td>
-              <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <div class="panel">
-            <div class="panel-body">
-              <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
-                class="pull-right btn-primary btn" data-dismiss="modal" @click="onlyReturnOnce"  :disabled="!refundFlag"
-                :class="{'btn-primary':refundFlag,'btn-warning':!refundFlag}">确定退货</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+  <modal :show.sync="refundModal" :modal-size="refundModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+        aria-hidden="true" @click=""refundModal=false">&times;</span></button>
+      <h4 class="modal-title">退货</h4>
     </div>
-  </div>
+   <div slot="body">
+     <table class="table table-striped table-border table-hover">
+       <thead>
+       <tr class="text-aligen">
+         <td>商品名称</td>
+         <td>零售单价</td>
+         <td>销售数量</td>
+         <td>退货数量</td>
+         <td>小计退额款</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr v-for="item in returnGoodsList" class="text-aligen">
+         <td>{{item.consumable_name}}</td>
+         <td>￥{{item.actual_price |priceChange}}</td>
+         <td>{{item.total_sell}}</td>
+         <td>
+           <count :count.sync="item.total_refund" :amount.sync='item.total_sell' :flag.sync="refundFlag"></count>
+         </td>
+         <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
+       </tr>
+       </tbody>
+     </table>
+     <div class="panel">
+       <div class="panel-body">
+         <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
+           class="pull-right btn-primary btn"  @click="onlyReturnOnce"
+           :disabled="refundFlag"
+           :class="{'btn-primary':!refundFlag,'btn-warning':refundFlag}">确定退货</span>
+         </p>
+       </div>
+     </div>
+   </div>
+    <div slot="footer">
+    </div>
+  </modal>
   <!-- end退货 -->
 
   <!-- begin查看零售单 -->
@@ -498,9 +497,10 @@
         var url = requestUrl + '/front-system/order/' + detailId + '/detail'
         this.fetchData(url, this.finishLookDetail)
       },
-//      退货3
+//      退货
       returnGoods: function (event) {
         var button = $(event.currentTarget)
+        this.refundModal = true
         var id = $(event.currentTarget).parents('tr').attr('id')
         this.$http({
           url: requestUrl + '/front-system/order/' + id + '/detail',
@@ -508,6 +508,9 @@
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.returnGoodsList = response.data.body.list
+          $.each(this.returnGoodsList,function(index,value){
+            value.total_refund = value.total_sell
+          })
         }, function (err) {
           console.log(err)
         })
@@ -516,7 +519,12 @@
       },
 //      退货后隐藏按钮
       onlyReturnOnce: function () {
-        $(this.currentButton).remove()
+        if(this.refundFlag === true){
+          return false
+        }else{
+          $(this.currentButton).remove()
+          this.refundModal = false
+        }
       },
 //      确定回款
       payment: function () {
@@ -575,9 +583,12 @@
     },
     data: function () {
       return {
+        refundFlag: false,
         startTime: '',
         orderNumber: '',
         endTime: '',
+        refundModal: false,
+        refundModalSize:'modal-lg',
         deleteModal: false,
         deleteModalSize: 'modal-lg',
         paymentModal: false,
