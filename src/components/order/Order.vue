@@ -852,7 +852,8 @@
           var settlementData = {
             'items': orderItems,
             'order_meta_data': this.order_mata_data,
-            'truncate': 1
+            'truncate': 1,
+            'get_order_price': 1
           }
           this.settlementRequest(settlementData, this.truncateFinish)
         } else {

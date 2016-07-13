@@ -134,7 +134,7 @@
   <modal :show.sync="refundModal" :modal-size="refundModalSize">
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true" @click=""refundModal=false">&times;</span></button>
+        aria-hidden="true" @click="refundModal=false">&times;</span></button>
       <h4 class="modal-title">退货</h4>
     </div>
    <div slot="body">
