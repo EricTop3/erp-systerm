@@ -27,7 +27,7 @@
         <td>￥{{todayGridData.weixin_money}}</td>
         <td>￥{{todayGridData.alipay_money}}</td>
         <td>
-          <span id="todaySet" class="btn btn-primary btn-sm" @click="settlementModal=true">今日结算</span>
+          <button id="todaySet" class="btn btn-primary btn-sm" :disabled="todayGridData.status" @click="settlementModal=true">今日结算</button>
           <span class="btn btn-info btn-sm" @click="detail($event)">结算历史</span>
         </td>
       </tr>
@@ -124,6 +124,7 @@
         }, function (response) {
           $('#todaySet').hide()
           this.settlementModal = false
+          this.todayGridData.status = true
         }, function (error) {
           console.log(error)
 
@@ -145,7 +146,8 @@
           cash_money: '',
           post_money: '',
           weixin_money: '',
-          alipay_money: ''
+          alipay_money: '',
+          status: ''
         },
         todayDetailGridData: [],
         todayDetailGridColumns: {
