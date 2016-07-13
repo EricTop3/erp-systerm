@@ -27,30 +27,16 @@
         </div>
         <div class="form-group ml10">
           <label>制单时间段</label>
-          <date-picker
-            :value.sync="orderStartTime"
-          >
-          </date-picker>
-          -
-          <date-picker
-            :value.sync="orderEndTime"
-          >
-          </date-picker>
+          <date-picker :value.sync="orderStartTime"></date-picker>-
+          <date-picker :value.sync="orderEndTime"></date-picker>
         </div>
         <div class="form-group ml10">
           <label>送货时间段</label>
-          <date-picker
-            :value.sync="sendStartTime"
-          >
-          </date-picker>
-          -
-          <date-picker
-            :value.sync="sendEndTime"
-          >
-          </date-picker>
+          <date-picker :value.sync="sendStartTime"></date-picker>-
+          <date-picker :value.sync="sendEndTime"></date-picker>
         </div>
         <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
-        <a v-link="{ path: '/instock/Allot'}" ><span class="btn btn-primary">新建收货单</span></a>
+        <a v-link="{ path: '/instock/Allot'}"><span class="btn btn-primary">新建收货单</span></a>
       </form>
     </div>
     <!--表格 -->
@@ -63,13 +49,13 @@
   import Page from '../common/Page'
   import Summary from  '../common/Summary'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl, token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
-      Summary:Summary,
-      DatePicker:DatePicker
+      Summary: Summary,
+      DatePicker: DatePicker
     },
     events: {
 //    绑定翻页事件
@@ -81,7 +67,7 @@
       this.listData(1)
     },
     methods: {
-//    生产出库-列表数据渲染
+//    收货单汇总-列表数据渲染
       listData: function (page) {
         this.$http({
           url: requestUrl + '/front-system/stock/recipient',
@@ -97,7 +83,7 @@
             page: page,
             per_page: 16
           },
-          headers:{'X-Overpowered-Token':token}
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
@@ -110,7 +96,7 @@
       return {
         page: [],
         list: [],
-        detailUrl:'/#!/instock/AllotNum/',
+        detailUrl: '/#!/instock/AllotNum/',
         gridColumns: {
           order_code: '单号',
           check_status: '审核状态',

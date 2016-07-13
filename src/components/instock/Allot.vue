@@ -3,7 +3,7 @@
     <!-- 路径导航 -->
     <ol class="breadcrumb">
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
-      <li class="active">收货汇总</li>
+      <li class="active">收货单汇总</li>
       <li class="active">查看收货单</li>
     </ol>
 
@@ -30,6 +30,7 @@
 
       <!-- Tab panes -->
       <div class="tab-content">
+        <!-- 入库明细 -->
         <div role="tabpanel" class="tab-pane active" id="detail">
           <!-- 表格 -->
           <table class="table table-striped table-border table-hover">
@@ -50,10 +51,10 @@
             <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
               <td class="text-left">{{item.goods_code}}</td>
               <td>{{item.goods_name}}</td>
-              <td>{{item.recipient_number}}</td>
+              <td>{{item.demanding_number}}</td>
               <td>{{item.distribution_number}}</td>
               <td align="center">
-                <count :count='item.now_number'></count>
+                <count :count.sync='item.now_number'></count>
               </td>
               <td>{{item.unit}}</td>
               <td>{{item.unit_specification}}</td>
@@ -63,19 +64,14 @@
             </tr>
             </tbody>
           </table>
+
           <!-- 翻页 -->
-          <nav class="text-right">
-            <ul class="pagination">
-              <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-            </ul>
-          </nav>
+          <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
+                :last-page='page.last_page'></page>
+
         </div>
+
+        <!-- 入库汇总 -->
         <div role="tabpanel" class="tab-pane" id="summary">
           <table class="table table-striped table-border table-hover">
             <thead>
@@ -92,29 +88,20 @@
             <tbody>
             <tr class="text-center" v-for="item in renderData">
               <td class="text-left">{{item.goods_code}}</td>
-              <td align="center">
-                <count :count.sync='item.is_number'></count>
-              </td>
               <td>{{item.goods_name}}</td>
               <td>{{item.demanding_number}}</td>
               <td>{{item.distribution_number}}</td>
+              <td>{{item.now_number}}</td>
               <td>{{item.unit}}</td>
               <td>{{item.unit_specification}}</td>
             </tr>
             </tbody>
           </table>
+
           <!-- 翻页 -->
-          <nav class="text-right">
-            <ul class="pagination">
-              <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-            </ul>
-          </nav>
+          <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
+                :last-page='page.last_page'></page>
+
         </div>
       </div>
     </div>
@@ -148,7 +135,7 @@
   import Page from '../common/Page'
   import Modal from '../common/Modal'
   import DatePicker from  '../common/DatePicker'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl, token} from '../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
@@ -169,13 +156,14 @@
           }
         })
         this.rederStockGoods = self.dataArray
-            $.each(this.rederStockGoods,function(index,val){
-              $.each(self.citeData,function (index1,val1){
-                if(val.store_distribution_id===val1.id){
-                  val.store_distribution_id =val1.code
-                }
-              })
-            })
+        $.each(this.rederStockGoods, function (index, val) {
+          $.each(self.citeData, function (index1, val1) {
+            if (val.store_distribution_id === val1.id) {
+              val.store_distribution_id = val1.code
+            }
+          })
+        })
+        this.renderData = self.dataArray
       },
 //    绑定翻页事件
       pagechange: function (currentpage) {
@@ -223,15 +211,14 @@
         $.each(this.rederStockGoods, function (index, val) {
           var obj = {}
           obj['id'] = val.id
-          obj['amount'] = val.distribution_number
+          obj['amount'] = val.now_number
           goods.push(obj)
         })
         this.$http.post(requestUrl + '/front-system/stock/recipient', {
           'goods': goods
-        },{
+        }, {
           headers: {'X-Overpowered-Token': token}
-        }, function (response) {
-          console.log(response)
+        }).then(function (response) {
           window.location.href = '?#!/instock/AllotNum/1'
         }, function (error) {
           console.log(err)
@@ -241,7 +228,7 @@
     data: function () {
       return {
         time: '',
-        citeData:[],
+        citeData: [],
         renderData: [],
         parentIntroModal: false,
         parentIntroModalSize: 'modal-lg',
