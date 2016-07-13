@@ -385,9 +385,9 @@
         var paymentData = ''
         elem.on('click', elemSon, function () {
           $(this).addClass('active').siblings().removeClass('active')
-          if($(this).html() !=="会员卡余额"){
-            if($this.settlementFlag === false){
-              $this.settlementFlag =  true
+          if ($(this).html() !== "会员卡余额") {
+            if ($this.settlementFlag === false && $this.checkedGoodsList.length > 0) {
+              $this.settlementFlag = true
             }
           }
           switch ($(this).html()) {
@@ -414,8 +414,8 @@
               break
             case '会员卡余额':
               paymentData = 'vip'
-              if($this.memberFlag === false){
-                $this.settlementFlag =  false
+              if ($this.memberFlag === false) {
+                $this.settlementFlag = false
               }
               break
           }
@@ -442,20 +442,20 @@
         var self = this
         searchRequest(
           requestUrl + '/front-system/order/product',
-          { search: this.search },
-          function(response){
+          {search: this.search},
+          function (response) {
             self.productFromCategory = response.data.body.list
             self.page = response.data.body.pagination
             self.search = ''
-         })
+          })
       },
 //     取消搜索
       cancelSearchProduct: function () {
         var self = this
         searchRequest(
           requestUrl + '/front-system/order/product',
-          { search: "" },
-          function(response){
+          {search: ""},
+          function (response) {
             self.productFromCategory = response.data.body.list
             self.page = response.data.body.pagination
           })
@@ -507,11 +507,23 @@
       },
 //     选择优惠计算金额
       select_money: function (response) {
-        if(response.data.body){
+        if (response.data.body) {
           this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
           Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
-
           orderMount = response.data.body.total_sum
+        }else{
+          if(response.data.code ==='200005'){
+            this.error = true
+            this.messageTipModal =  true
+            this.messageTip = response.data.message
+            this.order_mata_data.strategy_id = 0
+            this.finalPrice = this.totalPrice
+          }
+          else{
+            this.error = false
+            this.messageTipModal =  true
+            this.messageTip = response.data.message
+          }
         }
       },
 //     结算请求
@@ -596,7 +608,7 @@
           return false
         } else {
 //          判断是否是会员余额支付
-          if(this.order_mata_data.payment !== 'vip'){
+          if (this.order_mata_data.payment !== 'vip') {
             this.settlementFlag = true
           }
         }
@@ -741,16 +753,26 @@
       memberRequest: function () {
         this.$http({
             url: requestUrl + '/front-system/user/show/' + this.member.memberCode,
-            headers: {
-              'X-Overpowered-Token': token
-            }
+            headers: {'X-Overpowered-Token': token}
           })
           .then(function (response) {
-            this.member.memberId = response.data.body.id
-            this.memberCount = response.data.body.balance
-            this.settlementFlag = true
+            if (response.data.body) {
+              this.member.memberId = response.data.body.id
+              this.memberCount = response.data.body.balance
+              this.settlementFlag = true
 //            是否点击会员的确定
-            this.memberFlag = true
+              this.memberFlag = true
+            }else{
+//            会员不存在的情况下
+              if (response.data.code = '200009') {
+                this.error = true
+                this.messageTipModal = true
+                this.messageTip = response.data.message
+              } else {
+                this.error = false
+                this.messageTipModal = false
+              }
+            }
           }, function (err) {
             console.log(err)
           })
@@ -774,10 +796,20 @@
       },
 //     结算请求成功后的函数
       setFinish: function (response) {
-        if(response.data.body){
+        if (response.data.body) {
           this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
           Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
           orderMount = response.data.body.total_sum
+        }else{
+          if(response.data.code ==='200007'){
+            this.error = true
+            this.messageTipModal = true
+            this.messageTip = response.data.message
+          }
+          else{
+            this.error = true
+            this.messageTipModal = true
+          }
         }
         if (this.settlementFlag) {
 //          判断支付方式是不是会员余额支付
@@ -786,18 +818,6 @@
               this.messageTip = '您需要填写您的会员信息'
               this.messageTipModal = true
               this.error = true
-            } else {
-              this.messageTipModal = false
-              this.error = false
-              if(this.memberCount < this.finalPrice*100){
-                this.error = true
-                this.messageTipModal = true
-                this.messageTip = '您的会员卡余额不足请充值'
-              } else {
-                this.error = false
-                this.messageTipModal = false
-                this.memberModal = true
-              }
             }
           } else {
             switch (orderType) {
@@ -805,11 +825,11 @@
                 this.retailBill = true
                 break
               case 2:
-                if(response.data.code ==="200008"){
+                if (response.data.code === "200008") {
                   this.messageTipModal = true
                   this.error = true
                   this.messageTip = response.data.message
-                }else{
+                } else {
                   this.messageTipModal = false
                   this.error = false
                   this.creditlBill = true
@@ -826,6 +846,9 @@
       },
 //    结算
       settlement: function () {
+        if(this.settlementFlag === false){
+          return
+        }
         this.order_mata_data.user_id = this.member.memberId
         var settlementData = {}
         orderItems = []

@@ -57,7 +57,7 @@
               </td>
               <td>{{item.unit}}</td>
               <td>{{item.unit_specification}}</td>
-              <td>{{item.order_source_code}}</td>
+              <td>{{item.store_distribution_id}}</td>
               <td><span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-del-templ"
                         @click="isDelete($event)">删除</span></td>
             </tr>
@@ -169,8 +169,13 @@
           }
         })
         this.rederStockGoods = self.dataArray
-        self.dataArray = []
-        this.addGoodModal = false
+            $.each(this.rederStockGoods,function(index,val){
+              $.each(self.citeData,function (index1,val1){
+                if(val.store_distribution_id===val1.id){
+                  val.store_distribution_id =val1.code
+                }
+              })
+            })
       },
 //    绑定翻页事件
       pagechange: function (currentpage) {
@@ -236,6 +241,7 @@
     data: function () {
       return {
         time: '',
+        citeData:[],
         renderData: [],
         parentIntroModal: false,
         parentIntroModalSize: 'modal-lg',

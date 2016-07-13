@@ -41,7 +41,7 @@
   import $ from 'jquery'
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
-  import {requestUrl} from '../../publicFunction/index'
+  import { requestUrl } from '../../publicFunction/index'
   import _ from 'underscore'
   export default{
     name: 'introduce-data',
@@ -70,8 +70,12 @@
           url: requestUrl + '/front-system/store/resource/' + currentId + '/detail',
           method: 'get'
         }).then(function (response) {
+          $.each(response.data.body.list,function(index,val){
+            if(val.store_distribution_id ===currentId){
+              val.store_distribution_id  ===  '123456'
+            }
+          })
           this.thisData = response.data.body.list
-          console.log(this.thisData)
           fetchedData = this.thisData
           var firtElem = fetchedData[0]
           var lastElem = fetchedData[fetchedData.length - 1]

@@ -50,7 +50,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Modal from '../common/Modal'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token} from '../../publicFunction/index'
   export default {
     name: 'stockGoods',
     components: {
@@ -62,7 +62,7 @@
 //      分类
       this.$http({
         url: requestUrl + '/front-system/order/category',
-        method: 'get'
+        method: 'get',
       }).then(function (response) {
         this.category = response.data.body.list
       }, function (err) {
@@ -117,7 +117,7 @@
 //     公共产品列表请求
       requestApi: function (data) {
         this.$http({
-          url: requestUrl + '/front-system/stock/goods',
+          url: requestUrl + '/front-system/stock/enquiry',
           method: 'get',
           data: data
         }).then(function (response) {
@@ -133,8 +133,7 @@
         var currentObj = $(event.currentTarget)
         this.query.category = currentObj.find('a').html()
         var data = {
-          category: ' this.query.category',
-          per_page: 16
+          category: this.query.category
         }
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.$dispatch('fetchProduct')
@@ -144,8 +143,7 @@
 //      根据搜索进行产品请求
       search: function () {
         var data = {
-          search: this.query.search,
-          per_page: 16
+          search: this.query.search
         }
         this.requestApi(data)
       },
