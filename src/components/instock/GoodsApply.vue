@@ -44,7 +44,7 @@
         <td>{{item.sale_amount}}</td>
         <td>{{item.current_stock}}</td>
         <td align="center">
-          <count :count.sync='item.sale_amount'></count>
+          <count :count.sync='item.sale_refund'></count>
         </td>
         <td>{{item.unit}}</td>
         <td>{{item.unit_specification}}</td>
@@ -93,6 +93,9 @@
           }
         })
         this.rederStockGoods = self.dataArray
+        $.each(this.rederStockGoods,function(index,value){
+          value.sale_refund = value.sale_amount
+        })
         self.dataArray = []
         this.addGoodModal = false
       }
@@ -104,7 +107,7 @@
         $.each(this.rederStockGoods, function (index, val) {
           var obj = {}
           obj['consumable_id'] = val.id
-          obj['amount'] = Number(val['sale_amount'])
+          obj['amount'] = Number(val['sale_refund'])
           items.push(obj)
         })
 //       提交要货请求
