@@ -486,6 +486,7 @@
         }
         var settlementData = {}
         this.order_mata_data.strategy_id = $(event.currentTarget).val()
+        this.order_mata_data.user_id = this.member.memberId
         orderItems = []
         window.localStorage.setItem('orderType', this.order_mata_data.order_type)
         orderType = Number(window.localStorage.getItem('orderType'))
@@ -506,10 +507,12 @@
       },
 //     选择优惠计算金额
       select_money: function (response) {
-        this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
-        Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
+        if(response.data.body){
+          this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
+          Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
 
-        orderMount = response.data.body.total_sum
+          orderMount = response.data.body.total_sum
+        }
       },
 //     结算请求
       settlementRequest: function (data, callback) {
@@ -743,7 +746,7 @@
             }
           })
           .then(function (response) {
-              this.member.memberId = response.data.body.id
+            this.member.memberId = response.data.body.id
             this.memberCount = response.data.body.balance
             this.settlementFlag = true
 //            是否点击会员的确定
@@ -771,9 +774,11 @@
       },
 //     结算请求成功后的函数
       setFinish: function (response) {
-        this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
-        Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
-        orderMount = response.data.body.total_sum
+        if(response.data.body){
+          this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
+          Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
+          orderMount = response.data.body.total_sum
+        }
         if (this.settlementFlag) {
 //          判断支付方式是不是会员余额支付
           if (this.order_mata_data.payment === 'vip') {
@@ -800,7 +805,15 @@
                 this.retailBill = true
                 break
               case 2:
-                this.creditlBill = true
+                if(response.data.code ==="200008"){
+                  this.messageTipModal = true
+                  this.error = true
+                  this.messageTip = response.data.message
+                }else{
+                  this.messageTipModal = false
+                  this.error = false
+                  this.creditlBill = true
+                }
                 break
               case 3:
                 this.retailBill = true
