@@ -16,8 +16,8 @@
       </td>
       <td  v-if="operate">
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.check==='未审核'||entry.check_status==='未审核'" v-on:finishEdit="finishEdit"></list-validate>
-          <span class="btn btn-primary btn-sm" @click="edit" v-if="entry.check==='未审核'||entry.check_status==='未审核'">编辑</span>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.checked==='未审核'" v-on:finishEdit="finishEdit"></list-validate>
+          <span class="btn btn-primary btn-sm" @click="edit" v-if="entry.checked==='未审核'">编辑</span>
         </slot>
     </tr>
     </tbody>
@@ -33,8 +33,8 @@
     </thead>
     <tbody>
       <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-        <td v-if="entry.goods_code">{{entry.goods_code}}</td>
-        <td v-if="entry.goods_name">{{entry.goods_name}}</td>
+        <td v-if="entry.consumable_code">{{entry.consumable_code}}</td>
+        <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
         <td v-if="entry.name===null">{{entry.name}}</td>
         <td v-if="entry.amount && editFlag===false">{{entry.amount}}</td>
         <td v-if="entry.amount && editFlag===true"><count :count="entry.amount"></count></td>
@@ -66,7 +66,7 @@
       secondTableHeader: [],
       tableData: [],
       detailList: [],
-      page:{}
+      pageson:{}
     },
     components: {
       Page: Page,

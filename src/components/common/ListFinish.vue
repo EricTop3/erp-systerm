@@ -17,9 +17,8 @@
         var self=this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
         $.each(this.list, function (index, val) {
-          if (val.id === currentId &&(val.check === '已审核' || val.check_status === '已审核' )) {
-            val.check = '已完成'
-            val.check_status = '已完成'
+          if (val.id === currentId &&(val.checked === '已审核')) {
+            val.checked = '已完成'
             self.$remove()
           }
         })

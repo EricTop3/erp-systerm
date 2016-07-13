@@ -117,7 +117,7 @@
 //     公共产品列表请求
       requestApi: function (data) {
         this.$http({
-          url: requestUrl + '/front-system/stock/enquiry',
+          url: requestUrl + '/front-system/stock/goods',
           method: 'get',
           data: data
         }).then(function (response) {
@@ -167,88 +167,15 @@
         },
         category: [],
         goodsListTitle: {
-          'goods_code': '货号',
-          'goods_name': '品名',
-          'day_sales': '日均销量',
-          'stock': '当前库存',
+          'code': '货号',
+          'name': '品名',
+          'sale_amount': '日均销量',
+          'current_stock': '当前库存',
           'unit': '单位',
           'unit_specification': '单位规格',
-          'category': '商品分类'
+          'category_name': '商品分类'
         },
-        goodsList: [
-          {
-            'id': 1,
-            'checked': false,
-            'goods_code': 'xyz201606271458011',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '伊利牛奶',
-            'stock': 0,
-            'unit': '箱',
-            'unit_specification': '1箱*20盒*250ml'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '牛角包',
-            'stock': 20000,
-            'unit': '个',
-            'unit_specification': '1个'
-          },
-          {
-            'id': 3,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '露西咖啡豆',
-            'stock': 3000,
-            'unit': '包',
-            'unit_specification': '1包*2500g'
-          },
-          {
-            'id': 4,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '糖浆',
-            'stock': 2000,
-            'unit': '瓶',
-            'unit_specification': '1瓶*1000ml'
-          },
-          {
-            'id': 5,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '蔓越莓饼干',
-            'stock': 3000,
-            'unit': '盒',
-            'unit_specification': '1盒*12块'
-          },
-          {
-            'id': 6,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '白砂糖',
-            'stock': 2000,
-            'unit': '包',
-            'unit_specification': '1包*0.5kg'
-          }
-        ]
+        goodsList: []
       }
     }
   }

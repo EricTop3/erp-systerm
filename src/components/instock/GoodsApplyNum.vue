@@ -11,18 +11,19 @@
       <form class="form-inline">
         <div class="form-group">
           <label>单号</label>
-          <input type="text" class="form-control" placeholder="" v-model="query.order_code">
+          <input type="text" class="form-control" placeholder="" v-model="orderNumber">
         </div>
         <div class="form-group ml10">
           <label>状态</label>
-          <select class="form-control">
-            <option>请选择</option>
+          <select class="form-control" v-model="selectedCheck">
+            <option value="1">已审核</option>
+            <option value="0">未审核</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
-          <select class="form-control">
-            <option>全部</option>
+          <select class="form-control" v-model="createPersonId">
+            <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
@@ -49,7 +50,7 @@
           >
           </date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
+        <button type="submit" class="btn btn-info" @click="search()">搜索</button>
         <a v-link="{ path: '/instock/GoodsApply'}"><span class="btn btn-primary">申请要货</span></a>
       </form>
     </div>
@@ -66,7 +67,7 @@
   import ListValidate from '../common/ListValidate'
   import ListDelete from '../common/ListDelete'
   import DatePicker from '../common/DatePicker'
-  import { requestUrl,token} from '../../publicFunction/index'
+  import { requestUrl,token,searchRequest} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -80,11 +81,44 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.listData(currentpage)
+        this.$http({
+          url: requestUrl + '/front-system/stock/enquiry',
+          data: {
+            page: currentpage
+          },
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.page = response.data.body.pagination
+          this.list = response.data.body.list
+          var self = this
+          $.each(this.list, function (index, val) {
+            switch (val.checked) {
+              case 1:
+                val.checked = '已审核'
+                break
+              case 0:
+                val.checked = '未审核'
+                self.validateFlag = true
+                break
+            }
+          })
+        }, function (err) {
+          console.log(err)
+        })
       },
     },
     ready: function () {
-      this.listData(1)
+      this.listData(16)
+      this.$http({
+        url: requestUrl + '/front-system/create/order/users',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.creators = response.data.body
+      }, function (err) {
+        console.log(err)
+      })
     },
     methods: {
 //    生产出库-列表数据渲染
@@ -92,18 +126,18 @@
         this.$http({
           url: requestUrl + '/front-system/stock/enquiry',
           method: 'get',
-          headers:{'X-Overpowered-Token':token}
+          headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
           $.each(this.list, function (index, val) {
-            switch (val.check) {
-              case 'start':
-                val.check = '未审核'
+            switch (val.checked) {
+              case 1:
+                val.checked = '已审核'
                 break
-              case 'end':
-                val.check = '已审核'
+              case 0:
+                val.checked = '未审核'
                 self.validateFlag = true
                 break
             }
@@ -118,29 +152,60 @@
         this.query.search = ''
         this.query.category = ''
         this.listData(1)
+      },
+//      搜索页面
+      search: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/stock/enquiry',
+          {
+            order_number: this.orderNumber,
+            checked: Number(this.selectedCheck),
+            creator_id: this.createPersonId,
+            per_page: 16
+          },
+          function (response) {
+            self.list = response.data.body.list
+            self.page = response.data.body.pagination
+            $.each(self.list, function (index, val) {
+              switch (val.checked) {
+                case 1:
+                  val.checked = '已审核'
+                  break
+                case 0:
+                  val.checked = '未审核'
+                  self.validateFlag = true
+                  break
+              }
+            })
+          }
+        )
       }
-//    生产明细点击>跳转页面，把id追加到浏览器地址栏后
     },
     data: function () {
       return {
         page: [],
+        creators: [],
         detailUrl: '/#!/instock/GoodsApplyNum/',
         showRight: false,
+        orderNumber: '',
+        selectedCheck: '',
+        createPersonId: '',
         format: 'yyyy-MM-dd',
         orderStartTime: '',
         orderEndTime: '',
         sendStartTime: '',
         sendEndTime: '',
-        list: [111,123],
+        list: [],
         gridOperate: true,
         gridColumns: {
           order_number: '单号',
-          check: '状态',
-          create_person: '制单人',
-          check_person: '审核人',
+          checked: '状态',
+          creator: '制单人',
+          auditor: '审核人',
           created_at: '制单日期',
           delivery_date: '送货日期',
-          total_amount: '要货数量'
+          amount: '要货数量'
         },
         query: {
           start_time1: '',

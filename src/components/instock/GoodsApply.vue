@@ -39,12 +39,12 @@
       </thead>
       <tbody>
       <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
-        <td class="text-left">{{item.goods_code}}</td>
-        <td>{{item.goods_name}}</td>
-        <td>{{item.day_sales}}</td>
-        <td>{{item.stock}}</td>
+        <td class="text-left">{{item.code}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.sale_amount}}</td>
+        <td>{{item.current_stock}}</td>
         <td align="center">
-          <count :count.sync='item.is_number'></count>
+          <count :count.sync='item.sale_amount'></count>
         </td>
         <td>{{item.unit}}</td>
         <td>{{item.unit_specification}}</td>
@@ -104,7 +104,7 @@
         $.each(this.rederStockGoods, function (index, val) {
           var obj = {}
           obj['consumable_id'] = val.id
-          obj['amount'] = Number(val['is_number'])
+          obj['amount'] = Number(val['sale_amount'])
           items.push(obj)
         })
 //       提交要货请求

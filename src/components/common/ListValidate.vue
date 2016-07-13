@@ -37,8 +37,7 @@
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
         $.each(this.list, function (index, val) {
           if (val.id === currentId) {
-            val.check = '已审核'
-            val.check_status='已审核'
+            val.checked = '已审核'
           }
         })
         this.$dispatch("finishEdit")

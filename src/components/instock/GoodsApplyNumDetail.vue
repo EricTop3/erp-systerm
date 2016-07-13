@@ -7,7 +7,7 @@
       <li class="active">查看要货单</li>
     </ol>
     <!--详情页面-->
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page="page">
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :pageson="page">
     </summary-detail>
   </div>
 </template>
@@ -29,8 +29,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-//        this.detailListData(currentpage)
-        console.log(currentpage)
+//
       }
     },
     ready: function () {
@@ -55,27 +54,21 @@
           this.list = response.data.body
           var self = this
           $.each(this.list, function (index, val) {
-            switch (val.check) {
-              case 'start':
-                val.check = '未审核'
-                break
-              case 'end':
-                val.check = '已审核'
-                self.validateFlag = true
+            switch (val.checked) {
+              case  1:
+                val.checked = '未审核'
                 break
               case 0:
-                val.check = '已审核'
-                 break
-              case 1:
-                val.check = '未审核'
+                val.checked = '已审核'
+                self.validateFlag = true
                 break
             }
-            switch (val.receipts) {
-              case 'start':
-                val.receipts = '未处理'
+            switch (val.receipt_status) {
+              case 0:
+                val.receipt_status = '未处理'
                 break
-              case 'end':
-                val.receipts = '已处理'
+              case 1:
+                val.receipt_status = '已处理'
                 break
             }
           })
@@ -108,19 +101,19 @@
         validateModalSize: 'modal-sm',
         gridOperate: true,
         gridColumns: {
-          order_code: '单号',
-          check: '审核状态',
-          receipts: '单据状态',
-          create_person: '制单人',
-          check_person: '审核人',
+          order_number: '单号',
+          checked: '审核状态',
+          receipt_status: '单据状态',
+          auditor: '制单人',
+          creator: '审核人',
           created_at: '制单日期',
           delivery_date: '送货日期',
-          number: '要货数量'
+          amount: '要货数量'
         },
         gridOperate2: false,
         gridColumns2: {
-          goods_code: '货号',
-          name: '品名',
+          consumable_code: '货号',
+          consumable_name: '品名',
           amount: '要货数量',
           unit: '单位',
           unit_specification: '单位规格'
