@@ -7,8 +7,7 @@
       <li class="active">查看要货单</li>
     </ol>
     <!--详情页面-->
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :pageson="page">
-    </summary-detail>
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page.sync="page"></summary-detail>
   </div>
 </template>
 
@@ -29,7 +28,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-//
+        this.listData(currentpage)
       }
     },
     ready: function () {
@@ -84,6 +83,7 @@
           headers:{ 'X-Overpowered-Token':token}
         }).then(function (response) {
           this.page = response.data.body.pagination
+          console.log(this.page.current_page)
           this.detailList = response.data.body.list
         }, function (err) {
           console.log(err)
