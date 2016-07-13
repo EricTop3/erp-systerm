@@ -66,7 +66,7 @@
       secondTableHeader: [],
       tableData: [],
       detailList: [],
-      pageson:{}
+      page: []
     },
     components: {
       Page: Page,
