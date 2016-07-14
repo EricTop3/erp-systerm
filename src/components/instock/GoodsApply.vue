@@ -12,7 +12,7 @@
       <form action="" method="post" class="form-inline">
         <div class="form-group ml10">
           <label>送货时间</label>
-          <date-picker  :value.sync="sendStartTime"></date-picker>
+          <date-picker  :value.sync="startTime"></date-picker>
         </div>
         <div class="form-group">
           <label>备注</label>
@@ -44,7 +44,7 @@
         <td>{{item.sale_amount}}</td>
         <td>{{item.current_stock}}</td>
         <td align="center">
-          <count :count.sync='item.sale_refund'></count>
+          <count :count.sync="item.sale_refund" :amount.sync='item.current_stock'></count>
         </td>
         <td>{{item.unit}}</td>
         <td>{{item.unit_specification}}</td>
@@ -55,13 +55,27 @@
       </tbody>
     </table>
     <!--分页-->
-    <page :total='rederStockGoods.length' :current.sync='instockPage.current_page' :display='instockPage.per_page'
-          :last-page='instockPage.last_page'>
-    </page>
+    <page :total='rederStockGoods.length' :current.sync='current_page' :display='per_page'  :last-page='totalPage' v-if="rederStockGoods.length>0"></page>
   </div>
   <!--模态框-添加商品-->
   <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
                :add-data.sync="stockGoods"></stock-goods>
+  <!--错误信息弹出-->
+  <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
+        aria-hidden='true' @click="messageTipModal=false">&times;</span></button>
+      <h4 class='modal-title'>友情提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{messageTip}}</p>
+      </div>
+    </div>
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='messageTipModal = false'>关闭</button>
+    </div>
+  </modal>
 </template>
 <script>
   import $ from 'jquery'
@@ -94,10 +108,21 @@
         })
         this.rederStockGoods = self.dataArray
         $.each(this.rederStockGoods,function(index,value){
-          value.sale_refund = value.sale_amount
+          value.sale_refund = value.current_stock
         })
+        console.log(this.rederStockGoods.length)
+        console.log(this.per_page)
+        if(this.rederStockGoods.length %this.per_page===0){
+          this.totalPage =this.rederStockGoods.length/this.per_page
+        }else{
+          this.totalPage =(Math.floor(this.rederStockGoods.length/ this.per_page))+1
+        }
         self.dataArray = []
         this.addGoodModal = false
+      },
+//      分页
+      pagechange: function(){
+
       }
     },
     methods: {
@@ -110,26 +135,39 @@
           obj['amount'] = Number(val['sale_refund'])
           items.push(obj)
         })
-//       提交要货请求
-        this.$http.post(requestUrl + '/front-system/stock/enquiry',
-          {
-            'items': items,
-            'date': this.sendStartTime
-          }
-        ).then(function (reponse) {
-          var id=reponse.data.body
-          window.location.href = '/?#!/instock/GoodsApplyNum/'+ id
-        }, function (err) {
-          console.log(err)
-        })
+        if(this.startTime===''){
+          this.messageTipModal = true
+          this.messageTip = 'high,你还没有填写日期哟'
+        }else if(this.rederStockGoods.length<1){
+          this.messageTipModal = true
+          this.messageTip = 'high,你忘记添加商品了哟'
+        }else{
+//          提交要货请求
+          this.$http.post(requestUrl + '/front-system/stock/enquiry',
+            {
+              'items': items,
+              'date': this.startTime
+            }
+          ).then(function (reponse) {
+              var id=reponse.data.body
+              window.location.href = '/?#!/instock/GoodsApplyNum/'+ id
+          }, function (err) {
+            console.log(err)
+          })
+        }
       }
     },
     data: function () {
       return {
         date: '',
         remarks: '',
-        sendStartTime: '',
-        format: 'yyyy-MM-dd',
+        messageTipModal: false,
+        current_page: 1,
+        per_page: 10,
+        totalPage: 1,
+        startTime: '',
+        messageTip: 'high,请填写正确的信息哟',
+        messageTipModalSize: 'modal-sm',
         instockPage: [],
         deleteModal: false,
         deleteModalSize: 'modal-sm',
@@ -142,3 +180,8 @@
     }
   }
 </script>
+<style>
+  .modal-body{
+    text-align: center;
+  }
+</style>

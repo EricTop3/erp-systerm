@@ -2,7 +2,7 @@
   <modal :show.sync="stockAddGoodModal"  :modal-size="stockAddGoodModalSize">
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
+        aria-hidden="true" @click="stockAddGoodModal = false">&times;</span></button>
       <h4 class="modal-title">添加商品</h4>
     </div>
     <div slot="body">
@@ -28,7 +28,7 @@
                   class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
           </div>
-          <div class="col-sm-10" style="padding-right: 0;height:550px;overflow:auto;">
+          <div class="col-sm-10">
             <!--表格-->
             <grid :check="true" :data="goodsList" :columns="goodsListTitle" :is-add-flag.sync="isAdd" v-on:change-all-operate="changeAllOperate" v-on:change-operate="changeOperate"></grid>
             <!--分页-->
@@ -72,18 +72,15 @@
       this.requestApi({per_page: 16})
       this.addData = this.goodsList
     },
+    events:{
+      pagechange: function(currentpage){
+        this.requestApi({page: currentpage})
+      }
+    },
     props: {
       addData: [],
       stockAddGoodModal: false,
-      stockAddGoodModalSize: 'modal-lg',
-      page: [
-        {
-          total: 10,
-          current_page: 1,
-          per_page: 10,
-          last_page: 1
-        }
-      ]
+      stockAddGoodModalSize: 'modal-lg'
     },
     methods: {
 //      全选选择添加商品
@@ -133,7 +130,7 @@
         var currentObj = $(event.currentTarget)
         this.query.category = Number(currentObj.attr('id'))
         var data = {
-          category: this.query.category
+          category_id: this.query.category
         }
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.$dispatch('fetchProduct')
@@ -166,6 +163,7 @@
           category: ''
         },
         category: [],
+        page: [],
         goodsListTitle: {
           'code': '货号',
           'name': '品名',

@@ -236,7 +236,8 @@
         deleteModalSize: 'modal-sm',
         stockGoods: [],
         dataArray: [],
-        rederStockGoods: []
+        rederStockGoods: [],
+        page : []
       }
     }
   }
