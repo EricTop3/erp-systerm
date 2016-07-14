@@ -20,15 +20,8 @@
         </div>
         <div class="form-group ml10">
           <label>销售时间段</label>
-          <date-picker
-            :value.sync="orderStartTime"
-          >
-          </date-picker>
-          -
-          <date-picker
-            :value.sync="orderEndTime"
-          >
-          </date-picker>
+          <date-picker :value.sync="orderStartTime"></date-picker>-
+          <date-picker :value.sync="orderEndTime"></date-picker>
         </div>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">

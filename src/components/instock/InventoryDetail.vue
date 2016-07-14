@@ -6,16 +6,15 @@
       <li class="active">盘点单汇总</li>
       <li class="active">查看盘点单</li>
     </ol>
-<!--列表汇总-->
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page="page">
-    </summary-detail>
+    <!--列表汇总-->
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header="gridColumns2" :grid-operate="gridOperate" :page="page"></summary-detail>
   </div>
 </template>
 <script>
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import  SummaryDetail from '../common/SummaryDetail'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl, token} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -48,6 +47,7 @@
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.list = response.data.body
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -81,20 +81,20 @@
         detailList: [],
         gridOperate: true,
         gridColumns: {
-          order_code: '盘点单号',
-          check_status: '审核状态',
-          create_person: '制单人',
-          check_person: '审核人',
-          data: '盘点日期',
-          differ_number: '差异库存量'
+          order_number: '盘点单号',
+          checked: '审核状态',
+          creator: '制单人',
+          auditor: '审核人',
+          date: '盘点日期',
+          differ_amount: '差异库存量'
         },
         gridOperate2: false,
         gridColumns2: {
-          goods_code: '货号',
-          goods_name: '品名',
+          consumable_code: '货号',
+          consumable_name: '品名',
           stock_system: '系统库存量',
           stock_now: '实际库存量',
-          difference_number: '差异库存量',
+          difference_amount: '差异库存量',
           unit: '单位',
           unit_specification: '单位规格'
         },

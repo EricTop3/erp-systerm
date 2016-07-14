@@ -27,15 +27,8 @@
         </div>
         <div class="form-group ml10">
           <label>盘点时间段</label>
-          <date-picker
-            :value.sync="orderStartTime"
-          >
-          </date-picker>
-          -
-          <date-picker
-            :value.sync="orderEndTime"
-          >
-          </date-picker>
+          <date-picker :value.sync="orderStartTime"></date-picker>-
+          <date-picker :value.sync="orderEndTime"></date-picker>
         </div>
         <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
@@ -90,7 +83,7 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
-
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -118,8 +111,8 @@
         gridColumns: {
           order_number: '盘点单号',
           checked: '审核状态',
-          create_person: '制单人',
-          check_person: '审核人',
+          creator: '制单人',
+          auditor: '审核人',
           created_at: '盘点日期',
           differ_amount: '差异库存量'
         },
