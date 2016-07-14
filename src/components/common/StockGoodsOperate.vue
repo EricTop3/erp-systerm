@@ -32,8 +32,7 @@
             <!--表格-->
             <grid :check="true" :data="goodsList" :columns="goodsListTitle" :is-add-flag.sync="isAdd" v-on:change-all-operate="changeAllOperate" v-on:change-operate="changeOperate"></grid>
             <!--分页-->
-            <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
-                  :last-page='page.last_page'></page>
+            <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
           </div>
         </div>
       </div>
@@ -75,6 +74,9 @@
     events:{
       pagechange: function(currentpage){
         this.requestApi({page: currentpage})
+        $.each(this.addData,function(index,val){
+          val.checked = false
+        })
       }
     },
     props: {

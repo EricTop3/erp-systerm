@@ -160,7 +160,7 @@
           requestUrl + '/front-system/stock/enquiry',
           {
             order_number: this.orderNumber,
-            checked: Number(this.selectedCheck),
+            checked: this.selectedCheck,
             creator_id: this.createPersonId,
             per_page: 16
           },

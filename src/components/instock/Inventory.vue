@@ -43,8 +43,7 @@
       </form>
     </div>
   <!--列表详情-->
-    <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page">
-    </summary>
+    <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page"></summary>
   </div>
 </template>
 <script>
@@ -91,6 +90,7 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
+
         }, function (err) {
           console.log(err)
         })
@@ -117,11 +117,11 @@
         gridOperate: true,
         gridColumns: {
           order_number: '盘点单号',
-          check_status: '审核状态',
+          checked: '审核状态',
           create_person: '制单人',
           check_person: '审核人',
           created_at: '盘点日期',
-          difference_number: '差异库存量'
+          differ_amount: '差异库存量'
         },
         query: {
           start_time: '',
