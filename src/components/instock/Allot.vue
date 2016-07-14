@@ -14,7 +14,7 @@
           <label>备注</label>
           <input type="text" class="form-control" placeholder="">
           <label>收货时间</label>
-          <date-picker :value="time"></date-picker>
+          <date-picker :value.sync="time"></date-picker>
         </div>
         <span class="btn btn-info" data-toggle="modal" data-target="#inventory-cite-templ"
               @click="parentIntroModal=true">引用原始数据</span>
@@ -126,6 +126,23 @@
   <introduce-data :instroduce-data-modal.sync='parentIntroModal'
                   :instroduce-data-modal-size="parentIntroModalSize" :add-data.sync="stockGoods"></introduce-data>
   <!--模态框HTML-->
+
+  <!--错误信息弹出-->
+  <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
+        aria-hidden='true' @click="messageTipModal=false">&times;</span></button>
+      <h4 class='modal-title'>友情提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{messageTip}}</p>
+      </div>
+    </div>
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='messageTipModal = false'>关闭</button>
+    </div>
+  </modal>
 </template>
 <script>
   import $ from 'jquery'
@@ -206,7 +223,6 @@
       },
 //      提交入货
       goodsUpload: function () {
-        console.log('nbo')
         var goods = []
         $.each(this.rederStockGoods, function (index, val) {
           var obj = {}
@@ -214,21 +230,34 @@
           obj['amount'] = val.now_number
           goods.push(obj)
         })
-        this.$http.post(requestUrl + '/front-system/stock/recipient', {
-          'goods': goods
-        }, {
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          window.location.href = '?#!/instock/AllotNum/1'
-        }, function (error) {
-          console.log(err)
-        })
+
+        if (this.time === '') {
+          this.messageTipModal = true
+          this.messageTip = 'high,你还没有填写日期哟'
+        } else if (this.rederStockGoods.length < 1) {
+          this.messageTipModal = true
+          this.messageTip = 'high,你忘记添加商品了哟'
+        } else {
+          this.$http.post(requestUrl + '/front-system/stock/recipient', {
+            'goods': goods,
+            'date': this.time
+          }, {
+            headers: {'X-Overpowered-Token': token}
+          }).then(function (response) {
+            window.location.href = '?#!/instock/AllotNum/1'
+          }, function (error) {
+            console.log(err)
+          })
+        }
       }
     },
     data: function () {
       return {
         time: '',
+        messageTip: '请填写正确的信息！',
         citeData: [],
+        messageTipModal: false,
+        messageTipModalSize: 'modal-sm',
         renderData: [],
         parentIntroModal: false,
         parentIntroModalSize: 'modal-lg',
@@ -237,7 +266,7 @@
         stockGoods: [],
         dataArray: [],
         rederStockGoods: [],
-        page : []
+        page: []
       }
     }
   }
