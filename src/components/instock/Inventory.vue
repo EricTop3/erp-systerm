@@ -32,7 +32,7 @@
           -
           <date-picker :value.sync="query.end_time"></date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
+        <button type="submit" class="btn btn-info" @click="search">搜索</button>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
         <a v-link="{ path: '/instock/InventoryCreate'}"><span class="btn btn-primary"
                                                               style="display: inline-block; float:right;">新建盘点单</span></a>
@@ -48,7 +48,7 @@
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
   import Summary from '../common/Summary'
-  import {requestUrl, token,searchRequest} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -124,17 +124,7 @@
           function (response) {
             self.list = response.data.body.list
             self.page = response.data.body.pagination
-            $.each(self.list, function (index, val) {
-              switch (val.checked) {
-                case 1:
-                  val.checked = '已审核'
-                  break
-                case 0:
-                  val.checked = '未审核'
-                  self.validateFlag = true
-                  break
-              }
-            })
+            exchangeData(self.list)
           }
         )
       },

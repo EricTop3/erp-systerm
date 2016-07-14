@@ -14,7 +14,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import  SummaryDetail from '../common/SummaryDetail'
-  import {requestUrl, token} from '../../publicFunction/index'
+  import {requestUrl, token,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,

@@ -24,7 +24,7 @@
           <label>品名或货号</label>
           <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">
         </div>
-        <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
+        <button type="submit" class="btn btn-info" @click="search">搜索</button>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
       </form>
     </div>
@@ -46,7 +46,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl, token} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -98,6 +98,25 @@
         var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
         window.location.href = this.detailUrl + detailId
       },
+      //      搜索页面
+      search: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/stock/difference',
+          {
+            start_time: this.query.start_time,
+            end_time: this.query.end_time,
+            category_id: this.query.category,
+            search: this.query.search,
+            per_page: 16
+          },
+          function (response){
+          self.list = response.data.body.list
+              self.page = response.data.body.pagination
+              exchangeData(self.list)
+            }
+          )
+      },
       cancel: function () {
         this.query.start_time = ''
         this.query.end_time = ''
@@ -105,35 +124,6 @@
         this.query.category = ''
         this.listData(1)
       }
-    },
-//      搜索页面
-    search: function () {
-      var self = this
-      searchRequest(
-        requestUrl + '/front-system/stock/inventory',
-        {
-          start_time: this.query.start_time,
-          end_time: this.query.end_time,
-          search: this.query.search,
-          category: this.query.category,
-          per_page: 16
-        },
-        function (response) {
-          self.list = response.data.body.list
-          self.page = response.data.body.pagination
-          $.each(self.list, function (index, val) {
-            switch (val.checked) {
-              case 1:
-                val.checked = '已审核'
-                break
-              case 0:
-                val.checked = '未审核'
-                self.validateFlag = true
-                break
-            }
-          })
-        }
-      )
     },
     data: function () {
       return {
