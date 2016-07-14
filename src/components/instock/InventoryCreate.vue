@@ -80,6 +80,22 @@
   </modal>
   <!--模态框HTML-->
 
+  <!--错误信息弹出-->
+  <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
+        aria-hidden='true' @click="messageTipModal=false">&times;</span></button>
+      <h4 class='modal-title'>友情提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{messageTip}}</p>
+      </div>
+    </div>
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='messageTipModal = false'>关闭</button>
+    </div>
+  </modal>
 </template>
 <script>
   import $ from 'jquery'
@@ -173,23 +189,35 @@
           obj['amount'] = Number(val['is_number'])
           inventory.push(obj)
         })
+
+        if (this.start_time === '') {
+          this.messageTipModal = true
+          this.messageTip = 'high,你还没有填写日期哟'
+        } else if (this.rederStockGoods.length < 1) {
+          this.messageTipModal = true
+          this.messageTip = 'high,你忘记添加商品了哟'
+        } else {
 //       提交盘点请求
-        this.$http({
-          url: requestUrl + '/front-system/stock/inventory',
-          method: 'post',
-          headers: {'X-Overpowered-Token': token},
-          params: {
-            inventory: inventory
-          }
-        }).then(function (reponse) {
-          window.location.href = '/#!/instock/Inventory'
-        }, function (err) {
-          console.log(err)
-        })
+          this.$http({
+            url: requestUrl + '/front-system/stock/inventory',
+            method: 'post',
+            headers: {'X-Overpowered-Token': token},
+            params: {
+              inventory: inventory
+            }
+          }).then(function (reponse) {
+            window.location.href = '/#!/instock/Inventory'
+          }, function (err) {
+            console.log(err)
+          })
+        }
       }
     },
     data: function () {
       return {
+        messageTipModal: false,
+        messageTipModalSize: 'modal-sm',
+        messageTip: '请填写正确的信息！',
         instockPage: [],
         start_time: '',
         deleteModal: false,
