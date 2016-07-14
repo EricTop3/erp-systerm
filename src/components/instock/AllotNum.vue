@@ -64,7 +64,7 @@
   import Page from '../common/Page'
   import Summary from  '../common/Summary'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl, token,searchRequest} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -112,17 +112,7 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
-          $.each(this.list, function (index, val) {
-            switch (val.checked) {
-              case 1:
-                val.checked = '已审核'
-                break
-              case 0:
-                val.checked = '未审核'
-                self.validateFlag = true
-                break
-            }
-          })
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -141,17 +131,7 @@
           function (response) {
             self.list = response.data.body.list
             self.page = response.data.body.pagination
-            $.each(self.list, function (index, val) {
-              switch (val.checked) {
-                case 1:
-                  val.checked = '已审核'
-                  break
-                case 0:
-                  val.checked = '未审核'
-                  self.validateFlag = true
-                  break
-              }
-            })
+            exchangeData(self.list)
           }
         )
       }

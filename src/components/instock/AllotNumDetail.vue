@@ -6,60 +6,8 @@
       <li class="active">收货单汇总</li>
       <li class="active">查看收货单</li>
     </ol>
-
-    <table class="table table-striped table-bordered table-hover">
-      <thead>
-      <tr class="text-center">
-        <th v-for="value in gridColumns">
-          {{value}}
-        </th>
-        <th>操作</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class="text-center" v-for="entry in  list" track-by="$index" :id="[entry.id ? entry.id : '']">
-        <td v-for="value in gridColumns">
-          {{entry[$key]}}
-        </td>
-        <td>
-          <slot name="operate">
-            <list-validate :list.sync="list" :flag.sync="validateFlag" v-if="entry.checked==='未审核'" v-on:finishEdit="finishEdit"></list-validate>
-            <span class="btn btn-primary btn-sm" @click="edit" v-if="entry.checked==='未审核'">编辑</span>
-          </slot>
-      </tr>
-      </tbody>
-    </table>
-
-    <div>
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#detail" data-toggle="tab">入库明细</a></li>
-        <li role="presentation"><a href="#summary" data-toggle="tab">入库汇总</a></li>
-      </ul>
-
-      <!-- Tab panes -->
-      <div class="tab-content">
-        <!-- 入库明细 -->
-        <div role="tabpanel" class="tab-pane active" id="detail">
-          <!-- 表格 详情列表 -->
-          <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
-
-          <!-- 翻页 -->
-          <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-                :last-page="page.last_page"></page>
-        </div>
-
-        <!-- 入库汇总 -->
-        <div role="tabpanel" class="tab-pane" id="summary">
-          <!-- 表格 详情列表 -->
-          <grid :data="detailList" :columns="gridColumns3" :operate="gridOperate3"></grid>
-
-          <!-- 翻页 -->
-          <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-                :last-page="page.last_page"></page>
-        </div>
-      </div>
-    </div>
-
+    <!--详情页面-->
+    <summary-detail :tab-flag='tabFlag' :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page.sync="page"></summary-detail>
   </div>
   <!--模态框HTML-->
 </template>
@@ -70,13 +18,15 @@
   import Page from '../common/Page'
   import Modal from '../common/Modal'
   import ListValidate from '../common/ListValidate'
-  import {requestUrl, token,searchRequest } from '../../publicFunction/index'
+  import SummaryDetail from '../common/SummaryDetail'
+  import {requestUrl, token,searchRequest,exchangeData } from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
       Modal: Modal,
-      ListValidate: ListValidate
+      ListValidate: ListValidate,
+      SummaryDetail: SummaryDetail
     },
     events: {
 //    绑定翻页事件
@@ -104,16 +54,7 @@
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.list = response.data.body
-          var self = this
-            $.each(this.list, function (index, val) {
-              self.dataId = val.id
-              self.checked = val.checked
-              if (val.checked == '0') {
-                val.checked = '未审核'
-              } else {
-                val.checked = '已审核'
-              }
-            })
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -157,6 +98,7 @@
     data: function () {
       return {
         id: 0,
+        tabFlag: true,
         page: [],
         inventoryAuditModal: false,
         inventoryAuditModalSize: 'modal-sm',

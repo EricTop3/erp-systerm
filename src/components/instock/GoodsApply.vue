@@ -44,7 +44,7 @@
         <td>{{item.sale_amount}}</td>
         <td>{{item.current_stock}}</td>
         <td align="center">
-          <count :count.sync="item.sale_refund" :amount.sync='item.current_stock'></count>
+          <count :count.sync="item.sale_refund"></count>
         </td>
         <td>{{item.unit}}</td>
         <td>{{item.unit_specification}}</td>
@@ -107,9 +107,6 @@
           }
         })
         this.rederStockGoods = self.dataArray
-        $.each(this.rederStockGoods,function(index,value){
-          value.sale_refund = value.current_stock
-        })
         console.log(this.rederStockGoods.length)
         console.log(this.per_page)
         if(this.rederStockGoods.length %this.per_page===0){
@@ -149,10 +146,13 @@
               'date': this.startTime
             }
           ).then(function (reponse) {
-              var id=reponse.data.body
-              window.location.href = '/?#!/instock/GoodsApplyNum/'+ id
+                var id=reponse.data.body
+                window.location.href = '/?#!/instock/GoodsApplyNum/'+ id
           }, function (err) {
-            console.log(err)
+            if(err.data.code ==='100000'){
+              this.messageTipModal = true
+              this.messageTip = 'high,填写了要货数量才能提货哟'
+            }
           })
         }
       }

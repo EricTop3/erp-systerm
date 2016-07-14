@@ -17,7 +17,7 @@
   import Page from '../common/Page'
   import Modal from '../common/Modal'
   import SummaryDetail from '../common/SummaryDetail'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl,token,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -51,26 +51,7 @@
           headers:{'X-Overpowered-Token':token}
         }).then(function (response) {
           this.list = response.data.body
-          var self = this
-          $.each(this.list, function (index, val) {
-            switch (val.checked) {
-              case  1:
-                val.checked = '未审核'
-                break
-              case 0:
-                val.checked = '已审核'
-                self.validateFlag = true
-                break
-            }
-            switch (val.receipt_status) {
-              case 0:
-                val.receipt_status = '未处理'
-                break
-              case 1:
-                val.receipt_status = '已处理'
-                break
-            }
-          })
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })

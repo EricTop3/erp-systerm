@@ -55,8 +55,7 @@
       </form>
     </div>
     <!--汇总列表-->
-    <summary :table-data="list" :table-header="gridColumns" :page="page"
-             :detail-url="detailUrl"></summary>
+    <summary :table-data="list" :table-header="gridColumns" :page="page" :detail-url="detailUrl"></summary>
   </div>
 </template>
 <script>
@@ -67,7 +66,7 @@
   import ListValidate from '../common/ListValidate'
   import ListDelete from '../common/ListDelete'
   import DatePicker from '../common/DatePicker'
-  import { requestUrl,token,searchRequest} from '../../publicFunction/index'
+  import { requestUrl,token,searchRequest,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -92,17 +91,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          $.each(this.list, function (index, val) {
-            switch (val.checked) {
-              case 1:
-                val.checked = '已审核'
-                break
-              case 0:
-                val.checked = '未审核'
-                self.validateFlag = true
-                break
-            }
-          })
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -167,17 +156,7 @@
           function (response) {
             self.list = response.data.body.list
             self.page = response.data.body.pagination
-            $.each(self.list, function (index, val) {
-              switch (val.checked) {
-                case 1:
-                  val.checked = '已审核'
-                  break
-                case 0:
-                  val.checked = '未审核'
-                  self.validateFlag = true
-                  break
-              }
-            })
+            exchangeData(self.list)
           }
         )
       }
@@ -191,7 +170,6 @@
         orderNumber: '',
         selectedCheck: '',
         createPersonId: '',
-        format: 'yyyy-MM-dd',
         orderStartTime: '',
         orderEndTime: '',
         sendStartTime: '',
