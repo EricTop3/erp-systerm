@@ -14,7 +14,7 @@
           <label>备注</label>
           <input type="text" class="form-control" placeholder="">
           <label>盘点日期</label>
-          <input type="text" class="form-control date_picker" placeholder="开始时间" v-model="query.start_time">
+          <date-picker :value.sync="start_time"></date-picker>
         </div>
         <span class="btn btn-info" @click="addGoodModal=true">选择盘点商品</span>
         <span class="btn btn-primary" @click="inventoryAll()">盘点所有商品</span>
@@ -38,15 +38,15 @@
       </thead>
       <tbody>
       <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
-        <td class="text-left">{{item.goods_code}}</td>
-        <td>{{item.goods_name}}</td>
-        <td>{{item.stock}}</td>
+        <td class="text-left">{{item.code}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.current_stock}}</td>
         <td align="center">
           <input type="text" class="form-control text-center" style="width:70px;" v-model="item.is_number">
         </td>
         <td>
-          <div v-if="item.is_number==''"></div>
-          <div v-else>{{item.stock - item.is_number}}</div>
+          <div v-if="item.is_number==''|| isNaN(item.is_number)">0</div>
+          <div v-else>{{item.current_stock - item.is_number}}</div>
         </td>
         <td>{{item.unit}}</td>
         <td>{{item.unit_specification}}</td>
@@ -56,13 +56,11 @@
     </table>
 
     <!--分页-->
-    <page :total='rederStockGoods.length' :current.sync='instockPage.current_page' :display='instockPage.per_page'
-          :last-page='instockPage.last_page'>
+    <page :total='rederStockGoods.length' :current.sync='instockPage.current_page' :display='instockPage.per_page' :last-page='instockPage.last_page'>
     </page>
   </div>
   <!--模态框-添加商品-->
-  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :add-data.sync="stockGoods"></stock-goods>
+  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize" :add-data.sync="stockGoods"></stock-goods>
   <!--模态框HTML-->
 
   <!--模态框-删除-->
@@ -81,6 +79,23 @@
     </div>
   </modal>
   <!--模态框HTML-->
+
+  <!--错误信息弹出-->
+  <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
+        aria-hidden='true' @click="messageTipModal=false">&times;</span></button>
+      <h4 class='modal-title'>友情提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{messageTip}}</p>
+      </div>
+    </div>
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='messageTipModal = false'>关闭</button>
+    </div>
+  </modal>
 </template>
 <script>
   import $ from 'jquery'
@@ -89,11 +104,13 @@
   import Grid from '../common/Grid'
   import Modal from '../common/Modal'
   import Page from '../common/Page'
+  import DatePicker from '../common/DatePicker'
   import {requestUrl,token} from '../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
       StockGoods: StockGoods,
+      DatePicker: DatePicker,
       Grid: Grid,
       Count: Count,
       Modal: Modal,
@@ -172,24 +189,37 @@
           obj['amount'] = Number(val['is_number'])
           inventory.push(obj)
         })
+
+        if (this.start_time === '') {
+          this.messageTipModal = true
+          this.messageTip = 'high,你还没有填写日期哟'
+        } else if (this.rederStockGoods.length < 1) {
+          this.messageTipModal = true
+          this.messageTip = 'high,你忘记添加商品了哟'
+        } else {
 //       提交盘点请求
-        this.$http({
-          url: requestUrl + '/front-system/stock/inventory',
-          method: 'post',
-          headers: {'X-Overpowered-Token': token},
-          params: {
-            inventory: inventory
-          }
-        }).then(function (reponse) {
-          window.location.href = '/#!/instock/Inventory'
-        }, function (err) {
-          console.log(err)
-        })
+          this.$http({
+            url: requestUrl + '/front-system/stock/inventory',
+            method: 'post',
+            headers: {'X-Overpowered-Token': token},
+            params: {
+              inventory: inventory
+            }
+          }).then(function (reponse) {
+            window.location.href = '/#!/instock/Inventory'
+          }, function (err) {
+            console.log(err)
+          })
+        }
       }
     },
     data: function () {
       return {
+        messageTipModal: false,
+        messageTipModalSize: 'modal-sm',
+        messageTip: '请填写正确的信息！',
         instockPage: [],
+        start_time: '',
         deleteModal: false,
         deleteModalSize: 'modal-sm',
         addGoodModal: false,

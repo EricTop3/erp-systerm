@@ -42,7 +42,7 @@
         <td v-if="entry.number && editFlag===true"><count :count="entry.number"></count></td>
         <td v-if="entry.stock_now">{{entry.stock_now}}</td>
         <td v-if="entry.stock_system">{{entry.stock_system}}</td>
-        <td v-if="entry.difference_number">{{entry.difference_number}}</td>
+        <td v-if="entry.difference_amount!==null">{{entry.difference_amount}}</td>
         <td>{{entry.unit}}</td>
         <td>{{entry.unit_specification}}</td>
       </tr>

@@ -15,34 +15,30 @@
         </div>
         <div class="form-group ml10">
           <label>审核状态</label>
-          <select class="form-control">
-            <option>请选择</option>
+          <select class="form-control" v-model="query.check_status">
+            <option value="1">已审核</option>
+            <option value="0">未审核</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
-          <select class="form-control">
-            <option>全部</option>
+          <select class="form-control" v-model="query.create_person">
+            <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>盘点时间段</label>
-          <date-picker
-            :value.sync="orderStartTime"
-          >
-          </date-picker>
+          <date-picker :value.sync="query.start_time"></date-picker>
           -
-          <date-picker
-            :value.sync="orderEndTime"
-          >
-          </date-picker>
+          <date-picker :value.sync="query.end_time"></date-picker>
         </div>
         <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
-        <a v-link="{ path: '/instock/InventoryCreate'}" ><span class="btn btn-primary" style="display: inline-block; float:right;">新建盘点单</span></a>
+        <a v-link="{ path: '/instock/InventoryCreate'}"><span class="btn btn-primary"
+                                                              style="display: inline-block; float:right;">新建盘点单</span></a>
       </form>
     </div>
-  <!--列表详情-->
+    <!--列表详情-->
     <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page"></summary>
   </div>
 </template>
@@ -52,7 +48,7 @@
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
   import Summary from '../common/Summary'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -64,12 +60,21 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.listData(currentpage)
-//        console.log(currentpage)
       }
     },
     ready: function () {
 //      请求列表
       this.listData(1)
+//      制单人
+      this.$http({
+        url: requestUrl + '/front-system/create/order/users',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.creators = response.data.body
+      }, function (err) {
+        console.log(err)
+      })
     },
     methods: {
 //    生产出库-列表数据渲染
@@ -90,7 +95,7 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
-
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -103,6 +108,36 @@
         this.query.create_person = ''
         this.listData(1)
       },
+//      搜索页面
+      search: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/stock/inventory',
+          {
+            start_time: this.query.start_time,
+            end_time: this.query.end_time,
+            order_number: this.query.order_code,
+            checked: this.query.check_status,
+            creator_id: this.query.create_person,
+            per_page: 16
+          },
+          function (response) {
+            self.list = response.data.body.list
+            self.page = response.data.body.pagination
+            $.each(self.list, function (index, val) {
+              switch (val.checked) {
+                case 1:
+                  val.checked = '已审核'
+                  break
+                case 0:
+                  val.checked = '未审核'
+                  self.validateFlag = true
+                  break
+              }
+            })
+          }
+        )
+      },
 //    明细点击>跳转页面，把id追加到浏览器地址栏后
       detail: function (event) {
         var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
@@ -111,15 +146,16 @@
     },
     data: function () {
       return {
+        creators: [],
         page: [],
-        detailUrl:  '/#!/instock/Inventory/',
+        detailUrl: '/#!/instock/Inventory/',
         list: [],
         gridOperate: true,
         gridColumns: {
           order_number: '盘点单号',
           checked: '审核状态',
-          create_person: '制单人',
-          check_person: '审核人',
+          creator: '制单人',
+          auditor: '审核人',
           created_at: '盘点日期',
           differ_amount: '差异库存量'
         },

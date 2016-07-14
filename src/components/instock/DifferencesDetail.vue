@@ -75,6 +75,7 @@
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
         }, function (err) {
+
           console.log(err)
         })
       }
@@ -85,23 +86,23 @@
         page: [],
         list: [],
         detailList: [],
-        gridOperate: true,
+        gridOperate: false,
         gridColumns: {
-          code: '货号',
-          name: '品名',
-          difference_number: '差异库存量',
-          unit: '单位',
-          unit_specification: '单位规格',
+          consumable_code: '货号',
+          consumable_name: '品名',
+          difference_amount: '差异库存量',
+          consumable_unit: '单位',
+          consumable_unit_specification: '单位规格',
           category: '商品分类'
         },
         gridOperate2: false,
         gridColumns2: {
           created_at: '时间',
-          name: '品名',
-          difference_number: '差异数量',
-          unit: '单位',
-          create_person: '操作人',
-          order_code: '盘点单号'
+          consumable_name: '品名',
+          difference_amount: '差异数量',
+          consumable_unit: '单位',
+          creator_name: '操作人',
+          sources_number: '盘点单号'
         },
         query: {
           start_time: '',
