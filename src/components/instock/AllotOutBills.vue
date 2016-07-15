@@ -15,8 +15,9 @@
         </div>
         <div class="form-group ml10">
           <label>审核状态</label>
-          <select class="form-control">
-            <option>请选择</option>
+          <select class="form-control" v-model="query.check_status">
+            <option value="1">已审核</option>
+            <option value="0">未审核</option>
           </select>
         </div>
         <div class="form-group ml10">
@@ -27,23 +28,16 @@
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
-          <select class="form-control">
-            <option>请选择</option>
+          <select class="form-control" v-model="query.create_person">
+            <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>出库时间段</label>
-          <date-picker
-            :value.sync="orderStartTime"
-          >
-          </date-picker>
-          -
-          <date-picker
-            :value.sync="orderEndTime"
-          >
-          </date-picker>
+          <date-picker :value.sync="query.start_time"></date-picker>-
+          <date-picker :value.sync="query.end_time"></date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="listData(1)">搜索</button>
+        <button type="submit" class="btn btn-info" @click="search">搜索</button>
         <a v-link="{ path: '/instock/AllotOut'}" ><span class="btn btn-primary">新建出库</span></a>
       </form>
     </div>
@@ -56,7 +50,7 @@
   import Page from '../common/Page'
   import Summary from '../common/Summary'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,token,searchRequest,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -68,12 +62,21 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.listData(currentpage)
-//        console.log(currentpage)
       }
     },
     ready: function () {
 //      渲染数据列表
       this.listData(1)
+//      渲染制单人
+      this.$http({
+        url: requestUrl + '/front-system/create/order/users',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.creators = response.data.body
+      }, function (err) {
+        console.log(err)
+      })
     },
     methods: {
 //    列表数据渲染
@@ -81,6 +84,7 @@
         this.$http({
           url: requestUrl + '/front-system/stock/issue',
           method: 'get',
+          headers: {'X-Overpowered-Token': token},
           data: {
             start_time: this.query.start_time || '',
             end_time: this.query.end_time || '',
@@ -97,17 +101,39 @@
         }, function (err) {
           console.log(err)
         })
+      },
+      //      搜索页面
+      search: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/stock/issue',
+          {
+            start_time: this.query.start_time,
+            end_time: this.query.end_time,
+            order_code: this.query.order_code,
+            check_status: this.query.check_status,
+            create_person: this.query.create_person,
+            receipts_store: this.query.receipts_store,
+            per_page: 16
+          },
+          function (response){
+            self.list = response.data.body.list
+            self.page = response.data.body.pagination
+            exchangeData(self.list)
+          }
+        )
       }
     },
     data: function () {
       return {
+        creators: [],
         list: [],
         page: [],
         detailUrl: '/#!/instock/AllotOutBills/',
         gridOperate: true,
         gridColumns: {
           order_code: '货号',
-          check_status: '审核状态',
+          check: '审核状态',
           receipts_store: '收货仓库',
           create_person: '制单人',
           check_person: '审核人',
