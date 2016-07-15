@@ -47,7 +47,7 @@
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
   import Summary from '../common/Summary'
-  import {requestUrl, token,searchRequest,exchangeData} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest,exchangeData,deleteRequest} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -59,6 +59,16 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.listData(currentpage)
+      },
+//     删除
+      events: {
+        delete: function () {
+          window.alert('yes')
+          var self = this
+          deleteRequest(requestUrl+ '/front-system/stock/check/',function(response){
+            window.alert('yes')
+          })
+        }
       }
     },
     ready: function () {

@@ -108,6 +108,11 @@
       detailUrl:'',
       tabFlag: false,
     },
+    events: {
+      delete: function() {
+        this.$dispatch('delete')
+      }
+    },
     components: {
       ListDelete: ListDelete,
       ListValidate: ListValidate,

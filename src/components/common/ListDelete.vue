@@ -47,6 +47,7 @@
             goodList.splice(index, 1)
           }
         })
+        this.$dispatch('delete')
       }
     },
     data: function () {
