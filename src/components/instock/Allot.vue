@@ -21,91 +21,8 @@
         <span class="btn btn-primary" data-toggle="modal" @click="goodsUpload()">提交入货</span>
       </form>
     </div>
-
-    <div>
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#detail" data-toggle="tab">入库明细</a></li>
-        <li role="presentation"><a href="#summary" data-toggle="tab">入库汇总</a></li>
-      </ul>
-
-      <!-- Tab panes -->
-      <div class="tab-content">
-        <!-- 入库明细 -->
-        <div role="tabpanel" class="tab-pane active" id="detail">
-          <!-- 表格 -->
-          <table class="table table-striped table-border table-hover">
-            <thead>
-            <tr class="text-center">
-              <td class="text-left">货号</td>
-              <td>品名</td>
-              <td>要货数量</td>
-              <td>配送数量</td>
-              <td>实际入库量</td>
-              <td>单位</td>
-              <td>单位规格</td>
-              <td>来源单号</td>
-              <td>操作</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
-              <td class="text-left">{{item.goods_code}}</td>
-              <td>{{item.goods_name}}</td>
-              <td>{{item.demanding_number}}</td>
-              <td>{{item.distribution_number}}</td>
-              <td align="center">
-                <count :count.sync='item.now_number'></count>
-              </td>
-              <td>{{item.unit}}</td>
-              <td>{{item.unit_specification}}</td>
-              <td>{{item.store_distribution_id}}</td>
-              <td><span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-del-templ"
-                        @click="isDelete($event)">删除</span></td>
-            </tr>
-            </tbody>
-          </table>
-
-          <!-- 翻页 -->
-          <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
-                :last-page='page.last_page'></page>
-
-        </div>
-
-        <!-- 入库汇总 -->
-        <div role="tabpanel" class="tab-pane" id="summary">
-          <table class="table table-striped table-border table-hover">
-            <thead>
-            <tr class="text-center">
-              <td class="text-left">货号</td>
-              <td>品名</td>
-              <td>要货数量</td>
-              <td>配送数量</td>
-              <td>实际入库量</td>
-              <td>单位</td>
-              <td>单位规格</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="text-center" v-for="item in renderData">
-              <td class="text-left">{{item.goods_code}}</td>
-              <td>{{item.goods_name}}</td>
-              <td>{{item.demanding_number}}</td>
-              <td>{{item.distribution_number}}</td>
-              <td>{{item.now_number}}</td>
-              <td>{{item.unit}}</td>
-              <td>{{item.unit_specification}}</td>
-            </tr>
-            </tbody>
-          </table>
-
-          <!-- 翻页 -->
-          <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
-                :last-page='page.last_page'></page>
-
-        </div>
-      </div>
-    </div>
-
+    <!--表格 -->
+    <summary :table-header="gridColumns" :summary-data="summryData" :table-data="detailData" :page="page"   :detail-url="detailUrl" :tab-flag="tabFlag"></summary>
   </div>
   <!--模态框-删除-->
   <modal :show.sync="deleteModal" :modal-size="deleteModalSize">
@@ -152,6 +69,7 @@
   import Page from '../common/Page'
   import Modal from '../common/Modal'
   import DatePicker from  '../common/DatePicker'
+  import Summary from '../common/Summary'
   import {requestUrl, token} from '../../publicFunction/index'
   var deleteId = ''
   export default {
@@ -161,7 +79,8 @@
       Modal: Modal,
       Count: Count,
       DatePicker: DatePicker,
-      IntroduceData: IntroduceData
+      IntroduceData: IntroduceData,
+      Summary: Summary
     },
     events: {
 //      确认增加
@@ -174,13 +93,37 @@
         })
         this.rederStockGoods = self.dataArray
         $.each(this.rederStockGoods, function (index, val) {
+          val.now_number = val.distribution_number
           $.each(self.citeData, function (index1, val1) {
             if (val.store_distribution_id === val1.id) {
               val.store_distribution_id = val1.code
             }
           })
         })
-        this.renderData = self.dataArray
+        this.detailData =  self.stockGoods
+      },
+//    入库汇总函数双循环遍历数量相加
+      summary: function () {
+        var goodsName = []
+        var self = this
+        self.summryData = self.rederStockGoods
+        $.each(self.summryData,function(index,val){
+           var currentName = val.goods_name
+           for(var i= index + 1; i<self.summryData.length; i++){
+             if(self.summryData[i]['goods_name']){
+               if(self.summryData[i]['goods_name'] === currentName ) {
+                 val.demanding_number = Number(val.demanding_number) + Number(self.summryData[i].demanding_number)
+                 val.distribution_number = Number(val.distribution_number) + Number(self.summryData[i].distribution_number)
+                 val.now_number =  Number(val.now_number) + Number(self.summryData[i].now_number)
+                 self.summryData.splice(i, 1)
+               }
+             }
+           }
+        })
+      },
+//      入库明细函数
+      detail: function () {
+        this.detailData =   this.stockGoods
       },
 //    绑定翻页事件
       pagechange: function (currentpage) {
@@ -262,11 +205,11 @@
     data: function () {
       return {
         time: '',
+        tabFlag: true,
         messageTip: '请填写正确的信息！',
         citeData: [],
         messageTipModal: false,
         messageTipModalSize: 'modal-sm',
-        renderData: [],
         parentIntroModal: false,
         parentIntroModalSize: 'modal-lg',
         deleteModal: false,
@@ -274,7 +217,20 @@
         stockGoods: [],
         dataArray: [],
         rederStockGoods: [],
-        page: []
+        renderData: [],
+        summryData: [],
+        detailData: [],
+        page: [],
+        gridColumns: {
+          goods_code: '货号',
+          goods_name: '品名',
+          recipient_amount: '要货数量',
+          distribution_amount: '配送数量',
+          current_amount: '实际入库量',
+          unit: '单位',
+          unit_specification: '单位规格',
+          order_source_code: '来源单号'
+        },
       }
     }
   }

@@ -51,7 +51,7 @@
   <!-- 翻页 -->
   <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
         :last-page="page.last_page" v-if="!tabFlag"></page>
-  <!--有列表切换的时候的问题-->
+  <!--有列表切换的时候的情况-->
   <div v-if="tabFlag">
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
@@ -62,6 +62,36 @@
     <div class="tab-content">
       <!-- 入库明细 -->
       <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+        <!--表格详情列表-->
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+          <tr class="text-center">
+            <th v-for="value in  secondTableHeader">
+              {{value}}
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+            <td v-if="entry.goods_code">{{entry.goods_code}}</td>
+            <td v-if="entry.goods_name">{{entry.goods_name}}</td>
+            <td v-if="entry.recipient_amount">{{entry.recipient_amount}}</td>
+            <!--<td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>-->
+            <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
+            <td v-if="entry.current_amount">{{entry.current_amount}}</td>
+            <td>{{entry.unit}}</td>
+            <td>{{entry.unit_specification}}</td>
+            <td>{{entry.order_source_code}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!-- 翻页 -->
+        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+              :last-page="page.last_page"></page>
+      </div>
+
+      <!-- 入库汇总 -->
+      <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
         <!--表格详情列表-->
         <table class="table table-striped table-bordered table-hover">
           <thead>
@@ -89,38 +119,8 @@
         <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
               :last-page="page.last_page"></page>
       </div>
-
-      <!-- 入库汇总 -->
-      <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
-          <!--表格详情列表-->
-          <table class="table table-striped table-bordered table-hover">
-            <thead>
-            <tr class="text-center">
-              <th v-for="value in  secondTableHeader">
-                {{value}}
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-              <td v-if="entry.goods_code">{{entry.goods_code}}</td>
-              <td v-if="entry.goods_name">{{entry.goods_name}}</td>
-              <td v-if="entry.recipient_amount && editFlag===false">{{entry.recipient_amount}}</td>
-              <td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>
-              <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
-              <td v-if="entry.current_amount">{{entry.current_amount}}</td>
-              <td>{{entry.unit}}</td>
-              <td>{{entry.unit_specification}}</td>
-              <td>{{entry.order_source_code}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <!-- 翻页 -->
-          <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-                :last-page="page.last_page"></page>
-        </div>
-      </div>
     </div>
+  </div>
   </div>
 </template>
 <script>
