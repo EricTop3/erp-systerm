@@ -24,7 +24,7 @@
           <label>品名或货号</label>
           <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">
         </div>
-        <button type="submit" class="btn btn-info" @click="search">搜索</button>
+        <button class="btn btn-info" @click="search">搜索</button>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
       </form>
     </div>

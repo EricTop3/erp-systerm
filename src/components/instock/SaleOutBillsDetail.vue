@@ -86,23 +86,23 @@
         page: [],
         list: [],
         detailList: [],
-        gridOperate: true,
+        gridOperate: false,
         gridColumns: {
-          order_code: '货号',
-          order_name: '品名',
-          sale_number: '零售出库量',
+          consumable_code: '货号',
+          consumable_name: '品名',
+          sale_amount: '零售出库量',
           unit: '零售单位',
           unit_specification: '单位规格',
-          category: '商品分类'
+          category_name: '商品分类'
         },
         gridOperate2: false,
         gridColumns2: {
           created_at: '时间',
-          goods_name: '品名',
-          sale_number: '零售出库量',
+          consumable_name: '品名',
+          sale_amount: '零售出库量',
           unit: '零售单位',
-          operator: '操作人',
-          order_code: '盘点单号'
+          creator_name: '操作人',
+          consumable_code: '盘点单号'
         },
         query: {
           start_time: '',
