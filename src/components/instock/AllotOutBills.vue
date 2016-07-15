@@ -37,7 +37,7 @@
           <date-picker :value.sync="query.start_time"></date-picker>-
           <date-picker :value.sync="query.end_time"></date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="search">搜索</button>
+        <button class="btn btn-info" @click="search">搜索</button>
         <a v-link="{ path: '/instock/AllotOut'}" ><span class="btn btn-primary">新建出库</span></a>
       </form>
     </div>

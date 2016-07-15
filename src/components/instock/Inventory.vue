@@ -32,10 +32,9 @@
           -
           <date-picker :value.sync="query.end_time"></date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="search">搜索</button>
+        <button class="btn btn-info" @click="search">搜索</button>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
-        <a v-link="{ path: '/instock/InventoryCreate'}"><span class="btn btn-primary"
-                                                              style="display: inline-block; float:right;">新建盘点单</span></a>
+        <a v-link="{ path: '/instock/InventoryCreate'}"><span class="btn btn-primary" style="display: inline-block; float:right;">新建盘点单</span></a>
       </form>
     </div>
     <!--列表详情-->

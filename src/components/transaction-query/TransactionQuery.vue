@@ -44,7 +44,7 @@
           <date-picker  :value.sync="startTime"></date-picker> -
           <date-picker  :value.sync="endTime"></date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="search">搜索</button>
+        <button class="btn btn-info" @click="search">搜索</button>
         <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
       </form>
     </div>

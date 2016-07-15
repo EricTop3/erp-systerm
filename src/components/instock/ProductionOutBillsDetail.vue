@@ -90,21 +90,21 @@
         detailList: [],
         gridOperate: true,
         gridColumns: {
-          product_code: '货号',
-          product_name: '品名',
-          number: '生产出库量',
+          consumable_code: '货号',
+          consumable_name: '品名',
+          amount: '生产出库量',
           unit: '单位',
           unit_specification: '单位规格',
-          category: '商品分类'
+          category_name: '商品分类'
         },
         gridOperate2: false,
         gridColumns2: {
           created_at: '时间',
-          name: '品名',
-          number: '生产出库量',
+          consumable_name: '品名',
+          amount: '生产出库量',
           unit: '单位',
-          operator: '操作人',
-          order_code: '单号'
+          creator_name: '操作人',
+          consumable_code: '单号'
         },
         query: {
           start_time: '',

@@ -50,7 +50,7 @@
           >
           </date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="search">搜索</button>
+        <button class="btn btn-info" @click="search">搜索</button>
         <a v-link="{ path: '/instock/Allot'}"><span class="btn btn-primary">新建收货单</span></a>
       </form>
     </div>
