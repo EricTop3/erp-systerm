@@ -9,33 +9,33 @@
       <form class="form-inline">
         <div class="form-group">
           <label>会员卡号</label>
-          <input type="text" class="form-control" placeholder="" v-model="search_memberCard">
+          <input type="text" class="form-control" placeholder="" v-model="query.member_card">
         </div>
         <div class="form-group ml10">
           <label>会员姓名</label>
-          <input type="text" class="form-control" placeholder="" v-model="search_memberName">
+          <input type="text" class="form-control" placeholder="" v-model="query.name">
         </div>
         <div class="form-group ml10">
           <label>会员手机号</label>
-          <input type="text" class="form-control" placeholder="" v-model="search_phone">
+          <input type="text" class="form-control" placeholder="" v-model="query.phone">
         </div>
         <div class="form-group ml10">
           <label>会员生日</label>
-          <input type="text" class="form-control" placeholder="" v-model="search_birthday">
+          <date-picker :value.sync="query.birthday"></date-picker>
         </div>
         <div class="form-group ml10">
           <label>开卡点</label>
-          <select class="form-control" v-model="search_open_card_store">
-            <option></option>
-            <option>水星</option>
-            <option>万达</option>
+          <!--TODO 开卡点会通过记录动态获取，现在先写死-->
+          <select class="form-control" v-model="query.store_id">
+            <option value="1">水星</option>
+            <option value="2">万达</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>状态搜索</label>
-          <select class="form-control" v-model="search_status">
-            <option>启用</option>
-            <option>停用</option>
+          <select class="form-control" v-model="query.status">
+            <option value="start">启用</option>
+            <option value="stop">停用</option>
           </select>
         </div>
         <span type="submit" class="btn btn-info ml10" @click="searchProduct">搜索</span>
@@ -44,7 +44,7 @@
       </form>
     </div>
     <!-- 表格 -->
-    <grid :data="gridData" :columns="gridColumns" :filter-key="searchQuery" :operate="gridOperate">
+    <grid :data="gridData" :columns="gridColumns" :operate="gridOperate">
       <div slot="operateList">
         <span :value="member_card" class="btn btn-primary btn-sm" data-toggle="modal"
               data-target="#chongzhi-member-templ"
@@ -69,6 +69,7 @@
     </div>
     <div slot="body">
       <div class="modal-body">
+        <!--TODO 表单各个填写项目的验证 <span style=" float: left; color: red; font-size: 12px; ">请输入正确的手机号码！</span>-->
         <form action="" method="post" class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-4 control-label">会员卡号：</label>
@@ -86,9 +87,8 @@
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">手机号码：</label>
-
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="phone">
+              <input id="new_phoneNum" type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="phone">
             </div>
           </div>
           <div class="form-group">
@@ -102,7 +102,8 @@
             <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">
+              <date-picker :value.sync="birthday"></date-picker>
+              <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">-->
             </div>
           </div>
           <div class="form-group">
@@ -182,7 +183,8 @@
             <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="formData.birthday">
+              <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="formData.birthday">-->
+              <date-picker :value.sync="formData.birthday"></date-picker>
             </div>
           </div>
           <div class="form-group">
@@ -246,11 +248,13 @@
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
   import Page from '../common/Page'
+  import DatePicker from  '../common/DatePicker'
   import {requestUrl, token, searchRequest} from '../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
       Page: Page,
+      DatePicker: DatePicker,
       Grid: Grid
     },
     events: {
@@ -273,13 +277,18 @@
             'X-Overpowered-Token': token
           },
           data: {
+            phone: this.query.phone || '',
+            birthday: this.query.birthday || '',
+            status: this.query.status || '',
+            store_id: this.query.store_id || '',
+            name: this.query.name || '',
+            member_card: this.query.member_card || '',
             page: page,
             per_page: 16
           }
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.gridData = response.data.body.list
-
           $.each(this.gridData, function (index, value) {
             value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
             if (value.status == 'start') {
@@ -294,7 +303,7 @@
       },
 //    创建新会员
       creatNewMember: function () {
-        console.log(this.level)
+
         this.$http.post(requestUrl + '/front-system/user', {
             member_card: this.member_card,
             name: this.member_name,
@@ -326,7 +335,10 @@
           this.creatMemberModal = false
 
         }, function (err) {
-          console.log(err)
+          if (err.data.message == "无效的手机号码"){
+            console.log(err.data.message)
+            this.phone = err.data.message
+          }
         })
       },
 //    编辑会员资料
@@ -405,31 +417,33 @@
 //    搜索
       searchProduct: function () {
         var self = this
-        if (this.search_status == '启用') {
-          this.search_status = 'start'
-        }
-        if (this.search_status == '停用') {
-          this.search_status = 'stop'
-        }
         searchRequest(
           requestUrl + '/front-system/user',
           {
-            phone: this.search_phone,
-            birthday: this.search_birthday,
-            status: this.search_status,
-            open_card_store: this.search_open_card_store,
-            name: this.search_memberName,
-            member_card: this.search_memberCard
+            phone: this.query.phone || '',
+            birthday: this.query.birthday || '',
+            status: this.query.status || '',
+            store_id: this.query.store_id || '',
+            name: this.query.name || '',
+            member_card: this.query.member_card || '',
           },
           function (response) {
             self.gridData = response.data.body.list
             self.page = response.data.body.pagination
-            self.search_phone = ''
-            self.search_birthday = ''
-            self.search_status = ''
-            self.search_open_card_store = ''
-            self.search_memberName = ''
-            self.search_memberCard = ''
+            $.each(self.gridData, function (index, value) {
+              value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
+              if (value.status == 'start') {
+                this.status = '启用'
+              } else {
+                this.status = '停用'
+              }
+            })
+            self.query.phone = '',
+            self.query.birthday = '',
+            self.query.status = '',
+            self.query.store_id = '',
+            self.query.name = '',
+            self.query.member_card = ''
           })
       },
 //    取消搜索
@@ -448,6 +462,14 @@
           function (response) {
             self.gridData = response.data.body.list
             self.page = response.data.body.pagination
+            $.each(self.gridData, function (index, value) {
+              value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
+              if (value.status == 'start') {
+                this.status = '启用'
+              } else {
+                this.status = '停用'
+              }
+            })
           })
       }
     },
@@ -470,13 +492,6 @@
         creatMemberModal: false,
         editModal: false,
         rechargeModal: false,
-        searchQuery: '',
-        search_phone: '',
-        search_birthday: '',
-        search_memberCard: '',
-        search_memberName: '',
-        search_status: '',
-        search_open_card_store: '',
         gridOperate: true,
         gridData: [],
         formData: {
@@ -500,6 +515,14 @@
           level: "等级",
           store_id: "开卡点",
           status: "状态"
+        },
+        query: {
+          phone: '',
+          birthday: '',
+          status: '',
+          store_id: '',
+          name: '',
+          member_card: ''
         }
       }
     },
@@ -518,6 +541,9 @@
   }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+  .calendar{
+    z-index: 1;
+  }
 </style>
 
