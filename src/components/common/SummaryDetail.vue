@@ -16,7 +16,7 @@
       </td>
       <td  v-if="operate">
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.checked==='未审核'" v-on:finishEdit="finishEdit"></list-validate>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.checked==='未审核'"></list-validate>
           <span class="btn btn-primary btn-sm" @click="edit" v-if="entry.checked==='未审核'">编辑</span>
         </slot>
     </tr>
@@ -40,9 +40,9 @@
         <td v-if="entry.amount && editFlag===true"><count :count="entry.amount"></count></td>
         <td v-if="entry.number && editFlag===false">{{entry.number}}</td>
         <td v-if="entry.number && editFlag===true"><count :count="entry.number"></count></td>
-        <td v-if="entry.stock_now">{{entry.stock_now}}</td>
-        <td v-if="entry.stock_system">{{entry.stock_system}}</td>
-        <td v-if="entry.difference_amount!==null">{{entry.difference_amount}}</td>
+        <td v-if="entry.stock_now!=null">{{entry.stock_now}}</td>
+        <td v-if="entry.stock_system !=null">{{entry.stock_system}}</td>
+        <td v-if="entry.difference_amount!=null">{{entry.difference_amount}}</td>
         <td>{{entry.unit}}</td>
         <td>{{entry.unit_specification}}</td>
       </tr>
@@ -146,12 +146,14 @@
       Count:  Count,
       ListValidate: ListValidate,
     },
+    events: {
+      finishEdit: function () {
+        this.editFlag = false
+      }
+    },
     methods: {
       edit: function () {
         this.editFlag = true
-      },
-      finishEdit: function () {
-        this.editFlag = false
       },
       changeActive: function (event) {
         var cur = $(event.currentTarget)

@@ -96,6 +96,19 @@
           console.log(err)
         })
       },
+//    删除事件
+      delete: function (id){
+        window.alert("wang")
+        this.$http({
+          url: requestUrl + '/front-system/stock/enquiry',
+          method: 'get',
+          data: id
+        }).then(function(){
+
+        },function() {
+
+        })
+      }
     },
     ready: function () {
       this.listData(16)

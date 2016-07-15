@@ -11,8 +11,10 @@ export function exchangeData (origindata) {
     if (val.checked !== null) {
       if (val.checked === 0) {
         val.checked = '未审核'
-      } else {
+      } else if (val.checked === 1) {
         val.checked = '已审核'
+      } else {
+        val.checked = '已完成'
       }
     }
     if (val.receipt_status !== null) {

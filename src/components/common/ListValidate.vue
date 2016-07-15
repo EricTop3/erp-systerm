@@ -35,13 +35,12 @@
 //    审核
       validate: function (event) {
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
+        this.$dispatch("finishEdit")
         $.each(this.list, function (index, val) {
           if (val.id === currentId) {
-            console.log('wzk')
             val.checked = '已审核'
           }
         })
-        this.$dispatch("finishEdit")
       }
     }
   }
