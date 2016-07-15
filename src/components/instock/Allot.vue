@@ -226,8 +226,9 @@
         var goods = []
         $.each(this.rederStockGoods, function (index, val) {
           var obj = {}
-          obj['id'] = val.id
-          obj['amount'] = val.now_number
+          obj['consumable_id'] = val.id
+          obj['consumable_amount'] = val.now_number
+          obj['distribution_amount'] = Number(val.distribution_number)
           goods.push(obj)
         })
 
@@ -239,14 +240,21 @@
           this.messageTip = 'high,你忘记添加商品了哟'
         } else {
           this.$http.post(requestUrl + '/front-system/stock/recipient', {
-            'goods': goods,
+            'items': goods,
             'date': this.time
           }, {
             headers: {'X-Overpowered-Token': token}
           }).then(function (response) {
             window.location.href = '?#!/instock/AllotNum/1'
-          }, function (error) {
-            console.log(err)
+          }, function (err) {
+            if(err.data.code==='100000' || err.data.code==='900000'){
+              this.messageTipModal = true
+              this.messageTip = 'high,你实际入库量不能为空哟'
+            }
+            if(err.data.code==='200013'){
+              this.messageTipModal = true
+              this.messageTip = 'high,你实际入库量不能大于配送数量哟'
+            }
           })
         }
       }
