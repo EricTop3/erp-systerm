@@ -72,6 +72,7 @@
   import Summary from '../common/Summary'
   import {requestUrl, token} from '../../publicFunction/index'
   var deleteId = ''
+  var data = []
   export default {
     components: {
       Grid: Grid,
@@ -91,6 +92,7 @@
             self.dataArray.push(val)
           }
         })
+        data =  self.dataArray
         this.rederStockGoods = self.dataArray
         $.each(this.rederStockGoods, function (index, val) {
           val.now_number = val.distribution_number
@@ -100,7 +102,7 @@
             }
           })
         })
-        this.detailData =  self.stockGoods
+        this.detailData =  this.rederStockGoods
       },
 //    入库汇总函数双循环遍历数量相加
       summary: function () {
@@ -120,10 +122,11 @@
              }
            }
         })
+        self.rederStockGoods =   this.detailData
       },
 //      入库明细函数
       detail: function () {
-        this.detailData =   this.stockGoods
+        this.detailData = data
       },
 //    绑定翻页事件
       pagechange: function (currentpage) {
