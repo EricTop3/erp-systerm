@@ -22,8 +22,8 @@
         </div>
         <div class="form-group ml10">
           <label>收货仓库</label>
-          <select class="form-control">
-            <option>全部</option>
+          <select class="form-control" v-model="query.receipts_store">
+            <option v-for="item in store" :value="item.id">{{item.display_name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
@@ -77,6 +77,16 @@
       }, function (err) {
         console.log(err)
       })
+//      渲染仓库
+      this.$http({
+        url: requestUrl + '/front-system/stock/get-store',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.store = response.data.body
+      },function (err) {
+        console.log(err)
+      })
     },
     methods: {
 //    列表数据渲染
@@ -88,16 +98,17 @@
           data: {
             start_time: this.query.start_time || '',
             end_time: this.query.end_time || '',
-            order_code: this.query.order_code || '',
-            check_status: this.query.check_status || '',
-            create_person: this.query.create_person || '',
-            receipts_store: this.query.receipts_store || '',
+            order_number: this.query.order_code || '',
+            checked: this.query.check_status || '',
+            creator_id: this.query.create_person || '',
+            receipts_store_id: this.query.receipts_store || '',
             page: page,
             per_page: 16
           }
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -110,10 +121,10 @@
           {
             start_time: this.query.start_time,
             end_time: this.query.end_time,
-            order_code: this.query.order_code,
-            check_status: this.query.check_status,
-            create_person: this.query.create_person,
-            receipts_store: this.query.receipts_store,
+            order_number: this.query.order_code,
+            checked: this.query.check_status,
+            creator_id: this.query.create_person,
+            receipts_store_id: this.query.receipts_store,
             per_page: 16
           },
           function (response){
@@ -126,17 +137,18 @@
     },
     data: function () {
       return {
+        store: [],
         creators: [],
         list: [],
         page: [],
         detailUrl: '/#!/instock/AllotOutBills/',
         gridOperate: true,
         gridColumns: {
-          order_code: '货号',
-          check: '审核状态',
+          order_number: '货号',
+          checked: '审核状态',
           receipts_store: '收货仓库',
-          create_person: '制单人',
-          check_person: '审核人',
+          creator: '制单人',
+          auditor: '审核人',
           date: '出货日期',
           number: '出货数量'
         },
