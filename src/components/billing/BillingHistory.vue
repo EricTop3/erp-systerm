@@ -14,8 +14,8 @@
           <date-picker  :value.sync="startTime"></date-picker> -
           <date-picker  :value.sync="endTime"></date-picker>
         </div>
-        <span type="submit" class="btn btn-info ml10" @click="searchProduct">搜索</span>
-        <span type="submit" class="btn btn-warning" @click="cancelSearchProduct">撤销搜索</span>
+        <span type="submit" class="btn btn-info ml10" @click="search">搜索</span>
+        <span type="submit" class="btn btn-warning" @click="cancel">撤销搜索</span>
       </form>
     </div>
 

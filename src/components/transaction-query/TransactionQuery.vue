@@ -20,11 +20,11 @@
         <div class="form-group ml10">
           <label>支付方式</label>
           <select class="form-control" v-model="selected">
-            <option value="现金" checked>现金</option>
-            <option value="支付宝">支付宝</option>
-            <option value="post刷卡">post刷卡</option>
-            <option value="微信">微信</option>
-            <option value="会员余额">会员余额</option>
+            <option value="cash" checked>现金</option>
+            <option value="alipay">支付宝</option>
+            <option value="post">post刷卡</option>
+            <option value="weixin">微信</option>
+            <option value="vip">会员余额</option>
           </select>
         </div>
         <div class="form-group ml10">
@@ -55,8 +55,7 @@
         </li>
         <li value="2" role="presentation" :class="{'active': orderType===2}"><a href="#guazhang-list" data-toggle="tab">挂账单</a>
         </li>
-        <li value="3" role="presentation" :class="{'active': orderType===3}"><a href="#order-list"
-                                                                                data-toggle="tab">预约单</a></li>
+        <li value="3" role="presentation" :class="{'active': orderType===3}"><a href="#order-list" data-toggle="tab">预约单</a></li>
       </ul>
 
       <!-- Tab panes -->
