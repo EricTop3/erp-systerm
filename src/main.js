@@ -35,6 +35,8 @@ import SaleOutBillsDetail from './components/instock/SaleOutBillsDetail'
 import AllotOut from './components/instock/AllotOut'
 import TransactionQuery from './components/transaction-query/TransactionQuery'
 import MicroShopOrder from './components/micro-shop-order/MicroShopOrder'
+import Setting from  './components/admin/setting/Setting.vue'
+import Purchase from './components/admin/purchase/Purchase'
 Vue.filter('priceChange', priceChange)
 Vue.use(VueRouter)
 Vue.use(VueRescource)
@@ -152,6 +154,12 @@ router.map({
   },
   '/microshoporder': {
     component: MicroShopOrder
+  },
+  '/admin/purchase': {
+    component: Purchase
+  },
+  '/admin/setting': {
+    component: Setting
   }
 })
 router.redirect({

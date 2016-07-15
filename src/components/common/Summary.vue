@@ -19,7 +19,7 @@
           <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.checked==='未审核'"></list-validate>
           <list-finish  :list.sync="tableData"  v-if="entry.checked=='已审核'" ></list-finish>
           <span class="btn btn-info btn-sm" @click="detail($event)">查看</span>
-          <list-delete :delete-data.sync="tableData"></list-delete>
+          <list-delete :delete-data.sync="tableData"  v-if="entry.checked==='未审核'"></list-delete>
         </slot>
     </tr>
     </tbody>
