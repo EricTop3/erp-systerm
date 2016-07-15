@@ -498,7 +498,7 @@
           phone: "手机号码",
           birthday: "生日",
           level: "等级",
-          open_card_store: "开卡点",
+          store_id: "开卡点",
           status: "状态"
         }
       }

@@ -12,7 +12,7 @@
 </template>
 <script>
   import SummaryDetail from '../common/SummaryDetail'
-  import {requestUrl} from '../../publicFunction/index'
+  import {requestUrl,exchangeData} from '../../publicFunction/index'
   export default {
     components: {
       SummaryDetail: SummaryDetail
@@ -42,6 +42,7 @@
           method: 'get'
         }).then(function (response) {
           this.list = response.data.body
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -67,11 +68,11 @@
         detailList: [],
         gridOperate: true,
         gridColumns: {
-          order_code: '单号',
-          check_status: '审核状态',
+          order_number: '单号',
+          checked: '审核状态',
           receipts_store: '收货仓库',
-          create_person: '制单人',
-          check_person: '审核人',
+          creator: '制单人',
+          auditor: '审核人',
           date: '出货日期',
           number: '要货数量'
         },
