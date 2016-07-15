@@ -65,7 +65,8 @@
             <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="formData.birthday">
+              <date-picker :value.sync="formData.birthday"></date-picker>
+              <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="formData.birthday">-->
             </div>
           </div>
           <div class="form-group">
@@ -129,11 +130,13 @@
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
   import Page from '../common/Page'
+  import DatePicker from  '../common/DatePicker'
   import {requestUrl, token} from '../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
       Page: Page,
+      DatePicker: DatePicker,
       Grid: Grid
     },
     events: {
