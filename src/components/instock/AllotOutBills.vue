@@ -50,7 +50,7 @@
   import Page from '../common/Page'
   import Summary from '../common/Summary'
   import DatePicker from '../common/DatePicker'
-  import {requestUrl,token,searchRequest,exchangeData} from '../../publicFunction/index'
+  import {requestUrl,token,searchRequest,exchangeData,deleteRequest,finishRequest,checkRequest} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -62,6 +62,27 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.listData(currentpage)
+      },
+      //      删除请求
+      deleteFromApi: function (id) {
+        var self = this
+        deleteRequest('/front-system/stock/issue/',id,function(response){
+          console.log('deleted')
+        })
+      },
+      //     審核请求
+      checkFromApi: function (id) {
+        var self = this
+        checkRequest('/front-system/stock/check/',id,function(response){
+          console.log('finished')
+        })
+      },
+      //     完成請求
+      finishFromApi: function (id) {
+        var self = this
+        finishRequest('/front-system/stock/finish/',id,function(response){
+          console.log('finished')
+        })
       }
     },
     ready: function () {

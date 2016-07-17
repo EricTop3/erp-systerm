@@ -47,7 +47,7 @@
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
   import Summary from '../common/Summary'
-  import {requestUrl, token,searchRequest,exchangeData,deleteRequest} from '../../publicFunction/index'
+  import {requestUrl, token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -60,15 +60,26 @@
       pagechange: function (currentpage) {
         this.listData(currentpage)
       },
-//     删除
-      events: {
-        delete: function () {
-          window.alert('yes')
-          var self = this
-          deleteRequest(requestUrl+ '/front-system/stock/check/',function(response){
-            window.alert('yes')
-          })
-        }
+      //      删除请求
+      deleteFromApi: function (id) {
+        var self = this
+        deleteRequest('/front-system/stock/inventory/',id,function(response){
+          console.log('deleted')
+        })
+      },
+      //     審核请求
+      checkFromApi: function (id) {
+        var self = this
+        checkRequest('/front-system/stock/check/',id,function(response){
+          console.log('finished')
+        })
+      },
+      //     完成請求
+      finishFromApi: function (id) {
+        var self = this
+        finishRequest('/front-system/stock/finish/',id,function(response){
+          console.log('finished')
+        })
       }
     },
     ready: function () {
