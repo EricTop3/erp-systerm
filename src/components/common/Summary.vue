@@ -17,7 +17,7 @@
       <td>
         <slot name="operate">
           <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.checked==='未审核'"></list-validate>
-          <list-finish  :list.sync="tableData"  v-if="entry.checked=='已审核'" ></list-finish>
+          <list-finish  :list.sync="tableData"  v-if="entry.checked=='已完成'" ></list-finish>
           <span class="btn btn-info btn-sm" @click="detail($event)">查看</span>
           <list-delete :delete-data.sync="tableData"  v-if="entry.checked==='未审核'"></list-delete>
         </slot>
@@ -109,8 +109,17 @@
       tabFlag: false,
     },
     events: {
-      delete: function() {
-        this.$dispatch('delete')
+//     刪除請求
+      delete: function(id) {
+       this.$dispatch('deleteFromApi',id)
+      },
+//    審核請求
+      check: function (id) {
+        this.$dispatch('checkFromApi',id)
+      },
+//    完成請求
+      finish: function (id) {
+        this.$dispatch('finishFromApi',id)
       }
     },
     components: {

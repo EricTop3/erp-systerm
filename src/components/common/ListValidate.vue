@@ -1,6 +1,6 @@
 <template>
   <!--审核按钮-->
-  <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-audit-templ" @click="validate($event)">审核</span>
+  <span class="btn btn-danger btn-sm" data-toggle="modal" data-target="#inventory-audit-templ" @click="validate($event)">审核</span>
   <!--&lt;!&ndash;审核模态框&ndash;&gt;-->
   <!--<modal :show.sync="validateModal" :modal-size="validateModalSize">-->
     <!--<div slot="header">-->
@@ -35,6 +35,7 @@
 //    审核
       validate: function (event) {
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
+        this.$dispatch("check",currentId)
         this.$dispatch("finishEdit")
         $.each(this.list, function (index, val) {
           if (val.id === currentId) {

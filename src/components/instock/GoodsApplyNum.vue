@@ -66,7 +66,7 @@
   import ListValidate from '../common/ListValidate'
   import ListDelete from '../common/ListDelete'
   import DatePicker from '../common/DatePicker'
-  import { requestUrl,token,searchRequest,exchangeData} from '../../publicFunction/index'
+  import { requestUrl,token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest} from '../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -96,19 +96,27 @@
           console.log(err)
         })
       },
-//    删除事件
-      delete: function (id){
-        window.alert("wang")
-        this.$http({
-          url: requestUrl + '/front-system/stock/enquiry',
-          method: 'get',
-          data: id
-        }).then(function(){
-
-        },function() {
-
+//     删除请求
+      deleteFromApi: function (id) {
+        var self = this
+        deleteRequest('/front-system/stock/enquiry/',id,function(response){
+          console.log('deleted')
         })
-      }
+      },
+//     審核请求
+      checkFromApi: function (id) {
+        var self = this
+        checkRequest('/front-system/stock/check/',id,function(response){
+          console.log('finished')
+        })
+      },
+//     完成請求
+      finishFromApi: function (id) {
+        var self = this
+        finishRequest('/front-system/stock/finish/',id,function(response){
+          console.log('finished')
+        })
+      },
     },
     ready: function () {
       this.listData(16)

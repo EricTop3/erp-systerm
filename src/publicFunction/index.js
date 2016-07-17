@@ -1,8 +1,9 @@
 // 导入jquery
 import $ from 'jquery'
 import Vue from 'vue'
+//導入外部組件=
 // 请求服务器路径
-export var requestUrl = 'http://192.168.1.150:1401/mock/v1'
+export var requestUrl = 'http://115.28.216.235:1401/mock/v1'
 // token值
 export var token = window.localStorage.getItem('token')
 // 后台0,1状态展示
@@ -45,7 +46,7 @@ export function searchRequest (url, data, callback) {
 export function deleteRequest (url, id, callback) {
   var cur = new Vue()
   cur.$http({
-      url: url + id,
+      url: requestUrl+ url + id,
       method: 'delete',
       headers: {'X-Overpowered-Token': token}
     })
@@ -59,7 +60,7 @@ export function deleteRequest (url, id, callback) {
 export function checkRequest (url, id, callback) {
   var cur = new Vue()
   cur.$http({
-      url: url + id,
+      url: requestUrl + url + id,
       method: 'put',
       headers: {'X-Overpowered-Token': token}
     })
@@ -73,7 +74,7 @@ export function checkRequest (url, id, callback) {
 export function finishRequest (url, id, callback) {
   var cur = new Vue()
   cur.$http({
-      url: url + id,
+      url: requestUrl + url + id,
       method: 'put',
       headers: {'X-Overpowered-Token': token}
     })

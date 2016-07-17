@@ -40,26 +40,11 @@
     </div>
   </modal>
   <!--模态框-引用原始数据-->
-  <introduce-data :instroduce-data-modal.sync='parentIntroModal'
-                  :instroduce-data-modal-size="parentIntroModalSize" :add-data.sync="stockGoods"></introduce-data>
+  <introduce-data :instroduce-data-modal.sync='parentIntroModal' :instroduce-data-modal-size="parentIntroModalSize" :add-data.sync="stockGoods"></introduce-data>
   <!--模态框HTML-->
 
   <!--错误信息弹出-->
-  <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
-    <div slot='header'>
-      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
-        aria-hidden='true' @click="messageTipModal=false">&times;</span></button>
-      <h4 class='modal-title'>友情提示</h4>
-    </div>
-    <div slot='body'>
-      <div class='form-group'>
-        <p class="modal-body">{{messageTip}}</p>
-      </div>
-    </div>
-    <div slot='footer'>
-      <button type='button' class='btn btn-primary' @click='messageTipModal = false'>关闭</button>
-    </div>
-  </modal>
+  <error-tip :err-modal.sync="messageTipModal" :err-info="messageTip"></error-tip>
 </template>
 <script>
   import $ from 'jquery'
@@ -68,6 +53,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Modal from '../common/Modal'
+  import ErrorTip from '../common/ErrorTip'
   import DatePicker from  '../common/DatePicker'
   import Summary from '../common/Summary'
   import {requestUrl, token} from '../../publicFunction/index'
@@ -81,7 +67,8 @@
       Count: Count,
       DatePicker: DatePicker,
       IntroduceData: IntroduceData,
-      Summary: Summary
+      Summary: Summary,
+      ErrorTip: ErrorTip
     },
     events: {
 //      确认增加

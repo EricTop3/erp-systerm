@@ -2,7 +2,7 @@
   <modal :show.sync='instroduceDataModal' :modal-size="instroduceDataModalSize">
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
+        aria-hidden="true" @click="instroduceDataModal= false">&times;</span></button>
       <h4 class="modal-title">原始配送出库单</h4>
     </div>
     <div slot="body">
