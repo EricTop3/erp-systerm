@@ -55,11 +55,11 @@
       </tbody>
     </table>
     <!--分页-->
-    <page :total='rederStockGoods.length' :current.sync='current_page' :display='per_page'  :last-page='totalPage' v-if="rederStockGoods.length>0"></page>
+    <page :total='rederStockGoods.length' :current='current_page' :display='per_page' :last-page='totalPage'></page>
   </div>
   <!--模态框-添加商品-->
   <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :add-data.sync="stockGoods"></stock-goods>
+               :add-data.sync="stockGoods" :page.sync="showPage"></stock-goods>
   <!--错误信息弹出-->
   <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
     <div slot='header'>
@@ -86,7 +86,7 @@
   import Page from '../common/Page'
   import DatePicker from '../common/DatePicker'
   import ListDelete from '../common/ListDelete'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {requestUrl,token, deleteRequest} from '../../publicFunction/index'
   export default {
     components: {
       StockGoods: StockGoods,
@@ -106,7 +106,7 @@
             self.dataArray.push(val)
           }
         })
-        this.rederStockGoods = self.dataArray
+        this.rederStockGoods = this.rederStockGoods.concat(self.dataArray)
         console.log(this.rederStockGoods.length)
         console.log(this.per_page)
         if(this.rederStockGoods.length %this.per_page===0){
@@ -115,11 +115,14 @@
           this.totalPage =(Math.floor(this.rederStockGoods.length/ this.per_page))+1
         }
         self.dataArray = []
-        this.addGoodModal = false
       },
 //      分页
-      pagechange: function(){
-
+      pagechange: function(currentpage){},
+//      删除
+      delete: function(id){
+        deleteRequest('/front-system/stock/enquiry/',id,function(response){
+          console.log('delete')
+        })
       }
     },
     methods: {
@@ -166,6 +169,7 @@
         per_page: 10,
         totalPage: 1,
         startTime: '',
+        showPage: [],
         messageTip: 'high,请填写正确的信息哟',
         messageTipModalSize: 'modal-sm',
         instockPage: [],

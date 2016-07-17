@@ -12,8 +12,8 @@
     </thead>
     <tbody>
     <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']">
-      <td v-if="check"><input type="checkbox" :value="[entry.id ? entry.id : '']" :id="[entry.id ? entry.id : '']"
-                              @change="singleCheck($event)" :checked="singleChecked">
+      <td v-if="check"><input type="checkbox" :value="[entry.checked]" :id="[entry.id ? entry.id : '']"
+                              @change="singleCheck($event)" :checked="entry.category_id" v-model="entry.category_id">
       </td>
       <td v-for="value in columns">
         {{entry[$key]}}
@@ -45,13 +45,16 @@
       columns: {
         type: Object
       },
-      filterKey: String,
       operate: Boolean
     },
     methods: {
       checkAllMethod: function () {
+        var self = this
         this.singleChecked = this.isAddFlag = this.checkAll
         len = this.data.length && this.data.length > 0 ? this.data.length : 0
+        $.each(this.data,function(index,val){
+            val.category_id = self.checkAll
+        })
         this.$dispatch('change-all-operate', this.checkAll)
         this.$dispatch('add-all-operate', this.checkAll)
       },

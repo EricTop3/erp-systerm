@@ -30,7 +30,7 @@
           </div>
           <div class="col-sm-10">
             <!--表格-->
-            <grid :check="true" :data="goodsList" :columns="goodsListTitle" :is-add-flag.sync="isAdd" v-on:change-all-operate="changeAllOperate" v-on:change-operate="changeOperate"></grid>
+            <grid :check="true" :check-all.sync="allChecked" :data.sync="goodsList" :columns="goodsListTitle" :is-add-flag.sync="isAdd" v-on:change-all-operate="changeAllOperate" v-on:change-operate="changeOperate"></grid>
             <!--分页-->
             <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
           </div>
@@ -74,12 +74,14 @@
     events:{
       pagechange: function(currentpage){
         this.requestApi({page: currentpage})
+        this.allChecked = false
         $.each(this.addData,function(index,val){
-          val.checked = false
+          val.category_id = false
         })
       }
     },
     props: {
+      page: [],
       addData: [],
       stockAddGoodModal: false,
       stockAddGoodModalSize: 'modal-lg'
@@ -120,6 +122,9 @@
           method: 'get',
           data: data
         }).then(function (response) {
+          $.each(response.data.body.list,function(index,val){
+            val.category_id = false
+          })
           this.goodsList = response.data.body.list
           this.page = response.data.body.pagination
           this.addData = this.goodsList
@@ -155,6 +160,10 @@
       confirmClick: function () {
         this.stockAddGoodModal = false
         this.$dispatch('confirmAdd')
+        this.allChecked = false
+        $.each(this.addData,function(index,val){
+          val.category_id = false
+        })
       }
     },
     data: function () {
@@ -165,7 +174,7 @@
           category: ''
         },
         category: [],
-        page: [],
+        allChecked: false,
         goodsListTitle: {
           'code': '货号',
           'name': '品名',
