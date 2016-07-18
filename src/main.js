@@ -10,6 +10,7 @@ import Login from './components/login/Login'
 import Order from './components/order/Order'
 import Billing from './components/billing/Billing'
 import BillingHistory from './components/billing/BillingHistory'
+import BillingHistoryDetail from './components/billing/BillingHistoryDetail'
 import MemberIndex from './components/member/MemberIndex'
 import MemberDetail from './components/member/MemberDetail'
 import InStock from './components/instock/InStock'
@@ -76,6 +77,10 @@ router.map({
   },
   '/billing/BillingHistory': {
     component: BillingHistory
+  },
+  '/billing/BillingHistoryDetail/:queryId': {
+    name: 'BillingHistory',
+    component: BillingHistoryDetail
   },
   '/instock/GoodsApply': {
     component: GoodsApply

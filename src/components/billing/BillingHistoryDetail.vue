@@ -4,7 +4,7 @@
 
 
     <!-- 表格 -->
-    <table class="table table-striped table-border table-hover mt20" :data="todayGridData">
+    <table class="table table-striped table-border table-hover mt20" :data="gridData">
       <thead>
       <tr class="text-center">
         <td>结算日期</td>
@@ -14,49 +14,29 @@
         <td>刷卡支付额</td>
         <td>微信支付额</td>
         <td>支付宝支付额</td>
-        <td>操作</td>
       </tr>
       </thead>
       <tbody>
       <tr class="text-center">
-        <td>{{todayGridData.date}}</td>
-        <td>￥{{todayGridData.total_sum}}</td>
-        <td>￥{{todayGridData.vip_money}}</td>
-        <td>￥{{todayGridData.cash_money}}</td>
-        <td>￥{{todayGridData.post_money}}</td>
-        <td>￥{{todayGridData.weixin_money}}</td>
-        <td>￥{{todayGridData.alipay_money}}</td>
-        <td>
-          <button id="todaySet" class="btn btn-primary btn-sm" :disabled="todayGridData.status" @click="settlementModal=true">今日结算</button>
-          <span class="btn btn-info btn-sm" @click="detail($event)">结算历史</span>
-        </td>
+        <td>{{gridData.settlement_date}}</td>
+        <td>￥{{gridData.total_sum}}</td>
+        <td>￥{{gridData.vip_money}}</td>
+        <td>￥{{gridData.cash_money}}</td>
+        <td>￥{{gridData.post_money}}</td>
+        <td>￥{{gridData.weixin_money}}</td>
+        <td>￥{{gridData.alipay_money}}</td>
       </tr>
       </tbody>
     </table>
 
     <!-- 表格 -->
-    <grid :data="todayDetailGridData" :columns="todayDetailGridColumns"></grid>
+    <grid :data="detailGridData" :columns="detailGridColumns"></grid>
 
     <!-- 翻页 -->
     <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
           :last-page='page.last_page'></page>
   </div>
 
-  <!--模态框-今日结算-->
-  <modal :show.sync="settlementModal" :modal-size="settlementModalSize">
-    <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" @click="settlementModal=false" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">提示</h4>
-    </div>
-    <div slot="body">
-      <h4 class="text-center">确定结算？</h4>
-    </div>
-    <div slot="footer">
-      <button type="button" class="btn btn-info" @click="yesSettlement($event)" data-dismiss="modal">确定</button>
-      <button type="button" class="btn btn-primary" data-dismiss="modal" @click="settlementModal=false">取消</button>
-    </div>
-  </modal>
   <!--模态框HTML-->
 </template>
 <script>
@@ -72,20 +52,42 @@
       Grid: Grid
     },
     ready: function () {
-//    渲染当日结算列表
-      this.todayListData(1)
+//    渲染历史明细结算列表
+      this.listData(1)
+//      渲染单条
+      this.oneListData()
     },
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.todayListData(currentpage)
+        this.listData(currentpage)
       }
     },
     methods: {
-//    渲染当日结算列表
-      todayListData: function (page) {
+//      渲染单条
+      oneListData: function () {
+        var str = window.location.href
+        var num = str.indexOf('BillingHistoryDetail') + 21
+        var detailId = str.substr(num)
+
         this.$http({
-          url: requestUrl + '/front-system/settlement',
+          url: requestUrl + '/front-system/settlement/history/' + detailId,
+          method: 'get',
+          headers: { 'X-Overpowered-Token': token }
+        }).then(function (response) {
+          this.gridData = response.data.body
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//    渲染历史明细结算列表
+      listData: function (page) {
+        var str = window.location.href
+        var num = str.indexOf('BillingHistoryDetail') + 21
+        var detailId = str.substr(num)
+
+        this.$http({
+          url: requestUrl + '/front-system/settlement/' + detailId,
           method: 'get',
           headers: {
             'X-Overpowered-Token': token
@@ -96,9 +98,8 @@
           }
         }).then(function (response) {
           this.page = response.data.body.pagination
-          this.todayGridData = response.data.body.item
-          this.todayDetailGridData = response.data.body.list
-          $.each(this.todayDetailGridData, function (index, value) {
+          this.detailGridData = response.data.body.list
+          $.each(this.detailGridData, function (index, value) {
             if (value.pay_method == 'cash') {
               this.pay_method = '现金支付'
             }
@@ -116,31 +117,13 @@
         }, function (err) {
           console.log(err)
         })
-      },
-//    确定结算
-      yesSettlement: function (event) {
-        this.$http.post(requestUrl + '/front-system/settlement/create', {
-          headers: {'X-Overpowered-Token': token}
-        }, function (response) {
-          $('#todaySet').hide()
-          this.settlementModal = false
-          this.todayGridData.status = true
-        }, function (error) {
-          console.log(error)
-
-        })
-      },
-      detail: function (event) {
-        window.location.href = '#!/billing/BillingHistory'
       }
     },
     data: function () {
       return {
         page: [],
-        settlementModal: false,
-        settlementModalSize: 'modal-sm',
-        todayGridData: {
-          date: '',
+        gridData: {
+          settlement_date: '',
           total_sum: '',
           vip_money: '',
           cash_money: '',
@@ -149,8 +132,8 @@
           alipay_money: '',
           status: ''
         },
-        todayDetailGridData: [],
-        todayDetailGridColumns: {
+        detailGridData: [],
+        detailGridColumns: {
           number: "小票编号",
           created_at: "下单时间",
           total_sum: "合计金额",
