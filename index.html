@@ -11,10 +11,26 @@
   <link rel="stylesheet" href="static/assets/fonts/glyphicons-halflings-regular.ttf">
   <link rel="stylesheet" href="static/assets/fonts/glyphicons-halflings-regular.woff">
   <link rel="stylesheet" href="static/assets/fonts/glyphicons-halflings-regular.woff2">
-  <link rel="stylesheet" href="static/assets/css/app.css">
-  <link rel="stylesheet" href="static/assets/css/style.css">
   <script type="text/javascript" src="static/assets/js/jquery-1.12.4.min.js"></script>
   <script type="text/javascript" src="static/assets/js/bootstrap.min.js"></script>
+  <script>
+    function loadCss(file){
+      var head=document.getElementsByTagName('head').item(0);
+      var css=document.createElement('link')
+      css.href=""+file+".css";
+      css.rel='stylesheet';
+      css.type='text/css';
+      css.id='loadCss';
+      head.appendChild(css);
+    }
+     if(window.location.href.indexOf('/admin')>0){
+       loadCss('static/assets/css/bootstrap')
+       loadCss('static/assets/css/admin')
+     }else{
+       loadCss('static/assets/css/app')
+       loadCss('static/assets/css/style')
+     }
+  </script>
 </head>
 <body>
 <div id="app"></div>

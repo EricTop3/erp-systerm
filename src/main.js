@@ -6,36 +6,43 @@ import VueRouter from 'vue-router'
 import VueRescource from 'vue-resource'
 import {priceChange} from './filters/'
 import App from './App'
-import Login from './components/login/Login'
-import Order from './components/order/Order'
-import Billing from './components/billing/Billing'
-import BillingHistory from './components/billing/BillingHistory'
-import MemberIndex from './components/member/MemberIndex'
-import MemberDetail from './components/member/MemberDetail'
-import InStock from './components/instock/InStock'
-import GoodsApply from './components/instock/GoodsApply'
-import GoodsApplyNum from './components/instock/GoodsApplyNum'
-import GoodsApplyNumDetail from './components/instock/GoodsApplyNumDetail'
-import Allot from './components/instock/Allot'
-import AllotNum from './components/instock/AllotNum'
-import AllotNumDetail from './components/instock/AllotNumDetail'
-import Differences from './components/instock/Differences'
-import DifferencesDetail from './components/instock/DifferencesDetail'
-import Inventory from './components/instock/Inventory'
-import InventoryDetail from './components/instock/InventoryDetail'
-import InventoryCreate from './components/instock/InventoryCreate'
-import InventoryQuery from './components/instock/InventoryQuery'
-import InventoryQueryDetail from './components/instock/InventoryQueryDetail'
-import ProductionOutBills from './components/instock/ProductionOutBills'
-import ProductionOutBillsDetail from './components/instock/ProductionOutBillsDetail'
-import AllotOutBills from './components/instock/AllotOutBills'
-import AllotOutBillsDetail from './components/instock/AllotOutBillsDetail'
-import SaleOutBills from './components/instock/SaleOutBills'
-import SaleOutBillsDetail from './components/instock/SaleOutBillsDetail'
-import AllotOut from './components/instock/AllotOut'
-import TransactionQuery from './components/transaction-query/TransactionQuery'
-import MicroShopOrder from './components/micro-shop-order/MicroShopOrder'
-import Purchase from './components/admin/purchase/Purchase'
+import Order from 'components/website/order/Order'
+import SiteLogin from './components/website/login/SiteLogin'
+import Billing from 'components/website/billing/Billing'
+import BillingHistory from 'components/website/billing/BillingHistory'
+import MemberIndex from 'components/website/member/MemberIndex'
+import MemberDetail from 'components/website/member/MemberDetail'
+import InStock from 'components/website/instock/InStock'
+import GoodsApply from 'components/website/instock/GoodsApply'
+import GoodsApplyNum from 'components/website/instock/GoodsApplyNum'
+import GoodsApplyNumDetail from 'components/website/instock/GoodsApplyNumDetail'
+import Allot from 'components/website/instock/Allot'
+import AllotNum from 'components/website/instock/AllotNum'
+import AllotNumDetail from 'components/website/instock/AllotNumDetail'
+import Differences from 'components/website/instock/Differences'
+import DifferencesDetail from 'components/website/instock/DifferencesDetail'
+import Inventory from 'components/website/instock/Inventory'
+import InventoryDetail from 'components/website/instock/InventoryDetail'
+import InventoryCreate from 'components/website/instock/InventoryCreate'
+import InventoryQuery from 'components/website/instock/InventoryQuery'
+import InventoryQueryDetail from 'components/website/instock/InventoryQueryDetail'
+import ProductionOutBills from 'components/website/instock/ProductionOutBills'
+import ProductionOutBillsDetail from 'components/website/instock/ProductionOutBillsDetail'
+import AllotOutBills from 'components/website/instock/AllotOutBills'
+import AllotOutBillsDetail from 'components/website/instock/AllotOutBillsDetail'
+import SaleOutBills from 'components/website/instock/SaleOutBills'
+import SaleOutBillsDetail from 'components/website/instock/SaleOutBillsDetail'
+import AllotOut from 'components/website/instock/AllotOut'
+import TransactionQuery from 'components/website/transaction-query/TransactionQuery'
+import MicroShopOrder from 'components/website/micro-shop-order/MicroShopOrder'
+import Purchase from 'components/admin/purchase/Purchase'
+import Setting from 'components/admin/setting/Setting'
+import Product from 'components/admin/product/Product'
+import AdminMember from 'components/admin/member/MemberIndex'
+import Retail from 'components/admin/retail/Retail'
+import AdminInstock from 'components/admin/instock/InStock'
+import AdminMicroShopOrder from 'components/admin/micro-shop-order/MicroShopOrder'
+import AdminLogin from 'components/admin/login/AdminLogin'
 Vue.filter('priceChange', priceChange)
 Vue.use(VueRouter)
 Vue.use(VueRescource)
@@ -58,108 +65,129 @@ router.map({
   '/': {
     component: Order
   },
-  '/login': {
-    component: Login
-  },
-  '/order': {
+  '/site/order': {
     component: Order
   },
-  '/member': {
+  '/site/login': {
+    component: SiteLogin
+  },
+  '/site/member': {
     component: MemberIndex
   },
-  '/member/:queryId': {
+  '/site/member/:queryId': {
     name: 'member',
     component: MemberDetail
   },
-  '/billing': {
+  '/site/billing': {
     component: Billing
   },
-  '/billing/BillingHistory': {
+  '/site/billing/BillingHistory': {
     component: BillingHistory
   },
-  '/instock/GoodsApply': {
+  '/site/instock/GoodsApply': {
     component: GoodsApply
   },
-  '/instock/GoodsApplyNum': {
+  '/site/instock/GoodsApplyNum': {
     component: GoodsApplyNum
   },
-  '/instock/GoodsApplyNum/:queryId': {
+  '/site/instock/GoodsApplyNum/:queryId': {
     name: 'GoodsApplyNum',
     component: GoodsApplyNumDetail
   },
-  '/instock/Allot': {
+  '/site/instock/Allot': {
     component: Allot
   },
-  '/instock/AllotNum': {
+  '/site/instock/AllotNum': {
     component: AllotNum
   },
-  '/instock/AllotNum/:queryId': {
+  '/site/instock/AllotNum/:queryId': {
     name: 'AllotNum',
     component: AllotNumDetail
   },
-  '/instock/Differences': {
+  '/site/instock/Differences': {
     component: Differences
   },
-  '/instock/Differences/:queryId': {
+  '/site/instock/Differences/:queryId': {
     name: 'Differences',
     component: DifferencesDetail
   },
-  '/instock/Inventory': {
+  '/site/instock/Inventory': {
     component: Inventory
   },
-  '/instock/Inventory/:queryId': {
+  '/site/instock/Inventory/:queryId': {
     name: 'Inventory',
     component: InventoryDetail
   },
-  '/instock/InventoryCreate': {
+  '/site/instock/InventoryCreate': {
     component: InventoryCreate
   },
-  '/instock/InventoryQuery': {
+  '/site/instock/InventoryQuery': {
     component: InventoryQuery
   },
-  '/instock/InventoryQuery/:queryId': {
+  '/site/instock/InventoryQuery/:queryId': {
     name: 'inventoryQuery',
     component: InventoryQueryDetail
   },
-  '/instock/ProductionOutBills': {
+  '/site/instock/ProductionOutBills': {
     component: ProductionOutBills
   },
-  '/instock/ProductionOutBills/:queryId': {
+  '/site/instock/ProductionOutBills/:queryId': {
     name: 'ProductionOutBills',
     component: ProductionOutBillsDetail
   },
-  '/instock/AllotOutBills': {
+  '/site/instock/AllotOutBills': {
     component: AllotOutBills
   },
-  '/instock/AllotOutBills/:queryId': {
+  '/site/instock/AllotOutBills/:queryId': {
     name: 'AllotOutBills',
     component: AllotOutBillsDetail
   },
-  '/instock/SaleOutBills': {
+  '/site/instock/SaleOutBills': {
     component: SaleOutBills
   },
-  '/instock/SaleOutBills/:queryId': {
+  '/site/instock/SaleOutBills/:queryId': {
     name: 'SaleOutBills',
     component: SaleOutBillsDetail
   },
-  '/instock/AllotOut': {
+  '/site/instock/AllotOut': {
     component: AllotOut
   },
-  '/instock': {
+  '/site/instock': {
     component: InStock
   },
-  '/tranquery': {
+  '/site/tranquery': {
     component: TransactionQuery
   },
-  '/microshoporder': {
+  '/site/microshoporder': {
     component: MicroShopOrder
   },
   '/admin/purchase': {
     component: Purchase
+  },
+  '/admin/setting': {
+    component: Setting
+  },
+  '/admin/product': {
+    component: Product
+  },
+  '/admin/member': {
+    component:  AdminMember
+  },
+  '/admin/instock': {
+    component: AdminInstock
+  },
+  '/admin/retail': {
+    component: Retail
+  },
+  '/admin/micromall': {
+    component: AdminMicroShopOrder
+  },
+  '/admin/login': {
+    component: AdminLogin
   }
 })
 router.redirect({
-  '*': '/order'
+  '*': 'site/order'
 })
 
 router.beforeEach(function (transtion) {

@@ -1,6 +1,6 @@
 <template>
   <admin-nav></admin-nav>
-  <h2>this is purchase body</h2>
+  <h2>this is member body</h2>
 </template>
 <style>
 </style>

@@ -74,10 +74,6 @@
     events:{
       pagechange: function(currentpage){
         this.requestApi({page: currentpage})
-        this.allChecked = false
-        $.each(this.addData,function(index,val){
-          val.category_id = false
-        })
       }
     },
     props: {
@@ -122,9 +118,6 @@
           method: 'get',
           data: data
         }).then(function (response) {
-          $.each(response.data.body.list,function(index,val){
-            val.category_id = false
-          })
           this.goodsList = response.data.body.list
           this.page = response.data.body.pagination
           this.addData = this.goodsList

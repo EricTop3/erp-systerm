@@ -1,9 +1,8 @@
 // 导入jquery
 import $ from 'jquery'
 import Vue from 'vue'
-//導入外部組件=
 // 请求服务器路径
-export var requestUrl = 'http://115.28.216.235:1401/mock/v1'
+export var requestUrl = 'http://192.168.1.150:1401/mock/v1'
 // token值
 export var token = window.localStorage.getItem('token')
 // 后台0,1状态展示
