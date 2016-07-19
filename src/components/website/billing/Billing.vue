@@ -158,8 +158,8 @@
           total_amount: "合计数量",
           pay_method: "支付方式",
           member_card_number: "会员卡号",
-          coupon_note: "优惠方式",
-          operator: "营业员"
+          coupon_name: "优惠方式",
+          creator_name: "营业员"
         }
       }
     }

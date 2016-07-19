@@ -3,8 +3,8 @@
   <div class='contcainer-fluid mt20 mr20'>
     <div class='col-lg-5'>
       <!--首页左侧表格区域-->
-      <div style='height:532px; overflow: auto;'>
-        <table class='table table-striped table-border table-hover'>
+      <div style='height:532px; overflow: auto; border: 1px solid #ddd;'>
+        <table class='table table-striped table-border table-hover' style="border: transparent; border-bottom: 1px solid #ddd;">
           <thead>
           <tr class='text-center'>
             <td class='text-left col-lg-5'>品名/单价</td>

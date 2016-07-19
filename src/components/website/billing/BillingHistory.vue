@@ -21,9 +21,9 @@
     </div>
 
     <!-- 表格 -->
-    <grid :data="historyGridData" :columns="historyGridColumns" :filter-key="searchQuery" :operate="gridOperate">
+    <grid :data="historyGridData" :columns="historyGridColumns" :operate="gridOperate">
       <div slot="operateList">
-        <span class="btn btn-warning btn-sm">结算明细</span>
+        <span class="btn btn-warning btn-sm" @click="checkDetail($event)">结算明细</span>
       </div>
     </grid>
 
@@ -60,7 +60,7 @@
 //    渲染结算历史列表
       setMentListData: function (page) {
         this.$http({
-          url: requestUrl + '/front-system/settlement/list',
+          url: requestUrl + '/front-system/settlement/history',
           method: 'get',
           headers: {
             'X-Overpowered-Token': token
@@ -75,11 +75,48 @@
         }, function (err) {
           console.log(err)
         })
+      },
+      checkDetail: function (event) {
+        var id = $(event.currentTarget).parents('tr').attr('id')
+        window.location.href = '#!/billing/BillingHistoryDetail/' + id
+      },
+//    搜索
+      search: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/settlement/list',
+          {
+            startTime: this.startTime || '',
+            endTime: this.endTime || ''
+          },
+          function (response) {
+            self.historyGridData = response.data.body.list
+            self.page = response.data.body.pagination
+
+            self.startTime = ''
+            self.endTime = ''
+          })
+      },
+//    取消搜索
+      cancel: function () {
+        var self = this
+        searchRequest(
+          requestUrl + '/front-system/settlement/list',
+          {
+            startTime: this.startTime,
+            endTime: this.endTime
+          },
+          function (response) {
+            self.historyGridData = response.data.body.list
+            self.page = response.data.body.pagination
+
+            self.startTime = ''
+            self.endTime = ''
+          })
       }
     },
     data: function () {
       return {
-        searchQuery: '',
         gridOperate: true,
         startTime: '',
         endTime: '',
