@@ -66,29 +66,20 @@
             <div class="form-group" style="margin-left: 37px;">
               <label>一级单位</label>
               <select class="form-control" v-model="createList.base_unit">
-                <option value="1">单位1</option>
-                <option value="2">单位2</option>
-                <option value="3">单位3</option>
-                <option value="4">单位4</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>二级单位</label>
               <select class="form-control fsamll" v-model="createList.neutral_unit">
-                <option value="1">单位1</option>
-                <option value="2">单位2</option>
-                <option value="3">单位3</option>
-                <option value="4">单位4</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
             </div>
             <div class="form-group ml10">
               <label>三级单位</label>
               <select class="form-control fsamll" v-model="createList.minimal_unit">
-                <option value="1">单位1</option>
-                <option value="2">单位2</option>
-                <option value="3">单位3</option>
-                <option value="4">单位4</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" style="width: 85px;"
                      v-model="createList.minimal_unit_value">
@@ -100,7 +91,6 @@
                 <option value="1">单位1</option>
                 <option value="2">单位2</option>
                 <option value="3">单位3</option>
-                <option value="4">单位4</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -109,7 +99,6 @@
                 <option value="1">单位1</option>
                 <option value="2">单位2</option>
                 <option value="3">单位3</option>
-                <option value="4">单位4</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -339,6 +328,18 @@
       leftSetting: leftSetting
     },
     ready: function () {
+//      获取单位
+      this.$http({
+        url: requestUrl + '/backend-system/product/unit',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.baseUnit = response.data.body.list
+        console.log(this.baseUnit)
+        console.log('212')
+      }, function (err) {
+        console.log(err)
+      })
 //      获取商品分类
       this.$http({
         url: requestUrl + '/front-system/order/category',
@@ -361,6 +362,7 @@
         addGoodModal: false,
         addGoodModalSize: 'modal-lg',
         category: '',
+        baseUnit: '',
         createList: {
           category_id: '',
           product_type: '',
