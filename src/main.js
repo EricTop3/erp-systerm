@@ -34,13 +34,31 @@ import SaleOutBills from 'components/website/instock/SaleOutBills'
 import SaleOutBillsDetail from 'components/website/instock/SaleOutBillsDetail'
 import AllotOut from 'components/website/instock/AllotOut'
 import TransactionQuery from 'components/website/transaction-query/TransactionQuery'
-import MicroShopOrder from 'components/website/micro-shop-order/MicroShopOrder'
 import Purchase from 'components/admin/purchase/Purchase'
+import PurchaseDelivery from 'components/admin/purchase/PurchaseDelivery'
 import Setting from 'components/admin/setting/Setting'
-import Product from 'components/admin/product/Product'
+import SettingCategory from 'components/admin/setting/SettingCategory'
+import SettingCoupon from 'components/admin/setting/SettingCoupon'
+import SettingPartner from 'components/admin/setting/SettingPartner'
+import SettingUserAccount from 'components/admin/setting/SettingUserAccount'
+import SettingAdminAccount from 'components/admin/setting/SettingAdminAccount'
+import Production from 'components/admin/product/Production'
+import ProductionFactoryCreat from 'components/admin/product/ProductionFactoryCreat'
+import ProductionDelegationCreat from 'components/admin/product/ProductionDelegationCreat'
+import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplies'
+import ProductionCreatInstock from 'components/admin/product/ProductionCreatInstock'
+import ProductionDelegationInstock from 'components/admin/product/ProductionDelegationInstock'
+import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
 import AdminMember from 'components/admin/member/MemberIndex'
 import Retail from 'components/admin/retail/Retail'
-import AdminInstock from 'components/admin/instock/InStock'
+import RetailManage from 'components/admin/retail/RetailManage'
+import AdminInstock from 'components/admin/instock/inStock'
+import AdminInstockInventory from 'components/admin/instock/AdminInstockInventory'
+import AdminInstockDifference from 'components/admin/instock/AdminInstockDifference'
+import AdminInstockDispatching from 'components/admin/instock/AdminInstockDispatching'
+import AdminInstockSale from 'components/admin/instock/AdminInstockSale'
+import AdminInstockApply from 'components/admin/instock/AdminInstockApply'
+import AdminInstockProduction from 'components/admin/instock/AdminInstockProduction'
 import AdminMicroShopOrder from 'components/admin/micro-shop-order/MicroShopOrder'
 import AdminLogin from 'components/admin/login/AdminLogin'
 Vue.filter('priceChange', priceChange)
@@ -158,26 +176,80 @@ router.map({
   '/site/tranquery': {
     component: TransactionQuery
   },
-  '/site/microshoporder': {
-    component: MicroShopOrder
-  },
   '/admin/purchase': {
     component: Purchase
+  },
+  '/admin/purchase/delivery': {
+    component: PurchaseDelivery
   },
   '/admin/setting': {
     component: Setting
   },
-  '/admin/product': {
-    component: Product
+  '/admin/setting/category': {
+    component: SettingCategory
+  },
+  '/admin/setting/coupon': {
+    component: SettingCoupon
+  },
+  '/admin/setting/partner': {
+    component: SettingPartner
+  },
+  '/admin/setting/userAccount': {
+    component: SettingUserAccount
+  },
+  '/admin/setting/adminAccount': {
+    component: SettingAdminAccount
+  },
+  '/admin/production': {
+    component: Production
+  },
+  '/admin/production/factoryCreat': {
+    component: ProductionFactoryCreat
+  },
+  '/admin/production/delegationCreat': {
+    component: ProductionDelegationCreat
+  },
+  '/admin/production/getSupplies': {
+    component: ProductionGetSupplies
+  },
+  '/admin/production/creatInstock': {
+    component: ProductionCreatInstock
+  },
+  '/admin/production/delegationInstock': {
+    component: ProductionDelegationInstock
+  },
+  '/admin/production/creatOrder': {
+    component: ProductionCreatOrder
   },
   '/admin/member': {
-    component:  AdminMember
+    component: AdminMember
   },
   '/admin/instock': {
     component: AdminInstock
   },
+  '/admin/instock/inventory': {
+    component: AdminInstockInventory
+  },
+  '/admin/instock/difference': {
+    component: AdminInstockDifference
+  },
+  '/admin/instock/dispatching': {
+    component: AdminInstockDispatching
+  },
+  '/admin/instock/sale': {
+    component: AdminInstockSale
+  },
+  '/admin/instock/production': {
+    component: AdminInstockProduction
+  },
+  '/admin/instock/apply': {
+    component: AdminInstockApply
+  },
   '/admin/retail': {
     component: Retail
+  },
+  '/admin/retail/manage': {
+    component: RetailManage
   },
   '/admin/micromall': {
     component: AdminMicroShopOrder

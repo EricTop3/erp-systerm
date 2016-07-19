@@ -3,17 +3,21 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2"  role="navigation">
+      <div class="col-lg-2" role="navigation">
         <ul class="nav nav-stacked sidebar">
-          <li class="active"><a v-link="{ path: '/admin/purchase'}">采购订单</a></li>
-          <li><a v-link="{ path: '/admin/purchase/delivery'}">采购收货</a></li>
+          <li class="active"><a v-link="{ path: '/admin/production/factoryCreat'}">工厂生产单</a></li>
+          <li><a v-link="{ path: '/admin/production/delegationCreat'}">委外生产单</a></li>
+          <li><a v-link="{ path: '/admin/production/getSupplies'}">领料单</a></li>
+          <li><a v-link="{ path: '/admin/production/creatInstock'}">生产入库单</a></li>
+          <li><a v-link="{ path: '/admin/production/delegationInstock'}">委外生产入库单</a></li>
+          <li><a v-link="{ path: '/admin/production/creatOrder'}">生产预约单</a></li>
         </ul>
       </div>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
-          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：采购首页</li>
-          <li class="active">采购订单</li>
+          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
+          <li class="active">生产单</li>
           <li class="active">列表</li>
         </ol>
 
@@ -22,9 +26,9 @@
           <form class="form-inline">
             <div class="form-group">
               <label>单号</label>
-              <input type="text" class="form-control" placeholder="">
+              <input type="text" class="form-control" placeholder="" style="width: 130px;">
             </div>
-            <div class="form-group  ml10">
+            <div class="form-group ml10">
               <label>审核状态</label>
               <select class="form-control">
                 <option>请选择</option>
@@ -36,25 +40,19 @@
                 <option>请选择</option>
               </select>
             </div>
-            <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#">新建采购单</span>
             <div class="form-group ml10">
-              <label>采购时间段</label>
-              <input type="text"class="form-control date_picker" placeholder="开始时间"> -
-              <input type="text"class="form-control date_picker" placeholder="结束时间">
+              <label>制单时间段</label>
+              <input type="text"class="form-control date_picker" placeholder="开始时间" style="width: 130px;"> -
+              <input type="text"class="form-control date_picker" placeholder="结束时间" style="width: 130px;">
             </div>
             <div class="form-group ml10">
-              <label>供应商</label>
-              <select class="form-control">
-                <option>请选择</option>
-              </select>
+              <label>生产时间段</label>
+              <input type="text"class="form-control date_picker" placeholder="开始时间" style="width: 130px;"> -
+              <input type="text"class="form-control date_picker" placeholder="结束时间" style="width: 130px;">
             </div>
-            <div class="form-group mt20">
-              <label>收货时间段</label>
-              <input type="text"class="form-control date_picker" placeholder="开始时间"> -
-              <input type="text"class="form-control date_picker" placeholder="结束时间">
-            </div>
-            <button type="submit" class="btn btn-primary  mt20">搜索</button>
-            <span class="btn btn-warning  mt20">撤销搜索</span>
+            <button type="submit" class="btn btn-primary">搜索</button>
+            <span class="btn btn-warning">撤销搜索</span>
+            <span class="btn btn-info spanblocks fr">新建生产单</span>
 
           </form>
         </div>
@@ -63,14 +61,13 @@
         <table class="table table-striped table-border table-hover">
           <thead>
           <tr class="text-center">
-            <td class="text-left">采购单号</td>
-            <td>状态</td>
+            <td class="text-left">生产单号</td>
+            <td>审核状态</td>
             <td>制单人</td>
             <td>审核人</td>
-            <td>供应商</td>
             <td>制单日期</td>
-            <td>到货日期</td>
-            <td>采购金额</td>
+            <td>生产日期</td>
+            <td>生产数量</td>
             <td>操作</td>
           </tr>
           </thead>
@@ -78,16 +75,28 @@
           <tr class="text-center">
             <td class="text-left">164643138431315</td>
             <td>未审核</td>
-            <td>李四</td>
+            <td>张三</td>
             <td>无</td>
-            <td>两江食品</td>
-            <td>2016-6-1</td>
             <td>2016-6-2</td>
-            <td>￥80.00</td>
+            <td>2016-6-2</td>
+            <td>300</td>
             <td>
-              <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#procurement-audit-templ">审核</span>
-              <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#procurement-view-templ">查看</span>
-              <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#procurement-del-templ">删除</span>
+              <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#production-audit-templ">审核</span>
+              <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#production-view-templ">查看</span>
+              <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#production-del-templ">删除</span>
+            </td>
+          </tr>
+          <tr class="text-center">
+            <td class="text-left">164643138431315</td>
+            <td>已审核</td>
+            <td>张三</td>
+            <td>王二小</td>
+            <td>2016-6-2</td>
+            <td>2016-6-3</td>
+            <td>300</td>
+            <td>
+              <span class="btn btn-primary btn-sm" data-toggle="modal">完成</span>
+              <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#production-view-templ">查看</span>
             </td>
           </tr>
           </tbody>
@@ -105,12 +114,13 @@
             <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
           </ul>
         </nav>
+
       </div>
     </div>
   </div>
 
   <!--模态框-审核-->
-  <div class="modal fade" id="procurement-audit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="production-audit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -129,7 +139,7 @@
   <!--模态框HTML-->
 
   <!--模态框-查看-->
-  <div class="modal fade" id="procurement-view-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="production-view-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -149,7 +159,7 @@
   <!--模态框HTML-->
 
   <!--模态框-删除-->
-  <div class="modal fade" id="procurement-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="production-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <div class="modal-header">
