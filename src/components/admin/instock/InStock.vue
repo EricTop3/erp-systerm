@@ -2,16 +2,8 @@
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2"  role="navigation">
-        <ul class="nav nav-stacked sidebar">
-          <li class="active"><a v-link="{ path: '/admin/instock}">库存查询</a></li>
-          <li><a v-link="{ path: '/admin/instock/inventory'}">库存盘点</a></li>
-          <li><a v-link="{ path: '/admin/instock/difference'}">差异汇总</a></li>
-          <li><a v-link="{ path: '/admin/instock/dispatching'}">库存配送出库</a></li>
-          <li><a v-link="{ path: '/admin/instock/sale'}">销售出库</a></li>
-          <li><a v-link="{ path: '/admin/instock/production'}">生产出库</a></li>
-          <li><a v-link="{ path: '/admin/instock/apply'}">要货汇总</a></li>
-        </ul>
+      <div class="col-lg-2" role="navigation">
+        <left-instock></left-instock>
       </div>
       <div class="col-lg-10">
         <!-- 路径导航 -->
@@ -41,8 +33,8 @@
             </div>
             <div class="form-group ml10">
               <label>时间段</label>
-              <input type="text"class="form-control date_picker" placeholder="开始时间"> -
-              <input type="text"class="form-control date_picker" placeholder="结束时间">
+              <input type="text" class="form-control date_picker" placeholder="开始时间"> -
+              <input type="text" class="form-control date_picker" placeholder="结束时间">
             </div>
             <div class="form-group ml10">
               <label><input type="checkbox" class="checkbox">库存警戒中 </label>
@@ -81,7 +73,8 @@
             <td>150</td>
             <td>箱</td>
             <td>1箱*20盒*250ml</td>
-            <td><span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-detail-templ">出入库明细</span></td>
+            <td><span class="btn btn-primary btn-sm" data-toggle="modal"
+                      data-target="#inventory-detail-templ">出入库明细</span></td>
           </tr>
           </tbody>
         </table>
@@ -107,11 +100,13 @@
   import AdminNav from '../AdminNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
+  import leftInstock from '../common/leftInstock'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
-      AdminNav: AdminNav
+      AdminNav: AdminNav,
+      leftInstock: leftInstock
     },
     events: {
 //    绑定翻页事件
