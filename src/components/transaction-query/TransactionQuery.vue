@@ -85,12 +85,9 @@
           <grid :data="queryList" :columns="hangingGridColumns" :operate="gridOperate" :check="gridCheck"
                 v-on:change-operate="changeOperate" v-on:change-all-operate="changeAllOperate">
             <div slot="operateList">
-              <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-huikuan-templ"
-                    @click="payment">回款</span>
-              <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkHangingGoods-templ"
-                    @click="lookDetail($event)">查看</span>
-              <span class="btn btn-warning btn-sm" data-toggle="modal"
-                    data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
+              <span class="btn btn-primary btn-sm" @click="payment($event)">回款</span>
+              <span class="btn btn-info btn-sm" @click="lookDetail($event)">查看</span>
+              <span class="btn btn-warning btn-sm" @click="returnGoods($event)">退货</span>
             </div>
           </grid>
           <table>
@@ -250,7 +247,7 @@
         aria-hidden="true" @click="paymentModal=false">&times;</span></button>
       <h4 class="modal-title">挂账回款</h4>
     </div>
-    <div slot="body">
+    <div slot="body" class="gzhk">
       <div class="radio">
         <label>
           <input type="radio" value="cash" name="payment">现金
@@ -636,8 +633,8 @@
           this.refundModal = false
         }
       },
-//      确定回款
-      payment: function () {
+//      回款
+      payment: function (event) {
         var button = $(event.currentTarget)
         this.currentButton = button
         this.paymentModal = true
@@ -680,15 +677,18 @@
       },
 //       确定回款
       confirmPayment: function () {
-        this.$http.put(
-          requestUrl + '/front-system/order/back-money/' + paymentid, {headers: {'X-Overpowered-Token': token}})
-          .then(function (response) {
-            window.location.reload()
-            this.paymentModal = false
-            $(this.currentButton).remove()
-          }, function (err) {
-            console.log(err)
-          })
+        var payment = $(".gzhk").find('input[name="payment"]:checked').val()
+        this.$http({
+          url: requestUrl + '/front-system/order/back-money/' + paymentid,
+          method: 'put',
+          data: {payment: payment},
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.paymentModal = false
+          $(this.currentButton).remove()
+        }, function (err) {
+          console.log(err)
+        })
       }
     },
     data: function () {
