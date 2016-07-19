@@ -76,7 +76,6 @@ import AllotOut from './components/instock/AllotOut'
 import TransactionQuery from './components/transaction-query/TransactionQuery'
 import MicroShopOrder from './components/micro-shop-order/MicroShopOrder'
 import Purchase from './components/admin/purchase/Purchase'
->>>>>>> b322684df0757651925d3d5ab998414bd614efa6
 Vue.filter('priceChange', priceChange)
 Vue.use(VueRouter)
 Vue.use(VueRescource)
