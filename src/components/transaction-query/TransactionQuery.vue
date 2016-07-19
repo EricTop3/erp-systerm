@@ -41,8 +41,9 @@
         </div>
         <div class="form-group ml10">
           <label>下单时间段</label>
-          <date-picker  :value.sync="startTime"></date-picker> -
-          <date-picker  :value.sync="endTime"></date-picker>
+          <date-picker :value.sync="startTime"></date-picker>
+          -
+          <date-picker :value.sync="endTime"></date-picker>
         </div>
         <button class="btn btn-info" @click="search">搜索</button>
         <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
@@ -55,7 +56,8 @@
         </li>
         <li value="2" role="presentation" :class="{'active': orderType===2}"><a href="#guazhang-list" data-toggle="tab">挂账单</a>
         </li>
-        <li value="3" role="presentation" :class="{'active': orderType===3}"><a href="#order-list" data-toggle="tab">预约单</a></li>
+        <li value="3" role="presentation" :class="{'active': orderType===3}"><a href="#order-list"
+                                                                                data-toggle="tab">预约单</a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -105,20 +107,45 @@
         <!-- end挂账单 -->
 
         <!-- begin预约单 -->
-        <div role="tabpanel" class="tab-pane active" v-if="orderShow===true">
-          <grid :data="queryList" :columns="subscribeGridColumns" :operate="gridOperate">
-            <div slot="operateList">
-              <span v-if="status == '门店配送中'" class="btn btn-sm btn-primary" data-toggle="modal"
-                    data-target="#inventory-notice1-templ">门店收货</span>
-              <span v-if="status == '等待签收'" class="btn btn-sm btn-primary" data-toggle="modal"
-                    data-target="#inventory-notice2-templ">客户签收</span>
-              <span v-if="status == '订单取消'" class="btn btn-sm btn-primary" data-toggle="modal"
-                    data-target="#inventory-notice3-templ">退款</span>
-              <span class="btn btn-sm btn-info" data-toggle="modal" data-target="#inventory-checkSubscribeGoods-templ"
-                    @click="lookDetail($event)">查看</span>
-            </div>
-          </grid>
 
+        <div role="tabpanel" class="tab-pane active" v-if="orderShow===true">
+          <table class="table table-striped table-border table-hover">
+            <thead>
+            <tr class="text-center">
+              <td class="text-left">小票编号</td>
+              <td>下单时间</td>
+              <td>合计金额</td>
+              <td>合计数量</td>
+              <td>会员卡号</td>
+              <td>优惠方式</td>
+              <td>支付方式</td>
+              <td>进度</td>
+              <td>营业员</td>
+              <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" v-for="item in queryList" id="{{item.id}}">
+              <td class="text-left">{{item.order_number}}</td>
+              <td>{{item.created_at}}</td>
+              <td>{{item.total_sum}}</td>
+              <td>{{item.total_amount}}</td>
+              <td>{{item.member_card_number}}</td>
+              <td>{{item.coupon_note}}</td>
+              <td>{{item.pay_method}}</td>
+              <td>{{item.status}}</td>
+              <td>{{item.operator}}</td>
+              <td>
+                <span v-if="item.status=='门店配送中'" class="btn btn-sm btn-primary"
+                      @click="storeReceived($event)">门店收货</span>
+                <span v-if="item.status=='等待签收'" class="btn btn-sm btn-primary"
+                      @click="userReceived($event)">客户签收</span>
+                <span v-if="item.status=='订单已取消'" class="btn btn-sm btn-primary" @click="returnMondy($event)">退款</span>
+                <span class="btn btn-sm btn-info" @click="lookDetail($event)">查看</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
           <!-- 翻页 -->
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
@@ -136,39 +163,39 @@
         aria-hidden="true" @click="refundModal=false">&times;</span></button>
       <h4 class="modal-title">退货</h4>
     </div>
-   <div slot="body">
-     <table class="table table-striped table-border table-hover">
-       <thead>
-       <tr class="text-aligen">
-         <td>商品名称</td>
-         <td>零售单价</td>
-         <td>销售数量</td>
-         <td>退货数量</td>
-         <td>小计退额款</td>
-       </tr>
-       </thead>
-       <tbody>
-       <tr v-for="item in returnGoodsList" class="text-aligen">
-         <td>{{item.consumable_name}}</td>
-         <td>￥{{item.actual_price |priceChange}}</td>
-         <td>{{item.total_sell}}</td>
-         <td>
-           <count :count.sync="item.total_refund" :amount.sync='item.total_sell' :flag.sync="refundFlag"></count>
-         </td>
-         <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
-       </tr>
-       </tbody>
-     </table>
-     <div class="panel">
-       <div class="panel-body">
-         <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
-           class="pull-right btn-primary btn"  @click="onlyReturnOnce"
-           :disabled="refundFlag"
-           :class="{'btn-primary':!refundFlag,'btn-warning':refundFlag}">确定退货</span>
-         </p>
-       </div>
-     </div>
-   </div>
+    <div slot="body">
+      <table class="table table-striped table-border table-hover">
+        <thead>
+        <tr class="text-aligen">
+          <td>商品名称</td>
+          <td>零售单价</td>
+          <td>销售数量</td>
+          <td>退货数量</td>
+          <td>小计退额款</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in returnGoodsList" class="text-aligen">
+          <td>{{item.consumable_name}}</td>
+          <td>￥{{item.actual_price |priceChange}}</td>
+          <td>{{item.total_sell}}</td>
+          <td>
+            <count :count.sync="item.total_refund" :amount.sync='item.total_sell' :flag.sync="refundFlag"></count>
+          </td>
+          <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="panel">
+        <div class="panel-body">
+          <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
+            class="pull-right btn-primary btn" @click="onlyReturnOnce"
+            :disabled="refundFlag"
+            :class="{'btn-primary':!refundFlag,'btn-warning':refundFlag}">确定退货</span>
+          </p>
+        </div>
+      </div>
+    </div>
     <div slot="footer">
     </div>
   </modal>
@@ -202,7 +229,7 @@
           <td>{{item.total_sell }}</td>
           <td>{{item.total_refund }}</td>
           <td>{{item.total_sum | priceChange}}</td>
-          <td>{{ item.note===""  ? '无备注' : item.note }}</td>
+          <td>{{ item.note==="" ? '无备注' : item.note }}</td>
         </tr>
         </tbody>
       </table>
@@ -226,7 +253,7 @@
     <div slot="body">
       <div class="radio">
         <label>
-          <input type="radio" value="cash"  name="payment">现金
+          <input type="radio" value="cash" name="payment">现金
         </label>
         <label>
           <input type="radio" value="alipay" name="payment">支付宝
@@ -253,67 +280,55 @@
   </modal>
 
   <!-- begin门店收货 -->
-  <div class="modal fade" id="inventory-notice1-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">提示</h4>
-        </div>
-        <div class="modal-body">
-          <h4 class="text-center">门店确定已收货？</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
-          <button type="button" class="btn btn-primary">取消</button>
-        </div>
-      </div>
+  <modal :show.sync="storeReceivedModal" :modal-size.sync='storeReceivedModalSize'>
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">提示</h4>
     </div>
-  </div>
+    <div slot="body">
+      <h4 class="text-center">门店确定已收货？</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-info" data-dismiss="modal" @click="storeConfirmReceived">确定</button>
+      <button type="button" class="btn btn-primary" @click="storeReceivedModal=false">取消</button>
+    </div>
+  </modal>
   <!-- end门店收货 -->
 
-  <!-- begin门店收货 -->
-  <div class="modal fade" id="inventory-notice2-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">提示</h4>
-        </div>
-        <div class="modal-body">
-          <h4 class="text-center">客户确定已收货？</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
-          <button type="button" class="btn btn-primary">取消</button>
-        </div>
-      </div>
+  <!-- begin客户收货 -->
+  <modal :show.sync="userReceivedModal" :modal-size.sync='userReceivedModalSize'>
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">提示</h4>
     </div>
-  </div>
-  <!-- end门店收货 -->
+    <div slot="body">
+      <h4 class="text-center">客户确定已收货？</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-info" data-dismiss="modal" @click="userConfirmReceived">确定</button>
+      <button type="button" class="btn btn-primary" @click="userReceivedModal=false">取消</button>
+    </div>
+  </modal>
+  <!-- end客户收货 -->
 
-  <!-- begin门店收货 -->
-  <div class="modal fade" id="inventory-notice3-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">提示</h4>
-        </div>
-        <div class="modal-body">
-          <h4 class="text-center">确定退款至客户？</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
-          <button type="button" class="btn btn-primary">取消</button>
-        </div>
-      </div>
+  <!-- begin退款 -->
+  <modal :show.sync="returnMoneyModal" :modal-size.sync='returnMoneyModalSize'>
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">提示</h4>
     </div>
-  </div>
-  <!-- end门店收货 -->
+    <div slot="body">
+      <h4 class="text-center">确定退款至客户？</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-info" data-dismiss="modal" @click="confirmReturnMoney">确定</button>
+      <button type="button" class="btn btn-primary" @click="returnMoneyModal=false">取消</button>
+    </div>
+  </modal>
+  <!-- end退款 -->
 </template>
 <script>
   import $ from 'jquery'
@@ -322,7 +337,7 @@
   import Count from '../common/Count'
   import DatePicker from '../common/DatePicker'
   import Modal from  '../common/Modal'
-  import {requestUrl,token,searchRequest} from '../../publicFunction/index'
+  import {requestUrl, token, searchRequest} from '../../publicFunction/index'
   var detailId = 0
   var paymentid = 0
   export default {
@@ -335,6 +350,9 @@
     },
     route: {
       activate: function () {
+        if (!window.localStorage.getItem('orderType')) {
+          window.localStorage.setItem('orderType', 1)
+        }
         this.orderType = Number(window.localStorage.getItem('orderType'))
         var self = this
         switch (self.orderType) {
@@ -403,7 +421,7 @@
     },
     methods: {
 //      搜索
-      search: function (){
+      search: function () {
         var self = this
         searchRequest(
           requestUrl + '/front-system/order',
@@ -463,17 +481,38 @@
               val.pay_method = '会员卡余额'
               break
           }
+          switch (val.status) {
+            case  'at00':
+              val.status = '已提交'
+              break
+            case 'ip00':
+              val.status = '生产中'
+              break
+            case  'sd00':
+              val.status = '门店配送中'
+              break
+            case 'gs00':
+              val.status = '等待签收'
+              break
+            case  'c000':
+              val.status = '订单已取消'
+              break
+            case  'hr00':
+              val.status = '已退款'
+              break
+            case  'k000':
+              val.status = '快递配送中'
+              break
+            case  'rm00':
+              val.status = '客户已签收'
+              break
+          }
         })
       },
 //      翻页请求完成数据和订单切换完成数据
       finishPage: function (response) {
         this.page = response.data.body.pagination
         this.queryList = response.data.body.list
-        $.each(this.queryList,function(index,val){
-          if(val.status === 'at00'){
-            val.status ='已提交'
-          }
-        })
         this.modifyGetedData(this.queryList)
       },
 //     查看详情获取数据完成后的函数
@@ -496,6 +535,78 @@
         var url = requestUrl + '/front-system/order/' + detailId + '/detail'
         this.fetchData(url, this.finishLookDetail)
       },
+//      客户签收
+      userReceived: function (event) {
+        var button = $(event.currentTarget)
+        this.currentButton = button
+        this.userReceivedModal = true
+        this.receivedId = $(event.currentTarget).parents('tr').attr('id')
+      },
+//      客户确认签收
+      userConfirmReceived: function () {
+        this.userReceivedModal = false
+        this.$http({
+          url: requestUrl + '/front-system/order/sign/' + this.receivedId,
+          method: 'put',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.userReceivedModal = false
+          $(this.currentButton).remove()
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//      门店签收
+      storeReceived: function (event) {
+        var button = $(event.currentTarget)
+        this.currentButton = button
+        this.storeReceivedModal = true
+        this.receivedId = $(event.currentTarget).parents('tr').attr('id')
+        console.log(this.receivedId)
+      },
+//      门店确认签收
+      storeConfirmReceived: function () {
+        this.storeReceivedModal = false
+        this.$http({
+          url: requestUrl + '/front-system/order/receipt/' + this.receivedId,
+          method: 'put',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          var self = this
+          this.storeReceivedModal = false
+          var url = requestUrl + '/front-system/order'
+          var data = {
+            order_type: this.orderType,
+          }
+          this.fetchData(url,data,function(response){
+            console.log(response)
+            $(self.currentButton).remove()
+          })
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//      退款
+      returnMondy: function (event) {
+        var button = $(event.currentTarget)
+        this.currentButton = button
+        this.returnMoneyModal = true
+        this.receivedId = $(event.currentTarget).parents('tr').attr('id')
+      },
+//      确认退款
+      confirmReturnMoney: function () {
+        this.returnMoneyModal = false
+        this.$http({
+          url: requestUrl + '/front-system/order/refund-money/' + this.receivedId,
+          method: 'put',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.returnMoneyModal = false
+          $(this.currentButton).remove()
+        }, function (err) {
+          console.log(err)
+        })
+      },
 //      退货
       returnGoods: function (event) {
         var button = $(event.currentTarget)
@@ -507,7 +618,7 @@
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.returnGoodsList = response.data.body.list
-          $.each(this.returnGoodsList,function(index,value){
+          $.each(this.returnGoodsList, function (index, value) {
             value.total_refund = value.total_sell
           })
         }, function (err) {
@@ -518,9 +629,9 @@
       },
 //      退货后隐藏按钮
       onlyReturnOnce: function () {
-        if(this.refundFlag === true){
+        if (this.refundFlag === true) {
           return false
-        }else{
+        } else {
           $(this.currentButton).remove()
           this.refundModal = false
         }
@@ -544,9 +655,9 @@
         $.each(this.queryList, function (index, val) {
           if (Number(Number(currentId) === val.id)) {
             if (currentObjCheck) {
-              self.totalPayMent = self.totalPayMent + val.total_sum*100
+              self.totalPayMent = self.totalPayMent + val.total_sum * 100
             } else {
-              self.totalPayMent =  self.totalPayMent + val.total_sum*100
+              self.totalPayMent = self.totalPayMent + val.total_sum * 100
             }
           }
         })
@@ -556,16 +667,16 @@
         var self = this
         if (checkall) {
           $.each(this.queryList, function (index, val) {
-            self.totalPayMent = self.totalPayMent + val.total_sum*100
+            self.totalPayMent = self.totalPayMent + val.total_sum * 100
           })
-        }else{
+        } else {
           self.totalPayMent = 0
         }
       },
 //      点击全部回款金额
       paymentAll: function () {
         this.paymentModal = true
-        this.paymentAmount = (this.totalPayMent*0.01).toFixed(2)
+        this.paymentAmount = (this.totalPayMent * 0.01).toFixed(2)
       },
 //       确定回款
       confirmPayment: function () {
@@ -575,7 +686,7 @@
             window.location.reload()
             this.paymentModal = false
             $(this.currentButton).remove()
-          },function (err){
+          }, function (err) {
             console.log(err)
           })
       }
@@ -587,11 +698,17 @@
         orderNumber: '',
         endTime: '',
         refundModal: false,
-        refundModalSize:'modal-lg',
+        refundModalSize: 'modal-lg',
         deleteModal: false,
         deleteModalSize: 'modal-lg',
         paymentModal: false,
         paymentModalSize: 'modal-sm',
+        storeReceivedModal: false,
+        storeReceivedModalSize: 'modal-sm',
+        userReceivedModal: false,
+        userReceivedModalSize: 'modal-sm',
+        returnMoneyModal: false,
+        returnMoneyModalSize: 'modal-sm',
         totalPayMent: 0,
         paymentAmount: 0,
         guazhangShow: false,
@@ -608,6 +725,7 @@
         orderType: 1,
         gridCheck: true,
         gridOperate: true,
+        receivedId: '',
         retailGridColumns: {
           order_number: '小票编号',
           created_at: '下单时间',
