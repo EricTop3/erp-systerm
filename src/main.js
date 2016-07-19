@@ -6,7 +6,6 @@ import VueRouter from 'vue-router'
 import VueRescource from 'vue-resource'
 import {priceChange} from './filters/'
 import App from './App'
-<<<<<<< HEAD
 import Order from 'components/website/order/Order'
 import SiteLogin from './components/website/login/SiteLogin'
 import Billing from 'components/website/billing/Billing'
@@ -44,38 +43,6 @@ import Retail from 'components/admin/retail/Retail'
 import AdminInstock from 'components/admin/instock/InStock'
 import AdminMicroShopOrder from 'components/admin/micro-shop-order/MicroShopOrder'
 import AdminLogin from 'components/admin/login/AdminLogin'
-=======
-import Login from './components/login/Login'
-import Order from './components/order/Order'
-import Billing from './components/billing/Billing'
-import BillingHistory from './components/billing/BillingHistory'
-import BillingHistoryDetail from './components/billing/BillingHistoryDetail'
-import MemberIndex from './components/member/MemberIndex'
-import MemberDetail from './components/member/MemberDetail'
-import InStock from './components/instock/InStock'
-import GoodsApply from './components/instock/GoodsApply'
-import GoodsApplyNum from './components/instock/GoodsApplyNum'
-import GoodsApplyNumDetail from './components/instock/GoodsApplyNumDetail'
-import Allot from './components/instock/Allot'
-import AllotNum from './components/instock/AllotNum'
-import AllotNumDetail from './components/instock/AllotNumDetail'
-import Differences from './components/instock/Differences'
-import DifferencesDetail from './components/instock/DifferencesDetail'
-import Inventory from './components/instock/Inventory'
-import InventoryDetail from './components/instock/InventoryDetail'
-import InventoryCreate from './components/instock/InventoryCreate'
-import InventoryQuery from './components/instock/InventoryQuery'
-import InventoryQueryDetail from './components/instock/InventoryQueryDetail'
-import ProductionOutBills from './components/instock/ProductionOutBills'
-import ProductionOutBillsDetail from './components/instock/ProductionOutBillsDetail'
-import AllotOutBills from './components/instock/AllotOutBills'
-import AllotOutBillsDetail from './components/instock/AllotOutBillsDetail'
-import SaleOutBills from './components/instock/SaleOutBills'
-import SaleOutBillsDetail from './components/instock/SaleOutBillsDetail'
-import AllotOut from './components/instock/AllotOut'
-import TransactionQuery from './components/transaction-query/TransactionQuery'
-import MicroShopOrder from './components/micro-shop-order/MicroShopOrder'
-import Purchase from './components/admin/purchase/Purchase'
 Vue.filter('priceChange', priceChange)
 Vue.use(VueRouter)
 Vue.use(VueRescource)
@@ -222,7 +189,6 @@ router.map({
 router.redirect({
   '*': 'site/order'
 })
-
 router.beforeEach(function (transtion) {
   console.log('app启动')
   transtion.next()
@@ -230,4 +196,3 @@ router.beforeEach(function (transtion) {
 // 现在我们可以启动应用了！
 // 路由器会创建一个 App 实例，并且挂载到选择符 #app 匹配的元素上。
 router.start(App, '#app')
-
