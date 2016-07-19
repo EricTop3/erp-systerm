@@ -217,7 +217,7 @@
     }
   }
 </script>
-<style>
+<style scoped>
   .modal-body{
     text-align: center;
   }

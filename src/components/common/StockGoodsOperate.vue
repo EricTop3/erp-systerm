@@ -21,7 +21,7 @@
       <div class="container-fluid" style="height: 400px; overflow: auto;">
         <div class="row">
           <div class="col-sm-2" role="navigation" style="padding:0;">
-            <ul class="nav nav-stacked sidebar">
+            <ul class="nav nav-stacked dialog-sidebar">
               <li class="header">商品分类</li>
               <li v-for="item in category" track-by="$index" :class="{'active':$index===0}" @click="fetchStockGood($event)" :id="item.id">
                 <a href="javascript:void(0)">{{item.display_name}}<span

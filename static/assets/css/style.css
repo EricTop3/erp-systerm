@@ -129,15 +129,15 @@ ul li{list-style: none;}
 /*翻页end*/
 /*按钮*/
 /*按钮end*/
-/*sidebar*/
-.sidebar{border:1px solid #ddd;}
-.sidebar li{border-bottom: 1px solid #ddd;}
-.sidebar li span{display:inline-block; float:right;}
-.sidebar li a{color:#333;}
-.sidebar li a:hover{color: #fe4f0c}
-.sidebar li.header{height: 36px; line-height:36px; background-color: #000; color: #fff; text-indent: 20px;}
-.sidebar li.active a{color:#fe4f0c;}
-/*sidebar end*/
+/*dialog-sidebar*/
+.dialog-sidebar{border:1px solid #ddd;}
+.dialog-sidebar li{border-bottom: 1px solid #ddd;}
+.dialog-sidebar li span{display:inline-block; float:right;}
+.dialog-sidebar li a{color:#333;}
+.dialog-sidebar li a:hover{color: #fe4f0c}
+.dialog-sidebar li.header{height: 36px; line-height:36px; background-color: #000; color: #fff; text-indent: 20px;}
+.dialog-sidebar li.active a{color:#fe4f0c;}
+/*dialog-sidebar end*/
 /*选项卡*/
 .nav-tabs{border-bottom: 2px solid #fc510b;}
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus{color: #fff; background-color: #fc510b; cursor: default;}
