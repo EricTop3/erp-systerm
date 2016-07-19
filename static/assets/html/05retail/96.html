@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ERP-零售-结算管理</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/loginStyle.css">
+    <script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script><!--时间组件依赖的版本-->
+    <script type="text/javascript" src="../../js/jquery.date_input.pack.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.date_picker').date_input();//input时间组件应用
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid admin-header">
+        <div class="row">
+            <div class="col-md-3 text-center mt10">
+                <img src="../../images/logo.png" class="fl ml30">
+                <div class="fl mt30 ml20">
+                    <h2 class="fl mt0">管理系统</h2>
+                    <h3 class="fl ml10 pt10">您好：张三</h3>
+                    <span>[退出]</span></div>
+                </div>
+            <div class="col-md-8">
+                <ul class="nav nav-pills navbar-right">
+                    <li><a href="#">设置</a></li>
+                    <li><a href="#">采购</a></li>
+                    <li><a href="#">库存</a></li>
+                    <li><a href="#">生产</a></li>
+                    <li class="active"><a href="#">零售</a></li>
+                    <li><a href="#">会员</a></li>
+                    <li><a href="#">微商城</a></li>
+                </ul>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2"  role="navigation">
+                <ul class="nav nav-stacked sidebar">
+                    <li><a href="#">结算统计</a></li>
+                    <li class="active"><a href="#">结算管理</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-10">
+                <!-- 路径导航 -->
+                <ol class="breadcrumb">
+                    <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：零售首页</li>
+                    <li class="active">结算管理</li>
+                </ol>
+
+                <!-- 页头 -->
+                <div class="page-header">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label>门店</label>
+                            <select class="form-control">
+                                <option>请选择</option>
+                            </select>
+                        </div>
+                        <div class="form-group ml10">
+                            <label>状态</label>
+                            <select class="form-control">
+                                <option>请选择</option>
+                                <option>未结账</option>
+                                <option>已结账</option>
+                            </select>
+                        </div>
+                        <div class="form-group ml10">
+                            <label>时间段</label>
+                            <input type="text" class="date_picker form-control"> -
+                            <input type="text" class="date_picker form-control">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">搜索</button>
+                        <span class="btn btn-warning">撤销搜索</span>
+
+                    </form>
+                </div>
+
+                <!-- 表格 -->
+                <table class="table table-striped table-border table-hover">
+                    <thead>
+                    <tr class="text-center">
+                        <td>结算编号</td>
+                        <td>结算门店</td>
+                        <td>状态</td>
+                        <td>结算日期</td>
+                        <td>合计收入额</td>
+                        <td>现金支付额</td>
+                        <td>会员卡支付额</td>
+                        <td>刷卡支付额</td>
+                        <td>微信支付额</td>
+                        <td>支付宝支付额</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="text-center">
+                        <td>164643138431315</td>
+                        <td>两江幸福店</td>
+                        <td>未结账</td>
+                        <td>2015-05-01</td>
+                        <td>￥2000.00</td>
+                        <td>￥2000.00</td>
+                        <td>￥2000.00</td>
+                        <td>￥2000.00</td>
+                        <td>￥2000.00</td>
+                        <td>￥2000.00</td>
+                        <td>
+                            <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#">结账</span>
+                            <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#">查看</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- 翻页 -->
+                <nav class="text-right">
+                    <ul class="pagination">
+                        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

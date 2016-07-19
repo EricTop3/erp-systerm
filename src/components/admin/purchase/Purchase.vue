@@ -1,10 +1,14 @@
 <template>
+  <admin-nav></admin-nav>
   <h2>this is purchase body</h2>
 </template>
 <style>
-  h2{
-    color: red
-  }
 </style>
 <script>
+  import AdminNav from '../AdminNav'
+  export default{
+    components:{
+      AdminNav: AdminNav
+    }
+  }
 </script>

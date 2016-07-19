@@ -30,7 +30,7 @@
           </div>
           <div class="col-sm-10">
             <!--表格-->
-            <grid :check="true" :check-all.sync="allChecked" :data.sync="goodsList" :columns="goodsListTitle" :is-add-flag.sync="isAdd" v-on:change-all-operate="changeAllOperate" v-on:change-operate="changeOperate"></grid>
+            <grid :check="true" :check-all.sync="allChecked" :data="test" :columns="goodsListTitle" :is-add-flag.sync="isAdd"></grid>
             <!--分页-->
             <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
           </div>
@@ -68,66 +68,60 @@
         console.log(err)
       })
 //       获取产品
-      this.requestApi({per_page: 16})
-      this.addData = this.goodsList
+      this.requestApi({page: 1})
     },
     events:{
       pagechange: function(currentpage){
-        this.requestApi({page: currentpage})
+        var self = this
         this.allChecked = false
-        $.each(this.addData,function(index,val){
-          val.category_id = false
+        this.$http({
+          url: requestUrl + '/front-system/stock/goods',
+          method: 'get',
+          data: {page: currentpage}
+        }).then(function (response) {
+          this.test = this.addData
+          this.allChecked = false
+          this.page = response.data.body.pagination
+          $.each(this.test, function (index, val) {
+            console.log(val.addFlag)
+            val.choice = false
+          })
+        }, function (err) {
+          console.log(err)
         })
+//        this.requestApi({page: currentpage},function(){
+////          console.log(self.addData)
+////          $.each(self.addData, function (index, val) {
+////            console.log(val.addFlag)
+////            val.choice = val.addFlag
+////          })
+//        })
+
       }
     },
     props: {
       page: [],
       addData: [],
+      test:[],
       stockAddGoodModal: false,
       stockAddGoodModalSize: 'modal-lg'
     },
     methods: {
-//      全选选择添加商品
-      changeAllOperate: function (checkAll) {
-        var goodslist = this.goodsList
-        $.each(goodslist, function (index, val) {
-          if (checkAll) {
-            val.checked = true
-          } else {
-            val.checked = false
-          }
-        })
-      },
-//     单选选择商品
-      changeOperate: function (currentId, currentObjCheck) {
-        var goodslist = this.goodsList
-        if (currentObjCheck) {
-          $.each(goodslist, function (index, val) {
-            if (val.id === currentId) {
-              val.checked = true
-            }
-          })
-        } else {
-          $.each(goodslist, function (index, val) {
-            if (val.id === currentId) {
-              val.checked = false
-            }
-          })
-        }
-      },
 //     公共产品列表请求
-      requestApi: function (data) {
+      requestApi: function (data,callback) {
         this.$http({
           url: requestUrl + '/front-system/stock/goods',
           method: 'get',
           data: data
         }).then(function (response) {
-          $.each(response.data.body.list,function(index,val){
-            val.category_id = false
+          this.test = response.data.body.list
+//        给每个选项加上是否可以增加的标志
+          $.each(this.test,function(index,val){
+            val.addFlag = false
           })
-          this.goodsList = response.data.body.list
+          this.allChecked = false
           this.page = response.data.body.pagination
-          this.addData = this.goodsList
+          callback && callback()
         }, function (err) {
           console.log(err)
         })
@@ -160,10 +154,6 @@
       confirmClick: function () {
         this.stockAddGoodModal = false
         this.$dispatch('confirmAdd')
-        this.allChecked = false
-        $.each(this.addData,function(index,val){
-          val.category_id = false
-        })
       }
     },
     data: function () {
@@ -183,8 +173,7 @@
           'unit': '单位',
           'unit_specification': '单位规格',
           'category_name': '商品分类'
-        },
-        goodsList: []
+        }
       }
     }
   }

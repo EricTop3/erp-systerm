@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ERP-生产-预约单</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/loginStyle.css">
+    <script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script><!--时间组件依赖的版本-->
+    <script type="text/javascript" src="../../js/jquery.date_input.pack.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.date_picker').date_input();//input时间组件应用
+            //时间控件（弹出框）位置BUG调整
+            $(".date_picker").on("click",function(){
+                $(".date_selector").eq(0).css({top:"65px",left:"274px" });
+                $(".date_selector").eq(1).css({top:"65px",left:"459px" });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid admin-header">
+        <div class="row">
+            <div class="col-md-3 text-center mt10">
+                <img src="../../images/logo.png" class="fl ml30">
+                <div class="fl mt30 ml20">
+                    <h2 class="fl mt0">管理系统</h2>
+                    <h3 class="fl ml10 pt10">您好：张三</h3>
+                    <span>[退出]</span></div>
+                </div>
+            <div class="col-md-8">
+                <ul class="nav nav-pills navbar-right">
+                    <li><a href="#">设置</a></li>
+                    <li><a href="#">采购</a></li>
+                    <li><a href="#">库存</a></li>
+                    <li class="active"><a href="#">生产</a></li>
+                    <li><a href="#">零售</a></li>
+                    <li><a href="#">会员</a></li>
+                    <li><a href="#">微商城</a></li>
+                </ul>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2"  role="navigation">
+                <ul class="nav nav-stacked sidebar">
+                    <li><a href="#">工厂生产单</a></li>
+                    <li><a href="#">委外生产单</a></li>
+                    <li><a href="#">领料单</a></li>
+                    <li><a href="#">生产入库单</a></li>
+                    <li><a href="#">委外生产入库单</a></li>
+                    <li class="active"><a href="#">生产预约单</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-10">
+                <!-- 路径导航 -->
+                <ol class="breadcrumb">
+                    <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
+                    <li class="active">生产预约单</li>
+                </ol>
+
+                <!-- 页头 -->
+                <div class="page-header">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label>小票编号</label>
+                            <select class="form-control">
+                                <option>请选择</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>门店</label>
+                            <select class="form-control">
+                                <option>请选择</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>营业员</label>
+                            <select class="form-control">
+                                <option>请选择</option>
+                            </select>
+                        </div>
+                        <div class="form-group ml10">
+                            <label>下单时间段</label>
+                            <input type="text" class="date_picker form-control"> -
+                            <input type="text" class="date_picker form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>进度</label>
+                            <select class="form-control">
+                                <option>请选择</option>
+                                <option>生产中</option>
+                                <option>门店配送中</option>
+                                <option>等待签收</option>
+                                <option>快递配送中</option>
+                                <option>客户已签收</option>
+                                <option>订单取消</option>
+                                <option>已退款</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">搜索</button>
+                        <span class="btn btn-warning">撤销搜索</span>
+                    </form>
+                </div>
+
+                <!-- 表格2 -->
+                <table class="table table-striped table-border table-hover">
+                    <thead>
+                    <tr class="text-center">
+                        <td>小票编号</td>
+                        <td>下单门店</td>
+                        <td>下单时间</td>
+                        <td>合计金额</td>
+                        <td>合计数量</td>
+                        <td>优惠方式</td>
+                        <td>支付方式</td>
+                        <td>进度</td>
+                        <td>营业员</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="text-center">
+                        <td>164643138431315</td>
+                        <td>两江店</td>
+                        <td>2016-6-1</td>
+                        <td>￥2000.00</td>
+                        <td>100</td>
+                        <td>9折</td>
+                        <td>现金</td>
+                        <td>已提交</td>
+                        <td>营业员</td>
+                        <td>
+                            <span class="btn btn-primary" data-toggle="modal" data-target="#production-cancel-templ">取消订单</span>
+                            <span class="btn btn-default" data-toggle="modal" data-target="#production-begin-templ">开始生产</span>
+                            <span class="btn btn-default" data-toggle="modal" data-target="#production-check-templ">查看</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- end表格2 -->
+
+                <!-- 翻页 -->
+                <nav class="text-right">
+                    <ul class="pagination">
+                        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框-开始生产 -->
+    <div class="modal fade" id="production-sign-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form action="" method="post" class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">客户签收</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h2 class="text-center">客户确定已收货</h2>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框-开始生产 -->
+
+    <!-- 模态框-配送 -->
+    <div class="modal fade" id="production-delivery-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form action="" method="post" class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">配送</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-inline">
+                            <div class="form-group text-center">
+                                <label for="toUser"  style="margin-right: 50px;">
+                                <input type="radio" name="addr" id="toUser">
+                                配送至用户</label>
+                                <label for="toShop">
+                                    <input type="radio" name="addr" id="toShop">
+                                    配送至门店</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框-配送 -->
+
+    <!-- 模态框-开始生产 -->
+    <div class="modal fade" id="production-begin-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form action="" method="post" class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">开始生产</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h2 class="text-center">配料间库存不足，请提交领料单？</h2>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框-开始生产 -->
+
+    <!-- 模态框-查看明细 -->
+    <div class="modal fade" id="production-check-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form action="" method="post" class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">订单明细</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-border">
+                            <thead>
+                            <tr class="text-center">
+                                <td>品名</td>
+                                <td>原单价</td>
+                                <td>零售价</td>
+                                <td>销售数量</td>
+                                <td>退货数量</td>
+                                <td>小计</td>
+                                <td>议价备注</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="text-center">
+                                <td>经典意大利手冲咖啡，250ml</td>
+                                <td>￥25.00</td>
+                                <td>￥30.00</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>￥150.00</td>
+                                <td>增加了5元运费</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end模态框-查看明细 -->
+
+    <!-- 模态框-取消订单 -->
+    <div class="modal fade" id="production-cancel-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form action="" method="post" class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">取消订单</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h2 class="text-center">确定取消订单？</h2>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框-取消订单 -->
+</body>
+</html>

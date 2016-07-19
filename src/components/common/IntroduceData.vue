@@ -21,12 +21,12 @@
       <div style="height:200px; overflow: auto;">
         <!--表格-->
         <grid :check="true" :data="citeData" :columns="citeDataTitle" v-on:change-operate="change"
-              v-on:change-all-operate="changeAll"></grid>
+              v-on:change-all-operate="changeAll" :check-all.sync="citeCheckAll"></grid>
       </div>
 
       <div style="height:200px; overflow: auto; margin-top: 20px;">
         <!--表格-->
-        <grid :check="true" :data="addData" :columns="thisDataTitle" :is-add-flag.sync="isAdd"
+        <grid :check="true" :data="addData" :columns="thisDataTitle" :is-add-flag.sync="isAdd" :check-all.sync="addDataCheckAll"
               v-on:change-add-operate="changeOperate" v-on:change-all-operate="changeAllOperate"></grid>
       </div>
     </div>
@@ -160,6 +160,8 @@
         isAdd: false,
         isAddFlag: false,
         page: [],
+        citeCheckAll: false,
+        addDataCheckAll: false,
         citeDataTitle: {
           code: '配送出库单号',
           store_name: '调出仓库',
