@@ -2,8 +2,7 @@
   <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr class="text-center">
-      <th v-if="check"><label><input type="checkbox" @change="checkAllMethod()" v-model="checkAll"
-                                     :disabled="data.length<=0">全选</label></th>
+      <th v-if="check"><label><input type="checkbox" @change="checkAllMethod()" v-model="checkAll" :disabled="data.length<=0">全选</label></th>
       <th v-for="value in columns">
         {{value}}
       </th>
@@ -12,7 +11,7 @@
     </thead>
     <tbody>
     <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']">
-      <td v-if="check"><input type="checkbox" :value="[entry.checked]" :id="[entry.id ? entry.id : '']" @change="singleCheck($event)" :checked="entry.choice" v-model="entry.choice"></td>
+      <td v-if="check"><input type="checkbox" :value="[entry.checked]" :id="[entry.id ? entry.id : '']" @change="singleCheck($event)" :checked="entry.choice" v-model="entry.choice">{{entry.choice}}</td>
       <td v-for="value in columns">
         {{entry[$key]}}
       </td>
@@ -48,10 +47,10 @@
     methods: {
       checkAllMethod: function () {
         var self = this
-        this.singleChecked = this.isAddFlag = this.checkAll
+        this.isAddFlag = this.checkAll
         len = this.data.length && this.data.length > 0 ? this.data.length : 0
-        $.each(this.data,function(index,val){
-            val.choice = self.checkAll
+        $.each(this.data, function (index, val) {
+          val.choice = self.checkAll
         })
         this.$dispatch('change-all-operate', this.checkAll)
         this.$dispatch('add-all-operate', this.checkAll)
@@ -68,7 +67,6 @@
         }
         if (len === this.data.length) {
           this.checkAll = true
-          this.singleChecked = true
         }
         if (len < 1) {
           this.isAddFlag = false

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ERP-库存配送出库-查看</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../css/loginStyle.css">
+    <script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script><!--时间组件依赖的版本-->
+    <script type="text/javascript" src="../../js/jquery.date_input.pack.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.date_picker').date_input();//input时间组件应用
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid admin-header">
+        <div class="row">
+            <div class="col-md-3 text-center mt10">
+                <img src="../../images/logo.png" class="fl ml30">
+                <div class="fl mt30 ml20">
+                    <h2 class="fl mt0">管理系统</h2>
+                    <h3 class="fl ml10 pt10">您好：张雨</h3>
+                    <span>[退出]</span></div>
+                </div>
+            <div class="col-md-8">
+                <ul class="nav nav-pills navbar-right">
+                    <li><a href="#">设置</a></li>
+                    <li class="active"><a href="#">采购</a></li>
+                    <li><a href="#">库存</a></li>
+                    <li><a href="#">生产</a></li>
+                    <li><a href="#">零售</a></li>
+                    <li><a href="#">会员</a></li>
+                    <li><a href="#">微商城</a></li>
+                </ul>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2"  role="navigation">
+                <ul class="nav nav-stacked sidebar">
+                    <li><a href="#">库存查询</a></li>
+                    <li><a href="#">库存盘点</a></li>
+                    <li><a href="#">差异汇总</a></li>
+                    <li class="active"><a href="#">库存配送出库</a></li>
+                    <li><a href="#">销售出库</a></li>
+                    <li><a href="#">生产出库</a></li>
+                    <li><a href="#">要货汇总</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-10">
+                <!-- 路径导航 -->
+                <ol class="breadcrumb">
+                    <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：采购首页</li>
+                    <li class="active">库存配送出库</li>
+                    <li class="active">查看</li>
+                </ol>
+
+                <!-- 表格 -->
+                <table class="table table-striped table-border table-hover">
+                    <thead>
+                    <tr class="text-center">
+                        <td class="text-left">配送单号</td>
+                        <td>审核状态</td>
+                        <td>制单人</td>
+                        <td>审核人</td>
+                        <td>供应商</td>
+                        <td>制单日期</td>
+                        <td>到货日期</td>
+                        <td>采购金额</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="text-center">
+                        <td class="text-left">WP51254668856654</td>
+                        <td>未审核</td>
+                        <td>李老三</td>
+                        <td>无</td>
+                        <td>两江食品</td>
+                        <td>2016-5-1</td>
+                        <td>2016-6-1</td>
+                        <td>￥3000.00</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#detail"  data-toggle="tab">出库明细</a></li>
+                        <li role="presentation"><a href="#summary"  data-toggle="tab">出库汇总</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="detail">
+                            <!-- 表格 -->
+                            <table class="table table-striped table-border table-hover">
+                                <thead>
+                                <tr class="text-center">
+                                    <td class="text-left">货号</td>
+                                    <td>品名</td>
+                                    <td>单位规格</td>
+                                    <td>总部库存</td>
+                                    <td>门店库存</td>
+                                    <td>要货数量</td>
+                                    <td>配送数量</td>
+                                    <td>单位</td>
+                                    <td>来源要货单号</td>
+                                    <td>操作</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center">
+                                    <td class="text-left">164643138431315</td>
+                                    <td>伊利牛奶</td>
+                                    <td>1箱*20盒*250ml</td>
+                                    <td>5000</td>
+                                    <td>5000</td>
+                                    <td>300</td>
+                                    <td>10</td>
+                                    <td>箱</td>
+                                    <td>4169498761434915</td>
+                                    <td><span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-del-templ">删除</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <!-- 翻页 -->
+                            <nav class="text-right">
+                                <ul class="pagination">
+                                    <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                                </ul>
+                            </nav>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="summary">
+                            <table class="table table-striped table-border table-hover">
+                                <thead>
+                                <tr class="text-center">
+                                    <td class="text-left">货号</td>
+                                    <td>品名</td>
+                                    <td>总部库存</td>
+                                    <td>门店库存</td>
+                                    <td>要货数量</td>
+                                    <td>配送数量</td>
+                                    <td>单位</td>
+                                    <td>单位规格</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center">
+                                    <td class="text-left">164643138431315</td>
+                                    <td>伊利牛奶</td>
+                                    <td>500</td>
+                                    <td>200 盒</td>
+                                    <td>10</td>
+                                    <td>10</td>
+                                    <td>箱</td>
+                                    <td>1箱*20盒*250ml</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <!-- 翻页 -->
+                            <nav class="text-right">
+                                <ul class="pagination">
+                                    <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                    <li><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li class="active"><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--模态框-删除-->
+    <div class="modal fade" id="inventory-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">删除</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>删除弹窗</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--模态框HTML-->
+</body>
+</html>

@@ -60,7 +60,7 @@
   </div>
   <!--模态框-添加商品-->
   <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :add-data.sync="stockGoods" :page.sync="showPage"></stock-goods>
+               :test.sync="stockGoods" :page.sync="showPage"></stock-goods>
   <!--错误信息弹出-->
   <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
     <div slot='header'>
@@ -105,19 +105,17 @@
       confirmAdd: function () {
         var self = this
         $.each(self.stockGoods, function (index, val) {
-          if (val.checked) {
+          if (val.choice && !val.addFlag) {
+            val.addFlag = true
             self.dataArray.push(val)
           }
         })
-        this.rederStockGoods = this.rederStockGoods.concat(self.dataArray)
-        console.log(this.rederStockGoods.length)
-        console.log(this.per_page)
+        this.rederStockGoods = self.dataArray
         if(this.rederStockGoods.length %this.per_page===0){
           this.totalPage =this.rederStockGoods.length/this.per_page
         }else{
           this.totalPage =(Math.floor(this.rederStockGoods.length/ this.per_page))+1
         }
-        self.dataArray = []
       },
 //      分页
       pagechange: function(currentpage){},
@@ -127,6 +125,11 @@
           console.log('delete')
         })
       }
+    },
+    ready: function () {
+      $.each( this.rederStockGoods,function(index,val){
+        val.addFlag = false
+      })
     },
     methods: {
 //      提交要货

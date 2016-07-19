@@ -67,8 +67,8 @@ ul li{list-style: none;}
 .c-erp{color: #ff500b;}
 .c-red { color: red;}
 
-.login {background: url(../images/login_bg.jpg) top center no-repeat #000}
-.login .line-top {margin-top: 250px; background-color: #141414; height: 5px; margin-bottom: 9px;}
+.login {height:100%;background: url(../images/login_bg.jpg) top center no-repeat #000}
+.login .line-top {padding-top: 250px; height: 5px; margin-bottom: 9px;}
 .login .line-bottom {margin-top: 9px; background-color: #141414; height: 5px;}
 .login .content { background-color: #141414; min-height: 440px;}
 .login .content h1 {color: #fff; margin-top:80px; margin-bottom: 50px; font-size:48px;}

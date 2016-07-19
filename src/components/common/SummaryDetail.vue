@@ -75,6 +75,8 @@
           <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td v-if="entry.goods_code">{{entry.goods_code}}</td>
             <td v-if="entry.goods_name">{{entry.goods_name}}</td>
+            <td v-if="entry.consumable_code">{{entry.consumable_code}}</td>
+            <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
             <td v-if="entry.recipient_amount">{{entry.recipient_amount}}</td>
             <!--<td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>-->
             <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
@@ -105,6 +107,8 @@
           <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td v-if="entry.goods_code">{{entry.goods_code}}</td>
             <td v-if="entry.goods_name">{{entry.goods_name}}</td>
+            <td v-if="entry.consumable_code">{{entry.consumable_code}}</td>
+            <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
             <td v-if="entry.recipient_amount && editFlag===false">{{entry.recipient_amount}}</td>
             <td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>
             <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
