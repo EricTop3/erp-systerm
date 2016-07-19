@@ -1,0 +1,392 @@
+<template>
+  <admin-nav></admin-nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-2" role="navigation">
+        <left-setting></left-setting>
+      </div>
+      <div class="col-lg-10">
+        <!-- 路径导航 -->
+        <ol class="breadcrumb">
+          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：设置首页</li>
+          <li class="active">商品设置</li>
+          <li class="active">编辑新增商品</li>
+        </ol>
+
+        <!-- 页头 -->
+        <div class="page-header">
+          <a v-link="{ path: '/admin/setting'}"><span class="btn btn-info spanblocks fr">返回商品列表</span></a>
+          <div class="clearboth"></div>
+        </div>
+
+        <div class="inputFormat">
+          <form class="form-inline">
+            <div class="form-group ml10">
+              <label>商品分类</label>
+              <select class="form-control" v-model="createList.category_id">
+                <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-left: 37px;">
+              <label>商品属性</label>
+              <select class="form-control" v-model="createList.product_type">
+                <option value="1">工厂产</option>
+                <option value="2">委外产</option>
+                <option value="3">门店产</option>
+                <option value="4">原料</option>
+                <option value="5">套餐</option>
+              </select>
+            </div>
+            <div class="form-group ml10">
+              <label>价格属性</label>
+              <select class="form-control" v-model="createList.sell_type">
+                <option value="1">可议价</option>
+                <option value="2">特价</option>
+                <option value="3">非议价</option>
+              </select>
+            </div>
+            <div class="form-group ml10">
+              <label>品名</label>
+              <input type="text" class="form-control" v-model="createList.name">
+            </div>
+            <div class="form-group ml10">
+              <label>货号</label>
+              <input type="text" class="form-control" v-model="createList.code">
+            </div>
+            <br>
+            <div class="form-group ml10">
+              <label>销售状态</label>
+              <select class="form-control" v-model="createList.sell_status">
+                <option value="0">下架中</option>
+                <option value="1">上架中</option>
+                <option value="2">非卖品</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-left: 37px;">
+              <label>一级单位</label>
+              <select class="form-control" v-model="createList.base_unit">
+                <option value="1">单位1</option>
+                <option value="2">单位2</option>
+                <option value="3">单位3</option>
+                <option value="4">单位4</option>
+              </select>
+            </div>
+            <div class="form-group ml10">
+              <label>二级单位</label>
+              <select class="form-control fsamll" v-model="createList.neutral_unit">
+                <option value="1">单位1</option>
+                <option value="2">单位2</option>
+                <option value="3">单位3</option>
+                <option value="4">单位4</option>
+              </select>
+              <input type="text" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
+            </div>
+            <div class="form-group ml10">
+              <label>三级单位</label>
+              <select class="form-control fsamll" v-model="createList.minimal_unit">
+                <option value="1">单位1</option>
+                <option value="2">单位2</option>
+                <option value="3">单位3</option>
+                <option value="4">单位4</option>
+              </select>
+              <input type="text" class="form-control fsamll" placeholder="单位转换" style="width: 85px;"
+                     v-model="createList.minimal_unit_value">
+            </div>
+            <br>
+            <div class="form-group ml10">
+              <label>零售单位</label>
+              <select class="form-control" v-model="createList.sell_unit">
+                <option value="1">单位1</option>
+                <option value="2">单位2</option>
+                <option value="3">单位3</option>
+                <option value="4">单位4</option>
+              </select>
+            </div>
+            <div class="form-group ml10">
+              <label>采购加工单位</label>
+              <select class="form-control" v-model="createList.production_unit">
+                <option value="1">单位1</option>
+                <option value="2">单位2</option>
+                <option value="3">单位3</option>
+                <option value="4">单位4</option>
+              </select>
+            </div>
+            <div class="form-group ml10">
+              <label>安全库存</label>
+              <input type="text" class="form-control" v-model="createList.safe_stock">
+            </div>
+            <br>
+            <div class="form-group ml10">
+              <label>零售单价</label>
+              <input type="text" class="form-control" v-model="createList.aruc">
+            </div>
+            <div class="form-group ml10">
+              <label>采购加工单价</label>
+              <input type="text" class="form-control"
+                     v-if="createList.product_type == 2 || createList.product_type == 4" placeholder="次项为必填项！"
+                     v-model="createList.apuc">
+              <input type="text" class="form-control" v-else v-model="createList.apuc">
+            </div>
+          </form>
+        </div>
+
+        <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
+          <div class="panel-body">
+            如:牛奶单位规格为1箱*18盒*250ml，设定箱为采购单位，盒为销售单位，则采购时按箱计，销售时按盒计<br>
+            牛角面包单位规格为1盘*12个，设定盘为生产单位，则BOM清单的耗量为生产1盘牛角面包的耗量<br>
+            商品只有一个单位，则采购单位和销售单位均设定为一级单位
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><input type="checkbox" v-model="createList.use_bill_of_material"> 启动BOM单</label>
+          <span class="btn btn-primary spanblocks ml10" data-toggle="modal" @click="addGoodModal=true">添加商品</span>
+        </div>
+
+        <!-- 表格 -->
+        <table class="table table-striped table-border table-hover">
+          <thead>
+          <tr class="text-center">
+            <td class="text-left">货号</td>
+            <td>品名</td>
+            <td>耗量</td>
+            <td>单位</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center">
+            <td class="text-left">1652254556</td>
+            <td>伊利牛奶</td>
+            <td class="form-inline">
+              <div class="form-group">
+                <input type="text" value="200" class="form-control text-center" style="width: 100px;">
+              </div>
+            </td>
+            <td class="form-inline">
+              <div class="form-group">
+                <select class="form-control text-center" style="width: 70px;">
+                  <option>ml</option>
+                </select>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
+          <div class="panel-body">
+            提示：如该商品库存不为零，无法修改商品属性
+          </div>
+        </div>
+        <span class="btn btn-info spanblocks fl" @click="creatNew()">保存</span>
+
+        <!-- 翻页 -->
+        <nav class="text-right">
+          <ul class="pagination">
+            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!--模态框-添加商品-->
+  <div class="modal fade" id="set-add-products-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">添加商品</h4>
+        </div>
+        <div class="modal-body">
+          <!-- 页头 -->
+          <div class="page-header">
+            <form action="" method="post" class="form-inline">
+              <div class="form-group">
+                <label><input type="checkbox">库存警戒中</label>
+              </div>
+              <div class="form-group ml10">
+                <input type="text" class="form-control" placeholder="请输入商品名或商品编号">
+              </div>
+              <span class="btn btn-primary">搜索</span>
+              <span class="btn btn-warning">撤销搜索</span>
+            </form>
+          </div>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-2" role="navigation" style="padding:0;">
+                <ul class="nav nav-stacked dialog-sidebar">
+                  <li class="header">商品分类</li>
+                  <li class="active"><a href="#">全部<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                </ul>
+              </div>
+              <div class="col-sm-10" style="padding-right: 0;height:580px;overflow:auto;">
+                <table class="table table-striped table-border table-hover">
+                  <thead>
+                  <tr>
+                    <td><label><input type="checkbox"> 全选</label></td>
+                    <td>货号</td>
+                    <td>品名</td>
+                    <td>日均销量</td>
+                    <td>当前库存</td>
+                    <td>单位</td>
+                    <td>单位规格</td>
+                    <td>商品分类</td>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>WB2545236584</td>
+                    <td>伊利牛奶</td>
+                    <td>100</td>
+                    <td>102</td>
+                    <td>箱</td>
+                    <td>1箱*20盒*250ml</td>
+                    <td>咖啡原材料</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>WB2545236584</td>
+                    <td>伊利牛奶</td>
+                    <td>100</td>
+                    <td>102</td>
+                    <td>箱</td>
+                    <td>1箱*20盒*250ml</td>
+                    <td>咖啡原材料</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>WB2545236584</td>
+                    <td>伊利牛奶</td>
+                    <td>100</td>
+                    <td>102</td>
+                    <td>箱</td>
+                    <td>1箱*20盒*250ml</td>
+                    <td>咖啡原材料</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>WB2545236584</td>
+                    <td>伊利牛奶</td>
+                    <td>100</td>
+                    <td>102</td>
+                    <td>箱</td>
+                    <td>1箱*20盒*250ml</td>
+                    <td>咖啡原材料</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>WB2545236584</td>
+                    <td>伊利牛奶</td>
+                    <td>100</td>
+                    <td>102</td>
+                    <td>箱</td>
+                    <td>1箱*20盒*250ml</td>
+                    <td>咖啡原材料</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">确定添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--模态框HTML-->
+
+  <!--模态框-添加商品-->
+  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
+               :test.sync="stockGoods" :page.sync="showPage"></stock-goods>
+</template>
+<style>
+</style>
+<script>
+  import $ from 'jquery'
+  import AdminNav from '../AdminNav'
+  import Grid from '../../common/Grid'
+  import Page from '../../common/Page'
+  import leftSetting from '../common/leftSetting'
+  import StockGoods from '../../common/StockGoodsOperate'
+  import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
+  export default{
+    components: {
+      StockGoods: StockGoods,
+      AdminNav: AdminNav,
+      leftSetting: leftSetting
+    },
+    ready: function () {
+//      获取商品分类
+      this.$http({
+        url: requestUrl + '/front-system/order/category',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.category = response.data.body.list
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    methods: {
+//      新增商品
+      createNew: function () {
+
+      }
+    },
+    data: function () {
+      return {
+        addGoodModal: false,
+        addGoodModalSize: 'modal-lg',
+        category: '',
+        createList: {
+          category_id: '',
+          product_type: '',
+          sell_type: '',
+          name: '',
+          code: '',
+          sell_status: '',
+          base_unit: '',
+          base_unit_value: '',
+          neutral_unit: '',
+          neutral_unit_value: '',
+          minimal_unit: '',
+          minimal_unit_value: '',
+          sell_unit: '',
+          production_unit: '',
+          safe_stock: '',
+          aruc: '',
+          apuc: '',
+          use_bill_of_material: '',
+          materials: {
+            id: '',
+            value: '',
+            unit: ''
+          }
+        }
+      }
+    }
+  }
+</script>
