@@ -30,7 +30,7 @@
           </div>
           <div class="col-sm-10">
             <!--表格-->
-            <grid :check="true" :check-all.sync="allChecked" :data="test" :columns="goodsListTitle" :is-add-flag.sync="isAdd"></grid>
+            <grid :check="true" :check-all.sync="allChecked" :data="addData" :columns="goodsListTitle" :is-add-flag.sync="isAdd"></grid>
             <!--分页-->
             <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
           </div>
@@ -74,35 +74,22 @@
       pagechange: function(currentpage){
         var self = this
         this.allChecked = false
-        this.$http({
-          url: requestUrl + '/front-system/stock/goods',
-          method: 'get',
-          data: {page: currentpage}
-        }).then(function (response) {
-          this.test = this.addData
-          this.allChecked = false
-          this.page = response.data.body.pagination
-          $.each(this.test, function (index, val) {
-            console.log(val.addFlag)
-            val.choice = false
+        this.requestApi({page: currentpage},function(){
+          $.each(self.getRenderData,function(index,val){
+            $.each(self.addData,function(index1,val1){
+               if(val.id ===val1.id){
+                 val1.choice= val.choice
+                 val1.again= val.again
+               }
+            })
           })
-        }, function (err) {
-          console.log(err)
         })
-//        this.requestApi({page: currentpage},function(){
-////          console.log(self.addData)
-////          $.each(self.addData, function (index, val) {
-////            console.log(val.addFlag)
-////            val.choice = val.addFlag
-////          })
-//        })
-
       }
     },
     props: {
       page: [],
       addData: [],
-      test:[],
+      getRenderData: [],
       stockAddGoodModal: false,
       stockAddGoodModalSize: 'modal-lg'
     },
@@ -114,12 +101,7 @@
           method: 'get',
           data: data
         }).then(function (response) {
-          this.test = response.data.body.list
-//        给每个选项加上是否可以增加的标志
-          $.each(this.test,function(index,val){
-            val.addFlag = false
-          })
-          this.allChecked = false
+          this.addData = response.data.body.list
           this.page = response.data.body.pagination
           callback && callback()
         }, function (err) {

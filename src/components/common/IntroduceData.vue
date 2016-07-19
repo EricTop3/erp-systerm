@@ -20,6 +20,7 @@
       </div>
       <div style="height:200px; overflow: auto;">
         <!--表格-->
+        <!--表格-->
         <grid :check="true" :data="citeData" :columns="citeDataTitle" v-on:change-operate="change"
               v-on:change-all-operate="changeAll" :check-all.sync="citeCheckAll"></grid>
       </div>
@@ -48,6 +49,16 @@
     components: {
       Modal: Modal,
       Grid: Grid
+    },
+    ready: function () {
+      this.$http({
+        url: requestUrl + '/front-system/store/resource',
+        method: "get"
+      }).then(function(response){
+        this.citeData = response.data.body.list
+      },function(error){
+        console.log(error)
+      })
     },
     props: {
       instroduceDataModal: false,
@@ -170,28 +181,7 @@
           create_person: '制单人',
           check_person: '审核人'
         },
-        citeData: [
-          {
-            'id': 1,
-            'checked': false,
-            'store_name': '模拟接口测试门店A',
-            'code': 'YHZYADH2016050110225801',
-            'number': 20,
-            'date': '2016-06-20 12:00:00',
-            'create_person': '张三',
-            'check_person': '李四'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'store_name': '模拟接口测试门店B',
-            'code': 'YHZYADH2016050110225801',
-            'number': 30,
-            'date': '2016-06-20 12:00:00',
-            'create_person': '张三',
-            'check_person': '李四'
-          }
-        ],
+        citeData: [],
         thisDataTitle: {
           goods_code: '货号',
           goods_name: '品名',
