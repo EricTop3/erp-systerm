@@ -13,27 +13,16 @@
           <li><a v-link="{ path: '/admin/setting'}">设置</a></li>
           <li><a v-link="{ path: '/admin/purchase'}">采购</a></li>
           <li><a v-link="{ path: '/admin/instock'}">库存</a></li>
-          <li><a v-link="{ path: '/admin/product'}">生产</a></li>
+          <li><a v-link="{ path: '/admin/production'}">生产</a></li>
           <li><a v-link="{ path: '/admin/retail'}">零售</a></li>
           <li><a v-link="{ path: '/admin/member'}">会员</a></li>
           <li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>
+
         </ul>
       </div>
       <div class="col-md-1"></div>
-    </div>
-    <div class="row">
-      <div class="col-lg-2"  role="navigation">
-        <ul class="nav nav-stacked sidebar">
-          <li class="active"><a href="#">商品设置</a></li>
-          <li><a href="#">商品分类</a></li>
-          <li><a href="#">优惠设置</a></li>
-          <li><a href="#">合作方设置</a></li>
-          <li><a href="#">门店账号</a></li>
-          <li><a href="#">系统账号</a></li>
-        </ul>
       </div>
     </div>
-  </div>
 </template>
 <script>
     export default{
