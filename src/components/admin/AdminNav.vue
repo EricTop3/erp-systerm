@@ -17,7 +17,6 @@
           <li><a v-link="{ path: '/admin/retail'}">零售</a></li>
           <li><a v-link="{ path: '/admin/member'}">会员</a></li>
           <li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>
-
         </ul>
       </div>
       <div class="col-md-1"></div>
