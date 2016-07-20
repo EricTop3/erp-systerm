@@ -31,10 +31,10 @@
             <div class="form-group" style="margin-left: 37px;">
               <label>商品属性</label>
               <select class="form-control" v-model="createList.product_type">
-                <option value="1">工厂产</option>
-                <option value="2">委外产</option>
-                <option value="3">门店产</option>
-                <option value="4">原料</option>
+                <option value="1">工厂产成品</option>
+                <option value="2">委外产成品</option>
+                <option value="3">门店产成品</option>
+                <option value="4">原材料</option>
                 <option value="5">套餐</option>
               </select>
             </div>
@@ -66,20 +66,20 @@
             <div class="form-group" style="margin-left: 37px;">
               <label>一级单位</label>
               <select class="form-control" v-model="createList.base_unit">
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>二级单位</label>
               <select class="form-control fsamll" v-model="createList.neutral_unit">
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
             </div>
             <div class="form-group ml10">
               <label>三级单位</label>
               <select class="form-control fsamll" v-model="createList.minimal_unit">
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" style="width: 85px;"
                      v-model="createList.minimal_unit_value">
@@ -88,17 +88,13 @@
             <div class="form-group ml10">
               <label>零售单位</label>
               <select class="form-control" v-model="createList.sell_unit">
-                <option value="1">单位1</option>
-                <option value="2">单位2</option>
-                <option value="3">单位3</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>采购加工单位</label>
               <select class="form-control" v-model="createList.production_unit">
-                <option value="1">单位1</option>
-                <option value="2">单位2</option>
-                <option value="3">单位3</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -129,8 +125,13 @@
         </div>
 
         <div class="form-group">
-          <label><input type="checkbox" v-model="createList.use_bill_of_material"> 启动BOM单</label>
-          <span class="btn btn-primary spanblocks ml10" data-toggle="modal" @click="addGoodModal=true">添加商品</span>
+          <label><input type="checkbox" :disabled="createList.product_type == 4" :checked="isStatrBOM"
+                        v-model="createList.use_bill_of_material">
+            启动BOM单</label>
+          <button class="btn btn-primary spanblocks ml10" data-toggle="modal"
+                  :disabled="createList.product_type == 4 || createList.use_bill_of_material == false"
+                  @click="addGoodModal=true">添加商品
+          </button>
         </div>
 
         <!-- 表格 -->
@@ -144,18 +145,18 @@
           </tr>
           </thead>
           <tbody>
-          <tr class="text-center">
-            <td class="text-left">1652254556</td>
-            <td>伊利牛奶</td>
+          <tr class="text-center" v-for="item in rederSetGoods" track-by="$index" :id="item.id">
+            <td class="text-left">{{item.code}}</td>
+            <td>{{item.name}}</td>
             <td class="form-inline">
               <div class="form-group">
-                <input type="text" value="200" class="form-control text-center" style="width: 100px;">
+                <input type="text" class="form-control text-center" style="width:70px;" v-model="item.value">
               </div>
             </td>
             <td class="form-inline">
               <div class="form-group">
-                <select class="form-control text-center" style="width: 70px;">
-                  <option>ml</option>
+                <select class="form-control" v-model="item.unit">
+                  <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
                 </select>
               </div>
             </td>
@@ -167,20 +168,12 @@
             提示：如该商品库存不为零，无法修改商品属性
           </div>
         </div>
-        <span class="btn btn-info spanblocks fl" @click="creatNew()">保存</span>
+        <span class="btn btn-info spanblocks fl" @click="createNew()">保存</span>
 
         <!-- 翻页 -->
-        <nav class="text-right">
-          <ul class="pagination">
-            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-          </ul>
-        </nav>
+        <page :total='rederSetGoods.total' :current.sync='setGoodsPage.current_page' :display='setGoodsPage.per_page'
+              :last-page='setGoodsPage.last_page'></page>
+
       </div>
     </div>
   </div>
@@ -308,8 +301,9 @@
   <!--模态框HTML-->
 
   <!--模态框-添加商品-->
-  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :test.sync="stockGoods" :page.sync="showPage"></stock-goods>
+  <set-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="addGoodModal"
+             :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods"></set-goods>
+
 </template>
 <style>
 </style>
@@ -319,15 +313,20 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import leftSetting from '../common/leftSetting'
-  import StockGoods from '../../common/StockGoodsOperate'
+  import SetGoods from '../common/SetGoods'
   import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
   export default{
     components: {
-      StockGoods: StockGoods,
+      Grid: Grid,
+      Page: Page,
+      SetGoods: SetGoods,
       AdminNav: AdminNav,
       leftSetting: leftSetting
     },
     ready: function () {
+      $.each(this.rederSetGoods, function (index, val) {
+        val.addFlag = false
+      })
 //      获取单位
       this.$http({
         url: requestUrl + '/backend-system/product/unit',
@@ -335,8 +334,6 @@
         headers: {'X-Overpowered-Token': token},
       }).then(function (response) {
         this.baseUnit = response.data.body.list
-        console.log(this.baseUnit)
-        console.log('212')
       }, function (err) {
         console.log(err)
       })
@@ -351,18 +348,99 @@
         console.log(err)
       })
     },
-    methods: {
-//      新增商品
-      createNew: function () {
-
+    events: {
+//      确认增加
+      confirmAdd: function () {
+        var self = this
+        $.each(self.setGoods, function (index, val) {
+          if (val.choice && !val.again) {
+            val.again = true
+            self.dataArray.push(val)
+          }
+        })
+        this.rederSetGoods = self.dataArray
+        this.old = self.dataArray
+        this.localPage(this.old)
+        this.rederSetGoods = this.old
+      },
+//      分页
+      pagechange: function (currentpage) {
+        this.current_page = currentpage
+        this.localPage(this.old)
+        this.rederSetGoods = this.old
       }
     },
+    methods: {
+//      新增商品请求
+      createNew: function () {
+        var materials = []
+        $.each(this.rederSetGoods, function (index, val) {
+          var obj = {}
+          obj['id'] = val.id
+          obj['value'] = val.value
+          obj['unit'] = val.unit
+          materials.push(obj)
+        })
+        this.$http.post(requestUrl + '/backend-system/product/product', {
+          category_id: this.createList.category_id,
+          product_type: this.createList.product_type,
+          sell_type: this.createList.sell_type,
+          name: this.createList.name,
+          code: this.createList.code,
+          sell_status: this.createList.sell_status,
+          base_unit: this.createList.base_unit,
+          base_unit_value: this.createList.base_unit_value,
+          neutral_unit: this.createList.neutral_unit,
+          neutral_unit_value: this.createList.neutral_unit_value,
+          minimal_unit: this.createList.minimal_unit,
+          minimal_unit_value: this.createList.minimal_unit_value,
+          sell_unit: this.createList.sell_unit,
+          production_unit: this.createList.production_unit,
+          safe_stock: this.createList.safe_stock,
+          aruc: this.createList.aruc,
+          apuc: this.createList.apuc,
+          use_bill_of_material: this.createList.use_bill_of_material,
+          materials: materials
+        }, {
+          headers: {'X-Overpowered-Token': token}
+        }, function (response) {
+          console.log(response)
+        }, function (error) {
+          console.log(error)
+        })
+      },
+//     前端本地分页函数
+      localPage: function (data) {
+        this.len = data.length
+        if (this.len % this.per_page === 0) {
+          this.totalPage = this.len / this.per_page
+        } else {
+          this.totalPage = (Math.floor(this.len / this.per_page)) + 1
+        }
+        data.splice(this.current_page * this.per_page, this.len - this.current_page * this.per_page)
+      },
+    },
+    computed: {
+//      是否启用BOM清单
+      isStatrBOM: function () {
+        if (this.createList.product_type != 4) {
+          this.createList.use_bill_of_material = true
+        } else if (this.createList.product_type == 4) {
+          this.createList.use_bill_of_material = false
+        }
+      }
+  },
     data: function () {
       return {
+        showPage: [],
         addGoodModal: false,
         addGoodModalSize: 'modal-lg',
         category: '',
         baseUnit: '',
+        setGoods: [],
+        setGoodsPage: [],
+        dataArray: [],
+        rederSetGoods: [],
         createList: {
           category_id: '',
           product_type: '',
@@ -371,7 +449,7 @@
           code: '',
           sell_status: '',
           base_unit: '',
-          base_unit_value: '',
+          base_unit_value: 1,
           neutral_unit: '',
           neutral_unit_value: '',
           minimal_unit: '',
