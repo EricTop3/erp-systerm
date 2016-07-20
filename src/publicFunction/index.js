@@ -3,6 +3,8 @@ import $ from 'jquery'
 import Vue from 'vue'
 // 请求服务器路径
 export var requestUrl = 'http://192.168.1.150:1401/mock/v1'
+//  请求服务器路径真实接口
+export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
 // token值
 export var token = window.localStorage.getItem('token')
 // 后台0,1状态展示
