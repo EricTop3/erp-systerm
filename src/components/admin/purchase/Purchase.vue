@@ -3,12 +3,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2"  role="navigation">
-        <ul class="nav nav-stacked sidebar">
-          <li class="active"><a v-link="{ path: '/admin/purchase'}">采购订单</a></li>
-          <li><a v-link="{ path: '/admin/purchase/delivery'}">采购收货</a></li>
-        </ul>
-      </div>
+      <left-purchase></left-purchase>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
@@ -172,9 +167,11 @@
 </style>
 <script>
   import AdminNav from '../AdminNav'
+  import LeftPurchase from '../common/LeftPurchase'
   export default{
     components:{
-      AdminNav: AdminNav
+      AdminNav: AdminNav,
+      LeftPurchase:  LeftPurchase
     }
   }
 </script>

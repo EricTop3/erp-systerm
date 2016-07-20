@@ -2,9 +2,7 @@
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2" role="navigation">
-        <left-instock></left-instock>
-      </div>
+      <left-instock></left-instock>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
@@ -91,7 +89,6 @@
             <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
           </ul>
         </nav>
-
       </div>
     </div>
   </div>
@@ -100,7 +97,7 @@
   import AdminNav from '../AdminNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
-  import leftInstock from '../common/leftInstock'
+  import leftInstock from '../common/LeftInstock'
   export default {
     components: {
       Grid: Grid,

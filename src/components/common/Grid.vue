@@ -15,7 +15,7 @@
       <td v-for="value in columns">
         {{entry[$key]}}
       </td>
-      <td v-if="operate">
+      <td v-if="operate" :id="[entry.id ? entry.id : '']">
         <slot name="operateList">
           <span class="btn btn-primary btn-sm">充值</span>
           <span class="btn btn-info btn-sm" id="show-modal">编辑</span>

@@ -429,7 +429,7 @@
           this.createList.use_bill_of_material = false
         }
       }
-  },
+    },
     data: function () {
       return {
         showPage: [],

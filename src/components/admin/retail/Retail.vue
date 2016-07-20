@@ -2,12 +2,7 @@
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2"  role="navigation">
-        <ul class="nav nav-stacked sidebar">
-          <li class="active"><a v-link="{ path: '/admin/retail'}">结算统计</a></li>
-          <li><a v-link="{ path: '/admin/retail/manage'}">结算管理</a></li>
-        </ul>
-      </div>
+      <left-retail></left-retail>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
@@ -116,9 +111,11 @@
 </style>
 <script>
   import AdminNav from '../AdminNav'
+  import LeftRetail  from '../common/LeftRetail'
   export default{
     components:{
-      AdminNav: AdminNav
+      AdminNav: AdminNav,
+      LeftRetail:  LeftRetail
     }
   }
 </script>

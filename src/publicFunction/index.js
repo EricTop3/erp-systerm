@@ -10,7 +10,7 @@ export var token = window.localStorage.getItem('token')
 // 后台0,1状态展示
 export function exchangeData(origindata) {
   $.each(origindata, function (index, val) {
-    if (val.checked !== null) {
+    if (val.checked !== undefined) {
       if (val.checked === 0) {
         val.checked = '未审核'
       } else if (val.checked === 1) {
@@ -19,11 +19,18 @@ export function exchangeData(origindata) {
         val.checked = '已完成'
       }
     }
-    if (val.receipt_status !== null) {
+    if (val.receipt_status !== undefined) {
       if (val.receipt_status === 0) {
         val.receipt_status = '未处理'
       } else {
         val.receipt_status = '已处理'
+      }
+    }
+    if (val.status !== undefined) {
+      if (val.status === 0) {
+        val.status = '关闭'
+      } else {
+        val.status = '开启'
       }
     }
   })
@@ -77,6 +84,36 @@ export function finishRequest (url, id, callback) {
   cur.$http({
       url: requestUrl + url + id,
       method: 'put',
+      headers: {'X-Overpowered-Token': token}
+    })
+    .then(function (response) {
+      callback && callback(response)
+    }, function (err) {
+      console.log(err)
+    })
+}
+// 获取数据的方法
+export function  getDataFromApi (url, data, callback) {
+  var cur = new Vue()
+  cur.$http({
+      url: url,
+      method: 'get',
+      data: data,
+      headers: {'X-Overpowered-Token': token}
+    })
+    .then(function (response) {
+      callback && callback(response)
+    }, function (err) {
+      console.log(err)
+    })
+}
+//  post提交数据的方法
+export function  postDataToApi (url, data, callback) {
+  var cur = new Vue()
+  cur.$http({
+      url: url,
+      method: 'post',
+      data: data,
       headers: {'X-Overpowered-Token': token}
     })
     .then(function (response) {
