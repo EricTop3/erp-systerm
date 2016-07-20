@@ -182,9 +182,11 @@
 </style>
 <script>
   import AdminNav from '../AdminNav'
+  import LeftProduction  from '../common/LeftProduction'
   export default{
     components:{
-      AdminNav: AdminNav
+      AdminNav: AdminNav,
+      LeftProduction: LeftProduction
     }
   }
 </script>

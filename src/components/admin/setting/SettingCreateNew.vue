@@ -318,7 +318,7 @@
   import AdminNav from '../AdminNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
-  import leftSetting from '../common/leftSetting'
+  import leftSetting from '../common/LeftSetting'
   import StockGoods from '../../common/StockGoodsOperate'
   import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
   export default{
