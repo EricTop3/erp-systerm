@@ -8,25 +8,25 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">用户名</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" placeholder="用户名">
+              <input type="text" class="form-control" placeholder="用户名" v-model="username">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-3 control-label">密码</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" placeholder="密码">
+              <input type="text" class="form-control" placeholder="密码" v-model="password">
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">验证码</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control fl" placeholder="验证码" style="width: 120px;">
-              <span class="spanblocks ml10 yzm">1258</span>
-            </div>
-          </div>
+          <!--<div class="form-group">-->
+            <!--<label class="col-sm-3 control-label">验证码</label>-->
+            <!--<div class="col-sm-9">-->
+              <!--<input type="text" class="form-control fl" placeholder="验证码" style="width: 120px;">-->
+              <!--<span class="spanblocks ml10 yzm">1258</span>-->
+            <!--</div>-->
+          <!--</div>-->
           <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-              <button type="submit" class="btn btn-primary btn-lg" >登录</button>
+              <button type="submit" class="btn btn-primary btn-lg" @click="loginUpload">登录</button>
             </div>
           </div>
         </form>
@@ -35,3 +35,29 @@
     <div class="container-fluid line-bottom"></div>
   </div>
 </template>
+<script>
+  import {requestSystemUrl} from '../../../publicFunction/index'
+  export default{
+    methods: {
+      loginUpload: function () {
+        this.$http.post(
+          requestSystemUrl + '/backend-system/auth/login',
+          {
+            account: this.username,
+            password: this.password
+          }
+        ).then(function(response){
+          window.alert(response)
+        },function(err){
+           console.log(err)
+        })
+      }
+    },
+    data: function () {
+      return {
+        username: '',
+        password: ''
+      }
+    }
+  }
+</script>

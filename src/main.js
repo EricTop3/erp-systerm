@@ -37,6 +37,7 @@ import TransactionQuery from 'components/website/transaction-query/TransactionQu
 import Purchase from 'components/admin/purchase/Purchase'
 import PurchaseDelivery from 'components/admin/purchase/PurchaseDelivery'
 import Setting from 'components/admin/setting/Setting'
+import SettingCreateNew from 'components/admin/setting/SettingCreateNew'
 import SettingCategory from 'components/admin/setting/SettingCategory'
 import SettingCoupon from 'components/admin/setting/SettingCoupon'
 import SettingPartner from 'components/admin/setting/SettingPartner'
@@ -184,6 +185,9 @@ router.map({
   },
   '/admin/setting': {
     component: Setting
+  },
+  '/admin/setting/createNew': {
+    component: SettingCreateNew
   },
   '/admin/setting/category': {
     component: SettingCategory

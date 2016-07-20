@@ -56,11 +56,11 @@
       </tbody>
     </table>
     <!--分页-->
-    <page :total='rederStockGoods.length' :current='current_page' :display='per_page' :last-page='totalPage'></page>
+    <page :total='len' :current='current_page' :display='per_page' :last-page='totalPage'></page>
   </div>
   <!--模态框-添加商品-->
   <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :test.sync="stockGoods" :page.sync="showPage"></stock-goods>
+               :add-data.sync="stockGoods" :page.sync="showPage" :get-render-data="rederStockGoods"></stock-goods>
   <!--错误信息弹出-->
   <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
     <div slot='header'>
@@ -105,24 +105,38 @@
       confirmAdd: function () {
         var self = this
         $.each(self.stockGoods, function (index, val) {
-          if (val.choice && !val.addFlag) {
-            val.addFlag = true
-            self.dataArray.push(val)
-          }
-        })
+         if(val.choice && !val.again) {
+              val.again = true
+              self.dataArray.push(val)
+            }
+          })
         this.rederStockGoods = self.dataArray
-        if(this.rederStockGoods.length %this.per_page===0){
-          this.totalPage =this.rederStockGoods.length/this.per_page
-        }else{
-          this.totalPage =(Math.floor(this.rederStockGoods.length/ this.per_page))+1
-        }
+        this.old = self.dataArray
+        this.localPage( this.old)
+        this.rederStockGoods = this.old
+        console.log(this.old)
       },
 //      分页
-      pagechange: function(currentpage){},
+      pagechange: function(currentpage){
+         this.current_page = currentpage
+         this.localPage( this.old)
+        this.rederStockGoods = this.old
+      },
 //      删除
       delete: function(id){
-        deleteRequest('/front-system/stock/enquiry/',id,function(response){
-          console.log('delete')
+        var self = this
+//       添加商品的状态改变
+        $.each(this.stockGoods,function(index,val){
+          if(val.id===id){
+            val.choice = false
+            val.again = false
+          }
+        })
+//       从列表中删除
+        $.each(this.rederStockGoods,function(index,val){
+          if(val.id===id){
+            self.rederStockGoods.splice(index,1)
+          }
         })
       }
     },
@@ -132,6 +146,16 @@
       })
     },
     methods: {
+//     前端本地分页函数
+      localPage: function (data) {
+        this.len = data.length
+        if( this.len % this.per_page === 0){
+          this.totalPage =  this.len / this.per_page
+        }else {
+          this.totalPage = (Math.floor( this.len / this.per_page)) + 1
+        }
+        data.splice(this.current_page * this.per_page, this.len - this.current_page * this.per_page)
+      },
 //      提交要货
       upLoadEnquiry: function () {
         var items = []
@@ -169,8 +193,10 @@
     data: function () {
       return {
         date: '',
+        old: [],
         remarks: '',
         messageTipModal: false,
+        len:0,
         current_page: 1,
         per_page: 10,
         totalPage: 1,
@@ -185,12 +211,13 @@
         addGoodModalSize: 'modal-lg',
         stockGoods: [],
         dataArray: [],
+        pageArray: [],
         rederStockGoods: []
       }
     }
   }
 </script>
-<style>
+<style scoped>
   .modal-body{
     text-align: center;
   }

@@ -57,7 +57,7 @@
             <button type="submit" class="btn btn-primary">搜索</button>
             <span class="btn btn-warning">撤销搜索</span>
 
-            <a href="42.html"><span class="btn btn-info spanblocks fr">新建商品</span></a>
+            <a v-link="{ path: '/admin/setting/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
           </form>
         </div>
 

@@ -11,7 +11,7 @@
     </thead>
     <tbody>
     <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']">
-      <td v-if="check"><input type="checkbox" :value="[entry.checked]" :id="[entry.id ? entry.id : '']" @change="singleCheck($event)" :checked="entry.choice" v-model="entry.choice">{{entry.choice}}</td>
+      <td v-if="check"><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="singleCheck($event)"  v-model="entry.choice"></td>
       <td v-for="value in columns">
         {{entry[$key]}}
       </td>
@@ -65,7 +65,7 @@
           len++
           this.isAddFlag = true
         }
-        if (len === this.data.length) {
+        if (len === this.data.length && len != 0) {
           this.checkAll = true
         }
         if (len < 1) {
