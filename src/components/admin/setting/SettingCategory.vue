@@ -116,10 +116,11 @@
 <script>
   import $ from 'jquery'
   import AdminNav from '../AdminNav'
-  import leftSetting from '../common/leftSetting'
+  import leftSetting from '../common/LeftSetting'
   import Grid from '../../common/Grid'
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
+  import ErrorTip from '../../common/ErrorTip'
   import {requestUrl, token, searchRequest, exchangeData} from '../../../publicFunction/index'
   export default{
     components: {
@@ -128,6 +129,7 @@
       Grid: Grid,
       Modal: Modal,
       Page: Page,
+      ErrorTip: ErrorTip
     },
     ready: function () {
       this.getlistdata()
@@ -193,8 +195,9 @@
           this.getlistdata()
         }, function (err) {
           console.log(err)
-          if(err.data.code == '100001'){
-            alert("该分类下有商品，不能删除此分类！")
+          if (err.data.code == '100001') {
+            this.deleteModal = false
+            this.messageTipModal = true
           }
         })
       },
@@ -217,7 +220,6 @@
         }, function (err) {
           console.log(err)
         })
-
       }
     },
     data: function () {
@@ -233,9 +235,11 @@
         sort: '',
         listdata: [],
         page: [],
+        messageTipModal: false,
+        messageTip: '该分类下有商品，不能删除此分类',
         gridOperate: true,
         gridColumns: {
-          id: '序号',
+          id: 'ID',
           display_name: '一级分类'
         },
         formData: []
