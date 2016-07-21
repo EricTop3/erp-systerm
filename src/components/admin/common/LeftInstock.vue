@@ -1,6 +1,8 @@
 <template>
   <div class="col-lg-2" role="navigation">
     <ul class="nav nav-stacked sidebar">
+
+
       <li><a v-link="{ path: '/admin/instock',exact: true}">库存查询</a></li>
       <li><a v-link="{ path: '/admin/instock/inventory',exact: true}">库存盘点</a></li>
       <li><a v-link="{ path: '/admin/instock/difference',exact: true}">差异汇总</a></li>
