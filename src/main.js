@@ -38,6 +38,7 @@ import AllotOut from 'components/website/instock/AllotOut'
 import TransactionQuery from 'components/website/transaction-query/TransactionQuery'
 import Purchase from 'components/admin/purchase/Purchase'
 import PurchaseDelivery from 'components/admin/purchase/PurchaseDelivery'
+import CreateNewPurchase from 'components/admin/purchase/CreateNewPurchase'
 import Setting from 'components/admin/setting/Setting'
 import SettingCreateNew from 'components/admin/setting/SettingCreateNew'
 import SettingCategory from 'components/admin/setting/SettingCategory'
@@ -184,6 +185,9 @@ router.map({
   },
   '/site/instock': {
     component: InStock
+  },
+  '/admin/purchase/createNewPurchase': {
+    component: CreateNewPurchase
   },
   '/site/tranquery': {
     component: TransactionQuery
