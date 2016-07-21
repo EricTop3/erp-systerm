@@ -15,12 +15,14 @@
           <div class="form-group">
             <label>门店名称</label>
             <select class="form-control" v-model="storeName">
-              <option v-for="item in storeList" track-by="$index" :value="item.id">{{item.display_name}}</option>
+              <option value="">请选择</option>
+              <option v-for="item in storeList" track-by="$index" :value="item.code">{{item.display_name}}</option>
             </select>
           </div>
           <div class="form-group ml10">
             <label>状态</label>
             <select class="form-control" v-model="storeStatus">
+              <option value="">请选择</option>
               <option value="0">关闭中</option>
               <option value="1">开启中</option>
             </select>
@@ -30,7 +32,7 @@
             <input type="text" class="form-control" placeholder="请输入店员名称" v-model="clerkName">
           </div>
           <button type="submit" class="btn btn-primary" @click="search">搜索</button>
-          <span class="btn btn-warning" @click="cancel">撤销搜索</span>
+          <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
           <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#person-add-templ" @click="modal.addClerkModal=true">新增店员</span>
           <span class="btn btn-info spanblocks fr mr10"  data-toggle="modal" data-target="#account-add-templ" @click="modal.addStoreModal=true">新增门店</span>
         </form>
@@ -266,7 +268,7 @@
         var data = {
           store_code: this.storeName,
           name:  this.clerkName,
-          status: Number(this.storeStatus)
+          status: this.storeStatus
         }
         searchRequest(url,data,function(response){
           self.accountList = response.data.body.list
@@ -274,8 +276,14 @@
         })
       },
 //     取消
-      cancel: function () {
-
+      cancelSearch: function () {
+        var url = requestSystemUrl + '/backend-system/store/store-account'
+        var self = this
+        var data = {}
+        searchRequest(url,data,function(response){
+          self.accountList = response.data.body.list
+          exchangeData(self.accountList)
+        })
       }
     },
     data: function () {
