@@ -74,7 +74,7 @@ Vue.http.options.emulateJSON = true
 // 全局验证方法
 //密码验证
 Vue.validator('password', function (val) {
-  return /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(val)
+  return  /^[a-zA-Z]{1}([a-zA-Z0-9]|[._/@]){5,17}$/.test(val)
 })
 //手机号码验证
 Vue.validator('phone', function (val) {
