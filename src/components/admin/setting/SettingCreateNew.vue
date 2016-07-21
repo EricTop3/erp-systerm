@@ -312,7 +312,7 @@
   import AdminNav from '../AdminNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
-  import leftSetting from '../common/leftSetting'
+  import LeftSetting from '../common/LeftSetting'
   import SetGoods from '../common/SetGoods'
   import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
   export default{
@@ -321,7 +321,7 @@
       Page: Page,
       SetGoods: SetGoods,
       AdminNav: AdminNav,
-      leftSetting: leftSetting
+      LeftSetting: LeftSetting
     },
     ready: function () {
       $.each(this.rederSetGoods, function (index, val) {

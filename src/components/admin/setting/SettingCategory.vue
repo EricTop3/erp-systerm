@@ -116,7 +116,7 @@
 <script>
   import $ from 'jquery'
   import AdminNav from '../AdminNav'
-  import leftSetting from '../common/LeftSetting'
+  import LeftSetting from '../common/LeftSetting'
   import Grid from '../../common/Grid'
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
@@ -125,7 +125,7 @@
   export default{
     components: {
       AdminNav: AdminNav,
-      leftSetting: leftSetting,
+      LeftSetting: LeftSetting,
       Grid: Grid,
       Modal: Modal,
       Page: Page,
