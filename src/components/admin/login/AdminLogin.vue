@@ -4,53 +4,54 @@
     <div class="container-fluid content">
       <div style="width: 550px; margin: 0 auto;">
         <h1>HEY  CAKE门店管理系统</h1>
-        <form class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-3 control-label">用户名</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" placeholder="用户名" v-model="username">
+        <validator name="validation1">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-sm-3 control-label">用户名</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" placeholder="用户名" v-model="username">
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">密码</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" placeholder="密码" v-model="password">
+            <div class="form-group">
+              <label class="col-sm-3 control-label">密码</label>
+              <div class="col-sm-9">
+                <input type="password" class="form-control" placeholder="密码" v-model="password"  v-validate:password="['password']">
+              </div>
             </div>
-          </div>
-          <!--<div class="form-group">-->
+            <!--<div class="form-group">-->
             <!--<label class="col-sm-3 control-label">验证码</label>-->
             <!--<div class="col-sm-9">-->
-              <!--<input type="text" class="form-control fl" placeholder="验证码" style="width: 120px;">-->
-              <!--<span class="spanblocks ml10 yzm">1258</span>-->
+            <!--<input type="text" class="form-control fl" placeholder="验证码" style="width: 120px;">-->
+            <!--<span class="spanblocks ml10 yzm">1258</span>-->
             <!--</div>-->
-          <!--</div>-->
-          <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-              <button type="submit" class="btn btn-primary btn-lg" @click="loginUpload">登录</button>
+            <!--</div>-->
+            <div class="errors">
+              <p v-if="$validation1.password.password">请输入正确的密码</p>
             </div>
-          </div>
-        </form>
+            <div class="form-group">
+              <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" class="btn btn-primary btn-lg" @click="loginUpload">登录</button>
+              </div>
+            </div>
+          </form>
+        </validator>
       </div>
     </div>
     <div class="container-fluid line-bottom"></div>
   </div>
 </template>
 <script>
-  import {requestSystemUrl} from '../../../publicFunction/index'
+  import {requestSystemUrl,postDataToApi,adminLogin} from '../../../publicFunction/index'
   export default{
     methods: {
+      // 获取数据的方法
       loginUpload: function () {
-        this.$http.post(
-          requestSystemUrl + '/backend-system/auth/login',
-          {
-            account: this.username,
-            password: this.password
-          }
-        ).then(function(response){
-          window.alert(response)
-        },function(err){
-           console.log(err)
-        })
+        var loginUrl =  requestSystemUrl + '/backend-system/auth/login'
+        var data = {
+          account: this.username,
+          password: this.password
+        }
+        adminLogin(loginUrl,data)
       }
     },
     data: function () {
@@ -61,3 +62,8 @@
     }
   }
 </script>
+<style>
+  .errors{
+    color: red
+  }
+</style>

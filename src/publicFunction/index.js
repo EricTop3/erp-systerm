@@ -2,11 +2,10 @@
 import $ from 'jquery'
 import Vue from 'vue'
 // 请求服务器路径
-export var requestUrl = 'http://192.168.1.150:1401/mock/v1'
+export var requestUrl = 'http://192.168.1.150:1401/v1'
 //  请求服务器路径真实接口
 export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
-// token值
-export var token = window.localStorage.getItem('token')
+var token =window.localStorage.getItem('token')
 // 后台0,1状态展示
 export function exchangeData(origindata) {
   $.each(origindata, function (index, val) {
@@ -35,14 +34,27 @@ export function exchangeData(origindata) {
     }
   })
 }
+//后台登录方法
+export function adminLogin(loginUrl,data){
+  var cur = new Vue()
+  cur.$http.post( loginUrl,data).then(function(response){
+    var curtoken = response.headers('X-Overpowered-Token-Set')
+    window.localStorage.setItem('token', curtoken)
+    token =  window.localStorage.getItem('token')
+    window.location.href ='?#!/admin/setting'
+  },function(err){
+    console.log(err)
+  })
+}
+// 导出token
+export { token}
 // 所有页面搜索方法
 export function searchRequest (url, data, callback) {
   var cur = new Vue()
   cur.$http({
       url: url,
       method: 'get',
-      data: data,
-      headers: {'X-Overpowered-Token': token}
+      data: data
     })
     .then(function (response) {
       callback && callback(response)
@@ -104,7 +116,10 @@ export function  getDataFromApi (url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-      console.log(err)
+      window.alert(token)
+       if(err.status === 401){
+         window.location.href = '?#!/admin/login'
+       }
     })
 }
 //  post提交数据的方法

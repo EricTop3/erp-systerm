@@ -4,6 +4,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueRescource from 'vue-resource'
+import VueValidator from 'vue-validator'
 import {priceChange} from './filters/'
 import App from './App'
 import Order from 'components/website/order/Order'
@@ -65,10 +66,14 @@ import AdminLogin from 'components/admin/login/AdminLogin'
 Vue.filter('priceChange', priceChange)
 Vue.use(VueRouter)
 Vue.use(VueRescource)
+Vue.use(VueValidator)
 Vue.config.debug = true
 Vue.http.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 Vue.http.options.emulateJSON = true
-window.localStorage.setItem('token', '75207fdf8d926efcd2db52cd31e3073fff4f3cb2')
+// 全局验证方法
+Vue.validator('password', function (val) {
+  return /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(val)
+})
 // 创建一个路由器实例
 // 创建实例时可以传入配置参数进行定制，为保持简单，这里使用默认配置
 var router = new VueRouter(
