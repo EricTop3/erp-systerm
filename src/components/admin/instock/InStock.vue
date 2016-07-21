@@ -93,6 +93,7 @@
     </div>
   </div>
 </template>
+
 <script>
   import AdminNav from '../AdminNav'
   import Grid from '../../common/Grid'

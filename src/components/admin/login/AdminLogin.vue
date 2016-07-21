@@ -25,9 +25,9 @@
             <!--<span class="spanblocks ml10 yzm">1258</span>-->
             <!--</div>-->
             <!--</div>-->
-            <div class="errors">
-              <p v-if="$validation1.password.password">请输入正确的密码</p>
-            </div>
+            <!--<div class="validte_errors">-->
+              <!--<p v-if="$validation1.password.password">请输入正确的密码</p>-->
+            <!--</div>-->
             <div class="form-group">
               <div class="col-sm-offset-3 col-sm-9">
                 <button type="submit" class="btn btn-primary btn-lg" @click="loginUpload">登录</button>
@@ -63,7 +63,8 @@
   }
 </script>
 <style>
-  .errors{
-    color: red
+  .validte_errors{
+    text-align: center;
+    color: #d40b0b
   }
 </style>
