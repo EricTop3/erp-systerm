@@ -60,7 +60,7 @@
     compiled: function () {
 //      分类
       this.$http({
-        url: requestUrl + '/front-system/order/category',
+        url: requestUrl + '/backend-system/product/category',
         method: 'get',
       }).then(function (response) {
         this.category = response.data.body.list
