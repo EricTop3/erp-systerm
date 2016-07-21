@@ -404,6 +404,7 @@
         }, {
           headers: {'X-Overpowered-Token': token}
         }, function (response) {
+          window.location.href = requestUrl + '/setting'
           console.log(response)
         }, function (error) {
           console.log(error)
