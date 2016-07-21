@@ -15,26 +15,34 @@
           <form class="form-inline">
             <div class="form-group">
               <label>商品分类</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="">
+                <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>销售状态</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="">
+                <option value="0">下架中</option>
+                <option value="1">上架中</option>
+                <option value="2">非卖品</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>商品属性</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="">
+                <option value="1">工厂产成品</option>
+                <option value="2">委外产成品</option>
+                <option value="3">门店产成品</option>
+                <option value="4">原材料</option>
+                <option value="5">套餐</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>价格属性</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="">
+                <option value="1">可议价</option>
+                <option value="2">特价</option>
+                <option value="3">非议价</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -45,9 +53,8 @@
               <label>货号</label>
               <input type="text" class="form-control" placeholder="">
             </div>
-            <button type="submit" class="btn btn-primary">搜索</button>
+            <button class="btn btn-primary">搜索</button>
             <span class="btn btn-warning">撤销搜索</span>
-
             <a v-link="{ path: '/admin/setting/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
           </form>
         </div>
@@ -83,7 +90,7 @@
             <td>上架中</td>
             <td>
               <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#set-price-templ">价格波动</span>
-              <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#set-edit-templ">编辑</span>
+              <span class="btn btn-default btn-sm" data-toggle="modal" @click="edit($event)">编辑</span>
               <span class="btn btn-default btn-sm" data-toggle="modal" data-target="#set-del-templ">删除</span>
             </td>
           </tr>
@@ -91,17 +98,8 @@
         </table>
 
         <!-- 翻页 -->
-        <nav class="text-right">
-          <ul class="pagination">
-            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-          </ul>
-        </nav>
+        <page v-if="page.total>0" :total='page.total' :current.sync='page.current_page' :display='page.per_page'
+              :last-page='page.last_page'></page>
       </div>
     </div>
   </div>
@@ -170,27 +168,6 @@
   </div>
   <!--模态框HTML-->
 
-  <!--模态框-编辑-->
-  <div class="modal fade" id="set-edit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">编辑</h4>
-        </div>
-        <div class="modal-body">
-          <h4>编辑弹出</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
-
   <!--模态框-删除-->
   <div class="modal fade" id="set-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
@@ -201,7 +178,7 @@
           <h4 class="modal-title">删除</h4>
         </div>
         <div class="modal-body">
-          <h4>删除弹出</h4>
+          <h4>确认删除？</h4>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -215,12 +192,42 @@
 <style>
 </style>
 <script>
+  import $ from 'jquery'
+  import Grid from '../../common/Grid'
+  import Page from '../../common/Page'
   import AdminNav from '../AdminNav'
   import LeftSetting from '../common/LeftSetting'
+  import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
   export default{
     components: {
+      Grid: Grid,
+      Page: Page,
       AdminNav: AdminNav,
       LeftSetting: LeftSetting
+    },
+    ready: function () {
+//      获取商品分类
+      this.$http({
+        url: requestUrl + '/front-system/order/category',
+        method: 'get',
+        headers: {'X-Overpowered-Token': token},
+      }).then(function (response) {
+        this.category = response.data.body.list
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    methods: {
+//      编辑
+      edit: function () {
+
+      }
+    },
+    data: function () {
+      return {
+        page: [],
+      category: ''
+      }
     }
   }
 </script>

@@ -171,14 +171,14 @@
         <span class="btn btn-info spanblocks fl" @click="createNew()">保存</span>
 
         <!-- 翻页 -->
-        <page :total='rederSetGoods.total' :current.sync='setGoodsPage.current_page' :display='setGoodsPage.per_page'
+        <page v-if="rederSetGoods.total>0" :total='rederSetGoods.total' :current.sync='setGoodsPage.current_page' :display='setGoodsPage.per_page'
               :last-page='setGoodsPage.last_page'></page>
 
       </div>
     </div>
   </div>
 
-  <!--模态框-添加商品-->
+<!--  模态框-添加商品
   <div class="modal fade" id="set-add-products-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -188,7 +188,7 @@
           <h4 class="modal-title">添加商品</h4>
         </div>
         <div class="modal-body">
-          <!-- 页头 -->
+           页头
           <div class="page-header">
             <form action="" method="post" class="form-inline">
               <div class="form-group">
@@ -298,7 +298,7 @@
       </div>
     </div>
   </div>
-  <!--模态框HTML-->
+  模态框HTML-->
 
   <!--模态框-添加商品-->
   <set-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="addGoodModal"
@@ -339,7 +339,7 @@
       })
 //      获取商品分类
       this.$http({
-        url: requestUrl + '/front-system/order/category',
+        url: requestUrl + '/backend-system/product/category',
         method: 'get',
         headers: {'X-Overpowered-Token': token},
       }).then(function (response) {
@@ -404,9 +404,10 @@
         }, {
           headers: {'X-Overpowered-Token': token}
         }, function (response) {
-          window.location.href = requestUrl + '/setting'
+          window.location.href = '/#!/admin/setting'
           console.log(response)
         }, function (error) {
+//          window.location.href = '/#!/admin/setting'
           console.log(error)
         })
       },
