@@ -17,6 +17,7 @@ import InStock from 'components/website/instock/InStock'
 import GoodsApply from 'components/website/instock/GoodsApply'
 import GoodsApplyNum from 'components/website/instock/GoodsApplyNum'
 import GoodsApplyNumDetail from 'components/website/instock/GoodsApplyNumDetail'
+import Instok from 'components/website/instock/InStock'
 import Allot from 'components/website/instock/Allot'
 import AllotNum from 'components/website/instock/AllotNum'
 import AllotNumDetail from 'components/website/instock/AllotNumDetail'
@@ -71,8 +72,13 @@ Vue.config.debug = true
 Vue.http.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 Vue.http.options.emulateJSON = true
 // 全局验证方法
+//密码验证
 Vue.validator('password', function (val) {
   return /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/.test(val)
+})
+//手机号码验证
+Vue.validator('phone', function (val) {
+  return /^1[3|4|5|7|8][0-9]{9}$/.test(val)
 })
 // 创建一个路由器实例
 // 创建实例时可以传入配置参数进行定制，为保持简单，这里使用默认配置
