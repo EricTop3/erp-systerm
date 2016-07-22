@@ -313,8 +313,7 @@
     exchangeData,
     postDataToApi,
     getDataFromApi,
-    deleteRequest,
-    listDataError
+    deleteRequest
   } from '../../../publicFunction/index'
   export default{
     components: {
@@ -413,7 +412,7 @@
           this.modifyGetedData(this.postData)
           this.editModal = true
         }, function (err) {
-          listDataError(err)
+          console.log(err)
         })
       },
 //      编辑后保存
@@ -452,7 +451,7 @@
           this.postData = response.data.body
           this.viewModal = true
         }, function (err) {
-          listDataError(err)
+          console.log(err)
         })
       }
     },
