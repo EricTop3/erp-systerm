@@ -65,20 +65,20 @@
             </div>
             <div class="form-group" style="margin-left: 37px;">
               <label>一级单位</label>
-              <select class="form-control" v-model="createList.base_unit">
+              <select class="form-control" v-model="createList.base_unit" @change="oneUnit">
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>二级单位</label>
-              <select class="form-control fsamll" v-model="createList.neutral_unit">
+              <select class="form-control fsamll" v-model="createList.neutral_unit" @change="twoUnit">
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
             </div>
             <div class="form-group ml10">
               <label>三级单位</label>
-              <select class="form-control fsamll" v-model="createList.minimal_unit">
+              <select class="form-control fsamll" v-model="createList.minimal_unit" @change="threeUnit">
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" style="width: 85px;"
@@ -88,7 +88,8 @@
             <div class="form-group ml10">
               <label>零售单位</label>
               <select class="form-control" v-model="createList.sell_unit">
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
+                <option value="请选择">请选择</option>
+                <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -269,7 +270,40 @@
         postDataToApi( url,data,function(response) {
           window.location.href = '?#!/admin/setting'
         })
-      }
+      },
+//   一级单位
+     oneUnit: function () {
+       var self = this
+       $.each(this.baseUnit,function(index,val){
+         if(val.id ===Number(self.createList.base_unit)){
+           self.createList.base_unit = val.name
+         }
+       })
+       this.retailUnit[0].name = this.createList.base_unit
+       this.createList.sell_unit = this.retailUnit[0].id
+     },
+//    二级单位
+      twoUnit: function () {
+        var self = this
+        $.each(this.baseUnit,function(index,val){
+          if(val.id ===Number(self.createList.neutral_unit)){
+            self.createList.neutral_unit = val.name
+          }
+        })
+        this.retailUnit[1].name = this.createList.neutral_unit
+        this.createList.sell_unit =  this.retailUnit[1].id
+      },
+//     三级单位
+      threeUnit: function () {
+        var self = this
+        $.each(this.baseUnit,function(index,val){
+          if(val.id ===Number(self.createList.minimal_unit)){
+            self.createList.minimal_unit = val.name
+          }
+        })
+        this.retailUnit[2].name= this.createList.minimal_unit
+        this.createList.sell_unit =  this.retailUnit[2].id
+      },
     },
     computed: {
 //      是否启用BOM清单
@@ -297,6 +331,7 @@
         },
         category: '',
         baseUnit: '',
+        retailUnit:[{id:0,name:''},{id:1,name:''},{id:2,name:''}],
         setGoods: [],
         setGoodsPage: [],
         dataArray: [],
@@ -314,7 +349,7 @@
           neutral_unit_value: '',
           minimal_unit: '',
           minimal_unit_value: '',
-          sell_unit: '',
+          sell_unit: '请选择',
           production_unit: '',
           safe_stock: '',
           aruc: '',

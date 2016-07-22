@@ -98,12 +98,16 @@ export function searchRequest (url, data, callback) {
   cur.$http({
       url: url,
       method: 'get',
-      data: data
+      data: data,
+      headers: {'X-Overpowered-Token': token}
     })
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
       console.log(err)
+      if(err.status === 401){
+        window.location.href = '?#!/admin/login'
+      }
     })
 }
 // 删除按钮请求方法
@@ -149,7 +153,7 @@ export function finishRequest (url, id, callback) {
     })
 }
 // 获取数据的方法
-export function  getDataFromApi (url, data, callback) {
+export function  getDataFromApi(url, data, callback) {
   var cur = new Vue()
   cur.$http({
       url: url,

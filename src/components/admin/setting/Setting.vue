@@ -15,14 +15,15 @@
           <form class="form-inline">
             <div class="form-group">
               <label>商品分类</label>
-              <select class="form-control" v-model="">
+              <select class="form-control" v-model="search.selectCategory">
                 <option value="" selected>请选择</option>
                 <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>销售状态</label>
-              <select class="form-control" v-model="">
+              <select class="form-control" v-model="search.selectSellStatus">
+                <option value="">请选择</option>
                 <option value="0">下架中</option>
                 <option value="1">上架中</option>
                 <option value="2">非卖品</option>
@@ -30,7 +31,8 @@
             </div>
             <div class="form-group ml10">
               <label>商品属性</label>
-              <select class="form-control" v-model="">
+              <select class="form-control" v-model="search.selectProductStatus">
+                <option value="">请选择</option>
                 <option value="1">工厂产成品</option>
                 <option value="2">委外产成品</option>
                 <option value="3">门店产成品</option>
@@ -40,7 +42,8 @@
             </div>
             <div class="form-group ml10">
               <label>价格属性</label>
-              <select class="form-control" v-model="">
+              <select class="form-control" v-model="search.selectPriceStatus">
+                <option value="">请选择</option>
                 <option value="1">可议价</option>
                 <option value="2">特价</option>
                 <option value="3">非议价</option>
@@ -48,13 +51,13 @@
             </div>
             <div class="form-group ml10">
               <label>品名</label>
-              <input type="text" class="form-control" placeholder="">
+              <input type="text" class="form-control" placeholder="商品名称" v-model="search.name">
             </div>
             <div class="form-group ml10">
               <label>货号</label>
-              <input type="text" class="form-control" placeholder="">
+              <input type="text" class="form-control" placeholder="商品货号" v-model="search.code">
             </div>
-            <button class="btn btn-primary" @click="search">搜索</button>
+            <button class="btn btn-primary" @click="searchMethod">搜索</button>
             <span class="btn btn-warning"  @click="cancelSearch">撤销搜索</span>
             <a v-link="{ path: '/admin/setting/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
           </form>
@@ -176,6 +179,13 @@
         deleteRequest(url,id,function(response) {
           console.log('delete')
         })
+      },
+      pagechange: function (currentpage) {
+        getDataFromApi(requestSystemUrl + '/backend-system/product/product',{page: currentpage},function(response){
+          self.productList = response.data.body.list
+          exchangeData( self.productList)
+          self.page =  response.data.body.pagination
+        })
       }
     },
     ready: function () {
@@ -195,11 +205,39 @@
 //    编辑
       edit: function (event) {
         var curId = Number($(event.currentTarget).parents("tr").attr('id'))
-        window.location.href = '?#!/admin/setting/createNew'
+        getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
+          console.log(responbse)
+        })
+//        window.location.href = '?#!/admin/setting/createNew'
       },
 //    搜索
-      search: function (){
-
+      searchMethod: function (){
+         var self = this
+         var url = requestSystemUrl + '/backend-system/product/product'
+         var data = {
+           name: this.search.name,
+           category: this.search.selectCategory,
+           product_type: this.search.selectProductStatus,
+           sell_status: this.search.selectSellStatus,
+           code: this.search.code,
+           sell_type: this.search.selectPriceStatus
+         }
+        searchRequest(url,data,function(response){
+          self.productList = response.data.body.list
+          exchangeData( self.productList)
+          self.page =  response.data.body.pagination
+        })
+      },
+//    取消搜索
+      cancelSearch: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/product/product'
+        var data = {}
+        searchRequest(url,data,function(response){
+          self.productList = response.data.body.list
+          exchangeData( self.productList)
+          self.page =  response.data.body.pagination
+        })
       }
     },
     data: function () {
@@ -207,6 +245,14 @@
         page: [],
         category: '',
         productOperate: true,
+        search: {
+          selectCategory: '',
+          selectSellStatus: '',
+          selectProductStatus: '',
+          selectPriceStatus: '',
+          code: '',
+          name: ''
+        },
         productList: [],
         priceHeader:{},
         modal: {
