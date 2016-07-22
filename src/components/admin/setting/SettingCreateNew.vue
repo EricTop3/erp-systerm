@@ -26,12 +26,14 @@
             <div class="form-group ml10">
               <label>商品分类</label>
               <select class="form-control" v-model="createList.category_id">
+                <option value="">请选择</option>
                 <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group" style="margin-left: 37px;">
               <label>商品属性</label>
               <select class="form-control" v-model="createList.product_type">
+                <option value="">请选择</option>
                 <option value="1">工厂产成品</option>
                 <option value="2">门店产成品</option>
                 <option value="3">原材料</option>
@@ -40,6 +42,7 @@
             <div class="form-group ml10">
               <label>价格属性</label>
               <select class="form-control" v-model="createList.sell_type">
+                <option value="">请选择</option>
                 <option value="1">可议价</option>
                 <option value="2">特价</option>
                 <option value="3">非议价</option>
@@ -57,6 +60,7 @@
             <div class="form-group ml10">
               <label>销售状态</label>
               <select class="form-control" v-model="createList.sell_status">
+                <option value="">请选择</option>
                 <option value="0">下架中</option>
                 <option value="1">上架中</option>
                 <option value="2">非卖品</option>
@@ -65,6 +69,7 @@
             <div class="form-group" style="margin-left: 37px;">
               <label>一级单位</label>
               <select class="form-control" v-model="createList.base_unit" @change="oneUnit">
+                <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
               <span v-if="createList.neutral_unit">{{hasNeutralUnit}}</span>
@@ -72,6 +77,7 @@
             <div class="form-group ml10">
               <label>二级单位</label>
               <select class="form-control" v-model="createList.neutral_unit" @change="twoUnit">
+                <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
@@ -79,6 +85,7 @@
             <div class="form-group ml10">
               <label>三级单位</label>
               <select class="form-control" v-model="createList.minimal_unit" @change="threeUnit">
+                <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" style="width: 85px;"
@@ -95,6 +102,7 @@
             <div class="form-group ml10">
               <label>采购加工单位</label>
               <select class="form-control" v-model="createList.production_unit">
+                <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
               </select>
             </div>
@@ -348,7 +356,7 @@
     },
     data: function () {
       return {
-        safeStock: '',
+//        safeStock: '',
         showPage: [],
         addGoodModal: false,
         addGoodModalSize: 'modal-lg',

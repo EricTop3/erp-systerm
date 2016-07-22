@@ -16,7 +16,7 @@
             <div class="form-group">
               <label>商品分类</label>
               <select class="form-control" v-model="search.selectCategory">
-                <option value="" selected>请选择</option>
+                <option value="">请选择</option>
                 <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
@@ -202,6 +202,18 @@
       })
     },
     methods: {
+//     获取商品
+      fetchGoods: function (page) {
+        var data ={
+          name: this.search.name,
+          category: this.search.selectCategory,
+          product_type: this.search.selectProductStatus,
+          sell_status: this.search.selectSellStatus,
+          code: this.search.code,
+          sell_type: this.search.selectPriceStatus,
+          page: page
+        }
+      },
 //    编辑
       edit: function (event) {
         var curId = Number($(event.currentTarget).parents("tr").attr('id'))
