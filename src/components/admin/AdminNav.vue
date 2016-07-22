@@ -6,7 +6,7 @@
         <div class="fl mt30 ml20">
           <h2 class="fl mt0">管理系统</h2>
           <h3 class="fl ml10 pt10">您好：张雨</h3>
-          <span>[退出]</span></div>
+          <span @click="exit" class="exit">[退出]</span></div>
       </div>
       <div class="col-md-8">
         <ul class="nav nav-pills navbar-right">
@@ -25,7 +25,14 @@
 </template>
 <script>
     export default{
-       name: 'admin-nav'
+       name: 'admin-nav',
+       methods: {
+         exit: function () {
+           window.localStorage.setItem('token',null)
+           window.location.href ='?#!/admin/login'
+           window.location.reload()
+         }
+       }
     }
 </script>
 <style scoped>
@@ -35,5 +42,8 @@
     border-bottom: 3px solid #c3c3c3;
     background-color: #fff;
     padding-top: 24px;
+  }
+  .exit{
+    cursor: pointer;
   }
 </style>
