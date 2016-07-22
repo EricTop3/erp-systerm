@@ -22,7 +22,7 @@
             </div>
             <div class="form-group ml10">
               <label>登录名</label>
-              <input type="text" class="form-control" placeholder=""  v-model="searchData.account">
+              <input type="text" class="form-control" placeholder="" v-model="searchData.account">
             </div>
             <button type="submit" class="btn btn-primary" @click="getlistdata()">搜索</button>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
@@ -184,8 +184,14 @@
       Page: Page,
       ErrorTip: ErrorTip
     },
+    events: {
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.getlistdata(currentpage)
+      }
+    },
     ready: function () {
-      this.getlistdata()
+      this.getlistdata(1)
     },
     methods: {
 //      对获取到的数据进行处理
@@ -202,13 +208,14 @@
         })
       },
 //      获取列表
-      getlistdata: function () {
+      getlistdata: function (page) {
         this.$http({
           url: requestUrl + '/backend-system/store/account',
           method: 'get',
           data: {
-            name:this.searchData.name || '',
-            account:this.searchData.account || ''
+            name: this.searchData.name || '',
+            account: this.searchData.account || '',
+            page: page
           },
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -223,7 +230,7 @@
       cancelSearch: function () {
         this.searchData.name = ''
         this.searchData.account = ''
-        this.getlistdata()
+        this.getlistdata(1)
       },
 //      新增账号
       createSubmit: function () {
@@ -242,7 +249,7 @@
           }
         ).then(function (response) {
           this.createModal = false
-          this.getlistdata()
+          this.getlistdata(1)
         }, function (err) {
           if (err.data.code == '100000') {
             this.createModal = false
@@ -277,7 +284,7 @@
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
           this.editModal = false
-          this.getlistdata()
+          this.getlistdata(1)
         }, function (err) {
           console.log(err)
         })
