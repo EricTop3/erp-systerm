@@ -21,6 +21,7 @@
         </div>
 
         <div class="inputFormat">
+          <!--<validator name="validationSet">-->
           <form class="form-inline">
             <div class="form-group ml10">
               <label>商品分类</label>
@@ -32,10 +33,8 @@
               <label>商品属性</label>
               <select class="form-control" v-model="createList.product_type">
                 <option value="1">工厂产成品</option>
-                <option value="2">委外产成品</option>
-                <option value="3">门店产成品</option>
-                <option value="4">原材料</option>
-                <option value="5">套餐</option>
+                <option value="2">门店产成品</option>
+                <option value="3">原材料</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -48,11 +47,11 @@
             </div>
             <div class="form-group ml10">
               <label>品名</label>
-              <input type="text" class="form-control" v-model="createList.name">
+              <input type="text" class="form-control" v-model="createList.name" placeholder="此项为必填项！">
             </div>
             <div class="form-group ml10">
               <label>货号</label>
-              <input type="text" class="form-control" v-model="createList.code">
+              <input type="text" class="form-control" v-model="createList.code" placeholder="此项为必填项！">
             </div>
             <br>
             <div class="form-group ml10">
@@ -66,20 +65,21 @@
             <div class="form-group" style="margin-left: 37px;">
               <label>一级单位</label>
               <select class="form-control" v-model="createList.base_unit" @change="oneUnit">
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
+              <span v-if="createList.neutral_unit">{{hasNeutralUnit}}</span>
             </div>
             <div class="form-group ml10">
               <label>二级单位</label>
-              <select class="form-control fsamll" v-model="createList.neutral_unit" @change="twoUnit">
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
+              <select class="form-control" v-model="createList.neutral_unit" @change="twoUnit">
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
             </div>
             <div class="form-group ml10">
               <label>三级单位</label>
-              <select class="form-control fsamll" v-model="createList.minimal_unit" @change="threeUnit">
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
+              <select class="form-control" v-model="createList.minimal_unit" @change="threeUnit">
+                <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
               <input type="text" class="form-control fsamll" placeholder="单位转换" style="width: 85px;"
                      v-model="createList.minimal_unit_value">
@@ -100,7 +100,11 @@
             </div>
             <div class="form-group ml10">
               <label>安全库存</label>
-              <input type="text" class="form-control" v-model="createList.safe_stock">
+              <input type="text" class="form-control" v-model="createList.safe_stock" placeholder="此项为必填项！">
+              <!--v-validate:createList.safe_stock="['required']" @invalid="touched"-->
+              <!--<div v-if="createList.safe_stock == ''" style="float: right;">
+                <p style="color:red; margin: 0px; margin-left: 10px; line-height: 34px;">{{safeStock}}</p>
+              </div>-->
             </div>
             <br>
             <div class="form-group ml10">
@@ -110,11 +114,12 @@
             <div class="form-group ml10">
               <label>采购加工单价</label>
               <input type="text" class="form-control"
-                     v-if="createList.product_type == 2 || createList.product_type == 4" placeholder="次项为必填项！"
+                     v-if="createList.product_type == 2 || createList.product_type == 3" placeholder="次项为必填项！"
                      v-model="createList.apuc">
               <input type="text" class="form-control" v-else v-model="createList.apuc">
             </div>
           </form>
+          <!--</validator>-->
         </div>
 
         <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
@@ -126,11 +131,11 @@
         </div>
 
         <div class="form-group">
-          <label><input type="checkbox" :disabled="createList.product_type == 4" :checked="isStatrBOM"
+          <label><input type="checkbox" :disabled="createList.product_type == 3" :checked="isStatrBOM"
                         v-model="createList.use_bill_of_material">
             启动BOM单</label>
           <button class="btn btn-primary spanblocks ml10" data-toggle="modal"
-                  :disabled="createList.product_type == 4 || createList.use_bill_of_material == false"
+                  :disabled="createList.product_type == 3 || createList.use_bill_of_material == false"
                   @click="addGoodModal=true">添加商品
           </button>
         </div>
@@ -157,7 +162,7 @@
             <td class="form-inline">
               <div class="form-group">
                 <select class="form-control" v-model="item.unit">
-                  <option v-for="item in baseUnit" :value="item.id">{{item.name}} ({{item.alias}})</option>
+                  <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
                 </select>
               </div>
             </td>
@@ -276,10 +281,9 @@
        var self = this
        $.each(this.baseUnit,function(index,val){
          if(val.id ===Number(self.createList.base_unit)){
-           self.createList.base_unit = val.name
+           self.retailUnit[0].name = val.name
          }
        })
-       this.retailUnit[0].name = this.createList.base_unit
        this.createList.sell_unit = this.retailUnit[0].id
      },
 //    二级单位
@@ -287,10 +291,9 @@
         var self = this
         $.each(this.baseUnit,function(index,val){
           if(val.id ===Number(self.createList.neutral_unit)){
-            self.createList.neutral_unit = val.name
+            self.retailUnit[1].name = val.name
           }
         })
-        this.retailUnit[1].name = this.createList.neutral_unit
         this.createList.sell_unit =  this.retailUnit[1].id
       },
 //     三级单位
@@ -298,25 +301,54 @@
         var self = this
         $.each(this.baseUnit,function(index,val){
           if(val.id ===Number(self.createList.minimal_unit)){
-            self.createList.minimal_unit = val.name
+            self.retailUnit[2].name = val.name
           }
         })
-        this.retailUnit[2].name= this.createList.minimal_unit
         this.createList.sell_unit =  this.retailUnit[2].id
       },
+/*//     验证
+      touched: function () {
+        this.safeStock = '请填写安全库存！'
+      }*/
     },
     computed: {
 //      是否启用BOM清单
       isStatrBOM: function () {
-        if (this.createList.product_type != 4) {
+        if (this.createList.product_type != 3) {
           this.createList.use_bill_of_material = true
-        } else if (this.createList.product_type == 4) {
+        } else if (this.createList.product_type == 3) {
           this.createList.use_bill_of_material = false
+        }
+      },
+//      显示转换单位
+      hasNeutralUnit: function () {
+        var firstName = ''
+        var secondName = ''
+        var thirdName = ''
+        var secondVal = this.createList.neutral_unit_value
+        var thirdVal = this.createList.minimal_unit_value
+        var base = this.baseUnit
+
+        var self = this
+        if(self.createList.minimal_unit == ''){
+          $.each(base,function (index,val) {
+            firstName = base[self.createList.base_unit-1].name
+            secondName = base[self.createList.neutral_unit-1].name
+          })
+          return "1" + firstName + "=" + secondVal + secondName
+        } else {
+          $.each(base,function (index,val) {
+            firstName = base[self.createList.base_unit-1].name
+            secondName = base[self.createList.neutral_unit-1].name
+            thirdName = base[self.createList.minimal_unit-1].name
+          })
+          return "1" + firstName + "=" + secondVal + secondName + " " + "1" + secondName + "=" + thirdVal + thirdName
         }
       }
     },
     data: function () {
       return {
+        safeStock: '',
         showPage: [],
         addGoodModal: false,
         addGoodModalSize: 'modal-lg',
