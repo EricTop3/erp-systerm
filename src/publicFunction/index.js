@@ -32,6 +32,50 @@ export function exchangeData(origindata) {
         val.status = '开启'
       }
     }
+    if (val.product_type !== undefined) {
+       switch (val.product_type) {
+         case 1:
+           val.product_type ="工厂产成品"
+               break
+         case 2:
+           val.product_type =" 委外产成品"
+               break
+         case 3:
+           val.product_type =" 门店产成品"
+               break
+         case 4:
+           val.product_type =" 原材料商品"
+               break
+         case 5:
+           val.product_type =" 套餐商品"
+           break
+       }
+       switch (val.sell_type){
+         case 1:
+           val.sell_type = '可议价商品'
+               break
+         case 2:
+           val.sell_type = '特价商品'
+           break
+         case 3:
+           val.sell_type = '非议价商品'
+           break
+         case 4:
+           val.sell_type = '非卖品'
+           break
+       }
+      switch (val.sell_status){
+        case 0:
+          val.sell_status = '下架中'
+          break
+        case 1:
+          val.sell_status = '上架中'
+          break
+        case 2:
+          val.sell_status = '非卖品'
+          break
+      }
+    }
   })
 }
 //后台登录方法

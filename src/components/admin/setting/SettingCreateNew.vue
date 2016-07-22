@@ -169,7 +169,6 @@
           </div>
         </div>
         <span class="btn btn-info spanblocks fl" @click="createNew()">保存</span>
-
         <!-- 翻页 -->
         <page v-if="rederSetGoods.total>0" :total='rederSetGoods.total' :current.sync='setGoodsPage.current_page' :display='setGoodsPage.per_page'
               :last-page='setGoodsPage.last_page'></page>
@@ -177,129 +176,6 @@
       </div>
     </div>
   </div>
-
-<!--  模态框-添加商品
-  <div class="modal fade" id="set-add-products-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">添加商品</h4>
-        </div>
-        <div class="modal-body">
-           页头
-          <div class="page-header">
-            <form action="" method="post" class="form-inline">
-              <div class="form-group">
-                <label><input type="checkbox">库存警戒中</label>
-              </div>
-              <div class="form-group ml10">
-                <input type="text" class="form-control" placeholder="请输入商品名或商品编号">
-              </div>
-              <span class="btn btn-primary">搜索</span>
-              <span class="btn btn-warning">撤销搜索</span>
-            </form>
-          </div>
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-sm-2" role="navigation" style="padding:0;">
-                <ul class="nav nav-stacked dialog-sidebar">
-                  <li class="header">商品分类</li>
-                  <li class="active"><a href="#">全部<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                </ul>
-              </div>
-              <div class="col-sm-10" style="padding-right: 0;height:580px;overflow:auto;">
-                <table class="table table-striped table-border table-hover">
-                  <thead>
-                  <tr>
-                    <td><label><input type="checkbox"> 全选</label></td>
-                    <td>货号</td>
-                    <td>品名</td>
-                    <td>日均销量</td>
-                    <td>当前库存</td>
-                    <td>单位</td>
-                    <td>单位规格</td>
-                    <td>商品分类</td>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary">确定添加</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  模态框HTML-->
-
   <!--模态框-添加商品-->
   <set-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="addGoodModal"
              :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods" :goods-list-title="productTabelHead"></set-goods>
@@ -314,7 +190,7 @@
   import Page from '../../common/Page'
   import LeftSetting from '../common/LeftSetting'
   import SetGoods from '../common/SetGoods'
-  import {requestUrl,requestSystemUrl, token, searchRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl, token, searchRequest,postDataToApi,getDataFromApi} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -324,28 +200,14 @@
       LeftSetting: LeftSetting
     },
     ready: function () {
-      $.each(this.rederSetGoods, function (index, val) {
-        val.addFlag = false
-      })
+      var self = this
 //      获取单位
-      this.$http({
-        url: requestSystemUrl + '/backend-system/product/unit',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.baseUnit = response.data.body.list
-      }, function (err) {
-        console.log(err)
+      getDataFromApi(requestSystemUrl + '/backend-system/product/unit',{},function(response){
+        self.baseUnit = response.data.body.list
       })
 //      获取商品分类
-      this.$http({
-        url: requestSystemUrl + '/backend-system/product/category',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.category = response.data.body.list
-      }, function (err) {
-        console.log(err)
+      getDataFromApi(requestSystemUrl + '/backend-system/product/category',{},function(response){
+        self.category = response.data.body.list
       })
     },
     events: {
@@ -373,7 +235,6 @@
     methods: {
 //      新增商品请求
       createNew: function () {
-        var materials = []
         $.each(this.rederSetGoods, function (index, val) {
           var obj = {}
           obj['id'] = val.id
@@ -381,7 +242,10 @@
           obj['unit'] = val.unit
           materials.push(obj)
         })
-        this.$http.post(requestUrl + '/backend-system/product/product', {
+        var materials = []
+        var url = requestUrl + '/backend-system/product/product'
+        var self = this
+        var data ={
           category_id: this.createList.category_id,
           product_type: this.createList.product_type,
           sell_type: this.createList.sell_type,
@@ -401,26 +265,11 @@
           apuc: this.createList.apuc,
           use_bill_of_material: this.createList.use_bill_of_material,
           materials: materials
-        }, {
-          headers: {'X-Overpowered-Token': token}
-        }, function (response) {
-          window.location.href = '/#!/admin/setting'
-          console.log(response)
-        }, function (error) {
-//          window.location.href = '/#!/admin/setting'
-          console.log(error)
-        })
-      },
-//     前端本地分页函数
-      localPage: function (data) {
-        this.len = data.length
-        if (this.len % this.per_page === 0) {
-          this.totalPage = this.len / this.per_page
-        } else {
-          this.totalPage = (Math.floor(this.len / this.per_page)) + 1
         }
-        data.splice(this.current_page * this.per_page, this.len - this.current_page * this.per_page)
-      },
+        postDataToApi( url,data,function(response) {
+          window.location.href = '?#!/admin/setting'
+        })
+      }
     },
     computed: {
 //      是否启用BOM清单
