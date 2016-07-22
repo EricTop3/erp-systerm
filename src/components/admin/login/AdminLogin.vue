@@ -15,7 +15,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">密码</label>
               <div class="col-sm-9">
-                <input type="password" class="form-control" placeholder="密码" v-model="password"  v-validate:password="['password']">
+                <input type="password" class="form-control" placeholder="密码" v-model="password"  v-validate:password="['password',required]">
               </div>
             </div>
             <!--<div class="form-group">-->
@@ -26,7 +26,7 @@
             <!--</div>-->
             <!--</div>-->
             <!--<div class="validte_errors">-->
-              <!--<p v-if="$validation1.password.password">请输入正确的密码</p>-->
+              <!--<p v-if="$validation1.password.password">请输入6到18位包含数字和字母的密码</p>-->
             <!--</div>-->
             <div class="form-group">
               <div class="col-sm-offset-3 col-sm-9">

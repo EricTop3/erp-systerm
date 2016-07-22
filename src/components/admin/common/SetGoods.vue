@@ -49,7 +49,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import Modal from '../../common/Modal'
-  import {requestUrl,token} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,token} from '../../../publicFunction/index'
   export default {
     name: 'SetGoods',
     components: {
@@ -60,8 +60,9 @@
     compiled: function () {
 //      分类
       this.$http({
-        url: requestUrl + '/backend-system/product/category',
+        url: requestSystemUrl + '/backend-system/product/category',
         method: 'get',
+        headers: {'X-Overpowered-Token': token}
       }).then(function (response) {
         this.category = response.data.body.list
       }, function (err) {
@@ -91,15 +92,17 @@
       addData: [],
       getRenderData: [],
       stockAddGoodModal: false,
-      stockAddGoodModalSize: 'modal-lg'
+      stockAddGoodModalSize: 'modal-lg',
+      goodsListTitle: {}
     },
     methods: {
 //     公共产品列表请求
       requestApi: function (data,callback) {
         this.$http({
-          url: requestUrl + '/backend-system/product/product',
+          url: requestSystemUrl + '/backend-system/product/product',
           method: 'get',
-          data: data
+          data: data,
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.addData = response.data.body.list
           this.page = response.data.body.pagination
@@ -146,13 +149,7 @@
           category: ''
         },
         category: [],
-        allChecked: false,
-        goodsListTitle: {
-          'code': '货号',
-          'name': '品名',
-          'sale_amount': '日均销量',
-          'current_stock': '当前库存'
-        }
+        allChecked: false
       }
     }
   }

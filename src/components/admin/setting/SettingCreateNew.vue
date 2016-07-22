@@ -302,7 +302,7 @@
 
   <!--模态框-添加商品-->
   <set-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="addGoodModal"
-             :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods"></set-goods>
+             :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods" :goods-list-title="productTabelHead"></set-goods>
 
 </template>
 <style>
@@ -314,7 +314,7 @@
   import Page from '../../common/Page'
   import LeftSetting from '../common/LeftSetting'
   import SetGoods from '../common/SetGoods'
-  import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl, token, searchRequest} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -329,7 +329,7 @@
       })
 //      获取单位
       this.$http({
-        url: requestUrl + '/backend-system/product/unit',
+        url: requestSystemUrl + '/backend-system/product/unit',
         method: 'get',
         headers: {'X-Overpowered-Token': token},
       }).then(function (response) {
@@ -339,7 +339,7 @@
       })
 //      获取商品分类
       this.$http({
-        url: requestUrl + '/backend-system/product/category',
+        url: requestSystemUrl + '/backend-system/product/category',
         method: 'get',
         headers: {'X-Overpowered-Token': token},
       }).then(function (response) {
@@ -437,6 +437,15 @@
         showPage: [],
         addGoodModal: false,
         addGoodModalSize: 'modal-lg',
+        productTabelHead: {
+            code: "货号",
+            name: "品名",
+            bruc: "日均销量",
+            aruc: "当前库存",
+            production_unit_name: "单位",
+            specification_unit: "单位规格",
+            category: "分类",
+        },
         category: '',
         baseUnit: '',
         setGoods: [],

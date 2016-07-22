@@ -24,113 +24,20 @@
               <label>备注</label>
               <input type="text" class="form-control" placeholder="" style="width: 450px;">
             </div>
-            <span class="btn btn-primary" data-toggle="modal" data-target="#data-cite-templ">引用原始单据</span>
+            <span class="btn btn-primary" data-toggle="modal" data-target="#data-cite-templ" @click="inclucdePurchaseData">引用原始单据</span>
             <button class="btn btn-default" @click="addGoodModal=true">添加商品</button>
             <span class="btn btn-default"  data-toggle="modal" data-target="#procurement-submit-templ">提交采购</span>
           </form>
         </div>
-
-        <div>
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#detail"  data-toggle="tab">入库明细</a></li>
-            <li role="presentation"><a href="#summary"  data-toggle="tab">入库汇总</a></li>
-            <div class="spanblocks fr mr30 mt10 f16">合计：<span class="c-erp">￥3000.00</span> </div>
-          </ul>
-
-          <!-- Tab panes -->
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="detail">
-              <!-- 表格 -->
-              <table class="table table-striped table-border table-hover">
-                <thead>
-                <tr class="text-center">
-                  <td class="text-left">货号</td>
-                  <td>品名</td>
-                  <td>单位规格</td>
-                  <td>库存数量</td>
-                  <td>门店要货量</td>
-                  <td>采购数量</td>
-                  <td>采购单价</td>
-                  <td>来源要货单号</td>
-                  <td>操作</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="text-center">
-                  <td class="text-left">164643138431315</td>
-                  <td>伊利牛奶</td>
-                  <td>1箱*20盒*250ml</td>
-                  <td>5000 盒</td>
-                  <td>300 盒</td>
-                  <td align="center" class="form-inline"><input type="text" class="form-control text-center" style="width:100px;" value="50">箱</td>
-                  <td align="center" class="form-inline"><input type="text" class="form-control text-center" style="width:100px;" value="10.00">/箱</td>
-                  <td>65496496131655163415</td>
-                  <td><span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#procurement-del-templ">删除</span></td>
-                </tr>
-                </tbody>
-              </table>
-              <!-- 翻页 -->
-              <nav class="text-right">
-                <ul class="pagination">
-                  <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                  <li class="active"><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                </ul>
-              </nav>
-            </div>
-
-            <div role="tabpanel" class="tab-pane" id="summary">
-              <table class="table table-striped table-border table-hover">
-                <thead>
-                <tr class="text-center">
-                  <td class="text-left">货号</td>
-                  <td>品名</td>
-                  <td>单位规格</td>
-                  <td>总部库存</td>
-                  <td>门店要货量</td>
-                  <td>采购数量</td>
-                  <td>小计</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="text-center">
-                  <td class="text-left">164643138431315</td>
-                  <td>伊利牛奶</td>
-                  <td>1箱*20盒*250ml</td>
-                  <td>100</td>
-                  <td>10</td>
-                  <td>2000</td>
-                  <td>￥200.00</td>
-                </tr>
-                </tbody>
-              </table>
-              <!-- 翻页 -->
-              <nav class="text-right">
-                <ul class="pagination">
-                  <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                  <li><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li class="active"><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-
+        <!--表格 -->
+        <summary :table-header="gridColumns" :summary-data="summryData" :table-data="detailData" :page="page"  :detail-url="detailUrl" :tab-flag="tabFlag"></summary>
       </div>
     </div>
   </div>
-
+  <introduce-data :instroduce-data-modal.sync='parentIntroModal' :instroduce-data-modal-size="parentIntroModalSize" :add-data.sync="stockGoods" :url="currentUrl"></introduce-data>
   <!--模态框-添加商品-->
   <set-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="addGoodModal"
-             :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods"></set-goods>
+             :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods" :goods-list-title="purchaseTabelHead"></set-goods>
 </template>
 <style>
 </style>
@@ -142,7 +49,9 @@
   import SetGoods from '../common/SetGoods'
   import LeftPurchase from '../common/LeftPurchase'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
+  import Summary from '../../common/Summary'
+  import IntroduceData  from '../../common/IntroduceData'
+  import {requestSystemUrl, token, searchRequest} from '../../../publicFunction/index'
   export default{
     components:{
       AdminNav: AdminNav,
@@ -150,7 +59,9 @@
       Page: Page,
       SetGoods: SetGoods,
       DatePicker: DatePicker,
-      LeftPurchase: LeftPurchase
+      LeftPurchase: LeftPurchase,
+      Summary: Summary,
+      IntroduceData: IntroduceData
     },
     ready: function () {
       $.each(this.rederSetGoods, function (index, val) {
@@ -220,6 +131,10 @@
           console.log(error)
         })
       },
+//     引入数据
+      inclucdePurchaseData: function () {
+
+      },
 //     前端本地分页函数
       localPage: function (data) {
         this.len = data.length
@@ -234,6 +149,24 @@
     data: function () {
       return {
         showPage: [],
+        gridColumns: {
+          code: "货号",
+          name: "品名",
+          aruc: "库存数量",
+          a:"门店要货量",
+          b:"采购数量",
+          c:"采购单价",
+          d: "来源要货单号",
+        },
+        currentUrl: '',
+        purchaseTabelHead: {
+          code: "货号",
+          name: "品名",
+          aruc: "库存数量",
+          category: "分类",
+          production_unit_name: "单位",
+          specification_unit: "单位规格"
+        },
         addGoodModal: false,
         addGoodModalSize: 'modal-lg',
         category: '',

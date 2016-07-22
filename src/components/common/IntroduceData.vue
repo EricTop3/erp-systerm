@@ -52,7 +52,7 @@
     },
     ready: function () {
       this.$http({
-        url: requestUrl + '/front-system/store/resource',
+        url: this.url,
         method: "get"
       }).then(function(response){
         this.citeData = response.data.body.list
@@ -63,7 +63,64 @@
     props: {
       instroduceDataModal: false,
       instroduceDataModalSize: 'modal-sm',
-      addData: []
+      addData: [],
+      citeDataTitle: {
+        code: '配送出库单号',
+        store_name: '调出仓库',
+        number: '配送数量',
+        date: '配送日期',
+        create_person: '制单人',
+        check_person: '审核人'
+      },
+      citeData: [],
+      thisDataTitle: {
+        goods_code: '货号',
+        goods_name: '品名',
+        demanding_number: '要货数量',
+        distribution_number: '配送数量',
+        unit: '单位',
+        unit_specification: '单位规格'
+      },
+      thisData: [],
+      thisData1: [
+        {
+          'id': 1,
+          'store_distribution_id': 1,
+          'checked': false,
+          'goods_code': 'xyz201606271458011',
+          'demanding_number': '50',
+          'distribution_number': '70',
+          'goods_name': '哇哈哈',
+          'unit': '箱',
+          'unit_specification': '1箱*20盒*250ml',
+          'created_at': '2016-06-20 12:00:00'
+        },
+        {
+          'id': 2,
+          'checked': false,
+          'store_distribution_id': 1,
+          'goods_code': 'xyz201606271458001',
+          'demanding_number': '50',
+          'distribution_number': '70',
+          'goods_name': '牛角包1',
+          'unit': '个',
+          'unit_specification': '1个',
+          'created_at': '2016-06-20 12:00:00'
+        },
+        {
+          'id': 3,
+          'checked': false,
+          'store_distribution_id': 1,
+          'goods_code': 'xyz201606271458001',
+          'demanding_number': '50',
+          'distribution_number': '80',
+          'goods_name': '露西咖啡豆11',
+          'unit': '包',
+          'unit_specification': '1包*2500g',
+          'created_at': '2016-06-20 12:00:00'
+        }
+      ],
+      url: requestUrl + '/front-system/store/resource',
     },
     events: {
 //    绑定翻页事件
@@ -78,7 +135,7 @@
         var fetchedData = []
 //    根据当前id获取产品
         this.$http({
-          url: requestUrl + '/front-system/store/resource/' + currentId + '/detail',
+          url: this.url + currentId + '/detail',
           method: 'get'
         }).then(function (response) {
           $.each(response.data.body.list,function(index,val){
@@ -173,99 +230,6 @@
         page: [],
         citeCheckAll: false,
         addDataCheckAll: false,
-        citeDataTitle: {
-          code: '配送出库单号',
-          store_name: '调出仓库',
-          number: '配送数量',
-          date: '配送日期',
-          create_person: '制单人',
-          check_person: '审核人'
-        },
-        citeData: [],
-        thisDataTitle: {
-          goods_code: '货号',
-          goods_name: '品名',
-          demanding_number: '要货数量',
-          distribution_number: '配送数量',
-          unit: '单位',
-          unit_specification: '单位规格'
-        },
-        thisData: [
-          {
-            'id': 1,
-            'store_distribution_id': 1,
-            'checked': false,
-            'goods_code': 'xyz201606271458011',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '伊利牛奶',
-            'unit': '箱',
-            'unit_specification': '1箱*20盒*250ml',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '牛角包',
-            'unit': '个',
-            'unit_specification': '1个',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 3,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '80',
-            'goods_name': '露西咖啡豆',
-            'unit': '包',
-            'unit_specification': '1包*2500g',
-            'created_at': '2016-06-20 12:00:00'
-          }
-        ],
-        thisData1: [
-          {
-            'id': 1,
-            'store_distribution_id': 1,
-            'checked': false,
-            'goods_code': 'xyz201606271458011',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '哇哈哈',
-            'unit': '箱',
-            'unit_specification': '1箱*20盒*250ml',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '牛角包1',
-            'unit': '个',
-            'unit_specification': '1个',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 3,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '80',
-            'goods_name': '露西咖啡豆11',
-            'unit': '包',
-            'unit_specification': '1包*2500g',
-            'created_at': '2016-06-20 12:00:00'
-          }
-        ]
       }
     }
   }

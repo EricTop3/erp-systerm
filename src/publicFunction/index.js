@@ -5,7 +5,7 @@ import Vue from 'vue'
 export var requestUrl = 'http://192.168.1.150:1401/v1'
 //  请求服务器路径真实接口
 export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
-var token =window.localStorage.getItem('token')
+var token =  window.localStorage.getItem('token') ?  window.localStorage.getItem('token') : ''
 // 后台0,1状态展示
 export function exchangeData(origindata) {
   $.each(origindata, function (index, val) {
@@ -37,7 +37,7 @@ export function exchangeData(origindata) {
 //后台登录方法
 export function adminLogin(loginUrl,data){
   var cur = new Vue()
-  cur.$http.post( loginUrl,data).then(function(response){
+  cur.$http.post(loginUrl,data).then(function(response){
     var curtoken = response.headers('X-Overpowered-Token-Set')
     window.localStorage.setItem('token', curtoken)
     token =  window.localStorage.getItem('token')
@@ -116,7 +116,6 @@ export function  getDataFromApi (url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-      window.alert(token)
        if(err.status === 401){
          window.location.href = '?#!/admin/login'
        }
