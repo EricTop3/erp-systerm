@@ -5,7 +5,7 @@ import Vue from 'vue'
 export var requestUrl = 'http://192.168.1.150:1401/v1'
 //  请求服务器路径真实接口
 export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
-var token =  window.localStorage.getItem('token') ?  window.localStorage.getItem('token') : ''
+var token = window.localStorage.getItem('token') ? window.localStorage.getItem('token') : ''
 // 后台0,1状态展示
 export function exchangeData(origindata) {
   $.each(origindata, function (index, val) {
@@ -35,27 +35,28 @@ export function exchangeData(origindata) {
   })
 }
 //后台登录方法
-export function adminLogin(loginUrl,data){
+export function adminLogin(loginUrl, data) {
   var cur = new Vue()
-  cur.$http.post(loginUrl,data).then(function(response){
+  cur.$http.post(loginUrl, data).then(function (response) {
     var curtoken = response.headers('X-Overpowered-Token-Set')
     window.localStorage.setItem('token', curtoken)
-    token =  window.localStorage.getItem('token')
-    window.location.href ='?#!/admin/setting'
-  },function(err){
+    token = window.localStorage.getItem('token')
+    window.location.href = '?#!/admin/setting'
+  }, function (err) {
     console.log(err)
   })
 }
 // 导出token
-export { token}
+export {token}
 // 所有页面搜索方法
-export function searchRequest (url, data, callback) {
+export function searchRequest(url, data, callback) {
   var cur = new Vue()
   cur.$http({
-      url: url,
-      method: 'get',
-      data: data
-    })
+    url: url,
+    method: 'get',
+    data: data,
+    headers: {'X-Overpowered-Token': token}
+  })
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
@@ -63,13 +64,13 @@ export function searchRequest (url, data, callback) {
     })
 }
 // 删除按钮请求方法
-export function deleteRequest (url, id, callback) {
+export function deleteRequest(url, id, callback) {
   var cur = new Vue()
   cur.$http({
-      url: requestUrl+ url + id,
-      method: 'delete',
-      headers: {'X-Overpowered-Token': token}
-    })
+    url: url + id,
+    method: 'delete',
+    headers: {'X-Overpowered-Token': token}
+  })
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
@@ -77,13 +78,13 @@ export function deleteRequest (url, id, callback) {
     })
 }
 // 审核按钮请求方法
-export function checkRequest (url, id, callback) {
+export function checkRequest(url, id, callback) {
   var cur = new Vue()
   cur.$http({
-      url: requestUrl + url + id,
-      method: 'put',
-      headers: {'X-Overpowered-Token': token}
-    })
+    url: requestUrl + url + id,
+    method: 'put',
+    headers: {'X-Overpowered-Token': token}
+  })
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
@@ -91,13 +92,13 @@ export function checkRequest (url, id, callback) {
     })
 }
 // 完成按钮请求方法
-export function finishRequest (url, id, callback) {
+export function finishRequest(url, id, callback) {
   var cur = new Vue()
   cur.$http({
-      url: requestUrl + url + id,
-      method: 'put',
-      headers: {'X-Overpowered-Token': token}
-    })
+    url: requestUrl + url + id,
+    method: 'put',
+    headers: {'X-Overpowered-Token': token}
+  })
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
@@ -105,34 +106,38 @@ export function finishRequest (url, id, callback) {
     })
 }
 // 获取数据的方法
-export function  getDataFromApi (url, data, callback) {
+export function getDataFromApi(url, data, callback) {
   var cur = new Vue()
   cur.$http({
-      url: url,
-      method: 'get',
-      data: data,
-      headers: {'X-Overpowered-Token': token}
-    })
+    url: url,
+    method: 'get',
+    data: data,
+    headers: {'X-Overpowered-Token': token}
+  })
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-       if(err.status === 401){
-         window.location.href = '?#!/admin/login'
-       }
+      if (err.status === 401) {
+        window.location.href = '?#!/admin/login'
+      }
     })
 }
 //  post提交数据的方法
-export function  postDataToApi (url, data, callback) {
+export function postDataToApi(url, data, callback) {
   var cur = new Vue()
   cur.$http({
-      url: url,
-      method: 'post',
-      data: data,
-      headers: {'X-Overpowered-Token': token}
-    })
+    url: url,
+    method: 'post',
+    data: data,
+    headers: {'X-Overpowered-Token': token}
+  })
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
       console.log(err)
     })
+}
+//错误处理-mfy
+export function listDataError(err) {
+  console.log(err)
 }
