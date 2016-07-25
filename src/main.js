@@ -201,9 +201,6 @@ router.map({
   '/admin/setting': {
     component: Setting
   },
-  '/admin/setting/commodity': {
-    component: Setting
-  },
   '/admin/setting/createNew': {
     component: SettingCreateNew
   },
