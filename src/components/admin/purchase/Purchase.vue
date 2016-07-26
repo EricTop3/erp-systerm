@@ -51,7 +51,7 @@
           </form>
         </div>
         <!-- 表格 -->
-        <summary :table-data="list" :table-header="gridColumns" :page="page" :detail-url="detailUrl"></summary>
+        <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
       </div>
     </div>
   </div>
@@ -68,7 +68,7 @@
   import Summary from '../../common/Summary'
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
-  import {requestUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -98,26 +98,30 @@
           console.log(err)
         })
       },
-/*//     删除请求
+//     删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest('/backend-system/purchase/purchase/',id,function(response){
+        deleteRequest(requestSystemUrl + '/backend-system/purchase/purchase/'+ id,function(response){
           console.log('deleted')
         })
-      },*/
+      },
 //     審核请求
       checkFromApi: function (id) {
         var self = this
-        checkRequest('/backend-system/purchase/purchase/'+ id +'/checked',{},function(response){
+        checkRequest(requestSystemUrl + '/backend-system/purchase/purchase/' + id + '/checked',function(response){
           console.log('checked')
         })
       },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
-        finishRequest('/backend-system/purchase/purchase/'+ id +'/finished',{},function(response){
+        finishRequest(requestSystemUrl + '/backend-system/purchase/purchase/'+ id +'/finished',function(response){
           console.log('finished')
         })
+      },
+//    查看详情
+      gotoDetail: function (id){
+          window.location.href = '#!/admin/purchase/purchasedetail/'+ id
       }
     },
     ready: function () {
@@ -138,7 +142,6 @@
       return {
         page: [],
         list: [],
-        detailUrl: '#!/admin/purchase/purchaseDetail',
         gridColumns: {
           document_number: '采购单号',
           checked: '状态',

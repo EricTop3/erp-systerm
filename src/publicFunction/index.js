@@ -111,10 +111,10 @@ export function searchRequest (url, data, callback) {
     })
 }
 // 删除按钮请求方法
-export function deleteRequest (url, id, callback) {
+export function deleteRequest (url,callback) {
   var cur = new Vue()
   cur.$http({
-      url: requestUrl+ url + id,
+      url: url,
       method: 'delete',
       headers: {'X-Overpowered-Token': token}
     })
@@ -125,13 +125,13 @@ export function deleteRequest (url, id, callback) {
     })
 }
 // 审核按钮请求方法
-export function checkRequest (url, id, callback) {
+export function checkRequest (url,callback) {
   var cur = new Vue()
   cur.$http({
-      url: requestUrl + url + id,
+      url: url,
       method: 'put',
       headers: {'X-Overpowered-Token': token}
-    })
+})
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
@@ -139,10 +139,10 @@ export function checkRequest (url, id, callback) {
     })
 }
 // 完成按钮请求方法
-export function finishRequest (url, id, callback) {
+export function finishRequest (url,callback) {
   var cur = new Vue()
   cur.$http({
-      url: requestUrl + url + id,
+      url:  url,
       method: 'put',
       headers: {'X-Overpowered-Token': token}
     })

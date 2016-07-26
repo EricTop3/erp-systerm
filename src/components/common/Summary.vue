@@ -119,7 +119,6 @@
       tableData: [],
       summaryData: [],
       page:{},
-      detailUrl:'',
       tabFlag: false,
     },
     events: {
@@ -127,7 +126,7 @@
       delete: function(id) {
        this.$dispatch('deleteFromApi',id)
       },
-//    審核請求
+//    审核請求
       check: function (id) {
         this.$dispatch('checkFromApi',id)
       },
@@ -147,7 +146,7 @@
 //    查看详情
       detail: function (event) {
         var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = this.detailUrl
+        this.$dispatch("gotoDetail",detailId)
       },
       changeActive: function (event) {
         var cur = $(event.currentTarget)
