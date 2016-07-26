@@ -199,7 +199,6 @@
         var storeUrl = requestSystemUrl + '/backend-system/store/store'
         getDataFromApi(storeUrl,{},function(response){
           self.storeList = response.data.body.list
-          console.log(self.storeList)
         })
       },
 //      获取账户名称
@@ -221,7 +220,7 @@
           display_name: this.store.storeName
         }
         postDataToApi(addStoreUrl,data,function(response){
-          self.getstoreName()
+          self.getstoreName({})
           self.modal.addStoreModal  = false
         })
       },

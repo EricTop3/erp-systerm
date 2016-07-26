@@ -59,7 +59,7 @@
             </div>
             <button class="btn btn-primary" @click="searchMethod">搜索</button>
             <span class="btn btn-warning"  @click="cancelSearch">撤销搜索</span>
-            <a v-link="{ path: '/admin/setting/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
+            <a v-link="{ path: '/admin/setting/commodity/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
           </form>
         </div>
         <!-- 表格 -->
@@ -250,6 +250,13 @@
           exchangeData( self.productList)
           self.page =  response.data.body.pagination
         })
+      }
+    },
+//    路由
+    route:{
+      data: function () {
+         console.log('yes')
+//        console.log(this.route.path)
       }
     },
     data: function () {
