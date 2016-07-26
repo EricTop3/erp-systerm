@@ -21,57 +21,78 @@
         </div>
 
         <div class="inputFormat">
-          <!--<validator name="validationSet">-->
-          <form class="form-inline">
+          <validator name="validationSet">
+          <form class="form-inline" novalidate @submit="onSubmit">
             <div class="form-group ml10">
               <label>商品分类</label>
-              <select class="form-control" v-model="createList.category_id">
+              <select class="form-control" v-model="createList.category_id" v-validate:goodscate="['required']">
                 <option value="">请选择</option>
                 <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
               </select>
+              <div style="float: right;">
+                <p v-if="$validationSet.goodscate.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group" style="margin-left: 37px;">
               <label>商品属性</label>
-              <select class="form-control" v-model="createList.product_type">
+              <select class="form-control" v-model="createList.product_type" v-validate:producttype="['required']">
                 <option value="">请选择</option>
                 <option value="1">工厂产成品</option>
-                <option value="2">门店产成品</option>
-                <option value="3">原材料</option>
+                <option value="2">原材料</option>
+                <option value="3">门店产成品</option>
               </select>
+              <div style="float: right;">
+                <p v-if="$validationSet.producttype.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group ml10">
               <label>价格属性</label>
-              <select class="form-control" v-model="createList.sell_type">
+              <select class="form-control" v-model="createList.sell_type" v-validate:selltype="['required']">
                 <option value="">请选择</option>
                 <option value="1">可议价</option>
                 <option value="2">特价</option>
                 <option value="3">非议价</option>
+                <option value="4">非卖品</option>
               </select>
+              <div style="float: right;">
+                <p v-if="$validationSet.selltype.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group ml10">
               <label>品名</label>
-              <input type="text" class="form-control" v-model="createList.name" placeholder="此项为必填项！">
+              <input type="text" class="form-control" v-model="createList.name" v-validate:goodsname="['required']">
+              <div style="float: right;">
+                <p v-if="$validationSet.goodsname.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group ml10">
               <label>货号</label>
-              <input type="text" class="form-control" v-model="createList.code" placeholder="此项为必填项！">
+              <input type="text" class="form-control" v-model="createList.code" v-validate:goodscode="['required']">
+              <div style="float: right;">
+                <p v-if="$validationSet.goodscode.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <br>
             <div class="form-group ml10">
               <label>销售状态</label>
-              <select class="form-control" v-model="createList.sell_status">
+              <select class="form-control" v-model="createList.sell_status" v-validate:sellstatus="['required']">
                 <option value="">请选择</option>
                 <option value="0">下架中</option>
                 <option value="1">上架中</option>
-                <option value="2">非卖品</option>
               </select>
+              <div style="float: right;">
+                <p v-if="$validationSet.sellstatus.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group" style="margin-left: 37px;">
               <label>一级单位</label>
-              <select class="form-control" v-model="createList.base_unit" @change="oneUnit">
+              <select class="form-control" v-model="createList.base_unit" @change="oneUnit" v-validate:baseunit="['required']">
                 <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
+              <div style="float: right;">
+                <p v-if="$validationSet.baseunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
               <span v-if="createList.neutral_unit">{{hasNeutralUnit}}</span>
             </div>
             <div class="form-group ml10">
@@ -80,7 +101,12 @@
                 <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
-              <input type="text" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
+              <input type="text" v-if="createList.neutral_unit == ''" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
+              <input type="text" v-else class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value" v-validate:neutralunit="['required']">
+              <div v-if="createList.neutral_unit != ''" style="float: right;">
+                <p v-if="$validationSet.neutralunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
+
             </div>
             <div class="form-group ml10">
               <label>三级单位</label>
@@ -88,46 +114,71 @@
                 <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
-              <input type="text" class="form-control fsamll" placeholder="单位转换" style="width: 85px;"
-                     v-model="createList.minimal_unit_value">
+              <input type="text" v-if="createList.minimal_unit == ''" class="form-control fsamll" placeholder="单位转换" style="width: 85px;" v-model="createList.minimal_unit_value">
+              <input type="text" v-else class="form-control fsamll" placeholder="单位转换" style="width: 85px;" v-model="createList.minimal_unit_value" v-validate:minimalunit="['required']">
+              <div v-if="createList.minimal_unit != ''" style="float: right;">
+                <p v-if="$validationSet.minimalunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <br>
             <div class="form-group ml10">
               <label>零售单位</label>
-              <select class="form-control" v-model="createList.sell_unit">
-                <option value="请选择">请选择</option>
+              <select v-if="createList.product_type == 2 && createList.sell_status != 1" class="form-control" v-model="createList.sell_unit">
+                <option value="">请选择</option>
                 <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
               </select>
+              <select v-else class="form-control" v-model="createList.sell_unit" v-validate:sellunit="['required']">
+                <option value="">请选择</option>
+                <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
+              </select>
+              <div v-if="createList.product_type != 2 || createList.sell_status == 1" style="float: right;">
+                <p v-if="$validationSet.sellunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group ml10">
               <label>采购加工单位</label>
-              <select class="form-control" v-model="createList.production_unit">
+              <select v-if="createList.product_type != 2" class="form-control" v-model="createList.production_unit">
                 <option value="">请选择</option>
-                <option v-for="item in baseUnit" :value="item.id">{{item.name}}</option>
+                <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
               </select>
+              <select v-else class="form-control" v-model="createList.production_unit" v-validate:productionunit="['required']">
+                <option value="">请选择</option>
+                <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
+              </select>
+              <div v-if="createList.product_type == 2" style="float: right;">
+                <p v-if="$validationSet.productionunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group ml10">
               <label>安全库存</label>
-              <input type="text" class="form-control" v-model="createList.safe_stock" placeholder="此项为必填项！">
-              <!--v-validate:createList.safe_stock="['required']" @invalid="touched"-->
-              <!--<div v-if="createList.safe_stock == ''" style="float: right;">
-                <p style="color:red; margin: 0px; margin-left: 10px; line-height: 34px;">{{safeStock}}</p>
-              </div>-->
+              <input type="text" class="form-control" v-model="createList.safe_stock" v-validate:safestock="['required']">
+              <div style="float: right;">
+                <p v-if="$validationSet.safestock.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <br>
             <div class="form-group ml10">
               <label>零售单价</label>
-              <input type="text" class="form-control" v-model="createList.aruc">
+              <input v-if="!(createList.product_type != 2 || createList.sell_status == 1)" type="text" class="form-control" v-model="createList.aruc">
+              <input v-else type="text" class="form-control"  v-model="createList.aruc" v-validate:goodsaruc="['required']">
+              <div v-if="createList.product_type != 2 || createList.sell_status == 1" style="float: right;">
+                <p v-if="$validationSet.goodsaruc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
             <div class="form-group ml10">
               <label>采购加工单价</label>
-              <input type="text" class="form-control"
-                     v-if="createList.product_type == 2 || createList.product_type == 3" placeholder="次项为必填项！"
-                     v-model="createList.apuc">
-              <input type="text" class="form-control" v-else v-model="createList.apuc">
+              <input v-if="createList.product_type != 2" type="text" class="form-control" v-model="createList.apuc">
+              <input v-else type="text" class="form-control" v-model="createList.apuc" v-validate:goodsapuc="['required']">
+              <div v-if="createList.product_type == 2" style="float: right;">
+                <p v-if="$validationSet.goodsapuc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              </div>
             </div>
           </form>
-          <!--</validator>-->
+          </validator>
+        </div>
+
+        <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
+          <div class="panel-body" style="color:red;">* 号为必填项！</div>
         </div>
 
         <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
@@ -139,11 +190,11 @@
         </div>
 
         <div class="form-group">
-          <label><input type="checkbox" :disabled="createList.product_type == 3" :checked="isStatrBOM"
+          <label><input type="checkbox" :disabled="createList.product_type == 2" :checked="isStatrBOM"
                         v-model="createList.use_bill_of_material">
             启动BOM单</label>
-          <button class="btn btn-primary spanblocks ml10" data-toggle="modal"
-                  :disabled="createList.product_type == 3 || createList.use_bill_of_material == false"
+          <button class="btn btn-primary spanblocks ml10"
+                  :disabled="createList.product_type == 2 || createList.use_bill_of_material == false"
                   @click="addGoodModal=true">添加商品
           </button>
         </div>
@@ -158,7 +209,7 @@
             <td>单位</td>
           </tr>
           </thead>
-          <tbody>
+          <tbody v-if="this.createList.use_bill_of_material == true">
           <tr class="text-center" v-for="item in rederSetGoods" track-by="$index" :id="item.id">
             <td class="text-left">{{item.code}}</td>
             <td>{{item.name}}</td>
@@ -182,11 +233,9 @@
             提示：如该商品库存不为零，无法修改商品属性
           </div>
         </div>
-        <span class="btn btn-info spanblocks fl" @click="createNew()">保存</span>
+        <button type="submit" class="btn btn-info spanblocks fl" @click="onSubmit($event)">保存</button>
         <!-- 翻页 -->
-        <page v-if="rederSetGoods.total>0" :total='rederSetGoods.total' :current.sync='setGoodsPage.current_page' :display='setGoodsPage.per_page'
-              :last-page='setGoodsPage.last_page'></page>
-
+        <page v-if="len>0" :total='len' :current='current_page' :display='per_page' :last-page='totalPage'></page>
       </div>
     </div>
   </div>
@@ -225,7 +274,7 @@
       })
     },
     events: {
-//      确认增加
+//      确认添加商品
       confirmAdd: function () {
         var self = this
         $.each(self.setGoods, function (index, val) {
@@ -246,9 +295,32 @@
         this.rederSetGoods = this.old
       }
     },
+//    验证
+    validators: {
+     /* numeric: function (val/!*,rule*!/) {
+       return /^[-+]?[0-9]+$/.test(val)
+       },
+       url: function (val) {
+       return /^(http\:\/\/|https\:\/\/)(.{4,})$/.test(val)
+       }*/
+    },
     methods: {
+      onSubmit: function (e) {
+        // validate manually
+        var self = this
+        this.$validate(function () {
+          if (self.$validationSet.invalid) {
+            e.preventDefault()
+            console.log(self.$validationSet.invalid)
+          } else {
+            self.createNew()
+          }
+        })
+      },
 //      新增商品请求
       createNew: function () {
+        var self = this
+        var materials = []
         $.each(this.rederSetGoods, function (index, val) {
           var obj = {}
           obj['id'] = val.id
@@ -256,40 +328,51 @@
           obj['unit'] = val.unit
           materials.push(obj)
         })
-        var materials = []
-        var url = requestUrl + '/backend-system/product/product'
-        var self = this
-        var data ={
-          category_id: this.createList.category_id,
-          product_type: this.createList.product_type,
-          sell_type: this.createList.sell_type,
-          name: this.createList.name,
-          code: this.createList.code,
-          sell_status: this.createList.sell_status,
-          base_unit: this.createList.base_unit,
-          base_unit_value: this.createList.base_unit_value,
-          neutral_unit: this.createList.neutral_unit,
-          neutral_unit_value: this.createList.neutral_unit_value,
-          minimal_unit: this.createList.minimal_unit,
-          minimal_unit_value: this.createList.minimal_unit_value,
-          sell_unit: this.createList.sell_unit,
-          production_unit: this.createList.production_unit,
-          safe_stock: this.createList.safe_stock,
-          aruc: this.createList.aruc,
-          apuc: this.createList.apuc,
-          use_bill_of_material: this.createList.use_bill_of_material,
-          materials: materials
+        if(this.createList.use_bill_of_material == false){
+          materials = []
+          this.rederSetGoods = ''
+//          console.log(materials)
+        } else {
+          $.each(materials, function (index, val) {
+            if(val.value == undefined || val.unit == undefined){
+              alert('请检查耗量或者单位是否填写完整！')
+            } else {
+              var url = requestUrl + '/backend-system/product/product'
+              var data ={
+                category_id: self.createList.category_id,
+                product_type: self.createList.product_type,
+                sell_type: self.createList.sell_type,
+                name: self.createList.name,
+                code: self.createList.code,
+                sell_status: self.createList.sell_status,
+                base_unit: self.createList.base_unit,
+                base_unit_value: self.createList.base_unit_value,
+                neutral_unit: self.createList.neutral_unit,
+                neutral_unit_value: self.createList.neutral_unit_value,
+                minimal_unit: self.createList.minimal_unit,
+                minimal_unit_value: self.createList.minimal_unit_value,
+                sell_unit: self.createList.sell_unit,
+                production_unit: self.createList.production_unit,
+                safe_stock: self.createList.safe_stock,
+                aruc: self.createList.aruc,
+                apuc: self.createList.apuc,
+                use_bill_of_material: self.createList.use_bill_of_material,
+                materials: materials
+              }
+              postDataToApi( url,data,function(response) {
+                window.location.href = '?#!/admin/setting'
+              })
+            }
+          })
         }
-        postDataToApi( url,data,function(response) {
-          window.location.href = '?#!/admin/setting'
-        })
       },
 //   一级单位
      oneUnit: function () {
        var self = this
        $.each(this.baseUnit,function(index,val){
-         if(val.id ===Number(self.createList.base_unit)){
+         if(val.id === Number(self.createList.base_unit)){
            self.retailUnit[0].name = val.name
+           self.retailUnit[0].id = val.id
          }
        })
        this.createList.sell_unit = this.retailUnit[0].id
@@ -298,33 +381,42 @@
       twoUnit: function () {
         var self = this
         $.each(this.baseUnit,function(index,val){
-          if(val.id ===Number(self.createList.neutral_unit)){
+          if(val.id === Number(self.createList.neutral_unit)){
             self.retailUnit[1].name = val.name
+            self.retailUnit[1].id = val.id
           }
         })
-        this.createList.sell_unit =  this.retailUnit[1].id
+        this.createList.sell_unit = this.retailUnit[1].id
       },
 //     三级单位
       threeUnit: function () {
         var self = this
         $.each(this.baseUnit,function(index,val){
-          if(val.id ===Number(self.createList.minimal_unit)){
+          if(val.id === Number(self.createList.minimal_unit)){
             self.retailUnit[2].name = val.name
+            self.retailUnit[2].id = val.id
           }
         })
-        this.createList.sell_unit =  this.retailUnit[2].id
+        this.createList.sell_unit = this.retailUnit[2].id
       },
-/*//     验证
-      touched: function () {
-        this.safeStock = '请填写安全库存！'
-      }*/
+//     前端本地分页函数
+      localPage: function (data) {
+        this.len = data.length
+//        console.log(data.length)
+        if (this.len % this.per_page === 0) {
+          this.totalPage = this.len / this.per_page
+        } else {
+          this.totalPage = (Math.floor(this.len / this.per_page)) + 1
+        }
+        data.splice(this.current_page * this.per_page, this.len - this.current_page * this.per_page)
+      }
     },
     computed: {
 //      是否启用BOM清单
       isStatrBOM: function () {
-        if (this.createList.product_type != 3) {
+        if (this.createList.product_type != 2) {
           this.createList.use_bill_of_material = true
-        } else if (this.createList.product_type == 3) {
+        } else if (this.createList.product_type == 2) {
           this.createList.use_bill_of_material = false
         }
       },
@@ -356,7 +448,10 @@
     },
     data: function () {
       return {
-//        safeStock: '',
+        len: 0,
+        current_page: 1,
+        per_page: 10,
+        totalPage: 1,
         showPage: [],
         addGoodModal: false,
         addGoodModalSize: 'modal-lg',
@@ -371,7 +466,7 @@
         },
         category: '',
         baseUnit: '',
-        retailUnit:[{id:0,name:''},{id:1,name:''},{id:2,name:''}],
+        retailUnit:[{id:'',name:''},{id:'',name:''},{id:'',name:''}],
         setGoods: [],
         setGoodsPage: [],
         dataArray: [],
