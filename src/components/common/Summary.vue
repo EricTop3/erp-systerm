@@ -25,7 +25,7 @@
     </tbody>
   </table>
   <!-- 翻页 -->
-  <page :total="page.total" :current.sync="page.current_page" :display="page.per_page" :last-page="page.last_page" v-if="!tabFlag"></page>
+  <page :total="page.total" :current.sync="page.current_page" :display="page.per_page" :last-page="page.last_page" v-if="!tabFlag && tableData.length>0"></page>
   <!--有列表切换的时候的情况-->
   <div v-if="tabFlag">
     <ul class="nav nav-tabs" role="tablist">
@@ -48,18 +48,25 @@
           <tr class="text-center" v-for="entry in tableData" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td v-if="entry.goods_code">{{entry.goods_code}}</td>
             <td v-if="entry.goods_name">{{entry.goods_name}}</td>
-            <td>{{entry.demanding_number}}</td>
-            <td>{{entry.distribution_number}}</td>
-            <td><count :count="entry.now_number"></count></td>
-            <td>{{entry.unit}}</td>
-            <td>{{entry.unit_specification}}</td>
-            <td>{{entry.store_distribution_id}}</td>
+            <td v-if="entry.code">{{entry.code}}</td>
+            <td v-if="entry.name">{{entry.name}}</td>
+            <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
+            <td>0{{entry.production_unit_name}}</td>
+            <td>0{{entry.production_unit_name}}</td>
+            <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
+            <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
+            <td><count :count.sync="entry.amount"></count>{{entry.production_unit_name}}</td>
+            <td><count :count.sync="entry.price"></count>/{{entry.production_unit_name}}</td>
+            <td>{{ 20130516168 }}</td>
+            <td v-if="entry.unit">{{entry.unit}}</td>
+            <td v-if="entry.unit_specification">{{entry.unit_specification}}</td>
+            <td v-if="entry.store_distribution_id">{{entry.store_distribution_id}}</td>
           </tr>
           </tbody>
         </table>
-        <!-- 翻页 -->
-        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-              :last-page="page.last_page"></page>
+        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
       </div>
 
       <!-- 入库汇总 -->
@@ -74,20 +81,27 @@
             </thead>
             <tbody>
             <tr class="text-center" v-for="entry in summaryData" track-by="$index" :id="[entry.id ? entry.id : '']">
-              <td>{{entry.goods_code}}</td>
-              <td>{{entry.goods_name}}</td>
-              <td>{{entry.demanding_number}}</td>
-              <td>{{entry.distribution_number}}</td>
-              <td>{{entry.now_number}}</td>
-              <td>{{entry.unit}}</td>
-              <td>{{entry.unit_specification}}</td>
-              <td>{{entry.store_distribution_id}}</td>
+              <td v-if="entry.goods_code">{{entry.goods_code}}</td>
+              <td v-if="entry.goods_name">{{entry.goods_name}}</td>
+              <td v-if="entry.code">{{entry.code}}</td>
+              <td v-if="entry.name">{{entry.name}}</td>
+              <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
+              <td>库存数量{{entry.production_unit_name}}</td>
+              <td>要货数量{{entry.production_unit_name}}</td>
+              <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
+              <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
+              <td>{{entry.amount}}{{entry.production_unit_name}}</td>
+              <td>{{entry.price}}/{{entry.production_unit_name}}</td>
+              <td>{{20130516168}}</td>
+              <td v-if="entry.unit">{{entry.unit}}</td>
+              <td v-if="entry.unit_specification">{{entry.unit_specification}}</td>
+              <td v-if="entry.store_distribution_id">{{entry.store_distribution_id}}</td>
             </tr>
             </tbody>
           </table>
-          <!-- 翻页 -->
-          <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-                :last-page="page.last_page"></page>
+          <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+          <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+                <!--:last-page="page.last_page"></page>-->
         </div>
     </div>
   </div>
@@ -130,9 +144,10 @@
       Count: Count
     },
     methods:{
+//    查看详情
       detail: function (event) {
         var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = this.detailUrl + detailId
+        window.location.href = this.detailUrl
       },
       changeActive: function (event) {
         var cur = $(event.currentTarget)

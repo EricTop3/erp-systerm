@@ -1,6 +1,5 @@
 <template>
   <admin-nav></admin-nav>
-
   <div class="container-fluid">
     <div class="row">
       <left-purchase></left-purchase>
@@ -11,7 +10,6 @@
           <li class="active">采购订单</li>
           <li class="active">列表</li>
         </ol>
-
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
@@ -50,78 +48,14 @@
             </div>
             <button type="submit" class="btn btn-primary  mt20">搜索</button>
             <span class="btn btn-warning  mt20">撤销搜索</span>
-
           </form>
         </div>
-
         <!-- 表格 -->
-        <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
-
+        <summary :table-data="list" :table-header="gridColumns" :page="page" :detail-url="detailUrl"></summary>
       </div>
     </div>
   </div>
 
-  <!--模态框-审核-->
-  <div class="modal fade" id="procurement-audit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>审核弹出</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
-
-  <!--模态框-查看-->
-  <div class="modal fade" id="procurement-view-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">查看</h4>
-        </div>
-        <div class="modal-body">
-          <h4>查看弹出</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
-
-  <!--模态框-删除-->
-  <div class="modal fade" id="procurement-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">删除</h4>
-        </div>
-        <div class="modal-body">
-          <h4>删除弹出</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
 </template>
 <style>
 </style>
@@ -204,6 +138,7 @@
       return {
         page: [],
         list: [],
+        detailUrl: '#!/admin/purchase/purchaseDetail',
         gridColumns: {
           document_number: '采购单号',
           checked: '状态',
