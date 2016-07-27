@@ -21,13 +21,13 @@
       <div style="height:200px; overflow: auto;">
         <!--表格-->
         <!--表格-->
-        <grid :check="true" :data="citeData" :columns="citeDataTitle" v-on:change-operate="change"
+        <grid :check="true" :data="firstData" :columns="firstDataTitle" v-on:change-operate="change"
               v-on:change-all-operate="changeAll" :check-all.sync="citeCheckAll"></grid>
       </div>
 
       <div style="height:200px; overflow: auto; margin-top: 20px;">
         <!--表格-->
-        <grid :check="true" :data="addData" :columns="thisDataTitle" :is-add-flag.sync="isAdd" :check-all.sync="addDataCheckAll"
+        <grid :check="true" :data="addData" :columns="secondDataTitle" :is-add-flag.sync="isAdd" :check-all.sync="addDataCheckAll"
               v-on:change-add-operate="changeOperate" v-on:change-all-operate="changeAllOperate"></grid>
       </div>
     </div>
@@ -42,7 +42,7 @@
   import $ from 'jquery'
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
-  import { requestUrl } from '../../publicFunction/index'
+  import { requestUrl,token,getDataFromApi} from '../../publicFunction/index'
   import _ from 'underscore'
   export default{
     name: 'introduce-data',
@@ -51,20 +51,17 @@
       Grid: Grid
     },
     ready: function () {
-      this.$http({
-        url: this.url,
-        method: "get"
-      }).then(function(response){
-        this.citeData = response.data.body.list
-      },function(error){
-        console.log(error)
+      var self = this
+      var url = this.url
+      getDataFromApi(url,{},function(response){
+        self.firstData = response.data.body
       })
     },
     props: {
       instroduceDataModal: false,
       instroduceDataModalSize: 'modal-sm',
       addData: [],
-      citeDataTitle: {
+      firstDataTitle: {
         code: '配送出库单号',
         store_name: '调出仓库',
         number: '配送数量',
@@ -72,8 +69,8 @@
         create_person: '制单人',
         check_person: '审核人'
       },
-      citeData: [],
-      thisDataTitle: {
+      firstData: [],
+      secondDataTitle: {
         goods_code: '货号',
         goods_name: '品名',
         demanding_number: '要货数量',
@@ -81,45 +78,7 @@
         unit: '单位',
         unit_specification: '单位规格'
       },
-      thisData: [],
-      thisData1: [
-        {
-          'id': 1,
-          'store_distribution_id': 1,
-          'checked': false,
-          'goods_code': 'xyz201606271458011',
-          'demanding_number': '50',
-          'distribution_number': '70',
-          'goods_name': '哇哈哈',
-          'unit': '箱',
-          'unit_specification': '1箱*20盒*250ml',
-          'created_at': '2016-06-20 12:00:00'
-        },
-        {
-          'id': 2,
-          'checked': false,
-          'store_distribution_id': 1,
-          'goods_code': 'xyz201606271458001',
-          'demanding_number': '50',
-          'distribution_number': '70',
-          'goods_name': '牛角包1',
-          'unit': '个',
-          'unit_specification': '1个',
-          'created_at': '2016-06-20 12:00:00'
-        },
-        {
-          'id': 3,
-          'checked': false,
-          'store_distribution_id': 1,
-          'goods_code': 'xyz201606271458001',
-          'demanding_number': '50',
-          'distribution_number': '80',
-          'goods_name': '露西咖啡豆11',
-          'unit': '包',
-          'unit_specification': '1包*2500g',
-          'created_at': '2016-06-20 12:00:00'
-        }
-      ],
+      secondData: [],
       url: requestUrl + '/front-system/store/resource',
     },
     events: {
@@ -135,7 +94,7 @@
         var fetchedData = []
 //    根据当前id获取产品
         this.$http({
-          url: this.url + currentId + '/detail',
+          url: this.url + "/" + currentId,
           method: 'get'
         }).then(function (response) {
           $.each(response.data.body.list,function(index,val){
@@ -143,8 +102,8 @@
               val.store_distribution_id  ===  '123456'
             }
           })
-          this.thisData = response.data.body.list
-          fetchedData = this.thisData
+          this.secondData = response.data.body.list
+          fetchedData = this.secondData
           var firtElem = fetchedData[0]
           var lastElem = fetchedData[fetchedData.length - 1]
           var start = 0
@@ -170,7 +129,7 @@
       changeAll: function (checkAll) {
         var self = this
         if (checkAll) {
-          $.each(this.citeData, function (index, val) {
+          $.each(this.firstData, function (index, val) {
             var currentId = val.id
             console.log(currentId)
             self.$http({

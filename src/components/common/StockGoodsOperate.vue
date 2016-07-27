@@ -49,7 +49,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Modal from '../common/Modal'
-  import {requestUrl,token} from '../../publicFunction/index'
+  import {token,requestSystemUrl,getDataFromApi} from '../../publicFunction/index'
   export default {
     name: 'stockGoods',
     components: {
@@ -59,16 +59,12 @@
     },
     compiled: function () {
 //      分类
-      this.$http({
-        url: requestUrl + '/front-system/order/category',
-        method: 'get',
-      }).then(function (response) {
-        this.category = response.data.body.list
-      }, function (err) {
-        console.log(err)
+      var self = this
+      getDataFromApi(requestSystemUrl + '/backend-system/product/category',{},function(response){
+        self.category = response.data.body.list
       })
 //       获取产品
-      this.requestApi({page: 1})
+      this.requestApi(this.requestData)
     },
     events:{
       pagechange: function(currentpage){
@@ -89,23 +85,28 @@
     props: {
       page: [],
       addData: [],
+      requestData:{},
       getRenderData: [],
+      goodsListTitle: {
+        'code': '货号',
+        'name': '品名',
+        'sale_amount': '日均销量',
+        'current_stock': '当前库存',
+        'unit': '单位',
+        'unit_specification': '单位规格',
+        'category_name': '商品分类'
+      },
+      url: '',
       stockAddGoodModal: false,
       stockAddGoodModalSize: 'modal-lg'
     },
     methods: {
 //     公共产品列表请求
-      requestApi: function (data,callback) {
-        this.$http({
-          url: requestUrl + '/front-system/stock/goods',
-          method: 'get',
-          data: data
-        }).then(function (response) {
-          this.addData = response.data.body.list
-          this.page = response.data.body.pagination
-          callback && callback()
-        }, function (err) {
-          console.log(err)
+      requestApi: function (data) {
+        var self = this
+        getDataFromApi(this.url,data,function(response){
+          self.addData = response.data.body.list
+          self.page = response.data.body.pagination
         })
       },
 //    根据分类进行产品请求
@@ -113,7 +114,7 @@
         var currentObj = $(event.currentTarget)
         this.query.category = Number(currentObj.attr('id'))
         var data = {
-          category_id: this.query.category
+          category: this.query.category
         }
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.$dispatch('fetchProduct')
@@ -146,16 +147,7 @@
           category: ''
         },
         category: [],
-        allChecked: false,
-        goodsListTitle: {
-          'code': '货号',
-          'name': '品名',
-          'sale_amount': '日均销量',
-          'current_stock': '当前库存',
-          'unit': '单位',
-          'unit_specification': '单位规格',
-          'category_name': '商品分类'
-        }
+        allChecked: false
       }
     }
   }

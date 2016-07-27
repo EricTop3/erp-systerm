@@ -22,7 +22,7 @@
 
         <div class="inputFormat">
           <validator name="validationSet">
-          <form class="form-inline">
+          <form class="form-inline" novalidate @submit="onSubmit">
             <div class="form-group ml10">
               <label>商品分类</label>
               <select class="form-control" v-model="createList.category_id" v-validate:goodscate="['required']">
@@ -263,7 +263,17 @@
       LeftSetting: LeftSetting
     },
     ready: function () {
+//      获取Id
+      var str = window.location.href
+      var num = str.indexOf('settingEditProduct') + 19
+      var id = str.substr(num)
+      this.id = id
+
       var self = this
+//      获取单条数据
+      getDataFromApi(requestSystemUrl + '/backend-system/product/product/' + self.id,{},function(response){
+        console.log(response.data.body.list)
+      })
 //      获取单位
       getDataFromApi(requestSystemUrl + '/backend-system/product/unit',{},function(response){
         self.baseUnit = response.data.body.list
@@ -295,7 +305,7 @@
         this.rederSetGoods = this.old
       }
     },
-//    验证方法
+//    验证
     validators: {
      /* numeric: function (val/!*,rule*!/) {
        return /^[-+]?[0-9]+$/.test(val)
@@ -305,7 +315,6 @@
        }*/
     },
     methods: {
-//    验证
       onSubmit: function (e) {
         // validate manually
         var self = this
@@ -474,6 +483,7 @@
     },
     data: function () {
       return {
+        id: '',
         len: 0,
         current_page: 1,
         per_page: 10,

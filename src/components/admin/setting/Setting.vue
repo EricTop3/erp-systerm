@@ -26,7 +26,6 @@
                 <option value="">请选择</option>
                 <option value="0">下架中</option>
                 <option value="1">上架中</option>
-                <option value="2">非卖品</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -34,10 +33,8 @@
               <select class="form-control" v-model="search.selectProductStatus">
                 <option value="">请选择</option>
                 <option value="1">工厂产成品</option>
-                <option value="2">委外产成品</option>
+                <option value="2">原材料</option>
                 <option value="3">门店产成品</option>
-                <option value="4">原材料</option>
-                <option value="5">套餐</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -47,6 +44,7 @@
                 <option value="1">可议价</option>
                 <option value="2">特价</option>
                 <option value="3">非议价</option>
+                <option value="4">非卖品</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -59,7 +57,7 @@
             </div>
             <button class="btn btn-primary" @click="searchMethod">搜索</button>
             <span class="btn btn-warning"  @click="cancelSearch">撤销搜索</span>
-            <a v-link="{ path: '/admin/setting/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
+            <a v-link="{ path: '/admin/setting/commodity/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
           </form>
         </div>
         <!-- 表格 -->
@@ -138,6 +136,7 @@
       </div>
     </div>
   </div>
+
   <!--模态框HTML-->
    <modal :show.sync="priceModal" :modal-size="priceModalSize">
       <div slot="header">
@@ -175,9 +174,10 @@
     },
     events: {
       delete: function (id) {
-        var url = requestSystemUrl + '/backend-system/product/product'
-        deleteRequest(url,id,function(response) {
-          console.log('delete')
+        var url = requestSystemUrl + '/backend-system/product/product/' + id
+        console.log(id)
+        deleteRequest(url,function(response) {
+          console.log(id)
         })
       },
       pagechange: function (currentpage) {
@@ -217,10 +217,12 @@
 //    编辑
       edit: function (event) {
         var curId = Number($(event.currentTarget).parents("tr").attr('id'))
-        getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
+        console.log(curId)
+        /*getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
           console.log(responbse)
-        })
-//        window.location.href = '?#!/admin/setting/createNew'
+        })*/
+        window.location.href = '?#!/admin/setting/settingEditProduct/' + curId
+
       },
 //    搜索
       searchMethod: function (){
@@ -250,6 +252,13 @@
           exchangeData( self.productList)
           self.page =  response.data.body.pagination
         })
+      }
+    },
+//    路由
+    route:{
+      data: function () {
+         console.log('yes')
+//        console.log(this.route.path)
       }
     },
     data: function () {

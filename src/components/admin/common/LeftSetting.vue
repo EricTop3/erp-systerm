@@ -23,4 +23,7 @@
     color: #f96062;
     background-color: #fff;
   }
+  .custom-active-class{
+    color:blue
+  }
 </style>

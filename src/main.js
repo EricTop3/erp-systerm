@@ -39,8 +39,11 @@ import TransactionQuery from 'components/website/transaction-query/TransactionQu
 import Purchase from 'components/admin/purchase/Purchase'
 import PurchaseDelivery from 'components/admin/purchase/PurchaseDelivery'
 import CreateNewPurchase from 'components/admin/purchase/CreateNewPurchase'
+import CreateNewPurchaseDelivery from 'components/admin/purchase/CreateNewPurchaseDelivery'
+import PurchaseDetail from 'components/admin/purchase/PurchaseDetail'
 import Setting from 'components/admin/setting/Setting'
 import SettingCreateNew from 'components/admin/setting/SettingCreateNew'
+import SettingEditProduct from 'components/admin/setting/SettingEditProduct'
 import SettingCategory from 'components/admin/setting/SettingCategory'
 import SettingCoupon from 'components/admin/setting/SettingCoupon'
 import SettingPartner from 'components/admin/setting/SettingPartner'
@@ -73,11 +76,11 @@ Vue.config.debug = true
 Vue.http.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 Vue.http.options.emulateJSON = true
 // 全局验证方法
-//密码验证
+// 密码验证
 Vue.validator('password', function (val) {
   return  /^[a-zA-Z]{1}([a-zA-Z0-9]|[._/@]){5,17}$/.test(val)
 })
-//手机号码验证
+// 手机号码验证
 Vue.validator('phone', function (val) {
   return /^1[3|4|5|7|8][0-9]{9}$/.test(val)
 })
@@ -190,7 +193,7 @@ router.map({
   '/site/instock': {
     component: InStock
   },
-  '/admin/purchase/createNewPurchase': {
+  '/admin/purchase/order/createNewPurchase': {
     component: CreateNewPurchase
   },
   '/site/tranquery': {
@@ -199,8 +202,17 @@ router.map({
   '/admin/purchase': {
     component: Purchase
   },
+  '/admin/purchase/order': {
+    component: Purchase
+  },
+  '/admin/purchase/order/purchasedetail/:queryId': {
+    component: PurchaseDetail
+  },
   '/admin/purchase/delivery': {
     component: PurchaseDelivery
+  },
+  '/admin/purchase/delivery/createNewDelivery': {
+    component: CreateNewPurchaseDelivery
   },
   '/admin/setting': {
     component: Setting
@@ -208,8 +220,11 @@ router.map({
   '/admin/setting/commodity': {
     component: Setting
   },
-  '/admin/setting/createNew': {
+  '/admin/setting/commodity/createNew': {
     component: SettingCreateNew
+  },
+  '/admin/setting/settingEditProduct/:queryId': {
+    component: SettingEditProduct
   },
   '/admin/setting/category': {
     component: SettingCategory

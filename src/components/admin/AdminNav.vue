@@ -16,7 +16,7 @@
           <li><a v-link="{ path: '/admin/production'}">生产</a></li>
           <li><a v-link="{ path: '/admin/retail'}">零售</a></li>
           <li><a v-link="{ path: '/admin/member'}">会员</a></li>
-          <li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>
+          <!--<li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>-->
         </ul>
       </div>
       <div class="col-md-1"></div>
@@ -28,6 +28,7 @@
        name: 'admin-nav',
        methods: {
          exit: function () {
+//         TODO 未来可能有接口，暂时如此
            window.localStorage.setItem('token',null)
            window.location.href ='?#!/admin/login'
            window.location.reload()
