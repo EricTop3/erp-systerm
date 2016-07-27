@@ -10,14 +10,14 @@
     </tr>
     </thead>
     <tbody>
-    <tr class="text-center" v-for="entry in  tableData" track-by="$index" :id="[entry.id ? entry.id : '']">
+    <tr class="text-center"  track-by="$index" :id="[tableData.id ? tableData.id : '']">
       <td v-for="value in tableHeader">
-        {{entry[$key]}}
+        {{tableData[$key]}}
       </td>
       <td  v-if="operate">
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="entry.checked==='未审核'"></list-validate>
-          <span class="btn btn-primary btn-sm" @click="edit" v-if="entry.checked==='未审核'">编辑</span>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="tableData.checked==='未审核'"></list-validate>
+          <span class="btn btn-primary btn-sm" @click="edit" v-if="tableData.checked==='未审核'">编辑</span>
         </slot>
     </tr>
     </tbody>
@@ -75,15 +75,21 @@
           <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td v-if="entry.goods_code">{{entry.goods_code}}</td>
             <td v-if="entry.goods_name">{{entry.goods_name}}</td>
-            <td v-if="entry.consumable_code">{{entry.consumable_code}}</td>
+            <!--采购-->
+            <td v-if="entry.item_code!= underdefind">{{entry.item_code}}</td>
+            <td v-if="entry.item_code!= underdefind">{{entry.item_name}}</td>
+            <td v-if="entry.unit_specification!= underdefind">{{entry.unit_specification}}</td>
+            <td v-if="entry.current_stock != underdefind">{{entry.current_stock}}</td>
+            <td v-if="entry.demand_amount!=underdefind">{{entry.demand_amount}}</td>
+            <td v-if="entry.main_reference_value!=underdefind">{{entry.main_reference_value}}</td>
+            <td v-if="entry.purchase_unit_price!=underdefind">{{entry.purchase_unit_price| priceChange}}</td>
+            <td v-if="entry.reference_number!==underfind">{{entry.reference_number}}</td>
+            <td v-if="entry.consumable_code != underdefind">{{entry.consumable_code}}</td>
             <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
             <td v-if="entry.recipient_amount">{{entry.recipient_amount}}</td>
             <!--<td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>-->
             <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
             <td v-if="entry.current_amount">{{entry.current_amount}}</td>
-            <td>{{entry.unit}}</td>
-            <td>{{entry.unit_specification}}</td>
-            <td>{{entry.order_source_code}}</td>
           </tr>
           </tbody>
         </table>
@@ -107,15 +113,21 @@
           <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td v-if="entry.goods_code">{{entry.goods_code}}</td>
             <td v-if="entry.goods_name">{{entry.goods_name}}</td>
-            <td v-if="entry.consumable_code">{{entry.consumable_code}}</td>
+            <!--采购-->
+            <td v-if="entry.item_code!= underdefind">{{entry.item_code}}</td>
+            <td v-if="entry.item_code!= underdefind">{{entry.item_name}}</td>
+            <td v-if="entry.unit_specification!= underdefind">{{entry.unit_specification}}</td>
+            <td v-if="entry.current_stock != underdefind">{{entry.current_stock}}</td>
+            <td v-if="entry.demand_amount!=underdefind">{{entry.demand_amount}}</td>
+            <td v-if="entry.main_reference_value!=underdefind">{{entry.main_reference_value}}</td>
+            <td v-if="entry.purchase_unit_price!=underdefind">{{entry.purchase_unit_price| priceChange}}</td>
+            <td v-if="entry.reference_number!==underfind">{{entry.reference_number}}</td>
+            <td v-if="entry.consumable_code != underdefind">{{entry.consumable_code}}</td>
             <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
-            <td v-if="entry.recipient_amount && editFlag===false">{{entry.recipient_amount}}</td>
-            <td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>
+            <td v-if="entry.recipient_amount">{{entry.recipient_amount}}</td>
+            <!--<td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>-->
             <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
             <td v-if="entry.current_amount">{{entry.current_amount}}</td>
-            <td>{{entry.unit}}</td>
-            <td>{{entry.unit_specification}}</td>
-            <td>{{entry.order_source_code}}</td>
           </tr>
           </tbody>
         </table>
@@ -151,6 +163,10 @@
       ListValidate: ListValidate,
     },
     events: {
+//    审核
+      check: function (id){
+        this.$dispatch("checkFromApi",id)
+      },
       finishEdit: function () {
         this.editFlag = false
       }

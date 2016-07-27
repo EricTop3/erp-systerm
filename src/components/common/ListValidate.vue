@@ -27,7 +27,9 @@
 //      Modal: Modal
 //    },
     props: {
-      list: [],
+      list: {
+        required: true
+      },
       flag: false
 //      validateModal: false
     },
@@ -35,13 +37,19 @@
 //    审核
       validate: function (event) {
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
+        if(!(this.list instanceof Array)){
+          if (this.list.id === currentId) {
+            this.list.checked = '已审核'
+          }
+        }else{
+          $.each(this.list, function (index, val) {
+            if (val.id === currentId) {
+              val.checked = '已审核'
+            }
+          })
+        }
         this.$dispatch("check",currentId)
         this.$dispatch("finishEdit")
-        $.each(this.list, function (index, val) {
-          if (val.id === currentId) {
-            val.checked = '已审核'
-          }
-        })
       }
     }
   }

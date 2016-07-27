@@ -25,19 +25,19 @@
               <input type="text" class="form-control" placeholder="" style="width: 450px;" v-model="note">
             </div>
             <span class="btn btn-primary" data-toggle="modal" data-target="#data-cite-templ" @click="inclucdePurchaseData">引用原始单据</span>
-            <span class="btn btn-default"  @click="addGoodModal=true">添加商品</span>
+            <span class="btn btn-default"  @click="modal.addGoodModal=true">添加商品</span>
             <span class="btn btn-default"  data-toggle="modal" data-target="#procurement-submit-templ" @click="uploadPurchase">提交采购</span>
           </form>
         </div>
         <!--表格 -->
-        <summary :table-header="gridColumns" :summary-data="renderstockGoods" :table-data="renderstockGoods" :page="page"  :detail-url="detailUrl" :tab-flag="tabFlag"></summary>
+        <summary :table-header="gridColumns" :summary-data="renderstockGoods" :table-data="renderstockGoods" :page="page"  :tab-flag="tabFlag"></summary>
       </div>
     </div>
   </div>
-  <!---->
-  <introduce-data :instroduce-data-modal.sync='parentIntroModal' :instroduce-data-modal-size="parentIntroModalSize" :add-data.sync="stockGoods" :url="currentUrl"></introduce-data>
+  <!--引入原始数据-->
+  <introduce-data :url="origenData.dataUrl" :instroduce-data-modal.sync='modal.parentIntroModal' :instroduce-data-modal-size="modal.parentIntroModalSize" :add-data.sync="stockGoods" :url="currentUrl" :first-data-title="origenData.firstDataTitle" :first-data="origenData.firstData" :second-data-title="origenData.secondDataTitle" ></introduce-data>
   <!--模态框-添加商品-->
-  <stock-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="stockGoods" :goods-list-title="purchaseTabelHead" :url="productUrl"></stock-goods>
+  <stock-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="modal.addGoodModal" :stock-add-good-modal-size="modal.addGoodModalSize" :page.sync="showPage" :add-data.sync="stockGoods" :goods-list-title="purchaseTabelHead" :url="request.productUrl" :request-data="request.productData"></stock-goods>
 </template>
 <style>
 </style>
@@ -116,12 +116,12 @@
           provider_id: this.selectedSupplier
         }
         postDataToApi(url,data,function (response) {
-           window.location.href = "#!/admin/purchase"
+           window.location.href = "#!/admin/purchase/order"
         })
       },
 //     引入数据
       inclucdePurchaseData: function () {
-
+         this.modal.parentIntroModal = true
       },
     },
     data: function () {
@@ -151,9 +151,38 @@
           production_unit_name: "单位",
           specification_unit: "单位规格"
         },
-        productUrl: requestSystemUrl +  '/backend-system/product/product',
-        addGoodModal: false,
-        addGoodModalSize: 'modal-lg',
+        request: {
+          productUrl: requestSystemUrl +  '/backend-system/product/product',
+          productData: {
+            product_type: 2
+          }
+        },
+        origenData: {
+          dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
+          firstDataTitle: {
+            "document_number": "配送出库单号",
+            "store_name": "要货仓库",
+            "amount": "要货数量",
+            "created_at": "配送日期",
+            "creator_name": "制单人",
+            "auditor_name": "审核人"
+          },
+          firstData: [],
+          secondDataTitle: {
+            "item_code": "货号",
+            "item_name": "品名",
+            "demand_amount":"要货数量",
+            "unit_name": "单位",
+            "unit_specification": "单位规格"
+          },
+          secondData: []
+        },
+        modal:{
+          addGoodModal: false,
+          addGoodModalSize: 'modal-lg',
+          parentIntroModal: false,
+          parentIntroModalSize: 'modal-lg'
+        },
         category: '',
         baseUnit: '',
         setGoods: [],
