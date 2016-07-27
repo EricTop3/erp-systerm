@@ -181,11 +181,7 @@
         })
       },
       pagechange: function (currentpage) {
-        getDataFromApi(requestSystemUrl + '/backend-system/product/product',{page: currentpage},function(response){
-          self.productList = response.data.body.list
-          exchangeData( self.productList)
-          self.page =  response.data.body.pagination
-        })
+        this.getlistData(currentpage)
       }
     },
     ready: function () {
@@ -195,13 +191,23 @@
         self.category = response.data.body.list
       })
 //    获取商品
-      getDataFromApi(requestSystemUrl + '/backend-system/product/product',{},function(response){
-        self.productList = response.data.body.list
-        exchangeData( self.productList)
-        self.page =  response.data.body.pagination
-      })
+      this.getlistData(1)
     },
     methods: {
+//      列表数据渲染
+      getlistData: function (page) {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/product/product'
+        var data = {
+          page: page || ''
+        }
+        getDataFromApi(url,data,function(response){
+          self.productList = response.data.body.list
+          exchangeData( self.productList)
+          self.page =  response.data.body.pagination
+        })
+      },
+
 //     获取商品
       fetchGoods: function (page) {
         var data ={
@@ -216,13 +222,19 @@
       },
 //    编辑
       edit: function (event) {
-        var curId = Number($(event.currentTarget).parents("tr").attr('id'))
+        var self = this
+        var Id = Number($(event.currentTarget).parents("tr").attr('id'))
+        var curId = ''
+        $.each(this.productList, function (index, val) {
+          if(Id == val.id){
+            curId = val.product_id
+          }
+        })
         console.log(curId)
         /*getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
           console.log(responbse)
         })*/
         window.location.href = '?#!/admin/setting/settingEditProduct/' + curId
-
       },
 //    搜索
       searchMethod: function (){
@@ -263,6 +275,7 @@
     },
     data: function () {
       return {
+        product_id: '',
         page: [],
         category: '',
         productOperate: true,

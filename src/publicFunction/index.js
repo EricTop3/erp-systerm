@@ -176,7 +176,7 @@ export function  getDataFromApi(url, data, callback) {
     })
 }
 //  post提交数据的方法
-export function  postDataToApi (url, data, callback) {
+export function  postDataToApi (url, data, callback, callbackErr) {
   var cur = new Vue()
   cur.$http({
       url: url,
@@ -187,6 +187,7 @@ export function  postDataToApi (url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
+      callbackErr && callbackErr(err)
       console.log(err)
     })
 }

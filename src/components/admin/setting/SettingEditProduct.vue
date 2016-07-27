@@ -268,11 +268,39 @@
       var num = str.indexOf('settingEditProduct') + 19
       var id = str.substr(num)
       this.id = id
+//      $route.params.queryId
 
       var self = this
 //      获取单条数据
       getDataFromApi(requestSystemUrl + '/backend-system/product/product/' + self.id,{},function(response){
-        console.log(response.data.body.list)
+
+        self.createList.category_id = response.data.body.category_id
+        self.createList.product_type = response.data.body.product_type
+        self.createList.sell_type = response.data.body.sell_type
+        self.createList.name = response.data.body.name
+        self.createList.code = response.data.body.code
+        self.createList.sell_status = String(response.data.body.sell_status)
+
+        self.createList.base_unit = response.data.body.specification_unit[0].unit.unit_id
+        self.createList.neutral_unit = response.data.body.specification_unit[1] !== undefined ? response.data.body.specification_unit[1].unit.unit_id: ''
+        self.createList.neutral_unit_value = response.data.body.specification_unit[1] !== undefined ? response.data.body.specification_unit[1].unit.value: ''
+        self.createList.minimal_unit = response.data.body.specification_unit[2] !== undefined ? response.data.body.specification_unit[2].unit.unit_id: ''
+        self.createList.minimal_unit_value = response.data.body.specification_unit[2] !== undefined ? response.data.body.specification_unit[2].unit.value: ''
+
+        self.retailUnit[0].name = response.data.body.specification_unit[0].unit.unit_name
+        self.retailUnit[0].id = response.data.body.specification_unit[0].unit.unit_id
+        self.retailUnit[1].name = response.data.body.specification_unit[1] !== undefined ? response.data.body.specification_unit[1].unit.unit_name : ''
+        self.retailUnit[1].id = response.data.body.specification_unit[1] !== undefined ? response.data.body.specification_unit[1].unit.unit_id : ''
+        self.retailUnit[2].name = response.data.body.specification_unit[2] !== undefined ? response.data.body.specification_unit[2].unit.unit_name : ''
+        self.retailUnit[2].id = response.data.body.specification_unit[2] !== undefined ? response.data.body.specification_unit[2].unit.unit_id : ''
+
+        self.createList.sell_unit = response.data.body.sell_unit_id
+        self.createList.safe_stock = response.data.body.safe_stock
+        self.createList.production_unit = response.data.body.production_unit_id
+        self.createList.aruc = response.data.body.aruc
+        self.createList.apuc = response.data.body.apuc
+
+//      self.createList.materia = response.data.body
       })
 //      获取单位
       getDataFromApi(requestSystemUrl + '/backend-system/product/unit',{},function(response){
