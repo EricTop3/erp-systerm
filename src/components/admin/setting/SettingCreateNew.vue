@@ -178,7 +178,10 @@
         </div>
 
         <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
-          <div class="panel-body" style="color:red;">* 号为必填项！</div>
+          <div class="panel-body" style="color:red;">
+            <p>* 号为必填项！</p>
+            <p v-if="createList.code != '' && $validationSet.goodscode.required">货号不能重复，请重新填写！</p>
+          </div>
         </div>
 
         <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
@@ -346,7 +349,7 @@
             neutral_unit: self.createList.neutral_unit,
             neutral_unit_value: self.createList.neutral_unit_value,
             minimal_unit: self.createList.minimal_unit,
-            minimal_unit_value: self.createList.minimal_unit_value,
+            minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
             sell_unit: self.createList.sell_unit,
             production_unit: self.createList.production_unit,
             safe_stock: self.createList.safe_stock,
@@ -355,8 +358,14 @@
             use_bill_of_material: self.createList.use_bill_of_material,
             materials: materials
           }
+          console.log(data.minimal_unit_value)
           postDataToApi( url,data,function(response) {
-            window.location.href = '?#!/admin/setting'
+//            window.location.href = '?#!/admin/setting'
+          },function (err) {
+//            判断货号是否重复
+            if(err.data.body.validate_error.code[0] == 'The code has already been taken.'){
+              self.$validationSet.goodscode.required = true
+            }
           })
         } else {
           $.each(materials, function (index, val) {
@@ -376,7 +385,7 @@
                 neutral_unit: self.createList.neutral_unit,
                 neutral_unit_value: self.createList.neutral_unit_value,
                 minimal_unit: self.createList.minimal_unit,
-                minimal_unit_value: self.createList.minimal_unit_value,
+                minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
                 sell_unit: self.createList.sell_unit,
                 production_unit: self.createList.production_unit,
                 safe_stock: self.createList.safe_stock,
@@ -386,6 +395,7 @@
                 materials: materials
               }
               postDataToApi( url,data,function(response) {
+                console.log(minimal_unit_value)
                 window.location.href = '?#!/admin/setting'
               })
             }

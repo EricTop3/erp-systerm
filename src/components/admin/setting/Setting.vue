@@ -26,7 +26,6 @@
                 <option value="">请选择</option>
                 <option value="0">下架中</option>
                 <option value="1">上架中</option>
-                <option value="2">非卖品</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -34,10 +33,8 @@
               <select class="form-control" v-model="search.selectProductStatus">
                 <option value="">请选择</option>
                 <option value="1">工厂产成品</option>
-                <option value="2">委外产成品</option>
+                <option value="2">原材料</option>
                 <option value="3">门店产成品</option>
-                <option value="4">原材料</option>
-                <option value="5">套餐</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -47,6 +44,7 @@
                 <option value="1">可议价</option>
                 <option value="2">特价</option>
                 <option value="3">非议价</option>
+                <option value="4">非卖品</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -183,11 +181,7 @@
         })
       },
       pagechange: function (currentpage) {
-        getDataFromApi(requestSystemUrl + '/backend-system/product/product',{page: currentpage},function(response){
-          self.productList = response.data.body.list
-          exchangeData( self.productList)
-          self.page =  response.data.body.pagination
-        })
+        this.getlistData(currentpage)
       }
     },
     ready: function () {
@@ -197,13 +191,23 @@
         self.category = response.data.body.list
       })
 //    获取商品
-      getDataFromApi(requestSystemUrl + '/backend-system/product/product',{},function(response){
-        self.productList = response.data.body.list
-        exchangeData( self.productList)
-        self.page =  response.data.body.pagination
-      })
+      this.getlistData(1)
     },
     methods: {
+//      列表数据渲染
+      getlistData: function (page) {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/product/product'
+        var data = {
+          page: page || ''
+        }
+        getDataFromApi(url,data,function(response){
+          self.productList = response.data.body.list
+          exchangeData( self.productList)
+          self.page =  response.data.body.pagination
+        })
+      },
+
 //     获取商品
       fetchGoods: function (page) {
         var data ={
@@ -218,13 +222,19 @@
       },
 //    编辑
       edit: function (event) {
-        var curId = Number($(event.currentTarget).parents("tr").attr('id'))
+        var self = this
+        var Id = Number($(event.currentTarget).parents("tr").attr('id'))
+        var curId = ''
+        $.each(this.productList, function (index, val) {
+          if(Id == val.id){
+            curId = val.product_id
+          }
+        })
         console.log(curId)
         /*getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
           console.log(responbse)
         })*/
         window.location.href = '?#!/admin/setting/settingEditProduct/' + curId
-
       },
 //    搜索
       searchMethod: function (){
@@ -265,6 +275,7 @@
     },
     data: function () {
       return {
+        product_id: '',
         page: [],
         category: '',
         productOperate: true,

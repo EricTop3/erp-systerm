@@ -23,7 +23,7 @@
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
             <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-            <span class="btn btn-warning btn-sm" @click="delete($event)">删除</span>
+            <span class="btn btn-warning btn-sm" @click="deletes($event)">删除</span>
           </div>
         </grid>
 
@@ -43,23 +43,35 @@
       <h4 class="modal-title">新增分类</h4>
     </div>
     <div slot="body">
-      <form class="form-horizontal">
-        <div class="form-group">
-          <label class="col-sm-2 control-label">序号</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" v-model="sort">
+      <validator name="validation1">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">序号</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" v-model="sort" id="sort"
+                     v-validate:sort="[ 'required' , 'number']">
+              <div v-if="$validation1.sort.touched">
+                <p class="error" v-if="$validation1.sort.required">这是必填字段</p>
+                <p class="error" v-if="$validation1.sort.number">只能填写数字</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-2 control-label">分类</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="字数限制6字以内" v-model="display_name">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">分类</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" placeholder="字数限制6字以内" v-model="display_name"
+                     v-validate:name="{required: true , maxlength: 6}">
+              <div v-if="$validation1.name.touched">
+                <p class="error" v-if="$validation1.name.required">这是必填字段</p>
+                <p class="error" v-if="$validation1.name.maxlength">字数限制6字以内</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="createSubmit()">提交</button>
+      <button type="submit" class="btn btn-primary" @click="onSubmit($event)">提交</button>
       <button type="button" class="btn btn-default" @click="createModal=false">取消</button>
     </div>
   </modal>
@@ -73,23 +85,33 @@
       <h4 class="modal-title">编辑分类</h4>
     </div>
     <div slot="body">
+      <validator name="validation2">
       <form class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-2 control-label">序号</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" v-model="formData.sort">
+            <input type="text" class="form-control" v-model="formData.sort" v-validate:sort="[ 'required' , 'number']">
+            <div v-if="$validation2.sort.touched">
+              <p class="error" v-if="$validation2.sort.required">这是必填字段</p>
+              <p class="error" v-if="$validation2.sort.number">只能填写数字</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-2 control-label">分类</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="字数限制6字以内" v-model="formData.display_name">
+            <input type="text" class="form-control" placeholder="字数限制6字以内" v-model="formData.display_name" v-validate:name="{required: true , maxlength: 6}">
+            <div v-if="$validation2.name.touched">
+              <p class="error" v-if="$validation2.name.required">这是必填字段</p>
+              <p class="error" v-if="$validation2.name.maxlength">字数限制6字以内</p>
+            </div>
           </div>
         </div>
       </form>
+        </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmEdit()">保存</button>
+      <button type="button" class="btn btn-primary" @click="EditonSubmit($event)">保存</button>
       <button type="button" class="btn btn-default" @click="editModal=false">取消</button>
     </div>
   </modal>
@@ -111,6 +133,7 @@
     </div>
   </modal>
   <!--模态框HTML-->
+  <error-tip :err-info="messageTip" :err-modal.sync="messageTipModal"></error-tip>
 </template>
 
 <script>
@@ -187,7 +210,7 @@
         })
       },
 //      删除
-      delete: function (event) {
+      deletes: function (event) {
         this.deleteModal = true
         this.categoryId = Number($(event.currentTarget).parents('tr').attr('id'))
       },
@@ -210,22 +233,52 @@
       },
 //      添加商品分类
       createSubmit: function () {
-        this.$http.post(
-          requestUrl + '/backend-system/product/category',
-          {
-            display_name: this.display_name,
-            sort: this.sort
-          },
-          {
-            headers: {
-              'X-Overpowered-Token': token
+          this.$http.post(
+            requestUrl + '/backend-system/product/category',
+            {
+              display_name: this.display_name,
+              sort: this.sort
+            },
+            {
+              headers: {
+                'X-Overpowered-Token': token
+              }
             }
+          ).then(function (response) {
+            this.createModal = false
+            this.getlistdata(1)
+          }, function (err) {
+            console.log(err)
+          })
+      },
+//      表单验证
+      onSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation1.invalid) {
+            console.log(self.$validation1.invalid)
+            self.$validation1.name.touched = true
+            self.$validation1.sort.touched = true
+            e.preventDefault()
+          } else {
+            console.log(self.$validation1.invalid)
+            self.createSubmit()
           }
-        ).then(function (response) {
-          this.createModal = false
-          this.getlistdata(1)
-        }, function (err) {
-          console.log(err)
+        })
+      },
+//      编辑保存的表单验证
+      EditonSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            console.log(self.$validation2.invalid)
+            self.$validation2.name.touched = true
+            self.$validation2.sort.touched = true
+            e.preventDefault()
+          } else {
+            console.log(self.$validation1.invalid)
+            self.confirmEdit()
+          }
         })
       }
     },
