@@ -26,7 +26,6 @@
                 <option value="">请选择</option>
                 <option value="0">下架中</option>
                 <option value="1">上架中</option>
-                <option value="2">非卖品</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -34,10 +33,8 @@
               <select class="form-control" v-model="search.selectProductStatus">
                 <option value="">请选择</option>
                 <option value="1">工厂产成品</option>
-                <option value="2">委外产成品</option>
+                <option value="2">原材料</option>
                 <option value="3">门店产成品</option>
-                <option value="4">原材料</option>
-                <option value="5">套餐</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -47,6 +44,7 @@
                 <option value="1">可议价</option>
                 <option value="2">特价</option>
                 <option value="3">非议价</option>
+                <option value="4">非卖品</option>
               </select>
             </div>
             <div class="form-group ml10">
