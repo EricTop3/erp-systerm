@@ -29,7 +29,7 @@
                 <option>请选择</option>
               </select>
             </div>
-            <a v-link="{path: '/admin/purchase/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
+            <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
             <div class="form-group ml10">
               <label>采购时间段</label>
               <input type="text" class="form-control date_picker" placeholder="开始时间"> -
@@ -121,7 +121,7 @@
       },
 //    查看详情
       gotoDetail: function (id){
-          window.location.href = '#!/admin/purchase/purchasedetail/'+ id
+          window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
       }
     },
     ready: function () {

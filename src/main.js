@@ -188,7 +188,7 @@ router.map({
   '/site/instock': {
     component: InStock
   },
-  '/admin/purchase/createNewPurchase': {
+  '/admin/purchase/order/createNewPurchase': {
     component: CreateNewPurchase
   },
   '/site/tranquery': {
@@ -197,7 +197,10 @@ router.map({
   '/admin/purchase': {
     component: Purchase
   },
-  '/admin/purchase/purchasedetail/:queryId': {
+  '/admin/purchase/order': {
+    component: Purchase
+  },
+  '/admin/purchase/order/purchasedetail/:queryId': {
     component: PurchaseDetail
   },
   '/admin/purchase/delivery': {

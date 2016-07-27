@@ -28,7 +28,7 @@
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -44,7 +44,7 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.$http({
-          url: requestUrl + '/backend-system/purchase/purchase',
+          url:requestSystemUrl + '/backend-system/purchase/purchase',
           data: {
             page: currentpage
           },
@@ -59,38 +59,46 @@
           console.log(err)
         })
       },
-      /*//     删除请求
+//      删除请求
        deleteFromApi: function (id) {
        var self = this
-       deleteRequest('/backend-system/purchase/purchase/',id,function(response){
+       deleteRequest(requestSystemUrl+ '/backend-system/purchase/purchase/'+ id,function(response){
        console.log('deleted')
        })
-       },*/
+       },
 //     審核请求
       checkFromApi: function (id) {
         var self = this
-        checkRequest('/backend-system/purchase/purchase/'+ id +'/checked',{},function(response){
+        checkRequest(requestSystemUrl+ '/backend-system/purchase/purchase/'+ id +'/checked',function(response){
           console.log('checked')
         })
       },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
-        finishRequest('/backend-system/purchase/purchase/'+ id +'/finished',{},function(response){
+        finishRequest(requestSystemUrl +'/backend-system/purchase/purchase/'+ id +'/finished',function(response){
           console.log('finished')
         })
       }
     },
     ready: function () {
-      this.listData(1)
+      this.listData()
     },
     methods: {
       listData: function (page) {
+        var currentId = this.$route.params.queryId
         var self = this
-        var url = requestUrl + '/backend-system/purchase/purchase'
+//        获取商品列表详情
+        var url = requestSystemUrl + '/backend-system/purchase/purchase/' + currentId
+//       获取采购列表详情
+        var purchaseUrl  = requestSystemUrl + '/backend-system/purchase/purchase/' + currentId + '/get'
+//       获取商品列表详情
         getDataFromApi(url,{},function(response){
-          self.list = response.data.body.list
-          self.page = response.data.body.pagination
+          self.detailList = response.data.body.list
+        })
+//        获取采购列表详情
+        getDataFromApi(purchaseUrl,{},function(response){
+          self.list = response.data.body
           exchangeData(self.list)
         })
       }
@@ -98,7 +106,7 @@
     data: function () {
       return {
         page: [],
-        list: [],
+        list: {},
         detailList: [],
         tabFlag: true,
         gridColumns: {

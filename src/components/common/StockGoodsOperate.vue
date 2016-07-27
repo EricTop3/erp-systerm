@@ -64,7 +64,7 @@
         self.category = response.data.body.list
       })
 //       获取产品
-      this.requestApi()
+      this.requestApi(this.requestData)
     },
     events:{
       pagechange: function(currentpage){
@@ -85,6 +85,7 @@
     props: {
       page: [],
       addData: [],
+      requestData:{},
       getRenderData: [],
       goodsListTitle: {
         'code': '货号',

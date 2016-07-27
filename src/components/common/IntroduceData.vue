@@ -53,8 +53,8 @@
     ready: function () {
       var self = this
       var url = this.url
-      getDataFromApi(url,{},function(responsae){
-        self.firstData = response.data.body.list
+      getDataFromApi(url,{},function(response){
+        self.firstData = response.data.body
       })
     },
     props: {
