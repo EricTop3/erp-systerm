@@ -360,8 +360,7 @@
           }
           console.log(data.minimal_unit_value)
           postDataToApi( url,data,function(response) {
-            console.log(minimal_unit_value)
-            window.location.href = '?#!/admin/setting'
+//            window.location.href = '?#!/admin/setting'
           },function (err) {
 //            判断货号是否重复
             if(err.data.body.validate_error.code[0] == 'The code has already been taken.'){
@@ -399,7 +398,6 @@
                 console.log(minimal_unit_value)
                 window.location.href = '?#!/admin/setting'
               })
-
             }
           })
         }

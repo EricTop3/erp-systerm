@@ -253,7 +253,7 @@
   import Page from '../../common/Page'
   import LeftSetting from '../common/LeftSetting'
   import SetGoods from '../common/SetGoods'
-  import {requestUrl,requestSystemUrl, token, searchRequest,postDataToApi,getDataFromApi} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl, token, searchRequest,postDataToApi,getDataFromApi,putDataToApi} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -268,7 +268,6 @@
       var num = str.indexOf('settingEditProduct') + 19
       var id = str.substr(num)
       this.id = id
-//      $route.params.queryId
 
       var self = this
 //      获取单条数据
@@ -296,11 +295,25 @@
 
         self.createList.sell_unit = response.data.body.sell_unit_id
         self.createList.safe_stock = response.data.body.safe_stock
-        self.createList.production_unit = response.data.body.production_unit_id
+        self.createList.production_unit = response.data.body.production_unit_id !== null ? response.data.body.production_unit_id : ''
         self.createList.aruc = response.data.body.aruc
         self.createList.apuc = response.data.body.apuc
-
-//      self.createList.materia = response.data.body
+//        createList.use_bill_of_material
+        if(response.data.body.bom == ''){
+          self.createList.use_bill_of_material = false
+        } else {
+          self.createList.use_bill_of_material = true
+          //        BOM清单
+          $.each(response.data.body.bom, function (index, val) {
+            var obj = {}
+            obj['code'] = val.product_code
+            obj['name'] = val.product_name
+            obj['id'] = val.product_id
+            obj['value'] = val.consumption
+            obj['unit'] = val.consumption_unit
+            self.rederSetGoods.push(obj)
+          })
+        }
       })
 //      获取单位
       getDataFromApi(requestSystemUrl + '/backend-system/product/unit',{},function(response){
@@ -333,25 +346,25 @@
         this.rederSetGoods = this.old
       }
     },
-//    验证
+/*//    验证
     validators: {
-     /* numeric: function (val/!*,rule*!/) {
+     /!* numeric: function (val/!*,rule*!/) {
        return /^[-+]?[0-9]+$/.test(val)
        },
        url: function (val) {
        return /^(http\:\/\/|https\:\/\/)(.{4,})$/.test(val)
-       }*/
-    },
+       }*!/
+    },*/
     methods: {
       onSubmit: function (e) {
         // validate manually
         var self = this
         this.$validate(function () {
           if (self.$validationSet.invalid) {
-            console.log(self.$validationSet.invalid)
+            console.log('不添加商品')
             e.preventDefault()
           } else {
-            console.log(self.$validationSet.invalid)
+            console.log('添加商品')
             self.createNew()
           }
         })
@@ -370,7 +383,7 @@
         if(this.createList.use_bill_of_material == false){
           materials = []
           this.rederSetGoods = ''
-          var url = requestUrl + '/backend-system/product/product'
+          var url = requestUrl + '/backend-system/product/product/' + self.id
           var data ={
             category_id: self.createList.category_id,
             product_type: self.createList.product_type,
@@ -392,15 +405,16 @@
             use_bill_of_material: self.createList.use_bill_of_material,
             materials: materials
           }
-          postDataToApi( url,data,function(response) {
+          putDataToApi( url,data,function(response) {
             window.location.href = '?#!/admin/setting'
           })
+//          启用BOM单
         } else {
           $.each(materials, function (index, val) {
             if(val.value == undefined || val.unit == undefined){
               alert('请检查耗量或者单位是否填写完整！')
             } else {
-              var url = requestUrl + '/backend-system/product/product'
+              var url = requestUrl + '/backend-system/product/product/' + self.id
               var data ={
                 category_id: self.createList.category_id,
                 product_type: self.createList.product_type,
@@ -422,7 +436,7 @@
                 use_bill_of_material: self.createList.use_bill_of_material,
                 materials: materials
               }
-              postDataToApi( url,data,function(response) {
+              putDataToApi( url,data,function(response) {
                 window.location.href = '?#!/admin/setting'
               })
             }

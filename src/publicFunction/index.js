@@ -191,3 +191,19 @@ export function  postDataToApi (url, data, callback, callbackErr) {
       console.log(err)
     })
 }
+//  put提交数据的方法
+export function  putDataToApi (url, data, callback, callbackErr) {
+  var cur = new Vue()
+  cur.$http({
+      url: url,
+      method: 'put',
+      data: data,
+      headers: {'X-Overpowered-Token': token}
+    })
+    .then(function (response) {
+      callback && callback(response)
+    }, function (err) {
+      callbackErr && callbackErr(err)
+      console.log(err)
+    })
+}
