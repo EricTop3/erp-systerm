@@ -81,6 +81,10 @@ Vue.validator('password', function (val) {
 Vue.validator('phone', function (val) {
   return /^1[3|4|5|7|8][0-9]{9}$/.test(val)
 })
+// 验证非零的正整数
+Vue.validator('number', function (val) {
+  return /^[0-9]*$/.test(val)
+})
 // 创建一个路由器实例
 // 创建实例时可以传入配置参数进行定制，为保持简单，这里使用默认配置
 var router = new VueRouter(
