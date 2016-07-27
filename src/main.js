@@ -63,6 +63,7 @@ import AdminInstock from 'components/admin/instock/InStock'
 import AdminInstockInventory from 'components/admin/instock/AdminInstockInventory'
 import AdminInstockDifference from 'components/admin/instock/AdminInstockDifference'
 import AdminInstockDispatching from 'components/admin/instock/AdminInstockDispatching'
+import AdminCreateOutInstock from 'components/admin/instock/AdminCreateOutInstock'
 import AdminInstockSale from 'components/admin/instock/AdminInstockSale'
 import AdminInstockApply from 'components/admin/instock/AdminInstockApply'
 import AdminInstockProduction from 'components/admin/instock/AdminInstockProduction'
@@ -276,6 +277,9 @@ router.map({
   },
   '/admin/instock/dispatching': {
     component: AdminInstockDispatching
+  },
+  '/admin/instock/createOutInstock': {
+    component: AdminCreateOutInstock
   },
   '/admin/instock/sale': {
     component: AdminInstockSale
