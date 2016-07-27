@@ -310,9 +310,10 @@
         var self = this
         this.$validate(function () {
           if (self.$validationSet.invalid) {
-            e.preventDefault()
             console.log(self.$validationSet.invalid)
+            e.preventDefault()
           } else {
+            console.log(self.$validationSet.invalid)
             self.createNew()
           }
         })
@@ -331,7 +332,31 @@
         if(this.createList.use_bill_of_material == false){
           materials = []
           this.rederSetGoods = ''
-//          console.log(materials)
+          var url = requestUrl + '/backend-system/product/product'
+          var data ={
+            category_id: self.createList.category_id,
+            product_type: self.createList.product_type,
+            sell_type: self.createList.sell_type,
+            name: self.createList.name,
+            code: self.createList.code,
+            sell_status: self.createList.sell_status,
+            base_unit: self.createList.base_unit,
+            base_unit_value: self.createList.base_unit_value,
+            neutral_unit: self.createList.neutral_unit,
+            neutral_unit_value: self.createList.neutral_unit_value,
+            minimal_unit: self.createList.minimal_unit,
+            minimal_unit_value: self.createList.minimal_unit_value,
+            sell_unit: self.createList.sell_unit,
+            production_unit: self.createList.production_unit,
+            safe_stock: self.createList.safe_stock,
+            aruc: self.createList.aruc,
+            apuc: self.createList.apuc,
+            use_bill_of_material: self.createList.use_bill_of_material,
+            materials: materials
+          }
+          postDataToApi( url,data,function(response) {
+            window.location.href = '?#!/admin/setting'
+          })
         } else {
           $.each(materials, function (index, val) {
             if(val.value == undefined || val.unit == undefined){

@@ -25,9 +25,9 @@
             <!--<span class="spanblocks ml10 yzm">1258</span>-->
             <!--</div>-->
             <!--</div>-->
-            <div class="validte_errors">
+            <!--<div class="validte_errors">
               <p v-if="$validation1.password.password">请输入6到18位包含数字和字母的密码</p>
-            </div>
+            </div>-->
             <div class="form-group">
               <div class="col-sm-offset-3 col-sm-9">
                 <button type="submit" class="btn btn-primary btn-lg" @click="loginUpload">登录</button>
