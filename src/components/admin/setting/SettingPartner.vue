@@ -356,7 +356,7 @@
       delete: function (id) {
         console.log(id)
         var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/provider/provider/', id, function (response) {
+        deleteRequest(requestSystemUrl + '/backend-system/provider/provider/' + id, function (response) {
           self.getlistData(1)
         })
       }

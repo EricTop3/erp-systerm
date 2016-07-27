@@ -85,14 +85,15 @@
       <h4 class="modal-title">编辑分类</h4>
     </div>
     <div slot="body">
+      <validator name="validation2">
       <form class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-2 control-label">序号</label>
           <div class="col-sm-10">
             <input type="text" class="form-control" v-model="formData.sort" v-validate:sort="[ 'required' , 'number']">
-            <div v-if="$validation1.sort.touched">
-              <p class="error" v-if="$validation1.sort.required">这是必填字段</p>
-              <p class="error" v-if="$validation1.sort.number">只能填写数字</p>
+            <div v-if="$validation2.sort.touched">
+              <p class="error" v-if="$validation2.sort.required">这是必填字段</p>
+              <p class="error" v-if="$validation2.sort.number">只能填写数字</p>
             </div>
           </div>
         </div>
@@ -100,16 +101,17 @@
           <label class="col-sm-2 control-label">分类</label>
           <div class="col-sm-10">
             <input type="text" class="form-control" placeholder="字数限制6字以内" v-model="formData.display_name" v-validate:name="{required: true , maxlength: 6}">
-            <div v-if="$validation1.name.touched">
-              <p class="error" v-if="$validation1.name.required">这是必填字段</p>
-              <p class="error" v-if="$validation1.name.maxlength">字数限制6字以内</p>
+            <div v-if="$validation2.name.touched">
+              <p class="error" v-if="$validation2.name.required">这是必填字段</p>
+              <p class="error" v-if="$validation2.name.maxlength">字数限制6字以内</p>
             </div>
           </div>
         </div>
       </form>
+        </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmEdit()">保存</button>
+      <button type="button" class="btn btn-primary" @click="EditonSubmit($event)">保存</button>
       <button type="button" class="btn btn-default" @click="editModal=false">取消</button>
     </div>
   </modal>
@@ -254,11 +256,28 @@
         var self = this
         this.$validate(function () {
           if (self.$validation1.invalid) {
+            console.log(self.$validation1.invalid)
             self.$validation1.name.touched = true
             self.$validation1.sort.touched = true
             e.preventDefault()
           } else {
+            console.log(self.$validation1.invalid)
             self.createSubmit()
+          }
+        })
+      },
+//      编辑保存的表单验证
+      EditonSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            console.log(self.$validation2.invalid)
+            self.$validation2.name.touched = true
+            self.$validation2.sort.touched = true
+            e.preventDefault()
+          } else {
+            console.log(self.$validation1.invalid)
+            self.confirmEdit()
           }
         })
       }
