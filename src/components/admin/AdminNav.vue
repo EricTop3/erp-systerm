@@ -30,7 +30,7 @@
          exit: function () {
 //         TODO 未来可能有接口，暂时如此
            window.localStorage.setItem('token',null)
-           window.location.href ='?#!/admin/login'
+           window.location.href ='#!/admin/login'
            window.location.reload()
          }
        }

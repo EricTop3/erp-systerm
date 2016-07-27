@@ -10,9 +10,9 @@ var token =  window.localStorage.getItem('token') ?  window.localStorage.getItem
 export function exchangeData(origindata) {
   if(!(origindata instanceof Array)){
     if(origindata.checked!=undefined){
-      if (origindata.checked === 0) {
+      if (origindata.checked === 1) {
         origindata.checked = '未审核'
-      } else if (origindata.checked === 1) {
+      } else if (origindata.checked === 2) {
         origindata.checked = '已审核'
       } else {
         origindata.checked = '已完成'
@@ -24,9 +24,9 @@ export function exchangeData(origindata) {
   }else{
     $.each(origindata, function (index, val) {
       if (val.checked !== undefined) {
-        if (val.checked === 0) {
+        if (val.checked === 1) {
           val.checked = '未审核'
-        } else if (val.checked === 1) {
+        } else if (val.checked === 2) {
           val.checked = '已审核'
         } else {
           val.checked = '已完成'
@@ -95,12 +95,26 @@ export function exchangeData(origindata) {
 }
 //后台登录方法
 export function adminLogin(loginUrl,data){
+  token = null
   var cur = new Vue()
   cur.$http.post(loginUrl,data).then(function(response){
     var curtoken = response.headers('X-Overpowered-Token-Set')
     window.localStorage.setItem('token', curtoken)
     token =  window.localStorage.getItem('token')
-    window.location.href ='?#!/admin/setting'
+    window.location.href ='#!/admin/setting'
+  },function(err){
+    console.log(err)
+  })
+}
+//前台登录方法
+export function siteLogin(loginUrl,data){
+  token = null
+  var cur = new Vue()
+  cur.$http.post(loginUrl,data).then(function(response){
+    var curtoken = response.headers('X-Overpowered-Token-Set')
+    window.localStorage.setItem('token', curtoken)
+    token =  window.localStorage.getItem('token')
+    window.location.href ='#!/site/order'
   },function(err){
     console.log(err)
   })
@@ -179,13 +193,13 @@ export function  getDataFromApi(url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-       if(err.status === 401){
-         window.location.href = '?#!/admin/login'
-       }
+       //if(err.status === 401){
+       //  window.location.href = '?#!/admin/login'
+       //}
     })
 }
 //  post提交数据的方法
-export function  postDataToApi (url, data, callback) {
+export function  postDataToApi (url, data, callback, error) {
   var cur = new Vue()
   cur.$http({
       url: url,
@@ -196,6 +210,6 @@ export function  postDataToApi (url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-      console.log(err)
+      error && error(err)
     })
 }

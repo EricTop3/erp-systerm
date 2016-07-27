@@ -60,7 +60,7 @@
     compiled: function () {
 //      分类
       var self = this
-      getDataFromApi(requestSystemUrl + '/backend-system/product/category',{},function(response){
+      getDataFromApi(self.categoryUrl,{},function(response){
         self.category = response.data.body.list
       })
 //       获取产品
@@ -87,24 +87,18 @@
       addData: [],
       requestData:{},
       getRenderData: [],
-      goodsListTitle: {
-        'code': '货号',
-        'name': '品名',
-        'sale_amount': '日均销量',
-        'current_stock': '当前库存',
-        'unit': '单位',
-        'unit_specification': '单位规格',
-        'category_name': '商品分类'
-      },
-      url: '',
+      goodsListTitle: {},
+      productUrl: '',
+      categoryUrl: '',
       stockAddGoodModal: false,
       stockAddGoodModalSize: 'modal-lg'
     },
     methods: {
 //     公共产品列表请求
       requestApi: function (data) {
+        console.log(token)
         var self = this
-        getDataFromApi(this.url,data,function(response){
+        getDataFromApi(this.productUrl,data,function(response){
           self.addData = response.data.body.list
           self.page = response.data.body.pagination
         })

@@ -27,7 +27,7 @@
 
       <div style="height:200px; overflow: auto; margin-top: 20px;">
         <!--表格-->
-        <grid :check="true" :data="addData" :columns="secondDataTitle" :is-add-flag.sync="isAdd" :check-all.sync="addDataCheckAll"
+        <grid :check="true" :data="secondData" :columns="secondDataTitle" :is-add-flag.sync="isAdd" :check-all.sync="secondDataCheckAll"
               v-on:change-add-operate="changeOperate" v-on:change-all-operate="changeAllOperate"></grid>
       </div>
     </div>
@@ -54,13 +54,13 @@
       var self = this
       var url = this.url
       getDataFromApi(url,{},function(response){
-        self.firstData = response.data.body
+        self.firstData = response.data.body.list
       })
     },
     props: {
       instroduceDataModal: false,
       instroduceDataModalSize: 'modal-sm',
-      addData: [],
+      secondData: [],
       firstDataTitle: {
         code: '配送出库单号',
         store_name: '调出仓库',
@@ -79,7 +79,7 @@
         unit_specification: '单位规格'
       },
       secondData: [],
-      url: requestUrl + '/front-system/store/resource',
+      url: '',
     },
     events: {
 //    绑定翻页事件
@@ -91,27 +91,27 @@
     methods: {
 //      单选上面表格加载下面数据
       change: function (currentId, currentObjCheck) {
+        var self = this
         var fetchedData = []
 //    根据当前id获取产品
-        this.$http({
-          url: this.url + "/" + currentId,
-          method: 'get'
-        }).then(function (response) {
+        getDataFromApi(this.url + "/" + currentId,{},function(response){
           $.each(response.data.body.list,function(index,val){
             if(val.store_distribution_id ===currentId){
               val.store_distribution_id  ===  '123456'
             }
           })
-          this.secondData = response.data.body.list
-          fetchedData = this.secondData
+          self.secondData = response.data.body.list
+          console.log(self.secondData)
+          console.log()
+          fetchedData = self.secondData
           var firtElem = fetchedData[0]
           var lastElem = fetchedData[fetchedData.length - 1]
           var start = 0
           var end = 0
           if (currentObjCheck) {
-            this.addData = this.addData.concat(fetchedData)
+            self.secondData = self.secondData.concat(fetchedData)
           } else {
-            $.each(this.addData, function (index, val) {
+            $.each(self.secondData, function (index, val) {
               if (_.isEqual(val, firtElem)) {
                 start = index
               }
@@ -119,10 +119,8 @@
                 end = index
               }
             })
-            this.addData.splice(start, end - start + 1)
+            self.secondData.splice(start, end - start + 1)
           }
-        }, function (err) {
-          console.log(err)
         })
       },
 //      全选上面表格加载下面数据
@@ -131,27 +129,20 @@
         if (checkAll) {
           $.each(this.firstData, function (index, val) {
             var currentId = val.id
-            console.log(currentId)
-            self.$http({
-              url: requestUrl + '/front-system/store/resource/' + currentId + '/detail',
-              method: 'get'
-            }).then(function (response) {
-              self.addData = self.addData.concat(response.data.body.list)
-              console.log(self.addData)
-            }, function (err) {
-              console.log(err)
+            getDataFromApi(self.url+'/'+currentId,{},function(response){
+              self.secondData = self.secondData.concat(response.data.body.list)
             })
           })
           this.isAdd = this.isAddFlag
         } else {
           this.isAdd = false
-          this.addData = []
+          this.secondData = []
         }
       },
 //      下面表格数据添加全部商品添加
       changeAllOperate: function (checkAll) {
         this.isAddFlag = checkAll
-        var goodslist = this.addData
+        var goodslist = this.secondData
         $.each(goodslist, function (index, val) {
           if (checkAll) {
             val.checked = true
@@ -162,7 +153,7 @@
       },
 //     下面表格数据单选选择商品
       changeOperate: function (currentId, currentObjCheck) {
-        var goodslist = this.addData
+        var goodslist = this.secondData
         if (currentObjCheck) {
           $.each(goodslist, function (index, val) {
             if (val.id === currentId) {
@@ -188,7 +179,7 @@
         isAddFlag: false,
         page: [],
         citeCheckAll: false,
-        addDataCheckAll: false,
+        secondDataCheckAll: false,
       }
     }
   }

@@ -4,28 +4,38 @@
       <h1 style=" color: #fff; margin-bottom: 50px;">HEY  CAKE门店管理系统</h1>
       <form class="form-inline">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="用户名">
+          <input type="text" class="form-control" placeholder="用户名" v-model="username">
         </div>
         <div class="form-group ml10">
-          <input type="text" class="form-control" placeholder="密码">
+          <input type="text" class="form-control" placeholder="密码" v-model="password">
         </div>
-        <div class="form-group ml10">
-          <input type="text" class="form-control" placeholder="验证码" style="width: 100px;;">
-        </div>
-        <button type="submit" class="btn btn-info ml10">登录</button>
+        <!--<div class="form-group ml10">-->
+          <!--<input type="text" class="form-control" placeholder="验证码" style="width: 100px;;">-->
+        <!--</div>-->
+        <button type="submit" class="btn btn-info ml10" @click="uploadLogin">登录</button>
       </form>
     </div>
   </div>
 </template>
 <script>
+  import {requestUrl,postDataToApi,siteLogin} from '../../../publicFunction/index'
   export default {
+    ready: function () {
+    },
+    methods:  {
+      uploadLogin: function () {
+        var loginUrl =  requestUrl + '/front-system/auth/login'
+        var data = {
+          account: this.username,
+          password: this.password
+        }
+        siteLogin(loginUrl,data)
+      }
+    },
     data: function () {
       return {
-        // note: changing this line won't causes changes
-        // with hot-reload because the reloaded component
-        // preserves its current state and we are modifying
-        // its initial state.
-        msg: 'this is login vue'
+        username: '',
+        password: ''
       }
     }
   }
