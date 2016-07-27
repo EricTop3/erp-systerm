@@ -62,27 +62,37 @@
       <h4 class="modal-title">新建合作方</h4>
     </div>
     <div slot="body">
+      <validator name="validation1">
       <form action="" method="post" class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">合作形式</label>
           <div class="col-sm-8">
-            <select class="form-control" v-model="postData.type">
+            <select class="form-control" v-model="postData.type" v-validate:type="{required: true}">
               <option value="">请选择</option>
               <option value="1">供应商</option>
               <option value="2">合作工厂</option>
             </select>
+            <div v-if="$validation1.type.touched">
+              <p class="error" v-if="$validation1.type.required">请选择供应商或合作工厂</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">编号</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code">
+            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code" v-validate:code="{required: true}">
+            <div v-if="$validation1.code.touched">
+              <p class="error" v-if="$validation1.code.required">这是必填项</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">公司全称</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name">
+            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name" v-validate:name="{required: true}">
+            <div v-if="$validation1.name.touched">
+              <p class="error" v-if="$validation1.name.required">这是必填项</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -118,7 +128,7 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">联系人手机</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_phone">
+            <input type="text" class="form-control" placeholder="选填1" v-model="postData.contact_phone">
           </div>
         </div>
         <div class="form-group">
@@ -128,9 +138,10 @@
           </div>
         </div>
       </form>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="createSubmit()">提交</button>
+      <button type="button" class="btn btn-primary" @click="onSubmit($event)">提交</button>
     </div>
   </modal>
   <!--模态框HTML-->
@@ -143,27 +154,37 @@
       <h4 class="modal-title">编辑合作方</h4>
     </div>
     <div slot="body">
+      <validator name="validation2">
       <form action="" method="post" class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">合作形式</label>
           <div class="col-sm-8">
-            <select class="form-control" v-model="postData.type">
+            <select class="form-control" v-model="postData.type" v-validate:type="{required: true}">
               <option value="">请选择</option>
               <option value="1">供应商</option>
               <option value="2">合作工厂</option>
             </select>
+            <div v-if="$validation2.type.touched">
+              <p class="error" v-if="$validation2.type.required">请选择供应商或合作工厂</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">编号</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code">
+            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code" v-validate:code="{required: true}">
+            <div v-if="$validation2.code.touched">
+              <p class="error" v-if="$validation2.code.required">这是必填项</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">公司全称</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name">
+            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name" v-validate:name="{required: true}">
+            <div v-if="$validation2.name.touched">
+              <p class="error" v-if="$validation2.name.required">这是必填项</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -209,9 +230,10 @@
           </div>
         </div>
       </form>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmEdit()">提交</button>
+      <button type="button" class="btn btn-primary" @click="editonSubmit($event)">提交</button>
     </div>
   </modal>
   <!--模态框HTML-->
@@ -288,7 +310,7 @@
       </form>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="">提交</button>
+      <button type="button" class="btn btn-primary" @click="viewModal=false">关闭</button>
     </div>
   </modal>
   <!--模态框HTML-->
@@ -332,8 +354,9 @@
       },
 //   确认删除
       delete: function (id) {
+        console.log(id)
         var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/provider/provider/' + id, {}, function (response) {
+        deleteRequest(requestSystemUrl + '/backend-system/provider/provider/' + id, function (response) {
           self.getlistData(1)
         })
       }
@@ -452,6 +475,34 @@
           this.viewModal = true
         }, function (err) {
           console.log(err)
+        })
+      },
+//      表单验证
+      onSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation1.invalid) {
+            self.$validation1.type.touched = true
+            self.$validation1.code.touched = true
+            self.$validation1.name.touched = true
+            e.preventDefault()
+          } else {
+            self.createSubmit()
+          }
+        })
+      },
+//      编辑保存表单验证
+      editonSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            self.$validation2.type.touched = true
+            self.$validation2.code.touched = true
+            self.$validation2.name.touched = true
+            e.preventDefault()
+          } else {
+            self.confirmEdit()
+          }
         })
       }
     },

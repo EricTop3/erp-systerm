@@ -63,6 +63,7 @@ import AdminInstock from 'components/admin/instock/InStock'
 import AdminInstockInventory from 'components/admin/instock/AdminInstockInventory'
 import AdminInstockDifference from 'components/admin/instock/AdminInstockDifference'
 import AdminInstockDispatching from 'components/admin/instock/AdminInstockDispatching'
+import AdminCreateOutInstock from 'components/admin/instock/AdminCreateOutInstock'
 import AdminInstockSale from 'components/admin/instock/AdminInstockSale'
 import AdminInstockApply from 'components/admin/instock/AdminInstockApply'
 import AdminInstockProduction from 'components/admin/instock/AdminInstockProduction'
@@ -83,6 +84,10 @@ Vue.validator('password', function (val) {
 // 手机号码验证
 Vue.validator('phone', function (val) {
   return /^1[3|4|5|7|8][0-9]{9}$/.test(val)
+})
+// 验证非零的正整数
+Vue.validator('number', function (val) {
+  return /^[0-9]*$/.test(val)
 })
 // 创建一个路由器实例
 // 创建实例时可以传入配置参数进行定制，为保持简单，这里使用默认配置
@@ -272,6 +277,9 @@ router.map({
   },
   '/admin/instock/dispatching': {
     component: AdminInstockDispatching
+  },
+  '/admin/instock/createOutInstock': {
+    component: AdminCreateOutInstock
   },
   '/admin/instock/sale': {
     component: AdminInstockSale
