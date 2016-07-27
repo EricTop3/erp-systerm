@@ -43,6 +43,7 @@ import CreateNewPurchaseDelivery from 'components/admin/purchase/CreateNewPurcha
 import PurchaseDetail from 'components/admin/purchase/PurchaseDetail'
 import Setting from 'components/admin/setting/Setting'
 import SettingCreateNew from 'components/admin/setting/SettingCreateNew'
+import SettingEditProduct from 'components/admin/setting/SettingEditProduct'
 import SettingCategory from 'components/admin/setting/SettingCategory'
 import SettingCoupon from 'components/admin/setting/SettingCoupon'
 import SettingPartner from 'components/admin/setting/SettingPartner'
@@ -214,6 +215,9 @@ router.map({
   },
   '/admin/setting/commodity/createNew': {
     component: SettingCreateNew
+  },
+  '/admin/setting/settingEditProduct/:queryId': {
+    component: SettingEditProduct
   },
   '/admin/setting/category': {
     component: SettingCategory

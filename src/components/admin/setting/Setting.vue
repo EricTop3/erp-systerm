@@ -138,6 +138,7 @@
       </div>
     </div>
   </div>
+
   <!--模态框HTML-->
    <modal :show.sync="priceModal" :modal-size="priceModalSize">
       <div slot="header">
@@ -175,9 +176,10 @@
     },
     events: {
       delete: function (id) {
-        var url = requestSystemUrl + '/backend-system/product/product'
-        deleteRequest(url,id,function(response) {
-          console.log('delete')
+        var url = requestSystemUrl + '/backend-system/product/product/' + id
+        console.log(id)
+        deleteRequest(url,function(response) {
+          console.log(id)
         })
       },
       pagechange: function (currentpage) {
@@ -217,10 +219,12 @@
 //    编辑
       edit: function (event) {
         var curId = Number($(event.currentTarget).parents("tr").attr('id'))
-        getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
+        console.log(curId)
+        /*getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
           console.log(responbse)
-        })
-//        window.location.href = '?#!/admin/setting/createNew'
+        })*/
+        window.location.href = '?#!/admin/setting/settingEditProduct/' + curId
+
       },
 //    搜索
       searchMethod: function (){
