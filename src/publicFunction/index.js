@@ -80,16 +80,10 @@ export function exchangeData(origindata) {
             val.product_type ="工厂产成品"
             break
           case 2:
-            val.product_type =" 委外产成品"
+            val.product_type =" 原材料"
             break
           case 3:
             val.product_type =" 门店产成品"
-            break
-          case 4:
-            val.product_type =" 原材料商品"
-            break
-          case 5:
-            val.product_type =" 套餐商品"
             break
         }
         switch (val.sell_type){
@@ -112,9 +106,6 @@ export function exchangeData(origindata) {
             break
           case 1:
             val.sell_status = '上架中'
-            break
-          case 2:
-            val.sell_status = '非卖品'
             break
         }
       }
@@ -239,5 +230,21 @@ export function  postDataToApi (url, data, callback, error) {
       callback && callback(response)
     }, function (err) {
       error && error(err)
+    })
+}
+//  put提交数据的方法
+export function  putDataToApi (url, data, callback, callbackErr) {
+  var cur = new Vue()
+  cur.$http({
+    url: url,
+    method: 'put',
+    data: data,
+    headers: {'X-Overpowered-Token': token}
+  })
+    .then(function (response) {
+      callback && callback(response)
+    }, function (err) {
+      callbackErr && callbackErr(err)
+      console.log(err)
     })
 }
