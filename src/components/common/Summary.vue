@@ -64,6 +64,8 @@
             <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
             <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
             <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
+            <!--库存配送出库数量-->
+            <td v-if="entry.send_stock!=undefind">{{entry.send_stock}}</td>
             <td>
               <slot name="operate">
                 <list-delete :delete-data.sync="tableData" ></list-delete>

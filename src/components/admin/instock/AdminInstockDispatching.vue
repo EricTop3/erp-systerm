@@ -49,23 +49,19 @@
             <br/>
             <div class="form-group ml10 mt20">
               <label>配送时间段</label>
-              <input type="text" class="form-control date_picker" placeholder="开始时间"
-                     v-model="searchData.start_receive_time"> -
-              <input type="text" class="form-control date_picker" placeholder="结束时间"
-                     v-model="searchData.end_receive_time">
+              <date-picker :value.sync="time.startTime"></date-picker> -
+              <date-picker :value.sync="time.endTime"></date-picker>
             </div>
             <button type="submit" class="btn btn-primary mt20" @click="getlistData(1)">搜索</button>
             <span class="btn btn-warning mt20" @click="cancelSearch()">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span>
+
+            <span class="btn fr btn-info">导出excel</span>
+            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span>
           </form>
         </div>
 
         <!-- 表格 -->
-        <grid :data="listdata" :columns="gridColumns" :operate="gridOperate"></grid>
-        <!--分页-->
-        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-              :last-page="page.last_page" v-if="listdata.length > 0">
-        </page>
+        <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
       </div>
     </div>
   </div>
@@ -74,43 +70,94 @@
 </style>
 <script>
   import $ from 'jquery'
-  import AdminNav from '../AdminNav'
-  import LeftInstock from '../common/LeftInstock'
   import Grid from '../../common/Grid'
-  import Modal from '../../common/Modal'
   import Page from '../../common/Page'
-  import ErrorTip from '../../common/ErrorTip'
+  import AdminNav from '../AdminNav'
+  import Modal from '../../common/Modal'
+  import Summary from '../../common/Summary'
+  import DatePicker from  '../../common/DatePicker'
+  import LeftInstock from '../common/LeftInstock'
   import {
     requestUrl,
     requestSystemUrl,
-    token,
-    searchRequest,
-    exchangeData,
-    postDataToApi,
     getDataFromApi,
-    deleteRequest
-  } from '../../../publicFunction/index'
+    token,
+    exchangeData,
+    searchRequest,
+    deleteRequest,
+    checkRequest,
+    finishRequest,
+    changeStatus} from '../../../publicFunction/index'
   export default{
     components: {
-      AdminNav: AdminNav,
-      LeftInstock: LeftInstock,
       Grid: Grid,
-      Modal: Modal,
       Page: Page,
-      ErrorTip: ErrorTip
+      Modal: Modal,
+      AdminNav: AdminNav,
+      Summary: Summary,
+      DatePicker: DatePicker,
+      LeftInstock: LeftInstock
     },
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.getlistdata(currentpage)
+        this.$http({
+          url: requestUrl + '/backend-system/stock/distribution',
+          data: {
+            page: currentpage
+          },
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.page = response.data.body.pagination
+          this.list = response.data.body.list
+          var self = this
+          changeStatus(this.list)
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//     删除请求
+      deleteFromApi: function (id) {
+        var self = this
+        deleteRequest(requestSystemUrl + '/backend-system/stock/distribution/'+ id,function(response){
+          console.log('deleted')
+        })
+      },
+//     審核请求
+      checkFromApi: function (id) {
+        var self = this
+        checkRequest(requestSystemUrl + '/backend-system/stock/distribution/' + id + '/checked',function(response){
+          console.log('checked')
+        })
+      },
+//     完成請求
+      finishFromApi: function (id) {
+        var self = this
+        finishRequest(requestSystemUrl + '/backend-system/stock/distribution/'+ id +'/finished',function(response){
+          console.log('finished')
+        })
+      },
+//    查看详情
+      gotoDetail: function (id){
+//        window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
       }
     },
     ready: function () {
-      this.getlistData(1)
+      this.listData(1)
     },
     methods: {
 //      列表数据渲染
-      getlistData: function (page) {
+      listData: function (page) {
+        var self = this
+        var url = requestUrl + '/backend-system/stock/distribution'
+        getDataFromApi(url,{},function(response){
+          self.list = response.data.body.list
+          self.page = response.data.body.pagination
+          changeStatus(self.list)
+        })
+      },
+/*      getlistData: function (page) {
         var self = this
         var url = requestSystemUrl + '/backend-system/stock/distribution'
         var data = {
@@ -131,11 +178,29 @@
       cancelSearch: function () {
         this.searchData = {}
         this.getlistData(1)
-      }
+      }*/
     },
     data: function () {
       return {
+        page: [],
+        list: [],
+        time:{
+          startTime:'',
+          startTime1:'',
+          endTime:'',
+          endTime1:'',
+        },
         gridColumns: {
+          document_number: '配送单号',
+          checked: '审核状态',
+          a: '出货仓库',
+          b: '调入仓库',
+          creator_name: '制单人',
+          auditor_name: '审核人',
+          c: '配送时间',
+          d: '配送数量'
+        },
+        /*gridColumns: {
           document_number: "配送单号",
           checked: "审核状态",
           warehouse_name: "调入仓库",
@@ -143,10 +208,9 @@
           auditor_name: "审核人",
           operated_at: "配送时间",
           amount: "配送数量"
-        },
-        gridOperate: false,
-        listdata: [],
-        page: [],
+        },*/
+//        gridOperate: false,
+//        listdata: [],
         searchData: {
           document_number: '',
           checked: 0,
