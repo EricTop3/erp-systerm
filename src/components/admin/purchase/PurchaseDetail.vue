@@ -28,7 +28,7 @@
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -54,7 +54,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          exchangeData(this.list)
+          changeStatus(this.list)
         }, function (err) {
           console.log(err)
         })

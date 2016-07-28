@@ -15,7 +15,7 @@
           <form class="form-inline">
             <div class="form-group">
               <label>单号</label>
-              <input type="text" class="form-control" placeholder="">
+              <input type="text" class="form-control" placeholder="请输入采购单号">
             </div>
             <div class="form-group  ml10">
               <label>审核状态</label>
@@ -32,8 +32,8 @@
             <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
             <div class="form-group ml10">
               <label>采购时间段</label>
-              <input type="text" class="form-control date_picker" placeholder="开始时间"> -
-              <input type="text" class="form-control date_picker" placeholder="结束时间">
+              <date-picker :value.sync="time.startTime"></date-picker> -
+              <date-picker :value.sync="time.endTime"></date-picker>
             </div>
             <div class="form-group ml10">
               <label>供应商</label>
@@ -43,8 +43,8 @@
             </div>
             <div class="form-group mt20">
               <label>收货时间段</label>
-              <input type="text" class="form-control date_picker" placeholder="开始时间"> -
-              <input type="text" class="form-control date_picker" placeholder="结束时间">
+              <date-picker :value.sync="time.startTime1"></date-picker> -
+              <date-picker :value.sync="time.endTime1"></date-picker>
             </div>
             <button type="submit" class="btn btn-primary  mt20">搜索</button>
             <span class="btn btn-warning  mt20">撤销搜索</span>
@@ -68,7 +68,7 @@
   import Summary from '../../common/Summary'
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -93,7 +93,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          exchangeData(this.list)
+          changeStatus(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -134,7 +134,7 @@
         getDataFromApi(url,{},function(response){
           self.list = response.data.body.list
           self.page = response.data.body.pagination
-          exchangeData(self.list)
+          changeStatus(self.list)
         })
       }
     },
@@ -142,6 +142,12 @@
       return {
         page: [],
         list: [],
+        time:{
+          startTime:'',
+          startTime1:'',
+          endTime:'',
+          endTime1:'',
+        },
         gridColumns: {
           document_number: '采购单号',
           checked: '状态',

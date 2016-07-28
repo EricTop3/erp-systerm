@@ -30,12 +30,21 @@
           </form>
         </div>
         <!--表格 -->
-        <summary :table-header="gridColumns" :summary-data="renderstockGoods" :table-data="renderstockGoods" :page="page"  :tab-flag="tabFlag"></summary>
+        <summary
+          :table-header="gridColumns"
+          :summary-data="renderstockGoods"
+          :table-data="renderstockGoods"
+          :page="page"
+          :tab-flag="tabFlag"
+          :operate="true"
+        >
+        </summary>
       </div>
     </div>
   </div>
   <!--引入原始数据-->
   <introduce-data
+    :title="origenData.title"
     :url="origenData.dataUrl"
     :instroduce-data-modal.sync='modal.parentIntroModal'
     :instroduce-data-modal-size="modal.parentIntroModalSize"
@@ -98,9 +107,6 @@
 //      添加商品确认增加
       confirmAdd: function () {
         var self = this
-//        if(self.origenData.secondData.length>0){
-//          self.stockGoods.concat(self.origenData.secondData)
-//        }
         $.each(self.stockGoods, function (index, val) {
           if (val.choice && !val.again) {
             val.again = true
@@ -113,7 +119,45 @@
           val.amount = ''
         })
       },
-
+//      引入原始数据添加商品
+      includeConfirmAdd: function () {
+        var self = this
+        var detailArrayFromApi = []
+        $.each(this.origenData.secondData,function(index,val){
+          var obj = {}
+          obj.again = val.again
+          obj.choice = val.choice
+          obj.id = val.id
+          obj.rmain_reference_value = val.main_reference_value
+          obj.name = val.item_name
+          obj.code = val.item_code
+          obj.specification_unit =val.unit_specification
+          obj.production_unit_name = val.unit_name
+          detailArrayFromApi.push(obj)
+        })
+        console.log(detailArrayFromApi)
+        this.stockGoods = this.stockGoods.concat(detailArrayFromApi)
+        $.each(self.stockGoods, function (index, val) {
+          if (val.choice && !val.again) {
+            val.again = true
+            self.dataArray.push(val)
+          }
+        })
+        this.renderstockGoods = self.dataArray
+        $.each(this.renderstockGoods,function(index,val){
+          val.price =  ''
+          val.amount = ''
+        })
+      },
+//     删除商品
+      deleteFromApi: function (id) {
+        var self = this
+        $.each(this.renderstockGoods, function (index, val) {
+          if (val.id === id) {
+            self.renderstockGoods.splice(index, 1)
+          }
+        })
+      },
 //      分页
       pagechange: function (currentpage) {
         this.current_page = currentpage
@@ -205,9 +249,10 @@
           }
         },
         origenData: {
+          title: '原始门店要货单',
           dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
           firstDataTitle: {
-            "document_number": "配送出库单号",
+            "document_number": "货单号",
             "store_name": "要货仓库",
             "amount": "要货数量",
             "created_at": "配送日期",
@@ -218,7 +263,7 @@
           secondDataTitle: {
             "item_code": "货号",
             "item_name": "品名",
-            "main_reference_value":"采购数量",
+            "main_reference_value":"要货数量",
             "unit_name": "单位",
             "unit_specification": "单位规格"
           },
