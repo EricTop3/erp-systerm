@@ -19,9 +19,9 @@
             </div>
             <div class="form-group">
               <label>收货仓库</label>
-              <select class="form-control" v-model="selectedSupplier">
+              <select class="form-control" v-model="selectedAlotStock">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in supplierList">{{item.name}}</option>
+                <option :value="item.id" v-for="item in alotStock">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group">
@@ -89,7 +89,7 @@
   import Summary from '../../common/Summary'
   import IntroduceData  from '../../common/IntroduceData'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestSystemUrl, token, searchRequest,getDataFromApi,postDataToApi} from '../../../publicFunction/index'
+  import {requestSystemUrl, requestUrl,token, searchRequest,getDataFromApi,postDataToApi} from '../../../publicFunction/index'
   export default{
     components:{
       AdminNav: AdminNav,
@@ -107,6 +107,10 @@
       var self = this
 //    供应商请求接口
       var url = requestSystemUrl + '/backend-system/provider/provider'
+//    获取仓库名称
+      getDataFromApi( requestUrl + '/backend-system/warehouse-minimal-list',{},function(response){
+        self.alotStock = response.data.body.list
+      })
 //    获取供应商列表
       getDataFromApi(url,{},function(response){
         self.supplierList = response.data.body.list
@@ -232,6 +236,8 @@
         selectedWarehouse:'',
         note: '',
         supplierList: [],
+        selectedAlotStock: '',
+        alotStock:  [],
         tabFlag: true,
         gridColumns: {
           code: "货号",
