@@ -15,18 +15,21 @@
           <form class="form-inline">
             <div class="form-group">
               <label>单号</label>
-              <input type="text" class="form-control" placeholder="请输入采购单号">
+              <input type="text" class="form-control" placeholder="请输入采购单号" v-model="search.code">
             </div>
             <div class="form-group  ml10">
               <label>审核状态</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="search.selectedStatus">
+                <option value="">请选择</option>
+                <option value="0">未审核</option>
+                <option value="1">已审核</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>制单人</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="search.selectedMaker">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in search.orderMaker" >{{item.name}}</option>
               </select>
             </div>
             <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
@@ -37,8 +40,9 @@
             </div>
             <div class="form-group ml10">
               <label>供应商</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="search.selectedSuppier">
+                <option value="">请选择</option>
+                <option :value="itme.id" v-for="item in search.providerList">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group mt20">
@@ -46,8 +50,8 @@
               <date-picker :value.sync="time.startTime1"></date-picker> -
               <date-picker :value.sync="time.endTime1"></date-picker>
             </div>
-            <button type="submit" class="btn btn-primary  mt20">搜索</button>
-            <span class="btn btn-warning  mt20">撤销搜索</span>
+            <span type="submit" class="btn btn-primary  mt20" @click="searchMethod">搜索</span>
+            <span class="btn btn-warning  mt20" @click="cancelSearch">撤销搜索</span>
           </form>
         </div>
         <!-- 表格 -->
@@ -125,18 +129,40 @@
       }
     },
     ready: function () {
-      this.listData(1)
+      var self = this
+//    获取制单人
+      getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
+        self.search.orderMaker = response.data.body.list
+      })
+//    获取供应商
+      getDataFromApi(requestUrl + '/backend-system/provider/provider',{},function(response){
+        self.search.providerList = response.data.body.list
+      })
+      this.listData({})
     },
     methods: {
-      listData: function (page) {
+      listData: function (data) {
         var self = this
         var url = requestUrl + '/backend-system/purchase/purchase'
-        getDataFromApi(url,{},function(response){
+        getDataFromApi(url,data,function(response){
           self.list = response.data.body.list
           self.page = response.data.body.pagination
           changeStatus(self.list)
         })
-      }
+      },
+      searchMethod: function(){
+        var data = {
+          created_id: this.search.selectedMaker,
+          document_number: this.search.code,
+          checked: this.search.selectedStatus,
+          start_time: this.time.startTime,
+          provider_id: this.search.selectedSuppier,
+          end_time: this.time.endTime,
+          start_receive_time: this.time.startTime1,
+          end_receive_time: this.time.endTime1,
+        }
+        this.listData(data)
+      },
     },
     data: function () {
       return {
@@ -147,6 +173,14 @@
           startTime1:'',
           endTime:'',
           endTime1:'',
+        },
+        search: {
+          selectedStatus: '',
+          selectedMaker: '',
+          selectedSuppier: '',
+          code: '',
+          orderMaker: [],
+          providerList: [],
         },
         gridColumns: {
           document_number: '采购单号',
