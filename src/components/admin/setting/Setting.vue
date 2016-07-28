@@ -69,7 +69,12 @@
           </div>
         </grid>
         <!-- 翻页 -->
-        <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page' v-if="productList.length>0"></page>
+        <page
+          :total='page.total'
+          :current.sync='page.current_page'
+          :display='page.per_page'
+          :last-page='page.last_page' v-if="productList.length>0">
+        </page>
       </div>
     </div>
   </div>

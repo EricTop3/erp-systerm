@@ -1,13 +1,192 @@
 <template>
   <admin-nav></admin-nav>
-  <h2>this is retail body</h2>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-2" role="navigation">
+        <left-setting></left-setting>
+        <h2>this is retail body</h2>
+      </div>
+      <div class="col-lg-10">
+        <!-- 路径导航 -->
+        <ol class="breadcrumb">
+          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：设置首页</li>
+          <li class="active">优惠设置</li>
+        </ol>
+
+        <!-- 页头 -->
+        <div class="page-header">
+          <span>促销优惠设置</span>
+          <span class="btn btn-info spanblocks" data-toggle="modal" data-target="#sale-add-templ">新增促销</span>
+          <div class="clearboth"></div>
+        </div>
+
+        <!-- 表格 -->
+        <table class="table table-striped table-border table-hover">
+          <thead>
+          <tr class="text-center">
+            <td class="text-left">促销名称</td>
+            <td>促销规则</td>
+            <td>开始时间</td>
+            <td>结束时间</td>
+            <td>操作</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center">
+            <td class="text-left">满299元减88元</td>
+            <td>打折 系数 88</td>
+            <td>2016-06-01</td>
+            <td>2016-06-30</td>
+            <td>
+              <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#sale-edit-templ">编辑</span>
+              <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#sale-del-templ">删除</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <!-- 翻页 -->
+        <nav class="text-right">
+          <ul class="pagination">
+            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+
+  <!--模态框-新增促销-->
+  <div class="modal fade" id="sale-add-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">新增促销</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-sm-3 control-label">开始时间</label>
+              <div class="col-sm-9">
+                <input type="text"class="form-control date_picker" placeholder="开始时间">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">结束时间</label>
+              <div class="col-sm-9">
+                <input type="text"class="form-control date_picker" placeholder="结束时间">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">促销名称</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" placeholder="如：现金抵扣卷100元">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">促销规则</label>
+              <div class="col-sm-9 form-inline">
+                <select class="form-control" style="width: 114px;">
+                  <option>抵扣</option>
+                </select>
+                <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary">提交</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--模态框HTML-->
+
+  <!--模态框-编辑促销-->
+  <div class="modal fade" id="sale-edit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">编辑促销</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-sm-3 control-label">开始时间</label>
+              <div class="col-sm-9">
+                <input type="text"class="form-control date_picker" placeholder="开始时间" value="2016-06-01">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">结束时间</label>
+              <div class="col-sm-9">
+                <input type="text"class="form-control date_picker" placeholder="结束时间"  value="2016-06-30">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">促销名称</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" placeholder="如：现金抵扣卷100元" value="现金抵扣卷100元">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">促销规则</label>
+              <div class="col-sm-9 form-inline">
+                <select class="form-control" style="width: 114px;">
+                  <option>抵扣</option>
+                </select>
+                <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" >
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary">提交</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--模态框HTML-->
+
+  <!--模态框-删除-->
+  <div class="modal fade" id="sale-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">删除</h4>
+        </div>
+        <div class="modal-body">
+          <h4>删除弹出框！</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--模态框HTML-->
+
 </template>
 <style>
 </style>
 <script>
   import AdminNav from '../AdminNav'
+  import LeftSetting from '../common/LeftSetting'
   export default{
-    components:{
+    components: {
+      LeftSetting: LeftSetting,
       AdminNav: AdminNav
     }
   }

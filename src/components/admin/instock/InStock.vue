@@ -98,13 +98,13 @@
   import AdminNav from '../AdminNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
-  import leftInstock from '../common/LeftInstock'
+  import LeftInstock from '../common/LeftInstock'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
       AdminNav: AdminNav,
-      leftInstock: leftInstock
+      LeftInstock: LeftInstock
     },
     events: {
 //    绑定翻页事件
