@@ -179,10 +179,14 @@
     },
     events: {
       delete: function (id) {
-        var url = requestSystemUrl + '/backend-system/product/product/' + id
-        console.log(id)
+        var self = this
+        var curId = ''
+        $.each(self.productList, function (index, val) {
+          if(id == val.id){ curId = val.product_id }
+        })
+        var url = requestSystemUrl + '/backend-system/product/product/' + curId
         deleteRequest(url,function(response) {
-          console.log(id)
+          self.getlistData(1)
         })
       },
       pagechange: function (currentpage) {
@@ -212,19 +216,6 @@
           self.page =  response.data.body.pagination
         })
       },
-
-//     获取商品
-      fetchGoods: function (page) {
-        var data ={
-          name: this.search.name,
-          category: this.search.selectCategory,
-          product_type: this.search.selectProductStatus,
-          sell_status: this.search.selectSellStatus,
-          code: this.search.code,
-          sell_type: this.search.selectPriceStatus,
-          page: page
-        }
-      },
 //    编辑
       edit: function (event) {
         var self = this
@@ -235,10 +226,6 @@
             curId = val.product_id
           }
         })
-        console.log(curId)
-        /*getDataFromApi(requestSystemUrl + '/backend-system/product/product',{id: curId},function(response){
-          console.log(responbse)
-        })*/
         window.location.href = '?#!/admin/setting/settingEditProduct/' + curId
       },
 //    搜索
