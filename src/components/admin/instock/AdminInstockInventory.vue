@@ -43,7 +43,9 @@
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
             <span class="btn btn-warning">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr">新建盘点单</span>
+
+            <span class="btn fr btn-info">导出excel</span>
+            <span v-link="{ path:'/admin/instock/createInventory' }" class="btn btn-info spanblocks fr mr10">新建盘点单</span>
           </form>
         </div>
 

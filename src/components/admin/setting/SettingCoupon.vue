@@ -16,8 +16,7 @@
 
         <!-- 页头 -->
         <div class="page-header">
-          <span>促销优惠设置</span>
-          <span class="btn btn-info spanblocks" data-toggle="modal" data-target="#sale-add-templ">新增促销</span>
+          <span class="btn btn-info fr spanblocks" data-toggle="modal" data-target="#sale-add-templ">新增促销</span>
           <div class="clearboth"></div>
         </div>
 
