@@ -66,6 +66,7 @@ import AdminInstockDispatching from 'components/admin/instock/AdminInstockDispat
 import AdminCreateOutInstock from 'components/admin/instock/AdminCreateOutInstock'
 import AdminInstockSale from 'components/admin/instock/AdminInstockSale'
 import AdminInstockApply from 'components/admin/instock/AdminInstockApply'
+import AdminInstockapplyDetail from 'components/admin/instock/AdminInstockapplyDetail'
 import AdminInstockProduction from 'components/admin/instock/AdminInstockProduction'
 import AdminMicroShopOrder from 'components/admin/micro-shop-order/MicroShopOrder'
 import AdminLogin from 'components/admin/login/AdminLogin'
@@ -289,6 +290,9 @@ router.map({
   },
   '/admin/instock/apply': {
     component: AdminInstockApply
+  },
+  '/admin/instock/apply/applyDetail/:queryId': {
+    component: AdminInstockapplyDetail
   },
   '/admin/retail': {
     component: Retail

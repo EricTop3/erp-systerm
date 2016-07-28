@@ -33,18 +33,27 @@
     </thead>
     <tbody>
       <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-        <td v-if="entry.consumable_code">{{entry.consumable_code}}</td>
-        <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
-        <td v-if="entry.name===null">{{entry.name}}</td>
-        <td v-if="entry.amount && editFlag===false">{{entry.amount}}</td>
-        <td v-if="entry.amount && editFlag===true"><count :count="entry.amount"></count></td>
-        <td v-if="entry.number && editFlag===false">{{entry.number}}</td>
-        <td v-if="entry.number && editFlag===true"><count :count="entry.number"></count></td>
-        <td v-if="entry.stock_now!=null">{{entry.stock_now}}</td>
-        <td v-if="entry.stock_system !=null">{{entry.stock_system}}</td>
-        <td v-if="entry.difference_amount!=null">{{entry.difference_amount}}</td>
-        <td>{{entry.unit}}</td>
-        <td>{{entry.unit_specification}}</td>
+        <!--<td v-if="entry.consumable_code">{{entry.consumable_code}}</td>-->
+        <!--<td v-if="entry.consumable_name">{{entry.consumable_name}}</td>-->
+        <!--<td v-if="entry.name===null">{{entry.name}}</td>-->
+        <!--<td v-if="entry.amount && editFlag===false">{{entry.amount}}</td>-->
+        <!--<td v-if="entry.amount && editFlag===true"><count :count="entry.amount"></count></td>-->
+        <!--<td v-if="entry.number && editFlag===false">{{entry.number}}</td>-->
+        <!--<td v-if="entry.number && editFlag===true"><count :count="entry.number"></count></td>-->
+        <!--<td v-if="entry.stock_now!=null">{{entry.stock_now}}</td>-->
+        <!--<td v-if="entry.stock_system !=null">{{entry.stock_system}}</td>-->
+        <!--<td v-if="entry.difference_amount!=null">{{entry.difference_amount}}</td>-->
+        <!--<td>{{entry.unit}}</td>-->
+        <!--<td>{{entry.unit_specification}}</td>-->
+        <!--库存出库汇总明细-->
+        <td v-if="entry.goods_code!=undefind">{{entry.goods_code}}</td>
+        <td v-if="entry.goods_name!=undefind">{{entry.goods_name}}</td>
+        <td v-if="entry.requisition_amount!=undefind">{{entry.requisition_amount}}</td>
+        <td v-if="entry.distribution_info.amount!=undefind">{{entry.distribution_info.amount}}</td>
+        <td v-if="entry.unit_name!=undefind">{{entry.unit_name}}</td>
+        <td v-if="entry.unit_specification!=undefind">{{entry.unit_specification}}</td>
+        <td v-if="entry.distribution_info.code!=undefind">{{entry.distribution_info.code}}</td>
+        <!---->
       </tr>
     </tbody>
   </table>
