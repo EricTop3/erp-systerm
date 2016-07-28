@@ -383,36 +383,9 @@
           obj['unit'] = val.unit
           materials.push(obj)
         })
-        if(this.createList.use_bill_of_material == false){
-          materials = ''
-          this.rederSetGoods = ''
-          var url = requestUrl + '/backend-system/product/product/' + self.id
-          var data ={
-            category_id: self.createList.category_id,
-            product_type: self.createList.product_type,
-            sell_type: self.createList.sell_type,
-            name: self.createList.name,
-            code: self.createList.code,
-            sell_status: self.createList.sell_status,
-            base_unit: self.createList.base_unit,
-            base_unit_value: self.createList.base_unit_value,
-            neutral_unit: self.createList.neutral_unit,
-            neutral_unit_value: self.createList.neutral_unit_value,
-            minimal_unit: self.createList.minimal_unit,
-            minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
-            sell_unit: self.createList.sell_unit,
-            production_unit: self.createList.production_unit,
-            safe_stock: self.createList.safe_stock,
-            aruc: self.createList.aruc,
-            apuc: self.createList.apuc,
-            use_bill_of_material: self.createList.use_bill_of_material,
-            materials: materials
-          }
-          putDataToApi( url,data,function(response) {
-            window.location.href = '?#!/admin/setting'
-          })
 //          启用BOM单
-        } else {
+        if(this.createList.use_bill_of_material){
+          console.log(this.createList.use_bill_of_material)
           $.each(materials, function (index, val) {
             if(val.value == undefined || val.unit == undefined){
               alert('请检查耗量或者单位是否填写完整！')
@@ -443,6 +416,35 @@
                 window.location.href = '?#!/admin/setting'
               })
             }
+          })
+//          未启用BOM清单
+        } else {
+          materials = ''
+          this.rederSetGoods = ''
+          var url = requestUrl + '/backend-system/product/product/' + self.id
+          var data ={
+            category_id: self.createList.category_id,
+            product_type: self.createList.product_type,
+            sell_type: self.createList.sell_type,
+            name: self.createList.name,
+            code: self.createList.code,
+            sell_status: self.createList.sell_status,
+            base_unit: self.createList.base_unit,
+            base_unit_value: self.createList.base_unit_value,
+            neutral_unit: self.createList.neutral_unit,
+            neutral_unit_value: self.createList.neutral_unit_value,
+            minimal_unit: self.createList.minimal_unit,
+            minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
+            sell_unit: self.createList.sell_unit,
+            production_unit: self.createList.production_unit,
+            safe_stock: self.createList.safe_stock,
+            aruc: self.createList.aruc,
+            apuc: self.createList.apuc,
+            use_bill_of_material: self.createList.use_bill_of_material,
+            materials: materials
+          }
+          putDataToApi(url,data,function(response) {
+            window.location.href = '?#!/admin/setting'
           })
         }
       },

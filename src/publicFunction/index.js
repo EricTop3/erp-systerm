@@ -52,16 +52,10 @@ export function exchangeData(origindata) {
             val.product_type ="工厂产成品"
             break
           case 2:
-            val.product_type =" 委外产成品"
+            val.product_type =" 原材料"
             break
           case 3:
             val.product_type =" 门店产成品"
-            break
-          case 4:
-            val.product_type =" 原材料商品"
-            break
-          case 5:
-            val.product_type =" 套餐商品"
             break
         }
         switch (val.sell_type){
@@ -84,9 +78,6 @@ export function exchangeData(origindata) {
             break
           case 1:
             val.sell_status = '上架中'
-            break
-          case 2:
-            val.sell_status = '非卖品'
             break
         }
       }
