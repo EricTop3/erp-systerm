@@ -178,7 +178,10 @@
         </div>
 
         <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
-          <div class="panel-body" style="color:red;">* 号为必填项！</div>
+          <div class="panel-body" style="color:red;">
+          <p>* 号为必填项！</p>
+          <p v-if="createList.code != '' && $validationSet.goodscode.required">货号不能重复，请重新填写！</p>
+          </div>
         </div>
 
         <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
@@ -190,12 +193,12 @@
         </div>
 
         <div class="form-group">
-          <label><input type="checkbox" :disabled="createList.product_type == 2" :checked="isStatrBOM"
+          <label><input type="checkbox" :disabled="true" :checked="isStatrBOM"
                         v-model="createList.use_bill_of_material">
             启动BOM单</label>
           <button class="btn btn-primary spanblocks ml10"
                   :disabled="createList.product_type == 2 || createList.use_bill_of_material == false"
-                  @click="addGoodModal=true">添加商品
+                  @click="modal.addGoodModal=true">添加商品
           </button>
         </div>
 
@@ -240,9 +243,11 @@
     </div>
   </div>
   <!--模态框-添加商品-->
-  <set-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="addGoodModal"
-             :stock-add-good-modal-size="addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods" :goods-list-title="productTabelHead"></set-goods>
+  <set-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="modal.addGoodModal"
+             :stock-add-good-modal-size="modal.addGoodModalSize" :page.sync="showPage" :add-data.sync="setGoods" :goods-list-title="productTabelHead"></set-goods>
 
+  <!--错误提示信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -253,6 +258,7 @@
   import Page from '../../common/Page'
   import LeftSetting from '../common/LeftSetting'
   import SetGoods from '../common/SetGoods'
+  import ErrorTip from '../../common/ErrorTip'
   import {requestUrl,requestSystemUrl, token, searchRequest,postDataToApi,getDataFromApi,putDataToApi} from '../../../publicFunction/index'
   export default{
     components: {
@@ -260,7 +266,8 @@
       Page: Page,
       SetGoods: SetGoods,
       AdminNav: AdminNav,
-      LeftSetting: LeftSetting
+      LeftSetting: LeftSetting,
+      ErrorTip: ErrorTip
     },
     ready: function () {
 //      获取Id
@@ -301,11 +308,10 @@
 //        createList.use_bill_of_material
         if(response.data.body.bom == ''){
           self.createList.use_bill_of_material = false
-          console.log('没有BOM清单')
-          console.log(self.createList.use_bill_of_material)
+          console.log('没有BOM清单' + self.createList.use_bill_of_material)
         } else {
           self.createList.use_bill_of_material = true
-          console.log('有BOM清单')
+          console.log('有BOM清单' + self.createList.use_bill_of_material)
 //        BOM清单
           $.each(response.data.body.bom, function (index, val) {
             var obj = {}
@@ -364,15 +370,17 @@
         var self = this
         this.$validate(function () {
           if (self.$validationSet.invalid) {
-            console.log('不添加商品')
+            console.log('信息未填写完整')
+            self.modal.errModal = true
+            self.modal.errInfo = '信息未填写完整,请认真检查！'
             e.preventDefault()
           } else {
-            console.log('添加商品')
+            console.log('进入商品请求')
             self.createNew()
           }
         })
       },
-//      新增商品请求
+//      新增商品
       createNew: function () {
         var self = this
         var materials = []
@@ -385,10 +393,24 @@
         })
 //          启用BOM单
         if(this.createList.use_bill_of_material){
-          console.log(this.createList.use_bill_of_material)
-          $.each(materials, function (index, val) {
-            if(val.value == undefined || val.unit == undefined){
-              alert('请检查耗量或者单位是否填写完整！')
+          console.log('已启用BOM清单：' + this.createList.use_bill_of_material)
+          var isS = materials != ''
+          console.log('是否已经添加商品：' + isS)
+
+          if (materials=='') {
+            this.modal.errModal = true
+            this.modal.errInfo = '请在BOM清单中添加商品！'
+          } else {
+            var isEmpty = true
+            $.each(materials, function (index, val) {
+              if(val.value == undefined || val.unit == undefined){
+                isEmpty = false
+                return false
+              }
+            })
+            if(!isEmpty){
+              self.modal.errModal = true
+              self.modal.errInfo = '请检查BOM清单中的耗量或者单位是否填写完整！'
             } else {
               var url = requestUrl + '/backend-system/product/product/' + self.id
               var data ={
@@ -403,7 +425,7 @@
                 neutral_unit: self.createList.neutral_unit,
                 neutral_unit_value: self.createList.neutral_unit_value,
                 minimal_unit: self.createList.minimal_unit,
-                minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
+                minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value) == 0 ? '': Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
                 sell_unit: self.createList.sell_unit,
                 production_unit: self.createList.production_unit,
                 safe_stock: self.createList.safe_stock,
@@ -412,13 +434,19 @@
                 use_bill_of_material: self.createList.use_bill_of_material,
                 materials: materials
               }
-              putDataToApi( url,data,function(response) {
+              putDataToApi(url,data,function(response) {
                 window.location.href = '?#!/admin/setting'
+              },function (err) {
+//            判断货号是否重复
+                if(err.data.body.validate_error.code && err.data.body.validate_error.code[0] == 'The code has already been taken.'){
+                  self.$validationSet.goodscode.required = true
+                }
               })
             }
-          })
+          }
 //          未启用BOM清单
         } else {
+          console.log('未启用BOM清单：' + this.createList.use_bill_of_material)
           materials = ''
           this.rederSetGoods = ''
           var url = requestUrl + '/backend-system/product/product/' + self.id
@@ -434,7 +462,7 @@
             neutral_unit: self.createList.neutral_unit,
             neutral_unit_value: self.createList.neutral_unit_value,
             minimal_unit: self.createList.minimal_unit,
-            minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
+            minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value) == 0 ? '': Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
             sell_unit: self.createList.sell_unit,
             production_unit: self.createList.production_unit,
             safe_stock: self.createList.safe_stock,
@@ -445,6 +473,11 @@
           }
           putDataToApi(url,data,function(response) {
             window.location.href = '?#!/admin/setting'
+          },function (err) {
+//            判断货号是否重复
+            if(err.data.body.validate_error.code && err.data.body.validate_error.code[0] == 'The code has already been taken.'){
+              self.$validationSet.goodscode.required = true
+            }
           })
         }
       },
@@ -497,9 +530,13 @@
 //      是否启用BOM清单
       isStatrBOM: function () {
         if (this.createList.product_type != 2) {
+          console.log('商品属性：' + this.createList.product_type)
           this.createList.use_bill_of_material = true
-        } else if (this.createList.product_type == 2) {
+          console.log('此时的BOM清单：' + this.createList.use_bill_of_material)
+        } else {
+          console.log('商品属性：' + this.createList.product_type)
           this.createList.use_bill_of_material = false
+          console.log('此时的BOM清单：' + this.createList.use_bill_of_material)
         }
       },
 //      显示转换单位
@@ -536,8 +573,12 @@
         per_page: 10,
         totalPage: 1,
         showPage: [],
-        addGoodModal: false,
-        addGoodModalSize: 'modal-lg',
+        modal:{
+          errModal: false,
+          errInfo: '',
+          addGoodModal: false,
+          addGoodModalSize: 'modal-lg',
+        },
         productTabelHead: {
             code: "货号",
             name: "品名",
