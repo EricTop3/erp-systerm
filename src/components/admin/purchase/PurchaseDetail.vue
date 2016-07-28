@@ -11,7 +11,15 @@
           <li class="active">查看收货单</li>
         </ol>
         <!--详情页面-->
-        <summary-detail :tab-flag='tabFlag' :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page.sync="page"></summary-detail>
+        <summary-detail
+          :tab-flag='tabFlag'
+          :detail-list="detailList"
+          :table-header="gridColumns"
+          :table-data="list"
+          :second-table-header='gridColumns2'
+          :grid-operate="gridOperate"
+          :page.sync="page">
+        </summary-detail>
     </div>
   </div>
     </div>
@@ -28,7 +36,7 @@
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -54,7 +62,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          exchangeData(this.list)
+          changeStatus(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -95,11 +103,17 @@
 //       获取商品列表详情
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
+          $.each(self.detailList,function(indec,val){
+            delete  val.unit_name
+            val.required_amount= val.demand_amount
+            val.pruchase_amount = val.main_reference_value
+            delete val.main_reference_value
+          })
         })
 //        获取采购列表详情
         getDataFromApi(purchaseUrl,{},function(response){
           self.list = response.data.body
-          exchangeData(self.list)
+          changeStatus(self.list)
         })
       }
     },
@@ -109,9 +123,10 @@
         list: {},
         detailList: [],
         tabFlag: true,
+        gridOperate: true,
         gridColumns: {
           document_number: '采购单号',
-          checked: '状态',
+          checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
           provider_name: '供应商',
@@ -122,12 +137,13 @@
         gridColumns2: {
           code: "货号",
           name: "品名",
-          specification_unit:"单位规格",
-          aruc: "总部库存",
-          order_quantity:"门店要货量",
-          purchase_quantity:"采购数量",
-          purchase_price:"采购单价",
-          source_number: "来源要货单号"
+          purchase_unit_name: '采购单位',
+          unit_specification:"单位规格",
+          current_stock: "库存数量",
+          demand_amount:"要货数量",
+          main_reference_value:"采购数量",
+          purchase_unit_price:"采购单价",
+          reference_number: "来源要货单号"
         }
       }
     }

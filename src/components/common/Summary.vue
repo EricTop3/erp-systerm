@@ -21,6 +21,7 @@
           <span class="btn btn-info btn-sm" @click="detail($event)">查看</span>
           <list-delete :delete-data.sync="tableData"  v-if="entry.checked==='未审核'"></list-delete>
         </slot>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -42,25 +43,34 @@
             <th v-for="value in  tableHeader">
               {{value}}
             </th>
+            <th>操作</th>
           </tr>
           </thead>
           <tbody>
           <tr class="text-center" v-for="entry in tableData" track-by="$index" :id="[entry.id ? entry.id : '']">
-            <td v-if="entry.goods_code">{{entry.goods_code}}</td>
-            <td v-if="entry.goods_name">{{entry.goods_name}}</td>
             <td v-if="entry.code">{{entry.code}}</td>
             <td v-if="entry.name">{{entry.name}}</td>
+            <td v-if="entry.unit_name">{{entry.unit_name}}</td>
             <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
-            <td>0{{entry.production_unit_name}}</td>
-            <td>0{{entry.production_unit_name}}</td>
+            <!--收货数量-->
+            <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
+            <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
+            <td v-if="entry.received_amount!=undefind"><count :count.sync="entry.received_amount"></count>{{entry.unit_name}}</td>
+            <td v-if="entry.additional_amount!=undefind"><count :count.sync="entry.additional_amount"></count>{{entry.unit_name}}</td>
+            <td v-if="entry.refund_amount!=undefind"><count :count.sync="entry.refund_amount"></count>{{entry.unit_name}}</td>
+            <td v-if="entry.received_price!=undefind"><count :count.sync="entry.received_price"></count>/{{entry.unit_name}}</td>
+            <td v-if="entry.amount!=undefind"><count :count.sync="entry.amount"></count>{{entry.production_unit_name}}</td>
+            <td v-if="entry.price!=undefind"><count :count.sync="entry.price"></count>/{{entry.production_unit_name}}</td>
+            <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
             <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
             <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
-            <td><count :count.sync="entry.amount"></count>{{entry.production_unit_name}}</td>
-            <td><count :count.sync="entry.price"></count>/{{entry.production_unit_name}}</td>
-            <td>{{ 20130516168 }}</td>
-            <td v-if="entry.unit">{{entry.unit}}</td>
-            <td v-if="entry.unit_specification">{{entry.unit_specification}}</td>
-            <td v-if="entry.store_distribution_id">{{entry.store_distribution_id}}</td>
+            <!--库存配送出库数量-->
+            <td v-if="entry.send_stock!=undefind">{{entry.send_stock}}</td>
+            <td>
+              <slot name="operate">
+                <list-delete :delete-data.sync="tableData" ></list-delete>
+              </slot>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -81,21 +91,23 @@
             </thead>
             <tbody>
             <tr class="text-center" v-for="entry in summaryData" track-by="$index" :id="[entry.id ? entry.id : '']">
-              <td v-if="entry.goods_code">{{entry.goods_code}}</td>
-              <td v-if="entry.goods_name">{{entry.goods_name}}</td>
               <td v-if="entry.code">{{entry.code}}</td>
               <td v-if="entry.name">{{entry.name}}</td>
+              <td v-if="entry.unit_name">{{entry.unit_name}}</td>
               <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
-              <td>库存数量{{entry.production_unit_name}}</td>
-              <td>要货数量{{entry.production_unit_name}}</td>
+              <!--收货数量-->
+              <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
+              <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
+              <td v-if="entry.received_amount!=undefind">{{entry.received_amount}}</td>
+              <td v-if="entry.additional_amount!=undefind">{{entry.additional_amount}}</td>
+              <td v-if="entry.refund_amount!=undefind">{{entry.refund_amount}}</td>
+              <td v-if="entry.received_price!=undefind">{{entry.received_price}}</td>
+              <td v-if="entry.amount!=undefind">{{entry.amount}}</td>
+              <td v-if="entry.price!=undefind">{{entry.price}}</td>
+              <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
               <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
               <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
-              <td>{{entry.amount}}{{entry.production_unit_name}}</td>
-              <td>{{entry.price}}/{{entry.production_unit_name}}</td>
-              <td>{{20130516168}}</td>
-              <td v-if="entry.unit">{{entry.unit}}</td>
-              <td v-if="entry.unit_specification">{{entry.unit_specification}}</td>
-              <td v-if="entry.store_distribution_id">{{entry.store_distribution_id}}</td>
+              <!--<td>{{20130516168}}</td>-->
             </tr>
             </tbody>
           </table>
@@ -120,6 +132,7 @@
       summaryData: [],
       page:{},
       tabFlag: false,
+      operate: false
     },
     events: {
 //     刪除請求

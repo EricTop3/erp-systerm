@@ -3,7 +3,7 @@
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
         aria-hidden="true" @click="instroduceDataModal= false">&times;</span></button>
-      <h4 class="modal-title">原始配送出库单</h4>
+      <h4 class="modal-title">{{title}}</h4>
     </div>
     <div slot="body">
       <!-- 页头 -->
@@ -61,6 +61,7 @@
       instroduceDataModal: false,
       instroduceDataModalSize: 'modal-sm',
       secondData: [],
+      title:'',
       firstDataTitle: {
         code: '配送出库单号',
         store_name: '调出仓库',
@@ -93,6 +94,7 @@
       change: function (currentId, currentObjCheck) {
         var self = this
         var fetchedData = []
+        console.log(currentObjCheck)
 //    根据当前id获取产品
         getDataFromApi(this.url + "/" + currentId,{},function(response){
           $.each(response.data.body.list,function(index,val){
@@ -100,10 +102,7 @@
               val.store_distribution_id  ===  '123456'
             }
           })
-          self.secondData = response.data.body.list
-          console.log(self.secondData)
-          console.log()
-          fetchedData = self.secondData
+          fetchedData = response.data.body.list
           var firtElem = fetchedData[0]
           var lastElem = fetchedData[fetchedData.length - 1]
           var start = 0
@@ -122,6 +121,7 @@
             self.secondData.splice(start, end - start + 1)
           }
         })
+        console.log(self.secondData.length)
       },
 //      全选上面表格加载下面数据
       changeAll: function (checkAll) {
@@ -170,7 +170,7 @@
       },
       confirmClick: function () {
         this.instroduceDataModal = false
-        this.$dispatch('confirmAdd')
+        this.$dispatch('includeConfirmAdd')
       }
     },
     data: function () {

@@ -47,7 +47,12 @@
             </form>
           </div>
           <!--表格 -->
-          <summary :table-header="gridColumns" :table-data="list" :page="page" :detail-url="detailUrl"></summary>
+          <summary
+            :table-header="gridColumns"
+            :table-data="list"
+            :page="page"
+            :detail-url="detailUrl">
+          </summary>
         </div>
     </div>
     </div>
@@ -58,7 +63,7 @@
   import AdminNav from '../AdminNav'
   import LeftPurchase from '../common/LeftPurchase'
   import Summary from '../../common/Summary'
-  import {requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
   export default{
     components:{
       AdminNav: AdminNav,
@@ -67,6 +72,44 @@
     },
     ready: function (){
       this.fetlistFormApi()
+    },
+    events: {
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.$http({
+          url: requestUrl + '/backend-system/purchase/purchase',
+          data: {
+            page: currentpage
+          },
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.page = response.data.body.pagination
+          this.list = response.data.body.list
+          var self = this
+          changeStatus(this.list)
+        }, function (err) {
+          console.log(err)
+        })
+      },
+//     删除请求
+      deleteFromApi: function (id) {
+        var self = this
+        deleteRequest(requestSystemUrl + '/backend-system/purchase/receive/'+ id,function(response){
+          console.log('deleted')
+        })
+      },
+//     審核请求
+      checkFromApi: function (id) {
+        var self = this
+        checkRequest(requestSystemUrl + '/backend-system/purchase/receive/' + id + '/checked',function(response){
+          console.log('checked')
+        })
+      },
+//    查看详情
+      gotoDetail: function (id){
+        window.location.href = '#!/admin/purchase/delivery/deliverydetail/'+ id
+      }
     },
     data: function () {
       return {
@@ -91,6 +134,7 @@
         var self = this
         getDataFromApi(url,{},function(response){
           self.list = response.data.body.list
+          changeStatus(self.list)
           self.page = response.data.body.pagination
         })
       }

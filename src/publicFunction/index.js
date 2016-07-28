@@ -6,6 +6,34 @@ export var requestUrl = 'http://192.168.1.150:1401/v1'
 //  请求服务器路径真实接口
 export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
 var token =  window.localStorage.getItem('token') ?  window.localStorage.getItem('token') : ''
+//后台0,1状态没完成状态的展示方式
+export function changeStatus(origindata) {
+  if(!(origindata instanceof Array)){
+    if(origindata.checked!=undefined){
+      if (origindata.checked === 0) {
+        origindata.checked = '未审核'
+      } else if (origindata.checked === 1) {
+        origindata.checked = '已审核'
+      }
+    }
+    if(origindata.total_sum!=undefined){
+      origindata.total_sum = (Number(origindata.total_sum) * 0.01).toFixed(2)
+    }
+  }else{
+    $.each(origindata, function (index, val) {
+      if (val.checked !== undefined) {
+        if (val.checked === 0) {
+          val.checked = '未审核'
+        } else if (val.checked === 1) {
+          val.checked = '已审核'
+        }
+      }
+      if(val.total_sum!=undefined){
+        val.total_sum = (Number(val.total_sum) * 0.01).toFixed(2)
+      }
+    })
+  }
+}
 // 后台0,1状态展示
 export function exchangeData(origindata) {
   if(!(origindata instanceof Array)){
@@ -14,7 +42,7 @@ export function exchangeData(origindata) {
         origindata.checked = '未审核'
       } else if (origindata.checked === 2) {
         origindata.checked = '已审核'
-      } else {
+      } else if (origindata.checked === 3){
         origindata.checked = '已完成'
       }
     }
@@ -28,7 +56,7 @@ export function exchangeData(origindata) {
           val.checked = '未审核'
         } else if (val.checked === 2) {
           val.checked = '已审核'
-        } else {
+        } else if(val.checked === 3){
           val.checked = '已完成'
         }
       }
