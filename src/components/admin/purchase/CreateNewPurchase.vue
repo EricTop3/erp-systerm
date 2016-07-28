@@ -35,9 +35,29 @@
     </div>
   </div>
   <!--引入原始数据-->
-  <introduce-data :url="origenData.dataUrl" :instroduce-data-modal.sync='modal.parentIntroModal' :instroduce-data-modal-size="modal.parentIntroModalSize" :add-data.sync="stockGoods" :url="currentUrl" :first-data-title="origenData.firstDataTitle" :first-data="origenData.firstData" :second-data-title="origenData.secondDataTitle" ></introduce-data>
+  <introduce-data
+    :url="origenData.dataUrl"
+    :instroduce-data-modal.sync='modal.parentIntroModal'
+    :instroduce-data-modal-size="modal.parentIntroModalSize"
+    :first-data-title="origenData.firstDataTitle"
+    :first-data.sync="origenData.firstData"
+    :second-data-title="origenData.secondDataTitle"
+    :second-data.sync="origenData.secondData">
+  </introduce-data>
   <!--模态框-添加商品-->
-  <stock-goods :get-render-data="rederSetGoods" :stock-add-good-modal.sync="modal.addGoodModal" :stock-add-good-modal-size="modal.addGoodModalSize" :page.sync="showPage" :add-data.sync="stockGoods" :goods-list-title="purchaseTabelHead" :url="request.productUrl" :request-data="request.productData"></stock-goods>
+  <stock-goods
+    :get-render-data="rederSetGoods"
+    :stock-add-good-modal.sync="modal.addGoodModal"
+    :stock-add-good-modal-size="modal.addGoodModalSize"
+    :page.sync="showPage"
+    :add-data.sync="stockGoods"
+    :goods-list-title="purchaseTabelHead"
+    :product-url="request.productUrl"
+    :category-url='request.categoryUrl'
+    :request-data="request.productData">
+  </stock-goods>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -51,6 +71,7 @@
   import DatePicker from '../../common/DatePicker'
   import Summary from '../../common/Summary'
   import IntroduceData  from '../../common/IntroduceData'
+  import ErrorTip from '../../common/ErrorTip'
   import {requestSystemUrl, token, searchRequest,getDataFromApi,postDataToApi} from '../../../publicFunction/index'
   export default{
     components:{
@@ -61,7 +82,8 @@
       DatePicker: DatePicker,
       LeftPurchase: LeftPurchase,
       Summary: Summary,
-      IntroduceData: IntroduceData
+      IntroduceData: IntroduceData,
+      ErrorTip: ErrorTip
     },
     ready: function () {
       var self = this
@@ -73,9 +95,12 @@
       })
     },
     events: {
-//      确认增加
+//      添加商品确认增加
       confirmAdd: function () {
         var self = this
+//        if(self.origenData.secondData.length>0){
+//          self.stockGoods.concat(self.origenData.secondData)
+//        }
         $.each(self.stockGoods, function (index, val) {
           if (val.choice && !val.again) {
             val.again = true
@@ -88,6 +113,7 @@
           val.amount = ''
         })
       },
+
 //      分页
       pagechange: function (currentpage) {
         this.current_page = currentpage
@@ -98,7 +124,9 @@
     methods: {
 //     提交采购
       uploadPurchase: function () {
+        var self = this
         var items = []
+        var uploadFlag = true
 //      采购请求地址
         var url = requestSystemUrl + '/backend-system/purchase/purchase'
         $.each(this.renderstockGoods, function (index, val) {
@@ -115,9 +143,27 @@
           note: this.note,
           provider_id: this.selectedSupplier
         }
-        postDataToApi(url,data,function (response) {
-           window.location.href = "#!/admin/purchase/order"
+//      判断采购数量和采购单价是否为空
+        $.each(items,function(index,val){
+          if(val.amount ==='' ||val.price ===''){
+            uploadFlag = false
+          }
         })
+//       提交之前的判断
+        if(this.selectedSupplier===''){
+          this.modal.errModal = true
+          this.modal.errInfo = 'high，你还没有选择供应商哟'
+        }else if(items.length<1){
+          this.modal.errModal = true
+          this.modal.errInfo = 'high,你还没有添加商品哟'
+        }else if(!uploadFlag){
+          this.modal.errModal = true
+          this.modal.errInfo = 'high,你的采购数量和采购单价不能为空哟'
+        }else{
+          postDataToApi(url,data,function (response) {
+            window.location.href = "#!/admin/purchase/order"
+          })
+        }
       },
 //     引入数据
       inclucdePurchaseData: function () {
@@ -153,6 +199,7 @@
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
+          categoryUrl: requestSystemUrl + '/backend-system/product/category',
           productData: {
             product_type: 2
           }
@@ -171,7 +218,7 @@
           secondDataTitle: {
             "item_code": "货号",
             "item_name": "品名",
-            "demand_amount":"要货数量",
+            "main_reference_value":"采购数量",
             "unit_name": "单位",
             "unit_specification": "单位规格"
           },
@@ -181,7 +228,9 @@
           addGoodModal: false,
           addGoodModalSize: 'modal-lg',
           parentIntroModal: false,
-          parentIntroModalSize: 'modal-lg'
+          parentIntroModalSize: 'modal-lg',
+          errModal: false,
+          errInfo: 'high。这是友情提醒'
         },
         category: '',
         baseUnit: '',

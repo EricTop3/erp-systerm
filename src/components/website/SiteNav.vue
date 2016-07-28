@@ -4,7 +4,7 @@
       <div class="col-md-2 text-center">
         <h2>中渝爱都会店</h2>
         <h3>营业员：张筱雨</h3>
-        <span>[退出]</span></div>
+        <span @click="exit" class="exit">[退出]</span></div>
       <div class="col-md-9">
         <ul class="nav nav-pills navbar-right">
           <li><a v-link="{ path: '/site/order'}" >点单</a></li>
@@ -21,7 +21,15 @@
 </template>
 <script>
   export default{
-    name: 'site-nav'
+    name: 'site-nav',
+    methods: {
+      exit: function () {
+//         TODO 未来可能有接口，暂时如此
+        window.localStorage.setItem('token',null)
+        window.location.href ='#!/site/login'
+        window.location.reload()
+      }
+    }
   }
 </script>
 <style scoped>
@@ -31,5 +39,8 @@
     border-bottom: 3px solid #c3c3c3;
     background-color: #fff;
     padding-top: 24px;
+  }
+  .exit{
+    cursor: pointer;
   }
 </style>

@@ -60,7 +60,7 @@
   </div>
   <!--模态框-添加商品-->
   <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :add-data.sync="stockGoods" :page.sync="showPage" :get-render-data="rederStockGoods"></stock-goods>
+               :add-data.sync="stockGoods" :page.sync="showPage" :goods-list-title="goodsListTitle" :get-render-data="rederStockGoods" :product-url="productUrl" :category-url="categoryUrl"></stock-goods>
   <!--错误信息弹出-->
   <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
     <div slot='header'>
@@ -88,7 +88,7 @@
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
   import ListDelete from '../../common/ListDelete'
-  import {requestUrl,token, deleteRequest} from '../../../publicFunction/index'
+  import {requestUrl,token, deleteRequest,postDataToApi} from '../../../publicFunction/index'
   export default {
     components: {
       StockGoods: StockGoods,
@@ -173,14 +173,27 @@
           this.messageTip = 'high,你忘记添加商品了哟'
         }else{
 //          提交要货请求
+//          postDataToApi(
+//            requestUrl + '/front-system/stock/enquiry',
+//            {
+//            'items': items,
+//            'date': this.startTime
+//            },
+//            function(response){
+//            var id=response.data.body
+//            window.location.href = '/#!/site/instock/GoodsApplyNum/'+ id
+//          })
           this.$http.post(requestUrl + '/front-system/stock/enquiry',
             {
               'items': items,
-              'date': this.startTime
-            }
+              'date': this.startTime,
+            },
+          {
+            headers: {'X-Overpowered-Token': token}
+          }
           ).then(function (reponse) {
-                var id=reponse.data.body
-                window.location.href = '/?#!/site/instock/GoodsApplyNum/'+ id
+                var id=reponse.data.body.id
+                window.location.href = '/#!/site/instock/GoodsApplyNum/'+ id
           }, function (err) {
             if(err.data.code ==='100000'){
               this.messageTipModal = true
@@ -212,7 +225,18 @@
         stockGoods: [],
         dataArray: [],
         pageArray: [],
-        rederStockGoods: []
+        rederStockGoods: [],
+        goodsListTitle:{
+          'code': '货号',
+          'name': '品名',
+          'sale_amount': '日均销量',
+          'current_stock': '当前库存',
+          'production_unit_name': '单位',
+          'specification_unit': '单位规格',
+          'category': '商品分类'
+        },
+        productUrl: requestUrl + '/front-system/product',
+        categoryUrl: requestUrl + '/front-system/order/category'
       }
     }
   }

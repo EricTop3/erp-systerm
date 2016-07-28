@@ -165,6 +165,7 @@
     events: {
 //    审核
       check: function (id){
+        console.log(id)
         this.$dispatch("checkFromApi",id)
       },
       finishEdit: function () {

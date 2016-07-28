@@ -19,7 +19,7 @@
   import Page from '../../common/Page'
   import Modal from '../../common/Modal'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,token,exchangeData} from '../../../publicFunction/index'
+  import {requestUrl,token,exchangeData, checkRequest} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -32,6 +32,14 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.listData(currentpage)
+      },
+//    审核请求
+      checkFromApi: function (id){
+        console.log('waadadas')
+          var self = this
+          checkRequest(requestUrl + '/front-system/stock/enquiry/' + id +'/checked' ,function(response){
+            console.log('checked')
+          })
       }
     },
     ready: function () {

@@ -34,3 +34,8 @@
      }
    }
 </script>
+<style scoped>
+  .modal-body{
+    text-align: center;
+  }
+</style>

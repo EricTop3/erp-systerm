@@ -10,9 +10,9 @@ var token =  window.localStorage.getItem('token') ?  window.localStorage.getItem
 export function exchangeData(origindata) {
   if(!(origindata instanceof Array)){
     if(origindata.checked!=undefined){
-      if (origindata.checked === 0) {
+      if (origindata.checked === 1) {
         origindata.checked = '未审核'
-      } else if (origindata.checked === 1) {
+      } else if (origindata.checked === 2) {
         origindata.checked = '已审核'
       } else {
         origindata.checked = '已完成'
@@ -24,9 +24,9 @@ export function exchangeData(origindata) {
   }else{
     $.each(origindata, function (index, val) {
       if (val.checked !== undefined) {
-        if (val.checked === 0) {
+        if (val.checked === 1) {
           val.checked = '未审核'
-        } else if (val.checked === 1) {
+        } else if (val.checked === 2) {
           val.checked = '已审核'
         } else {
           val.checked = '已完成'
@@ -52,10 +52,16 @@ export function exchangeData(origindata) {
             val.product_type ="工厂产成品"
             break
           case 2:
-            val.product_type =" 原材料"
+            val.product_type =" 委外产成品"
             break
           case 3:
             val.product_type =" 门店产成品"
+            break
+          case 4:
+            val.product_type =" 原材料商品"
+            break
+          case 5:
+            val.product_type =" 套餐商品"
             break
         }
         switch (val.sell_type){
@@ -79,6 +85,9 @@ export function exchangeData(origindata) {
           case 1:
             val.sell_status = '上架中'
             break
+          case 2:
+            val.sell_status = '非卖品'
+            break
         }
       }
     })
@@ -86,12 +95,26 @@ export function exchangeData(origindata) {
 }
 //后台登录方法
 export function adminLogin(loginUrl,data){
+  token = null
   var cur = new Vue()
   cur.$http.post(loginUrl,data).then(function(response){
     var curtoken = response.headers('X-Overpowered-Token-Set')
     window.localStorage.setItem('token', curtoken)
     token =  window.localStorage.getItem('token')
-    window.location.href ='?#!/admin/setting'
+    window.location.href ='#!/admin/setting'
+  },function(err){
+    console.log(err)
+  })
+}
+//前台登录方法
+export function siteLogin(loginUrl,data){
+  token = null
+  var cur = new Vue()
+  cur.$http.post(loginUrl,data).then(function(response){
+    var curtoken = response.headers('X-Overpowered-Token-Set')
+    window.localStorage.setItem('token', curtoken)
+    token =  window.localStorage.getItem('token')
+    window.location.href ='#!/site/order'
   },function(err){
     console.log(err)
   })
@@ -170,13 +193,13 @@ export function  getDataFromApi(url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-       if(err.status === 401){
-         window.location.href = '?#!/admin/login'
-       }
+       //if(err.status === 401){
+       //  window.location.href = '?#!/admin/login'
+       //}
     })
 }
 //  post提交数据的方法
-export function  postDataToApi (url, data, callback, callbackErr) {
+export function  postDataToApi (url, data, callback, error) {
   var cur = new Vue()
   cur.$http({
       url: url,
@@ -187,23 +210,6 @@ export function  postDataToApi (url, data, callback, callbackErr) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-      callbackErr && callbackErr(err)
-      console.log(err)
-    })
-}
-//  put提交数据的方法
-export function  putDataToApi (url, data, callback, callbackErr) {
-  var cur = new Vue()
-  cur.$http({
-      url: url,
-      method: 'put',
-      data: data,
-      headers: {'X-Overpowered-Token': token}
-    })
-    .then(function (response) {
-      callback && callback(response)
-    }, function (err) {
-      callbackErr && callbackErr(err)
-      console.log(err)
+      error && error(err)
     })
 }
