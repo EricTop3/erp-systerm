@@ -5,7 +5,7 @@
     <ol class="breadcrumb">
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
       <li class="active">要货单汇总</li>
-      <li class="active">查看要货单</li>
+      <li class="active">申请要货</li>
     </ol>
 
     <!-- 页头 -->
