@@ -23,7 +23,9 @@
             <div class="form-group ml10">
               <label>审核状态</label>
               <select class="form-control" v-model="searchData.checked">
-                <option>全部</option>
+                <option value="0">全部</option>
+                <option value="1">未审核</option>
+                <option value="2">已审核</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -147,7 +149,7 @@
         page: [],
         searchData: {
           document_number: '',
-          checked: '',
+          checked: 0,
           provider_id: '',
           warehouse_id: '',
           creator_id: '',
