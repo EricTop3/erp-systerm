@@ -209,7 +209,7 @@
             <td>单位</td>
           </tr>
           </thead>
-          <tbody v-if="this.createList.use_bill_of_material == true">
+          <tbody v-if="createList.use_bill_of_material == true">
           <tr class="text-center" v-for="item in rederSetGoods" track-by="$index" :id="item.id">
             <td class="text-left">{{item.code}}</td>
             <td>{{item.name}}</td>
@@ -301,9 +301,12 @@
 //        createList.use_bill_of_material
         if(response.data.body.bom == ''){
           self.createList.use_bill_of_material = false
+          console.log('没有BOM清单')
+          console.log(self.createList.use_bill_of_material)
         } else {
           self.createList.use_bill_of_material = true
-          //        BOM清单
+          console.log('有BOM清单')
+//        BOM清单
           $.each(response.data.body.bom, function (index, val) {
             var obj = {}
             obj['code'] = val.product_code
@@ -381,7 +384,7 @@
           materials.push(obj)
         })
         if(this.createList.use_bill_of_material == false){
-          materials = []
+          materials = ''
           this.rederSetGoods = ''
           var url = requestUrl + '/backend-system/product/product/' + self.id
           var data ={
@@ -396,7 +399,7 @@
             neutral_unit: self.createList.neutral_unit,
             neutral_unit_value: self.createList.neutral_unit_value,
             minimal_unit: self.createList.minimal_unit,
-            minimal_unit_value: self.createList.minimal_unit_value,
+            minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
             sell_unit: self.createList.sell_unit,
             production_unit: self.createList.production_unit,
             safe_stock: self.createList.safe_stock,
@@ -427,7 +430,7 @@
                 neutral_unit: self.createList.neutral_unit,
                 neutral_unit_value: self.createList.neutral_unit_value,
                 minimal_unit: self.createList.minimal_unit,
-                minimal_unit_value: self.createList.minimal_unit_value,
+                minimal_unit_value: Number(self.createList.minimal_unit_value * self.createList.neutral_unit_value),
                 sell_unit: self.createList.sell_unit,
                 production_unit: self.createList.production_unit,
                 safe_stock: self.createList.safe_stock,
