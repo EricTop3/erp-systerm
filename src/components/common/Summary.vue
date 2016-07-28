@@ -62,10 +62,14 @@
             <td v-if="entry.amount!=undefind"><count :count.sync="entry.amount"></count>{{entry.production_unit_name}}</td>
             <td v-if="entry.price!=undefind"><count :count.sync="entry.price"></count>/{{entry.production_unit_name}}</td>
             <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
-            <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
-            <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
             <!--库存配送出库数量-->
-            <td v-if="entry.send_stock!=undefind">{{entry.send_stock}}</td>
+            <td v-if="entry.in_stock!=undefind">{{entry.in_stock}}</td>
+            <td v-if="entry.out_stock!=undefind">{{{entry.out_stock}}</td>
+            <td v-if="entry.stock_required_amount!=undefind">{{entry.stock_required_amount}}</td>
+            <td v-if="entry.stock_send_amount!=undefind"><count :count.sync="entry.stock_send_amount"></count></td>
+            <td v-if="entry.stock_unit_name!=undefind">{{entry.stock_unit_name}}</td>
+            <td v-if="entry.new_instock_unit!=undefind">{{entry.new_instock_unit}}</td>
+            <td v-if="entry.stock_origen_number!=undefind">{{entry.stock_origen_number}}</td>
             <td>
               <slot name="operate">
                 <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -107,6 +111,14 @@
               <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
               <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
               <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
+              <!--库存配送出库数量-->
+              <td v-if="entry.in_stock!=undefind">{{entry.in_stock}}</td>
+              <td v-if="entry.out_stock!=undefind">{{{entry.out_stock}}</td>
+              <td v-if="entry.stock_required_amount!=undefind">{{entry.stock_required_amount}}</td>
+              <td v-if="entry.stock_send_amount!=undefind"><count :count.sync="entry.stock_send_amount"></count></td>
+              <td v-if="entry.stock_unit_name!=undefind">{{entry.stock_unit_name}}</td>
+              <td v-if="entry.new_instock_unit!=undefind">{{entry.new_instock_unit}}</td>
+              <td v-if="entry.stock_origen_number!=undefind">{{entry.stock_origen_number}}</td>
               <!--<td>{{20130516168}}</td>-->
             </tr>
             </tbody>

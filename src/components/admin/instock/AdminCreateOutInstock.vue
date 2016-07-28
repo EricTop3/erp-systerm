@@ -138,13 +138,19 @@
         })
         this.renderstockGoods = self.dataArray
         $.each(this.renderstockGoods,function(index,val){
-          val.send_stock = ''
-          val.origen_source = ''
-          val.main_reference_value = ''
-          val.price =  ''
-          val.amount = ''
+          val.in_stock = ''
+          val.out_stock = ''
+          val.stock_send_amount = ''
+          val.new_instock_unit = val.specification_unit
+          delete   val.specification_unit
+          val.stock_unit_name = val.production_unit_name
+          val.stock_required_amount  = ''
+          val.stock_origen_number= ''
         })
       },
+
+
+
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
@@ -154,12 +160,15 @@
           obj.again = val.again
           obj.choice = val.choice
           obj.id = val.id
-          obj.main_reference_value = val.main_reference_value
           obj.name = val.item_name
           obj.code = val.item_code
-          obj.stock = ''
-          obj.origen_source = ''
-          obj.specification_unit =val.unit_specification
+          obj.in_stock = ''
+          obj.out_stock = ''
+          obj.stock_required_amount = val.main_reference_value
+          obj.stock_send_amount = ''
+          obj.stock_unit_name = val.unit_name
+          obj.new_instock_unit =val.unit_specification
+          obj.stock_origen_number = ''
           obj.production_unit_name = val.unit_name
           detailArrayFromApi.push(obj)
         })
@@ -172,10 +181,6 @@
           }
         })
         this.renderstockGoods = self.dataArray
-        $.each(this.renderstockGoods,function(index,val){
-          val.price =  ''
-          val.amount = ''
-        })
       },
 //     删除商品
       deleteFromApi: function (id) {
