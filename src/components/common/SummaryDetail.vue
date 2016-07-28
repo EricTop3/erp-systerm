@@ -73,29 +73,34 @@
           </thead>
           <tbody>
           <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-            <td v-if="entry.goods_code">{{entry.goods_code}}</td>
-            <td v-if="entry.goods_name">{{entry.goods_name}}</td>
-            <!--采购-->
-            <td v-if="entry.item_code!= underdefind">{{entry.item_code}}</td>
-            <td v-if="entry.item_code!= underdefind">{{entry.item_name}}</td>
-            <td v-if="entry.unit_specification!= underdefind">{{entry.unit_specification}}</td>
-            <td v-if="entry.current_stock != underdefind">{{entry.current_stock}}</td>
-            <td v-if="entry.demand_amount!=underdefind">{{entry.demand_amount}}</td>
-            <td v-if="entry.main_reference_value!=underdefind">{{entry.main_reference_value}}</td>
-            <td v-if="entry.purchase_unit_price!=underdefind">{{entry.purchase_unit_price| priceChange}}</td>
-            <td v-if="entry.reference_number!==underfind">{{entry.reference_number}}</td>
-            <td v-if="entry.consumable_code != underdefind">{{entry.consumable_code}}</td>
-            <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
-            <td v-if="entry.recipient_amount">{{entry.recipient_amount}}</td>
-            <!--<td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>-->
-            <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
-            <td v-if="entry.current_amount">{{entry.current_amount}}</td>
+            <td v-if="entry.item_code">{{entry.item_code}}</td>
+            <td v-if="entry.item_name">{{entry.item_name}}</td>
+            <td v-if="entry.unit_name">{{entry.unit_name}}</td>
+            <!--采购单详情-->
+            <td v-if="entry.specification_unit!=undefind">{{entry.specification_unit}}</td>
+            <td v-if="entry.purchase_unit_name!=undefind">{{entry.purchase_unit_name}}</td>
+            <td v-if="entry.unit_specification!=undefind">{{entry.unit_specification}}</td>
+            <td v-if="entry.current_stock!=undefind">{{entry.current_stock}}</td>
+            <td v-if="entry.required_amount!=undefind">{{entry.required_amount}}</td>
+            <td v-if="entry.pruchase_amount">{{entry.pruchase_amount}}</td>
+            <td v-if="entry.purchase_unit_price!=undefind">{{entry.purchase_unit_price|priceChange}}</td>
+            <td v-if="entry.purchase_unit_price">{{entry.reference_number}}</td>
+            <!--采购收货详情-->
+            <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
+            <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
+            <td v-if="entry.received_amount!=undefind">{{entry.received_amount}}</td>
+            <td v-if="entry.additional_amount!=undefind">{{entry.additional_amount}}</td>
+            <td v-if="entry.refund_amount!=undefind">{{entry.refund_amount}}</td>
+            <td v-if="entry.unit_price!=undefind">{{entry.unit_price|priceChange}}</td>
+            <td v-if="entry.amount!=undefind">{{entry.amount}}</td>
+            <td v-if="entry.price!=undefind">{{entry.price}}</td>
+            <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
           </tr>
           </tbody>
         </table>
-        <!-- 翻页 -->
-        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-              :last-page="page.last_page"></page>
+        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
       </div>
 
       <!-- 入库汇总 -->
@@ -111,29 +116,36 @@
           </thead>
           <tbody>
           <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-            <td v-if="entry.goods_code">{{entry.goods_code}}</td>
-            <td v-if="entry.goods_name">{{entry.goods_name}}</td>
-            <!--采购-->
-            <td v-if="entry.item_code!= underdefind">{{entry.item_code}}</td>
-            <td v-if="entry.item_code!= underdefind">{{entry.item_name}}</td>
-            <td v-if="entry.unit_specification!= underdefind">{{entry.unit_specification}}</td>
-            <td v-if="entry.current_stock != underdefind">{{entry.current_stock}}</td>
-            <td v-if="entry.demand_amount!=underdefind">{{entry.demand_amount}}</td>
-            <td v-if="entry.main_reference_value!=underdefind">{{entry.main_reference_value}}</td>
-            <td v-if="entry.purchase_unit_price!=underdefind">{{entry.purchase_unit_price| priceChange}}</td>
-            <td v-if="entry.reference_number!==underfind">{{entry.reference_number}}</td>
-            <td v-if="entry.consumable_code != underdefind">{{entry.consumable_code}}</td>
-            <td v-if="entry.consumable_name">{{entry.consumable_name}}</td>
-            <td v-if="entry.recipient_amount">{{entry.recipient_amount}}</td>
-            <!--<td v-if="entry.recipient_amount && editFlag===true"><count :count="entry.recipient_amount"></count></td>-->
-            <td v-if="entry.distribution_amount">{{entry.distribution_amount}}</td>
-            <td v-if="entry.current_amount">{{entry.current_amount}}</td>
+            <td v-if="entry.item_code">{{entry.item_code}}</td>
+            <td v-if="entry.item_name">{{entry.item_name}}</td>
+            <td v-if="entry.unit_name">{{entry.unit_name}}</td>
+            <!--采购单详情-->
+            <td v-if="entry.specification_unit!=undefind">{{entry.specification_unit}}</td>
+            <td v-if="entry.purchase_unit_name!=undefind">{{entry.purchase_unit_name}}</td>
+            <td v-if="entry.unit_specification!=undefind">{{entry.unit_specification}}</td>
+            <td v-if="entry.current_stock!=undefind">{{entry.current_stock}}</td>
+            <td v-if="entry.required_amount!=undefind">{{entry.required_amount}}</td>
+            <td v-if="entry.pruchase_amount">{{entry.pruchase_amount}}</td>
+            <td v-if="entry.purchase_unit_price!=undefind">{{entry.purchase_unit_price|priceChange}}</td>
+            <td v-if="entry.purchase_unit_price">{{entry.reference_number}}</td>
+            <!--采购收货详情-->
+            <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
+            <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
+            <td v-if="entry.received_amount!=undefind">{{entry.received_amount}}</td>
+            <td v-if="entry.additional_amount!=undefind">{{entry.additional_amount}}</td>
+            <td v-if="entry.refund_amount!=undefind">{{entry.refund_amount}}</td>
+            <td v-if="entry.unit_price!=undefind">{{entry.unit_price}}</td>
+            <td v-if="entry.amount!=undefind">{{entry.amount}}</td>
+            <td v-if="entry.price!=undefind">{{entry.price}}</td>
+            <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
+            <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
+            <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
           </tr>
           </tbody>
         </table>
-        <!-- 翻页 -->
-        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-              :last-page="page.last_page"></page>
+        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
       </div>
     </div>
   </div>

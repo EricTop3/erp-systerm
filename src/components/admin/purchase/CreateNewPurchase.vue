@@ -115,6 +115,9 @@
         })
         this.renderstockGoods = self.dataArray
         $.each(this.renderstockGoods,function(index,val){
+          val.stock = ''
+          val.origen_source = ''
+          val.main_reference_value = ''
           val.price =  ''
           val.amount = ''
         })
@@ -128,9 +131,11 @@
           obj.again = val.again
           obj.choice = val.choice
           obj.id = val.id
-          obj.rmain_reference_value = val.main_reference_value
+          obj.main_reference_value = val.main_reference_value
           obj.name = val.item_name
           obj.code = val.item_code
+          obj.stock = ''
+          obj.origen_source = ''
           obj.specification_unit =val.unit_specification
           obj.production_unit_name = val.unit_name
           detailArrayFromApi.push(obj)

@@ -47,7 +47,12 @@
             </form>
           </div>
           <!--表格 -->
-          <summary :table-header="gridColumns" :table-data="list" :page="page" :detail-url="detailUrl"></summary>
+          <summary
+            :table-header="gridColumns"
+            :table-data="list"
+            :page="page"
+            :detail-url="detailUrl">
+          </summary>
         </div>
     </div>
     </div>
@@ -103,7 +108,7 @@
       },
 //    查看详情
       gotoDetail: function (id){
-        window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
+        window.location.href = '#!/admin/purchase/delivery/deliverydetail/'+ id
       }
     },
     data: function () {

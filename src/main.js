@@ -41,6 +41,7 @@ import PurchaseDelivery from 'components/admin/purchase/PurchaseDelivery'
 import CreateNewPurchase from 'components/admin/purchase/CreateNewPurchase'
 import CreateNewPurchaseDelivery from 'components/admin/purchase/CreateNewPurchaseDelivery'
 import PurchaseDetail from 'components/admin/purchase/PurchaseDetail'
+import PurchaseDeliveryDetail from 'components/admin/purchase/PurchaseDeliveryDetail'
 import Setting from 'components/admin/setting/Setting'
 import SettingCreateNew from 'components/admin/setting/SettingCreateNew'
 import SettingEditProduct from 'components/admin/setting/SettingEditProduct'
@@ -211,6 +212,9 @@ router.map({
   },
   '/admin/purchase/delivery': {
     component: PurchaseDelivery
+  },
+  '/admin/purchase/delivery/deliverydetail/:queryId': {
+    component: PurchaseDeliveryDetail
   },
   '/admin/purchase/delivery/createNewDelivery': {
     component: CreateNewPurchaseDelivery
