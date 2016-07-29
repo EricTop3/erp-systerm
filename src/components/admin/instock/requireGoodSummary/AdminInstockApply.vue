@@ -79,15 +79,15 @@
 </style>
 <script>
   import $ from 'jquery'
-  import AdminNav from '../AdminNav'
-  import LeftInstock from '../common/LeftInstock'
-  import Grid from '../../common/Grid'
-  import Modal from '../../common/Modal'
-  import Page from '../../common/Page'
-  import ListFinish from '../../common/ListFinish'
-  import DatePicker from '../../common/DatePicker'
-  import ErrorTip from '../../common/ErrorTip'
-  import Summary from '../../common/Summary'
+  import AdminNav from '../../AdminNav'
+  import LeftInstock from '../../common/LeftInstock'
+  import Grid from '../../../common/Grid'
+  import Modal from '../../../common/Modal'
+  import Page from '../../../common/Page'
+  import ListFinish from '../../../common/ListFinish'
+  import DatePicker from '../../../common/DatePicker'
+  import ErrorTip from '../../../common/ErrorTip'
+  import Summary from '../../../common/Summary'
   import {
     requestUrl,
     requestSystemUrl,
@@ -98,7 +98,7 @@
     getDataFromApi,
     deleteRequest,
     finishRequest
-  } from '../../../publicFunction/index'
+  } from '../../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,

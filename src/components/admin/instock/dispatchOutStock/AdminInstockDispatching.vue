@@ -61,7 +61,11 @@
         </div>
 
         <!-- 表格 -->
-        <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
+        <summary
+          :table-data="list"
+          :table-header="gridColumns"
+          :page="page">
+        </summary>
       </div>
     </div>
   </div>
@@ -70,13 +74,13 @@
 </style>
 <script>
   import $ from 'jquery'
-  import Grid from '../../common/Grid'
-  import Page from '../../common/Page'
-  import AdminNav from '../AdminNav'
-  import Modal from '../../common/Modal'
-  import Summary from '../../common/Summary'
-  import DatePicker from  '../../common/DatePicker'
-  import LeftInstock from '../common/LeftInstock'
+  import Grid from '../../../common/Grid'
+  import Page from '../../../common/Page'
+  import AdminNav from '../../AdminNav'
+  import Modal from '../../../common/Modal'
+  import Summary from '../../../common/Summary'
+  import DatePicker from  '../../../common/DatePicker'
+  import LeftInstock from '../../common/LeftInstock'
   import {
     requestUrl,
     requestSystemUrl,
@@ -87,7 +91,7 @@
     deleteRequest,
     checkRequest,
     finishRequest,
-    changeStatus} from '../../../publicFunction/index'
+    changeStatus} from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -140,7 +144,7 @@
       },
 //    查看详情
       gotoDetail: function (id){
-//        window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
+        window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
       }
     },
     ready: function () {
@@ -191,14 +195,14 @@
           endTime1:'',
         },
         gridColumns: {
-          document_number: '配送单号',
+          order_number: '配送单号',
           checked: '审核状态',
-          a: '出货仓库',
-          b: '调入仓库',
+          stream_origin_name: '出货仓库',
+          warehouse_name: '调入仓库',
           creator_name: '制单人',
           auditor_name: '审核人',
-          c: '配送时间',
-          d: '配送数量'
+          operated_at: '配送时间',
+          amount: '配送数量'
         },
         /*gridColumns: {
           document_number: "配送单号",

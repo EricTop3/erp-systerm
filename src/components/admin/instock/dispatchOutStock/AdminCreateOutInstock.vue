@@ -89,22 +89,22 @@
 </style>
 <script>
   import $ from 'jquery'
-  import Grid from '../../common/Grid'
-  import Page from '../../common/Page'
-  import AdminNav from '../AdminNav'
-  import StockGoods from '../../common/StockGoodsOperate'
-  import DatePicker from '../../common/DatePicker'
-  import Summary from '../../common/Summary'
-  import IntroduceData  from '../../common/IntroduceData'
-  import ErrorTip from '../../common/ErrorTip'
-  import LeftInstock from '../common/LeftInstock'
+  import Grid from '../../../common/Grid'
+  import Page from '../../../common/Page'
+  import AdminNav from '../../AdminNav'
+  import StockGoods from '../../../common/StockGoodsOperate'
+  import DatePicker from '../../../common/DatePicker'
+  import Summary from '../../../common/Summary'
+  import IntroduceData  from '../../../common/IntroduceData'
+  import ErrorTip from '../../../common/ErrorTip'
+  import LeftInstock from '../../common/LeftInstock'
   import {
     requestSystemUrl,
     token,
     searchRequest,
     getDataFromApi,
     postDataToApi
-  } from '../../../publicFunction/index'
+  } from '../../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
@@ -196,7 +196,7 @@
       }
     },
     methods: {
-//     提交采购
+//     提交配送出库
       uploadPurchase: function () {
         var self = this
         var items = []
@@ -206,15 +206,13 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.amount = val.amount
-          obj.price = val.price
+          obj.amount = val.stock_send_amount
           items.push(obj)
         });
 //      采购需要填写的数据
         var data = {
           items: items,
           note: this.note,
-//          provider_id: this.selectedSupplier
           operated_at: this.sendTime,
           stream_origin_id: this.selectedOutHouse,
           warehouse_id: this.selectedInHouse
@@ -243,7 +241,7 @@
           this.modal.errInfo = 'high,你的配送数量不能为空哟'
         }else{
           postDataToApi(url,data,function (response) {
-//            window.location.href = "#!/admin/purchase/order"
+            window.location.href = "#!/admin/instock/dispatching"
           })
         }
       },
