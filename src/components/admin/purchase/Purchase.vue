@@ -134,7 +134,7 @@
       getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
         self.search.orderMaker = response.data.body.list
       })
-//    获取供应商
+//    获取合作工厂
       getDataFromApi(requestUrl + '/backend-system/provider/provider',{},function(response){
         self.search.providerList = response.data.body.list
       })
