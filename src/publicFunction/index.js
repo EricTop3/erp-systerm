@@ -212,9 +212,9 @@ export function  getDataFromApi(url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-       //if(err.status === 401){
-       //  window.location.href = '?#!/admin/login'
-       //}
+       if(err.status === 401){
+         window.location.href = '?#!/admin/login'
+       }
     })
 }
 //  post提交数据的方法
