@@ -120,6 +120,15 @@
             <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
             <td v-if="entry.factory_product_amount!=undefind">{{entry.factory_product_amount}}</td>
             <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
+            <!--委外生产单-->
+            <td v-if="entry.delegation_unit!=undefind">{{entry.delegation_unit}}</td>
+            <td v-if="entry.delegation_total_stock!=undefind">{{entry.delegation_total_stock}}</td>
+            <td v-if="entry.delegation_required_amount!=undefind">{{entry.delegation_required_amount}}</td>
+            <td v-if="entry.delegation_product_amount!=undefind && editFlag===false">{{entry.delegation_product_amount}}</td>
+            <td v-if="entry.delegation_product_amount!=undefind && editFlag===true"><count :count="entry.delegation_product_amount"></count></td>
+            <td v-if="entry.delegation_unit_price!=undefind && editFlag===false">{{entry.delegation_unit_price}}</td>
+            <td v-if="entry.delegation_unit_price!=undefind && editFlag===true"><count :count="entry.delegation_unit_price"></count></td>
+            <td v-if="entry.delegation_origen_number!=undefind">{{entry.delegation_origen_number}}</td>
           </tr>
           </tbody>
         </table>
@@ -181,6 +190,13 @@
             <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
             <td v-if="entry.factory_product_amount!=undefind">{{entry.factory_product_amount}}</td>
             <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
+            <!--委外生产单-->
+            <td v-if="entry.delegation_unit!=undefind">{{entry.delegation_unit}}</td>
+            <td v-if="entry.delegation_total_stock!=undefind">{{entry.delegation_total_stock}}</td>
+            <td v-if="entry.delegation_required_amount!=undefind">{{entry.delegation_required_amount}}</td>
+            <td v-if="entry.delegation_product_amount!=undefind && editFlag===false">{{entry.delegation_product_amount}}</td>
+            <td v-if="entry.delegation_unit_price!=undefind && editFlag===false">{{entry.delegation_unit_price}}</td>
+            <td v-if="entry.delegation_origen_number!=undefind">{{entry.delegation_origen_number}}</td>
           </tr>
           </tbody>
         </table>
@@ -189,7 +205,6 @@
               <!--:last-page="page.last_page"></page>-->
       </div>
     </div>
-  </div>
   </div>
 </template>
 <script>

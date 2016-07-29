@@ -76,6 +76,13 @@
             <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
             <td v-if="entry.factory_product_amount!=undefind"><count :count.sync="entry.factory_product_amount"></count>{{entry.factory_product_amount}}</td>
             <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
+            <!--委外生产单-->
+            <td v-if="entry.delegation_unit!=undefind">{{entry.delegation_unit}}</td>
+            <td v-if="entry.delegation_total_stock!=undefind">{{entry.delegation_total_stock}}</td>
+            <td v-if="entry.delegation_require_goods!=undefind">{{entry.delegation_require_goods}}</td>
+            <td v-if="entry.delegation_product_amount!=undefind"><count :count.sync="entry.delegation_product_amount"></count>{{entry.production_unit_name}}</td>
+            <td v-if="entry.delegation_product_price!=undefind"><count :count.sync="entry.delegation_product_price"></count>{{entry.production_unit_name}}</td>
+            <td v-if="entry.delegation_origen_source!=undefind">{{entry.delegation_origen_source}}</td>
             <td>
               <slot name="operate">
                 <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -131,6 +138,9 @@
               <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
               <td v-if="entry.factory_product_amount!=undefind">{{entry.factory_product_amount}}</td>
               <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
+              <!--委外生产单-->
+              <td v-if="entry.delegation_require_goods!=undefind">{{entry.delegation_require_goods}}</td>
+              <td v-if="entry.delegation_total_stock!=undefind">{{entry.delegation_total_stock}}</td>
               <!--<td>{{20130516168}}</td>-->
             </tr>
             </tbody>
