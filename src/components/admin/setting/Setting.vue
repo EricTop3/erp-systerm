@@ -213,6 +213,11 @@
         getDataFromApi(url,data,function(response){
           self.productList = response.data.body.list
           exchangeData( self.productList)
+          $.each(self.productList, function (index, val) {
+            if (val.aruc == 0) {
+              val.aruc = ''
+            }
+          })
           self.page =  response.data.body.pagination
         })
       },
@@ -243,6 +248,11 @@
         searchRequest(url,data,function(response){
           self.productList = response.data.body.list
           exchangeData( self.productList)
+          $.each(self.productList, function (index, val) {
+            if (val.aruc == 0) {
+              val.aruc = ''
+            }
+          })
           self.page =  response.data.body.pagination
         })
       },
@@ -254,6 +264,11 @@
         searchRequest(url,data,function(response){
           self.productList = response.data.body.list
           exchangeData( self.productList)
+          $.each(self.productList, function (index, val) {
+            if (val.aruc == 0) {
+              val.aruc = ''
+            }
+          })
           self.page =  response.data.body.pagination
         })
       }

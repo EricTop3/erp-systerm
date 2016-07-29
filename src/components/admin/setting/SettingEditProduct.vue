@@ -303,7 +303,7 @@
         self.createList.sell_unit = response.data.body.sell_unit_id
         self.createList.safe_stock = response.data.body.safe_stock
         self.createList.production_unit = response.data.body.production_unit_id !== null ? response.data.body.production_unit_id : ''
-        self.createList.aruc = response.data.body.aruc
+        self.createList.aruc = response.data.body.aruc == 0 ? '' : response.data.body.aruc
         self.createList.apuc = response.data.body.apuc
 //        createList.use_bill_of_material
         if(response.data.body.bom == ''){
