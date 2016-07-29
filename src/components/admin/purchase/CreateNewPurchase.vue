@@ -174,6 +174,7 @@
 //     提交采购
       uploadPurchase: function () {
         var self = this
+        console.log( self.reference_type )
         var items = []
         var uploadFlag = true
 //      采购请求地址
@@ -216,12 +217,12 @@
       },
 //      添加商品
       addStockGoods: function ( ){
-        self.reference_type = 'Purchase'
+        this.reference_type = 'Purchase'
         this.modal.addGoodModal=true
       },
 //     引入数据
       inclucdePurchaseData: function () {
-        self.reference_type  = "ProductItem",
+        this.reference_type  = "ProductItem",
          this.modal.parentIntroModal = true
       },
     },

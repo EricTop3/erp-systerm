@@ -192,7 +192,7 @@
           items: items,
           operated_at: this.time,
           note: this.note,
-          provider_id: this.selectedSupplier,
+          provider_id: this.selectedWarehouse,
           warehouse_id:  this.selectedWarehouse
         }
 //      判断采购数量和采购单价是否为空
@@ -205,10 +205,10 @@
         if(this.time===''){
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没有填收货日期哟'
-        }else if(this.selectedSupplier===''){
+        }else if(this.selectedWarehouse===''){
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没有选择供应商哟'
-        }else if(this.selectedSupplier===''){
+        }else if(this.selectedAlotStock===''){
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没有选择收货仓库哟'
         }else if(items.length<1){
