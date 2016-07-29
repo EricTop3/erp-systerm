@@ -218,7 +218,7 @@
       },
 //      添加商品
       addStockGoods: function ( ){
-        this.reference_type = 'Purchase'
+        this.reference_type = 'Requisition'
         this.modal.addGoodModal=true
       },
 //     引入数据
@@ -230,7 +230,7 @@
     data: function () {
       return {
         showPage: [],
-        reference_type: 'ProductItem',
+        reference_type: 'Requisition',
         sendTime: '',
         selectedOutHouse: '',
         selectedInHouse: '',

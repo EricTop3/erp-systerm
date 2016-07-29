@@ -222,13 +222,13 @@
       },
 //     引入数据
       inclucdePurchaseData: function () {
-        this.reference_type  = "ProductItem",
+        this.reference_type  = "Requisition",
          this.modal.parentIntroModal = true
       },
     },
     data: function () {
       return {
-        reference_type : "ProductItem",
+        reference_type : "Requisition",
         showPage: [],
         selectedSupplier: '',
         note: '',

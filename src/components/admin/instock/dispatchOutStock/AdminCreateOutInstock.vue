@@ -141,11 +141,10 @@
           val.in_stock = ''
           val.out_stock = ''
           val.stock_send_amount = ''
-          val.new_instock_unit = val.specification_unit
-          delete   val.specification_unit
           val.stock_unit_name = val.production_unit_name
           val.stock_required_amount  = ''
           val.stock_origen_number= ''
+          val.new_instock_unit = val.specification_unit
         })
       },
 //      引入原始数据添加商品
@@ -248,7 +247,7 @@
       },
 //      添加商品
       addStockGoods: function ( ){
-        this.reference_type = 'Purchase'
+        this.reference_type = 'Receiving'
         this.modal.addGoodModal=true
       },
 //     引入数据
@@ -260,7 +259,7 @@
     data: function () {
       return {
         showPage: [],
-        reference_type: 'ProductItem',
+        reference_type: 'Receiving',
         sendTime: '',
         selectedOutHouse: '',
         selectedInHouse: '',

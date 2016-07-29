@@ -50,8 +50,8 @@
           <tr class="text-center" v-for="entry in tableData" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td v-if="entry.code">{{entry.code}}</td>
             <td v-if="entry.name">{{entry.name}}</td>
-            <td v-if="entry.unit_name">{{entry.unit_name}}</td>
-            <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
+            <!--<td v-if="entry.unit_name">{{entry.unit_name}}</td>-->
+            <!--<td v-if="entry.specification_unit">{{entry.specification_unit}}</td>-->
             <!--收货数量-->
             <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
             <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
@@ -64,7 +64,7 @@
             <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
             <!--库存配送出库数量-->
             <td v-if="entry.in_stock!=undefind">{{entry.in_stock}}</td>
-            <td v-if="entry.out_stock!=undefind">{{{entry.out_stock}}</td>
+            <td v-if="entry.out_stock!=undefind">{{entry.out_stock}}</td>
             <td v-if="entry.stock_required_amount!=undefind">{{entry.stock_required_amount}}</td>
             <td v-if="entry.stock_send_amount!=undefind"><count :count.sync="entry.stock_send_amount"></count></td>
             <td v-if="entry.stock_unit_name!=undefind">{{entry.stock_unit_name}}</td>
@@ -104,7 +104,7 @@
               <td v-if="entry.code">{{entry.code}}</td>
               <td v-if="entry.name">{{entry.name}}</td>
               <td v-if="entry.unit_name">{{entry.unit_name}}</td>
-              <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
+              <!--<td v-if="entry.specification_unit">{{entry.specification_unit}}</td>-->
               <!--收货数量-->
               <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
               <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>

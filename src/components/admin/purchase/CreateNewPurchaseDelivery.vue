@@ -181,6 +181,7 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
+          obj.reference_type = 'Purchase'
           obj.additional_amount = val.additional_amount
           obj.refund_amount = val.refund_amount
           obj.received_amount = val.received_amount
