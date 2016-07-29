@@ -94,6 +94,7 @@
 </template>
 
 <script>
+  import $ from 'jquery'
   import AdminNav from '../AdminNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'

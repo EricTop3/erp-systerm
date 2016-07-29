@@ -3,21 +3,12 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2" role="navigation">
-        <ul class="nav nav-stacked sidebar">
-          <li class="active"><a v-link="{ path: '/admin/production/factoryCreat'}">工厂生产单</a></li>
-          <li><a v-link="{ path: '/admin/production/delegationCreat'}">委外生产单</a></li>
-          <li><a v-link="{ path: '/admin/production/getSupplies'}">领料单</a></li>
-          <li><a v-link="{ path: '/admin/production/creatInstock'}">生产入库单</a></li>
-          <li><a v-link="{ path: '/admin/production/delegationInstock'}">委外生产入库单</a></li>
-          <li><a v-link="{ path: '/admin/production/creatOrder'}">生产预约单</a></li>
-        </ul>
-      </div>
+      <left-production></left-production>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
-          <li class="active">生产单</li>
+          <li class="active">工厂生产单</li>
           <li class="active">列表</li>
         </ol>
 
@@ -52,7 +43,7 @@
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
             <span class="btn btn-warning">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr">新建生产单</span>
+            <span v-link="{path:'/admin/production/factoryCreat'}" class="btn btn-info spanblocks fr">新建生产单</span>
 
           </form>
         </div>
