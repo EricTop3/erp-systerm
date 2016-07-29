@@ -50,8 +50,8 @@
           <tr class="text-center" v-for="entry in tableData" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td v-if="entry.code">{{entry.code}}</td>
             <td v-if="entry.name">{{entry.name}}</td>
-            <!--<td v-if="entry.unit_name">{{entry.unit_name}}</td>-->
-            <!--<td v-if="entry.specification_unit">{{entry.specification_unit}}</td>-->
+            <td v-if="entry.unit_name">{{entry.unit_name}}</td>
+            <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
             <!--收货数量-->
             <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
             <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
