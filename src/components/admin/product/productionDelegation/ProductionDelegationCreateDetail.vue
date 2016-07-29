@@ -46,6 +46,7 @@
     deleteRequest,
     checkRequest,
     finishRequest,
+    detailNull,
     changeStatus } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -108,17 +109,28 @@
         var self = this
 //        获取商品列表详情
         var url = requestSystemUrl + '/backend-system/produce/outsource/' + currentId
-//       获取采购列表详情
+//       获取列表详情
         var purchaseUrl  = requestSystemUrl + '/backend-system/produce/outsource/' + currentId + '/get'
 //       获取商品列表详情
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
           $.each(self.detailList,function(index,val){
-            delete val.unit_name
-            val.origen_source = val.reference_number
+            detailNull(val)
+            val.delegation_unit= val.unit_specification
+            delete val.unit_specification
+            val.delegation_total_stock = val.origin_stock_amount
+            delete val.origin_stock_amount
+            val.delegation_required_amount= val.demand_amount
+            delete val.demand_amount
+            val.delegation_product_amount= val.main_reference_value
+            delete val.main_reference_value
+            val.delegation_unit_price= val.unit_price
+            delete val.unit_price
+            val.delegation_origen_number = val.reference_number
+            delete val.reference_number
           })
         })
-//        获取采购列表详情
+//        获取列表详情
         getDataFromApi(purchaseUrl,{},function(response){
           self.list = response.data.body
           exchangeData(self.list)
@@ -136,20 +148,20 @@
           checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
-          provider_name: '合作工厂',
-          operated_at: '制单日期',
-          demand_amount: '生产日期',
-          received_amount: '加工费用'
+          outsource_name: '合作工厂',
+          created_at: '制单日期',
+          operated_at: '生产日期',
+          amount: '加工费用'
         },
         gridColumns2: {
           code: "货号",
           name: "品名",
-          main_reference_value: "生产数量",
-          received_amount:"入库数量",
-          additional_amount:"赠送数量",
-          refund_amount:"次品数量",
-          purchase_price:"加工单价",
-          origen_source: '单位规格'
+          unit_space: '单位规格',
+          total_stock: '总部库存',
+          required_amount: "门店要货量",
+          product_amount:'生产数量',
+          unit_price:"加工单价",
+          origen_number:"来源要货单号"
         }
       }
     }

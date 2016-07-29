@@ -136,7 +136,7 @@
           checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
-          operated_at: '制单日期',
+          created_at: '制单日期',
           operated_at: '生产日期',
           amount: '生产数量'
         },
@@ -148,7 +148,6 @@
           required_amount: '门店要货量',
           product_amount: '生产数量',
           origen_number: '来源要货单号',
-
         }
       }
     }
