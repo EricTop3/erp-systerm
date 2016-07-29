@@ -148,9 +148,6 @@
           val.stock_origen_number= ''
         })
       },
-
-
-
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
@@ -209,7 +206,6 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.reference_type = 'ProductItem'
           obj.amount = val.amount
           obj.price = val.price
           items.push(obj)

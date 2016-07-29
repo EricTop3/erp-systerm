@@ -42,7 +42,7 @@
               <label>供应商</label>
               <select class="form-control" v-model="search.selectedSuppier">
                 <option value="">请选择</option>
-                <option :value="itme.id" v-for="item in search.providerList">{{item.name}}</option>
+                <option :value="item.id" v-for="item in search.providerList">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group mt20">
@@ -163,6 +163,9 @@
         }
         this.listData(data)
       },
+      cancelSearch: function () {
+        this.listData({})
+      }
     },
     data: function () {
       return {

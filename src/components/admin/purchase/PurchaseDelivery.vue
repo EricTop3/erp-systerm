@@ -10,40 +10,43 @@
             <li class="active">采购收货</li>
             <li class="active">列表</li>
           </ol>
-
           <!-- 页头 -->
           <div class="page-header">
             <form class="form-inline">
               <div class="form-group">
                 <label>单号</label>
-                <input type="text" class="form-control" placeholder="">
+                <input type="text" class="form-control" placeholder="请输入单号" v-model="search.code">
               </div>
               <div class="form-group  ml10">
                 <label>审核状态</label>
-                <select class="form-control">
-                  <option>请选择</option>
+                <select class="form-control" v-model="search.selectedStatus">
+                  <option value="">请选择</option>
+                  <option value="0">未审核</option>
+                  <option value="1">已审核</option>
                 </select>
               </div>
               <div class="form-group ml10">
                 <label>制单人</label>
-                <select class="form-control">
-                  <option>请选择</option>
+                <select class="form-control" v-model="search.selectedMaker">
+                  <option value="">请选择</option>
+                  <option :value="item.id" v-for="item in search.orderMaker" >{{item.name}}</option>
                 </select>
               </div>
               <div class="form-group ml10">
                 <label>收货时间段</label>
-                <input type="text"class="form-control date_picker" placeholder="开始时间"> -
-                <input type="text"class="form-control date_picker" placeholder="结束时间">
+                <date-picker :value.sync="time.startTime"></date-picker> -
+                <date-picker :value.sync="time.endTime"></date-picker>
               </div>
               <div class="form-group ml10">
                 <label>供应商</label>
-                <select class="form-control">
-                  <option>请选择</option>
+                <select class="form-control" v-model="search.selectedSuppier">
+                  <option value="">请选择</option>
+                  <option :value="item.code" v-for="item in search.providerList">{{item.name}}</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary">搜索</button>
-              <span class="btn btn-warning">撤销搜索</span>
-              <a  v-link="{path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr">新建收货单</a>
+              <span type="submit" class="btn btn-primary" @click="searchMethod">搜索</span>
+              <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
+              <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr">新建收货单</a>
             </form>
           </div>
           <!--表格 -->
@@ -51,7 +54,7 @@
             :table-header="gridColumns"
             :table-data="list"
             :page="page"
-            :detail-url="detailUrl">
+          >
           </summary>
         </div>
     </div>
@@ -63,15 +66,27 @@
   import AdminNav from '../AdminNav'
   import LeftPurchase from '../common/LeftPurchase'
   import Summary from '../../common/Summary'
-  import {requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
+  import DatePicker from '../../common/DatePicker'
+  import {requestSystemUrl,requestUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
   export default{
     components:{
       AdminNav: AdminNav,
       LeftPurchase: LeftPurchase,
-      Summary: Summary
+      Summary: Summary,
+      DatePicker: DatePicker
     },
     ready: function (){
-      this.fetlistFormApi()
+      var self = this
+      //    获取制单人
+      getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
+        self.search.orderMaker = response.data.body.list
+        console.log( self.search.orderMaker)
+      })
+//    获取供应商
+      getDataFromApi(requestUrl + '/backend-system/provider/provider',{},function(response){
+        self.search.providerList = response.data.body.list
+      })
+      this.fetlistFormApi({})
     },
     events: {
 //    绑定翻页事件
@@ -125,18 +140,45 @@
           "refund_amount": '退货数量'
         },
         list: [],
+        time:{
+          startTime:'',
+          endTime:'',
+        },
+        search: {
+          selectedStatus: '',
+          selectedMaker: '',
+          selectedSuppier: '',
+          alotStock: [],
+          code: '',
+          orderMaker: [],
+          providerList: [],
+        },
         page: {},
       }
     },
     methods:  {
-      fetlistFormApi: function (){
+      fetlistFormApi: function (data){
         var url = requestSystemUrl +  '/backend-system/purchase/receive'
         var self = this
-        getDataFromApi(url,{},function(response){
+        getDataFromApi(url,data,function(response){
           self.list = response.data.body.list
           changeStatus(self.list)
           self.page = response.data.body.pagination
         })
+      },
+      searchMethod: function () {
+        var data = {
+          created_id: this.search.selectedMaker,
+          document_number: this.search.code,
+          checked: this.search.selectedStatus,
+          provider_id: this.search.selectedSuppier,
+          start_receive_time: this.time.startTime,
+          end_receive_time: this.time.endTime,
+        }
+        this.fetlistFormApi(data)
+      },
+      cancelSearch: function () {
+        this.fetlistFormApi({})
       }
     }
   }
