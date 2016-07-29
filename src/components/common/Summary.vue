@@ -70,6 +70,12 @@
             <td v-if="entry.stock_unit_name!=undefind">{{entry.stock_unit_name}}</td>
             <td v-if="entry.new_instock_unit!=undefind">{{entry.new_instock_unit}}</td>
             <td v-if="entry.stock_origen_number!=undefind">{{entry.stock_origen_number}}</td>
+            <!--工厂生产单-->
+            <td v-if="entry.factory_instock_unit!=undefind">{{entry.factory_instock_unit}}</td>
+            <td v-if="entry.factory_total_stock!=undefind">{{entry.factory_total_stock}}</td>
+            <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
+            <td v-if="entry.factory_product_amount!=undefind"><count :count.sync="entry.factory_product_amount"></count>{{entry.factory_product_amount}}</td>
+            <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
             <td>
               <slot name="operate">
                 <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -119,6 +125,12 @@
               <td v-if="entry.stock_unit_name!=undefind">{{entry.stock_unit_name}}</td>
               <td v-if="entry.new_instock_unit!=undefind">{{entry.new_instock_unit}}</td>
               <td v-if="entry.stock_origen_number!=undefind">{{entry.stock_origen_number}}</td>
+              <!--工厂生产单-->
+              <td v-if="entry.factory_instock_unit!=undefind">{{entry.factory_instock_unit}}</td>
+              <td v-if="entry.factory_total_stock!=undefind">{{entry.factory_total_stock}}</td>
+              <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
+              <td v-if="entry.factory_product_amount!=undefind">{{entry.factory_product_amount}}</td>
+              <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
               <!--<td>{{20130516168}}</td>-->
             </tr>
             </tbody>

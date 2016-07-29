@@ -114,6 +114,12 @@
             <td v-if="entry.distribution_purchase_unit!=undefind">{{entry.distribution_purchase_unit}}</td>
             <td v-if="entry.distribution_unit!=undefind">{{entry.distribution_unit}}</td>
             <td v-if="entry.distribution_reference_number!=undefind">{{entry.distribution_reference_number}}</td>
+            <!--工厂生产单-->
+            <td v-if="entry.factory_unit!=undefind">{{entry.factory_unit}}</td>
+            <td v-if="entry.factory_total_stock!=undefind">{{entry.factory_total_stock}}</td>
+            <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
+            <td v-if="entry.factory_product_amount!=undefind">{{entry.factory_product_amount}</td>
+            <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}</td>
           </tr>
           </tbody>
         </table>
@@ -169,6 +175,12 @@
             <td v-if="entry.distribution_purchase_unit!=undefind">{{entry.distribution_purchase_unit}}</td>
             <td v-if="entry.distribution_unit!=undefind">{{entry.distribution_unit}}</td>
             <td v-if="entry.distribution_reference_number!=undefind">{{entry.distribution_reference_number}}</td>
+            <!--工厂生产单-->
+            <td v-if="entry.factory_unit!=undefind">{{entry.factory_unit}}</td>
+            <td v-if="entry.factory_total_stock!=undefind">{{entry.factory_total_stock}}</td>
+            <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
+            <td v-if="entry.factory_product_amount!=undefind">{{entry.factory_product_amount}</td>
+            <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}</td>
           </tr>
           </tbody>
         </table>

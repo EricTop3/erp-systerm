@@ -50,8 +50,9 @@ import SettingCoupon from 'components/admin/setting/SettingCoupon'
 import SettingPartner from 'components/admin/setting/SettingPartner'
 import SettingUserAccount from 'components/admin/setting/SettingUserAccount'
 import SettingAdminAccount from 'components/admin/setting/SettingAdminAccount'
-import Production from 'components/admin/product/Production'
-import ProductionFactoryCreat from 'components/admin/product/ProductionFactoryCreat'
+import Production from 'components/admin/product/factory/Production'
+import ProductionFactoryCreat from 'components/admin/product/factory/ProductionFactoryCreat'
+import FactoryProductDetail from 'components/admin/product/factory/FactoryProductDetail'
 import ProductionDelegationCreat from 'components/admin/product/ProductionDelegationCreat'
 import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplies'
 import ProductionCreatInstock from 'components/admin/product/ProductionCreatInstock'
@@ -68,6 +69,7 @@ import AdminInstockDifference from 'components/admin/instock/differenceInstock/A
 import AdminInstockDifferenceDetail from 'components/admin/instock/differenceInstock/AdminInstockDifferenceDetail'
 import AdminInstockDispatching from 'components/admin/instock/dispatchOutStock/AdminInstockDispatching'
 import AdminCreateOutInstock from 'components/admin/instock/dispatchOutStock/AdminCreateOutInstock'
+import DispatchStockDetail from 'components/admin/instock/dispatchOutStock/DispatchStockDetail'
 import AdminInstockSale from 'components/admin/instock/saleStock/AdminInstockSale'
 import AdminInstockApply from 'components/admin/instock/requireGoodSummary/AdminInstockApply'
 import AdminInstockapplyDetail from 'components/admin/instock/requireGoodSummary/AdminInstockapplyDetail'
@@ -256,6 +258,9 @@ router.map({
   '/admin/production/factoryCreat': {
     component: ProductionFactoryCreat
   },
+  '/admin/production/factory/:queryId': {
+    component: FactoryProductDetail
+  },
   '/admin/production/delegationCreat': {
     component: ProductionDelegationCreat
   },
@@ -297,6 +302,9 @@ router.map({
   },
   '/admin/instock/createOutInstock': {
     component: AdminCreateOutInstock
+  },
+  '/admin/instock/dispatching/:queryId': {
+    component: DispatchStockDetail
   },
   '/admin/instock/sale': {
     component: AdminInstockSale

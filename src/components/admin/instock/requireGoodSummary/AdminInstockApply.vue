@@ -58,7 +58,7 @@
               </select>
             </div>
             <br>
-            <button type="submit" class="btn btn-primary mt20" @click="getlistData(1)">搜索</button>
+            <span type="submit" class="btn btn-primary mt20" @click="getlistData(1)">搜索</span>
             <span class="btn btn-warning mt20" @click="cancelSearch()">撤销搜索</span>
           </form>
         </div>

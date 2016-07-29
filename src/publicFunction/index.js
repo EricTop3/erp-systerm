@@ -267,3 +267,11 @@ export function  putDataToApi (url, data, callback, callbackErr) {
       console.log(err)
     })
 }
+//  对象为null的方法
+export function  detailNull (val) {
+  for(var key in val){
+    if(val[key]==null){
+      val[key] = ''
+    }
+  }
+}
