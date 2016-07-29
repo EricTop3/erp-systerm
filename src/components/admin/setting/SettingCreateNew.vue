@@ -151,8 +151,9 @@
             </div>
             <div class="form-group ml10">
               <label>安全库存</label>
-              <input type="text" class="form-control" v-model="createList.safe_stock" v-validate:safestock="['required']">
-              <div style="float: right;">
+              <input v-if="createList.product_type != 2" type="text" class="form-control" v-model="createList.safe_stock">
+              <input v-else type="text" class="form-control" v-model="createList.safe_stock" v-validate:safestock="['required']">
+              <div v-if="!(createList.product_type != 2)" style="float: right;">
                 <p v-if="$validationSet.safestock.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
@@ -383,7 +384,7 @@
                 materials: materials
               }
               postDataToApi( url,data,function(response) {
-                console.log(minimal_unit_value)
+                console.log(self.minimal_unit_value)
                 window.location.href = '?#!/admin/setting'
               },function (err) {
 //            判断货号是否重复
@@ -420,7 +421,6 @@
             use_bill_of_material: self.createList.use_bill_of_material,
             materials: materials
           }
-
           postDataToApi( url,data,function(response) {
             window.location.href = '?#!/admin/setting'
           },function (err) {

@@ -54,8 +54,7 @@
               <label>要货门店</label>
               <select class="form-control" v-model="searchData.store_id">
                 <option value="">请选择</option>
-                <option v-for="item in userAccountListdata" track-by="$index" :value="item.id">{{item.display_name}}
-                </option>
+                <option v-for="item in userAccountListdata" track-by="$index" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
             <br>
@@ -127,8 +126,8 @@
         })
       },
       //    查看详情
-      gotoDetail: function (id) {
-        window.location.href = '/#!/admin/instock/apply/applyDetail/' + id
+      gotoDetail: function (id){
+        window.location.href = '/#!/admin/instock/apply/applyDetail/'+ id
       }
     },
     ready: function () {

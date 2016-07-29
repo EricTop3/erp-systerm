@@ -213,6 +213,19 @@
         getDataFromApi(url,data,function(response){
           self.productList = response.data.body.list
           exchangeData( self.productList)
+          $.each(self.productList, function (index, val) {
+            if (val.aruc == 0 || val.aruc == null) {
+              val.aruc = ''
+            } else {
+              val.aruc = val.sell_unit_name ? (val.aruc + '/' + val.sell_unit_name) : ''
+            }
+            if (val.apuc == 0 || val.apuc == null) {
+              val.apuc = ''
+            } else {
+              val.apuc = val.production_unit_name ? (val.apuc + '/' + val.production_unit_name) : ''
+            }
+          })
+
           self.page =  response.data.body.pagination
         })
       },
@@ -243,6 +256,18 @@
         searchRequest(url,data,function(response){
           self.productList = response.data.body.list
           exchangeData( self.productList)
+          $.each(self.productList, function (index, val) {
+            if (val.aruc == 0 || val.aruc == null) {
+              val.aruc = ''
+            } else {
+              val.aruc = val.sell_unit_name ? (val.aruc + '/' + val.sell_unit_name) : ''
+            }
+            if (val.apuc == 0 || val.apuc == null) {
+              val.apuc = ''
+            } else {
+              val.apuc = val.production_unit_name ? (val.apuc + '/' + val.production_unit_name) : ''
+            }
+          })
           self.page =  response.data.body.pagination
         })
       },
@@ -254,6 +279,18 @@
         searchRequest(url,data,function(response){
           self.productList = response.data.body.list
           exchangeData( self.productList)
+          $.each(self.productList, function (index, val) {
+            if (val.aruc == 0 || val.aruc == null) {
+              val.aruc = ''
+            } else {
+              val.aruc = val.sell_unit_name ? (val.aruc + '/' + val.sell_unit_name) : ''
+            }
+            if (val.apuc == 0 || val.apuc == null) {
+              val.apuc = ''
+            } else {
+              val.apuc = val.production_unit_name ? (val.apuc + '/' + val.production_unit_name) : ''
+            }
+          })
           self.page =  response.data.body.pagination
         })
       }

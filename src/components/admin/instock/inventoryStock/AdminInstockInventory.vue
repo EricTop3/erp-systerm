@@ -171,8 +171,8 @@
 <style>
 </style>
 <script>
-  import LeftInstock from '../common/LeftInstock'
-  import AdminNav from '../AdminNav'
+  import LeftInstock from '../../common/LeftInstock'
+  import AdminNav from '../../AdminNav'
   export default{
     components: {
       LeftInstock: LeftInstock,

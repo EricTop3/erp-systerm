@@ -18,41 +18,44 @@
           <form class="form-inline">
             <div class="form-group">
               <label>单号</label>
-              <input type="text" class="form-control" placeholder="" v-model="searchData.document_number">
+              <input type="text" class="form-control" placeholder="请输入单号" v-model="searchData.document_number">
             </div>
             <div class="form-group ml10">
               <label>审核状态</label>
               <select class="form-control" v-model="searchData.checked">
-                <option value="0">全部</option>
+                <option value="">请选择</option>
                 <option value="1">未审核</option>
                 <option value="2">已审核</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>调入仓库</label>
-              <select class="form-control" v-model="searchData.provider_id">
-                <option>请选择</option>
+              <select class="form-control" v-model="searchData.warehouse_id">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>出货仓库</label>
-              <select class="form-control" v-model="searchData.warehouse_id">
-                <option>请选择</option>
+              <select class="form-control" v-model="searchData.stream_origin_id">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>制单人</label>
               <select class="form-control" v-model="searchData.creator_id">
-                <option>请选择</option>
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in orderMaker">{{item.name}}</option>
               </select>
             </div>
             <br/>
             <div class="form-group ml10 mt20">
               <label>配送时间段</label>
-              <date-picker :value.sync="time.startTime"></date-picker> -
-              <date-picker :value.sync="time.endTime"></date-picker>
+              <date-picker :value.sync="searchData.start_receive_time"></date-picker> -
+              <date-picker :value.sync="searchData.end_receive_time"></date-picker>
             </div>
-            <button type="submit" class="btn btn-primary mt20" @click="getlistData(1)">搜索</button>
+            <button type="submit" class="btn btn-primary mt20" @click="searchMethod()">搜索</button>
             <span class="btn btn-warning mt20" @click="cancelSearch()">撤销搜索</span>
 
             <span class="btn fr btn-info">导出excel</span>
@@ -61,7 +64,11 @@
         </div>
 
         <!-- 表格 -->
-        <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
+        <summary
+          :table-data="list"
+          :table-header="gridColumns"
+          :page="page">
+        </summary>
       </div>
     </div>
   </div>
@@ -70,13 +77,13 @@
 </style>
 <script>
   import $ from 'jquery'
-  import Grid from '../../common/Grid'
-  import Page from '../../common/Page'
-  import AdminNav from '../AdminNav'
-  import Modal from '../../common/Modal'
-  import Summary from '../../common/Summary'
-  import DatePicker from  '../../common/DatePicker'
-  import LeftInstock from '../common/LeftInstock'
+  import Grid from '../../../common/Grid'
+  import Page from '../../../common/Page'
+  import AdminNav from '../../AdminNav'
+  import Modal from '../../../common/Modal'
+  import Summary from '../../../common/Summary'
+  import DatePicker from  '../../../common/DatePicker'
+  import LeftInstock from '../../common/LeftInstock'
   import {
     requestUrl,
     requestSystemUrl,
@@ -87,7 +94,7 @@
     deleteRequest,
     checkRequest,
     finishRequest,
-    changeStatus} from '../../../publicFunction/index'
+    changeStatus} from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -112,7 +119,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          changeStatus(this.list)
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -121,7 +128,7 @@
       deleteFromApi: function (id) {
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/stock/distribution/'+ id,function(response){
-          console.log('deleted')
+          self.listData({})
         })
       },
 //     審核请求
@@ -140,85 +147,79 @@
       },
 //    查看详情
       gotoDetail: function (id){
-//        window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
+        window.location.href = '#!/admin/instock/dispatching/'+ id
       }
     },
     ready: function () {
-      this.listData(1)
+      var self = this
+//      获取制单人
+      getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
+        self.orderMaker = response.data.body.list
+      })
+//    获取仓库列表
+      getDataFromApi(requestSystemUrl + '/backend-system/warehouse-minimal-list',{},function(response){
+        self.warehouseList = response.data.body.list
+      })
+      this.listData({})
     },
     methods: {
 //      列表数据渲染
-      listData: function (page) {
+      listData: function (data) {
         var self = this
         var url = requestUrl + '/backend-system/stock/distribution'
-        getDataFromApi(url,{},function(response){
+        getDataFromApi(url,data,function(response){
           self.list = response.data.body.list
           self.page = response.data.body.pagination
-          changeStatus(self.list)
+          exchangeData(self.list)
         })
       },
-/*      getlistData: function (page) {
-        var self = this
-        var url = requestSystemUrl + '/backend-system/stock/distribution'
-        var data = {
-          document_number: this.searchData.document_number || '',
-          checked: this.searchData.checked || '',
-          provider_id: this.searchData.provider_id || '',
-          warehouse_id: this.searchData.warehouse_id || '',
-          creator_id: this.searchData.creator_id || '',
-          start_receive_time: this.searchData.start_receive_time || '',
-          end_receive_time: this.searchData.end_receive_time || '',
-          page: page || ''
-        }
-        getDataFromApi(url, data, function (response) {
-          self.listdata = response.data.body.list
-          self.page = response.data.body.pagination
-        })
+      searchMethod: function () {
+        var data ={
+            document_number: this.searchData.document_number || '',
+            checked: this.searchData.checked || '',
+            warehouse_id: this.searchData.warehouse_id || '',
+            stream_origin_id: this.searchData.stream_origin_id || '',
+            creator_id: this.searchData.creator_id || '',
+            start_receive_time: this.searchData.start_receive_time || '',
+            end_receive_time: this.searchData.end_receive_time || '',
+          }
+        this.listData(data)
       },
+//    撤销搜索
       cancelSearch: function () {
-        this.searchData = {}
-        this.getlistData(1)
-      }*/
+        this.listData({})
+      }
     },
     data: function () {
       return {
         page: [],
         list: [],
+        warehouseList: [],
         time:{
           startTime:'',
           startTime1:'',
           endTime:'',
           endTime1:'',
         },
+        orderMaker: [],
         gridColumns: {
-          document_number: '配送单号',
+          order_number: '配送单号',
           checked: '审核状态',
-          a: '出货仓库',
-          b: '调入仓库',
+          stream_origin_name: '出货仓库',
+          warehouse_name: '调入仓库',
           creator_name: '制单人',
           auditor_name: '审核人',
-          c: '配送时间',
-          d: '配送数量'
+          operated_at: '配送时间',
+          amount: '配送数量'
         },
-        /*gridColumns: {
-          document_number: "配送单号",
-          checked: "审核状态",
-          warehouse_name: "调入仓库",
-          creator_name: "制单人",
-          auditor_name: "审核人",
-          operated_at: "配送时间",
-          amount: "配送数量"
-        },*/
-//        gridOperate: false,
-//        listdata: [],
         searchData: {
           document_number: '',
           checked: 0,
-          provider_id: '',
           warehouse_id: '',
           creator_id: '',
           start_receive_time: '',
-          end_receive_time: ''
+          end_receive_time: '',
+          stream_origin_id: '',
         }
       }
     }

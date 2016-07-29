@@ -200,8 +200,8 @@ export function finishRequest (url,callback) {
       console.log(err)
     })
 }
-// 获取数据的方法
-export function  getDataFromApi(url, data, callback) {
+// 后端获取数据的方法
+export function  getDataFromApi(url, data, callback,error) {
   var cur = new Vue()
   cur.$http({
       url: url,
@@ -212,9 +212,28 @@ export function  getDataFromApi(url, data, callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
-       //if(err.status === 401){
-       //  window.location.href = '?#!/admin/login'
-       //}
+       if(err.status === 401){
+         window.location.href = '?#!/admin/login'
+       }
+      error && error(err)
+    })
+}
+// 前端获取数据的方法
+export function  getDataFromSiteApi(url, data, callback,error) {
+  var cur = new Vue()
+  cur.$http({
+      url: url,
+      method: 'get',
+      data: data,
+      headers: {'X-Overpowered-Token': token}
+    })
+    .then(function (response) {
+      callback && callback(response)
+    }, function (err) {
+      if(err.status === 401){
+        window.location.href = '?#!/site/login'
+      }
+      error && error(err)
     })
 }
 //  post提交数据的方法

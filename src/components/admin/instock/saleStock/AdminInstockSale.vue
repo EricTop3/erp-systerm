@@ -7,7 +7,7 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
-          <li class="active">生产出库</li>
+          <li class="active">销售出库</li>
           <li class="active">列表</li>
         </ol>
 
@@ -15,9 +15,9 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>仓库</label>
+              <label>门店</label>
               <select class="form-control">
-                <option>水星店</option>
+                <option>全部</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -35,9 +35,8 @@
               <input type="text"class="form-control date_picker" placeholder="结束时间">
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
-            <button type="submit" class="btn btn-warning">撤销搜索</button>
-          </form><br>
-          <span class="f12 c-erp">注：统计工厂产成品，委外产成品，门店产成品在生产中消耗的原材料库存量</span>
+            <span class="btn btn-warning">撤销搜索</span>
+          </form>
         </div>
 
         <!-- 表格 -->
@@ -47,8 +46,8 @@
             <td class="text-left">门店</td>
             <td>货号</td>
             <td>品名</td>
-            <td>生产出库量</td>
-            <td>单位</td>
+            <td>零售出库量</td>
+            <td>零售单位</td>
             <td>单位规格</td>
             <td>商品分类</td>
             <td>操作</td>
@@ -57,13 +56,13 @@
           <tbody>
           <tr class="text-center">
             <td class="text-left">两江店</td>
-            <td>WP51254668856654</td>
+            <td>164643138431315</td>
             <td>伊利牛奶</td>
-            <td>1000</td>
+            <td>2000</td>
             <td>箱</td>
             <td>1箱*20盒*250ml</td>
             <td>咖啡原材料</td>
-            <td><a href="#"><span class="btn btn-default">生产明细</span></a></td>
+            <td><a href="#"><span class="btn btn-primary">销售明细</span></a></td>
           </tr>
           </tbody>
         </table>
@@ -80,7 +79,6 @@
             <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
           </ul>
         </nav>
-
       </div>
     </div>
   </div>
@@ -88,8 +86,8 @@
 <style>
 </style>
 <script>
-  import AdminNav from '../AdminNav'
-  import LeftInstock from '../common/LeftInstock'
+  import AdminNav from '../../AdminNav'
+  import LeftInstock from '../../common/LeftInstock'
   export default{
     components: {
       AdminNav: AdminNav,
