@@ -36,6 +36,7 @@
                 </option>
               </select>
             </div>
+            <br>
             <div class="form-group ml10">
               <label>要货时间段</label>
               <date-picker :value.sync="searchData.requisition_start_time" :time-text="timetext1"
@@ -57,7 +58,6 @@
                 <option v-for="item in userAccountListdata" track-by="$index" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
-            <br>
             <span type="submit" class="btn btn-primary mt20" @click="getlistData(1)">搜索</span>
             <span class="btn btn-warning mt20" @click="cancelSearch()">撤销搜索</span>
           </form>

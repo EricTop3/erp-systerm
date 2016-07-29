@@ -97,11 +97,6 @@
         console.log(currentObjCheck)
 //    根据当前id获取产品
         getDataFromApi(this.url + "/" + currentId,{},function(response){
-          $.each(response.data.body.list,function(index,val){
-            if(val.store_distribution_id ===currentId){
-              val.store_distribution_id  ===  '123456'
-            }
-          })
           fetchedData = response.data.body.list
           var firtElem = fetchedData[0]
           var lastElem = fetchedData[fetchedData.length - 1]
@@ -125,6 +120,7 @@
       },
 //      全选上面表格加载下面数据
       changeAll: function (checkAll) {
+        self.secondData = []
         var self = this
         if (checkAll) {
           $.each(this.firstData, function (index, val) {
@@ -145,9 +141,9 @@
         var goodslist = this.secondData
         $.each(goodslist, function (index, val) {
           if (checkAll) {
-            val.checked = true
+            val.choice = true
           } else {
-            val.checked = false
+            val.choice = false
           }
         })
       },
@@ -157,13 +153,13 @@
         if (currentObjCheck) {
           $.each(goodslist, function (index, val) {
             if (val.id === currentId) {
-              val.checked = true
+              val.choice = true
             }
           })
         } else {
           $.each(goodslist, function (index, val) {
             if (val.id === currentId) {
-              val.checked = false
+              val.choice = false
             }
           })
         }

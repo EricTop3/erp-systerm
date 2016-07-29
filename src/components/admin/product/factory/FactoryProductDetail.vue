@@ -103,15 +103,16 @@
 //       获取商品列表详情
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
-          console.log(null == null)
           $.each(self.detailList,function(indec,val){
             detailNull(val)
             val.factory_required_amount= val.demand_amount
+            delete val.demand_amount
             val.factory_product_amount= val.main_reference_value
             delete val.main_reference_value
             val.factory_unit= val.unit_specification
             delete val.unit_specification
             val.factory_total_stock = val.origin_stock_amount
+            delete val.origin_stock_amount
             val.factory_origen_number = val.reference_number
             delete val.reference_number
           })
