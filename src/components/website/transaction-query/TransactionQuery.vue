@@ -336,7 +336,7 @@
   import Count from '../../common/Count'
   import DatePicker from '../../common/DatePicker'
   import Modal from  '../../common/Modal'
-  import {requestUrl,token,searchRequest} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, error} from '../../../publicFunction/index'
   var detailId = 0
   var paymentid = 0
   export default {
@@ -457,7 +457,7 @@
         this.$http.get(url, data, {headers: {'X-Overpowered-Token': token}}).then(function (response) {
           callback && callback(response)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      对获取到的数据进行处理
@@ -553,7 +553,7 @@
           this.userReceivedModal = false
           $(this.currentButton).remove()
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      门店签收
@@ -578,12 +578,12 @@
           var data = {
             order_type: this.orderType,
           }
-          this.fetchData(url,data,function(response){
+          this.fetchData(url, data, function (response) {
             console.log(response)
             $(self.currentButton).remove()
           })
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      退款
@@ -604,7 +604,7 @@
           this.returnMoneyModal = false
           $(this.currentButton).remove()
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      退货
@@ -622,7 +622,7 @@
             value.total_refund = value.total_sell
           })
         }, function (err) {
-          console.log(err)
+          error(err)
         })
 
         this.currentButton = button
@@ -690,7 +690,7 @@
           this.paymentModal = false
           $(this.currentButton).remove()
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       }
     },

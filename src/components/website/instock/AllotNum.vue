@@ -66,7 +66,16 @@
   import Page from '../../common/Page'
   import Summary from  '../../common/Summary'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {
+    requestUrl,
+    token,
+    searchRequest,
+    exchangeData,
+    deleteRequest,
+    checkRequest,
+    finishRequest,
+    error
+  } from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -82,25 +91,25 @@
       },
 //      删除请求
       deleteFromApi: function (id) {
-    var self = this
-    deleteRequest('/front-system/stock/recipient/',id,function(response){
-      console.log('deleted')
-    })
-  },
-  //     審核请求
-  checkFromApi: function (id) {
-    var self = this
-    checkRequest('/front-system/stock/check/',id,function(response){
-      console.log('finished')
-    })
-  },
-  //     完成請求
-  finishFromApi: function (id) {
-    var self = this
-    finishRequest('/front-system/stock/finish/',id,function(response){
-      console.log('finished')
-    })
-  }
+        var self = this
+        deleteRequest('/front-system/stock/recipient/', id, function (response) {
+          console.log('deleted')
+        })
+      },
+      //     審核请求
+      checkFromApi: function (id) {
+        var self = this
+        checkRequest('/front-system/stock/check/', id, function (response) {
+          console.log('finished')
+        })
+      },
+      //     完成請求
+      finishFromApi: function (id) {
+        var self = this
+        finishRequest('/front-system/stock/finish/', id, function (response) {
+          console.log('finished')
+        })
+      }
     },
     ready: function () {
       this.listData(1)
@@ -112,7 +121,7 @@
       }).then(function (response) {
         this.creators = response.data.body
       }, function (err) {
-        console.log(err)
+        error(err)
       })
     },
     methods: {
@@ -138,7 +147,7 @@
           this.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      搜索页面

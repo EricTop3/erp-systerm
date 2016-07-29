@@ -58,7 +58,7 @@
   import ErrorTip from '../../common/ErrorTip'
   import DatePicker from  '../../common/DatePicker'
   import Summary from '../../common/Summary'
-  import {requestUrl, token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   var deleteId = ''
   var data = []
   export default {
@@ -154,7 +154,7 @@
           this.page = response.data.body.pagination
           this.citeData = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      提交入货

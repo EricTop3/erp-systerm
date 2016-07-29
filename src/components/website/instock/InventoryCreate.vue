@@ -57,11 +57,13 @@
     </table>
 
     <!--分页-->
-    <page :total='rederStockGoods.length' :current.sync='instockPage.current_page' :display='instockPage.per_page' :last-page='instockPage.last_page'>
+    <page :total='rederStockGoods.length' :current.sync='instockPage.current_page' :display='instockPage.per_page'
+          :last-page='instockPage.last_page'>
     </page>
   </div>
   <!--模态框-添加商品-->
-  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize" :add-data.sync="stockGoods"></stock-goods>
+  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
+               :add-data.sync="stockGoods"></stock-goods>
   <!--模态框HTML-->
 
   <!--模态框-删除-->
@@ -107,7 +109,7 @@
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl,token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
@@ -144,7 +146,7 @@
           this.rederStockGoods = response.data.body.list
           this.page = response.data.body.pagination
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      明细列表渲染
@@ -164,7 +166,7 @@
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //     删除弹出框
@@ -211,7 +213,7 @@
           }).then(function (reponse) {
             window.location.href = '/#!/site/instock/Inventory'
           }, function (err) {
-            console.log(err)
+            error(err)
           })
         }
       }

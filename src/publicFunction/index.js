@@ -275,3 +275,7 @@ export function  detailNull (val) {
     }
   }
 }
+// 前后台错误代码验证方法
+export function error(err) {
+  console.log(err)
+}

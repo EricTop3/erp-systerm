@@ -144,7 +144,7 @@
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestUrl, token, searchRequest, exchangeData} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, exchangeData, error} from '../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
@@ -175,7 +175,7 @@
           this.listdata = response.data.body.list
           this.page = response.data.body.pagination
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      编辑
@@ -189,7 +189,7 @@
         }).then(function (response) {
           this.formData = response.data.body
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      保存编辑
@@ -206,7 +206,7 @@
           this.editModal = false
           this.getlistdata(1)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      删除
@@ -248,7 +248,7 @@
             this.createModal = false
             this.getlistdata(1)
           }, function (err) {
-            console.log(err)
+            error(err)
           })
       },
 //      表单验证

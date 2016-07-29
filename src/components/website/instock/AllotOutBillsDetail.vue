@@ -7,14 +7,15 @@
       <li class="active">收货单汇总</li>
       <li class="active">查看收货单汇总</li>
     </ol>
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page="page">
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list"
+                    :second-table-header='gridColumns2' :grid-operate="gridOperate" :page="page">
     </summary-detail>
   </div>
 </template>
 <script>
   import SiteNav from '../SiteNav'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,exchangeData} from '../../../publicFunction/index'
+  import {requestUrl, exchangeData, error} from '../../../publicFunction/index'
   export default {
     components: {
       SummaryDetail: SummaryDetail,
@@ -47,7 +48,7 @@
           this.list = response.data.body
           exchangeData(this.list)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      明细列表渲染 /front-system/stock/products/{id}/detail
@@ -59,7 +60,7 @@
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       }
     },

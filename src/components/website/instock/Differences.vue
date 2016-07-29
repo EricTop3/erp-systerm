@@ -18,7 +18,8 @@
         </div>
         <div class="form-group ml10">
           <label>销售时间段</label>
-          <date-picker :value.sync="query.start_time"></date-picker>-
+          <date-picker :value.sync="query.start_time"></date-picker>
+          -
           <date-picker :value.sync="query.end_time"></date-picker>
         </div>
         <div class="form-group">
@@ -48,7 +49,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token,searchRequest,exchangeData} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, exchangeData, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -72,7 +73,7 @@
       }).then(function (response) {
         this.category = response.data.body.list
       }, function (err) {
-        console.log(err)
+        error(err)
       })
     },
     methods: {
@@ -94,7 +95,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
       detail: function (event) {
@@ -113,12 +114,12 @@
             search: this.query.search,
             per_page: 16
           },
-          function (response){
-          self.list = response.data.body.list
-              self.page = response.data.body.pagination
-              exchangeData(self.list)
-            }
-          )
+          function (response) {
+            self.list = response.data.body.list
+            self.page = response.data.body.pagination
+            exchangeData(self.list)
+          }
+        )
       },
       cancel: function () {
         this.query.start_time = ''

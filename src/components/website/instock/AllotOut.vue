@@ -118,7 +118,7 @@
   import Page from '../../common/Page'
   import ListDelete from '../../common/ListDelete'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
@@ -140,7 +140,7 @@
       }).then(function (response) {
         this.store = response.data.body
       }, function (err) {
-        console.log(err)
+        error(err)
       })
     },
     events: {

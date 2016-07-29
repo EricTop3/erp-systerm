@@ -13,7 +13,7 @@
       <form action="" method="post" class="form-inline">
         <div class="form-group ml10">
           <label>送货时间</label>
-          <date-picker  :value.sync="startTime"></date-picker>
+          <date-picker :value.sync="startTime"></date-picker>
         </div>
         <div class="form-group">
           <label>备注</label>
@@ -60,7 +60,8 @@
   </div>
   <!--模态框-添加商品-->
   <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :add-data.sync="stockGoods" :page.sync="showPage" :goods-list-title="goodsListTitle" :get-render-data="rederStockGoods" :product-url="productUrl" :category-url="categoryUrl"></stock-goods>
+               :add-data.sync="stockGoods" :page.sync="showPage" :goods-list-title="goodsListTitle"
+               :get-render-data="rederStockGoods" :product-url="productUrl" :category-url="categoryUrl"></stock-goods>
   <!--错误信息弹出-->
   <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
     <div slot='header'>
@@ -88,7 +89,7 @@
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
   import ListDelete from '../../common/ListDelete'
-  import {requestUrl,token, deleteRequest,postDataToApi} from '../../../publicFunction/index'
+  import {requestUrl, token, deleteRequest, postDataToApi, erroe} from '../../../publicFunction/index'
   export default {
     components: {
       StockGoods: StockGoods,
@@ -105,43 +106,43 @@
       confirmAdd: function () {
         var self = this
         $.each(self.stockGoods, function (index, val) {
-         if(val.choice && !val.again) {
-              val.again = true
-              self.dataArray.push(val)
-            }
-          })
+          if (val.choice && !val.again) {
+            val.again = true
+            self.dataArray.push(val)
+          }
+        })
         this.rederStockGoods = self.dataArray
         this.old = self.dataArray
-        this.localPage( this.old)
+        this.localPage(this.old)
         this.rederStockGoods = this.old
         console.log(this.old)
       },
 //      分页
-      pagechange: function(currentpage){
-         this.current_page = currentpage
-         this.localPage( this.old)
+      pagechange: function (currentpage) {
+        this.current_page = currentpage
+        this.localPage(this.old)
         this.rederStockGoods = this.old
       },
 //      删除
-      delete: function(id){
+      delete: function (id) {
         var self = this
 //       添加商品的状态改变
-        $.each(this.stockGoods,function(index,val){
-          if(val.id===id){
+        $.each(this.stockGoods, function (index, val) {
+          if (val.id === id) {
             val.choice = false
             val.again = false
           }
         })
 //       从列表中删除
-        $.each(this.rederStockGoods,function(index,val){
-          if(val.id===id){
-            self.rederStockGoods.splice(index,1)
+        $.each(this.rederStockGoods, function (index, val) {
+          if (val.id === id) {
+            self.rederStockGoods.splice(index, 1)
           }
         })
       }
     },
     ready: function () {
-      $.each( this.rederStockGoods,function(index,val){
+      $.each(this.rederStockGoods, function (index, val) {
         val.addFlag = false
       })
     },
@@ -149,10 +150,10 @@
 //     前端本地分页函数
       localPage: function (data) {
         this.len = data.length
-        if( this.len % this.per_page === 0){
-          this.totalPage =  this.len / this.per_page
-        }else {
-          this.totalPage = (Math.floor( this.len / this.per_page)) + 1
+        if (this.len % this.per_page === 0) {
+          this.totalPage = this.len / this.per_page
+        } else {
+          this.totalPage = (Math.floor(this.len / this.per_page)) + 1
         }
         data.splice(this.current_page * this.per_page, this.len - this.current_page * this.per_page)
       },
@@ -165,13 +166,13 @@
           obj['amount'] = Number(val['sale_refund'])
           items.push(obj)
         })
-        if(this.startTime===''){
+        if (this.startTime === '') {
           this.messageTipModal = true
           this.messageTip = 'high,你还没有填写日期哟'
-        }else if(this.rederStockGoods.length<1){
+        } else if (this.rederStockGoods.length < 1) {
           this.messageTipModal = true
           this.messageTip = 'high,你忘记添加商品了哟'
-        }else{
+        } else {
 //          提交要货请求
 //          postDataToApi(
 //            requestUrl + '/front-system/stock/enquiry',
@@ -188,14 +189,14 @@
               'items': items,
               'date': this.startTime,
             },
-          {
-            headers: {'X-Overpowered-Token': token}
-          }
+            {
+              headers: {'X-Overpowered-Token': token}
+            }
           ).then(function (reponse) {
-                var id=reponse.data.body.id
-                window.location.href = '/#!/site/instock/GoodsApplyNum/'+ id
+            var id = reponse.data.body.id
+            window.location.href = '/#!/site/instock/GoodsApplyNum/' + id
           }, function (err) {
-            if(err.data.code ==='100000'){
+            if (err.data.code === '100000') {
               this.messageTipModal = true
               this.messageTip = 'high,填写了要货数量才能提货哟'
             }
@@ -209,7 +210,7 @@
         old: [],
         remarks: '',
         messageTipModal: false,
-        len:0,
+        len: 0,
         current_page: 1,
         per_page: 10,
         totalPage: 1,
@@ -226,7 +227,7 @@
         dataArray: [],
         pageArray: [],
         rederStockGoods: [],
-        goodsListTitle:{
+        goodsListTitle: {
           'code': '货号',
           'name': '品名',
           'sale_amount': '日均销量',
@@ -242,7 +243,7 @@
   }
 </script>
 <style scoped>
-  .modal-body{
+  .modal-body {
     text-align: center;
   }
 </style>

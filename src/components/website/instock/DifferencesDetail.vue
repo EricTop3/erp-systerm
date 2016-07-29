@@ -26,7 +26,7 @@
   import SiteNav from '../SiteNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
-  import {requestUrl} from '../../../publicFunction/index'
+  import {requestUrl, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -59,7 +59,7 @@
         }).then(function (response) {
           this.list = response.data.body
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      明细列表渲染 /front-system/stock/difference/{id}/detail
@@ -78,8 +78,7 @@
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
         }, function (err) {
-
-          console.log(err)
+          error(err)
         })
       }
     },

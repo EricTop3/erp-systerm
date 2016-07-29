@@ -19,7 +19,7 @@
   import Page from '../../common/Page'
   import Modal from '../../common/Modal'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,token,exchangeData, checkRequest} from '../../../publicFunction/index'
+  import {requestUrl,token,exchangeData, checkRequest, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -64,7 +64,7 @@
           this.list = response.data.body
           exchangeData(this.list)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      明细列表渲染 /front-system/stock/products/{id}/detail
@@ -78,7 +78,7 @@
           console.log(this.page.current_page)
           this.detailList = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       }
     },

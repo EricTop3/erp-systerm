@@ -251,7 +251,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from  '../../common/DatePicker'
-  import {requestUrl, token, searchRequest} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, error} from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -301,7 +301,7 @@
             }
           })
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //    创建新会员
@@ -332,7 +332,7 @@
           }).then(function (response) {
             this.listData(1)
           }, function (err) {
-            console.log(err)
+            error(err)
           })
 
           this.creatMemberModal = false
@@ -381,7 +381,7 @@
           this.listData(1)
           this.editModal = false
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //    充值金额
@@ -409,7 +409,7 @@
           this.listData(1)
           this.rechargeModal = false
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //    查看明细

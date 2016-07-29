@@ -26,12 +26,12 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
-      SummaryDetail:SummaryDetail,
+      SummaryDetail: SummaryDetail,
       SiteNav: SiteNav
     },
     events: {
@@ -61,7 +61,7 @@
         }).then(function (response) {
           this.list = response.data.body
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      明细列表渲染 /front-system/stock/products/{id}/detail
@@ -81,7 +81,7 @@
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       }
     },

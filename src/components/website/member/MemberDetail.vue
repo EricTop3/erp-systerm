@@ -133,7 +133,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from  '../../common/DatePicker'
-  import {requestUrl, token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -174,7 +174,7 @@
           })
 
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //    会员详情-列表数据渲染
@@ -201,7 +201,7 @@
           })
 
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //    编辑会员资料
@@ -245,7 +245,7 @@
 
           this.editModal = false
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //    充值金额
@@ -277,7 +277,7 @@
 
           this.rechargeModal = false
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       }
     },
@@ -341,7 +341,7 @@
       }).then(function (response) {
         this.member_level_group = response.data.body
       }, function (err) {
-        console.log(err)
+        error(err)
       })
     }
   }
