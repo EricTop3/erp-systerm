@@ -41,7 +41,7 @@
               <input type="text" class="form-control" v-model="note" style="width: 250px">
             </div>
             <span class="btn btn-primary" @click="inclucdePurchaseData">引用原始单据</span>
-            <span class="btn btn-default" @click="modal.addGoodModal=true">添加商品</span>
+            <span class="btn btn-default" @click="addStockGoods">添加商品</span>
             <span class="btn btn-default" @click="uploadPurchase">提交出库</span>
           </form>
         </div>
@@ -201,15 +201,16 @@
         var self = this
         var items = []
         var uploadFlag = true
-//      采购请求地址
+//      提交配送出库请求地址
         var url = requestSystemUrl + '/backend-system/stock/distribution'
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
+          obj.reference_type = self.reference_type
           obj.amount = val.stock_send_amount
           items.push(obj)
         });
-//      采购需要填写的数据
+//      提交配送出库需要填写的数据
         var data = {
           items: items,
           note: this.note,
@@ -217,7 +218,7 @@
           stream_origin_id: this.selectedOutHouse,
           warehouse_id: this.selectedInHouse
         }
-//      判断采购数量和采购单价是否为空
+//      判断配送出库和采购单价是否为空
         $.each(items,function(index,val){
           if(val.amount ==='' ||val.price ===''){
             uploadFlag = false
@@ -245,14 +246,21 @@
           })
         }
       },
+//      添加商品
+      addStockGoods: function ( ){
+        self.reference_type = 'Purchase'
+        this.modal.addGoodModal=true
+      },
 //     引入数据
       inclucdePurchaseData: function () {
+        self.reference_type = 'ProductItem'
         this.modal.parentIntroModal = true
       },
     },
     data: function () {
       return {
         showPage: [],
+        reference_type: 'ProductItem',
         sendTime: '',
         selectedOutHouse: '',
         selectedInHouse: '',

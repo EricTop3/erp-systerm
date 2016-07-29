@@ -104,6 +104,16 @@
             <td v-if="entry.amount!=undefind">{{entry.amount}}</td>
             <td v-if="entry.price!=undefind">{{entry.price}}</td>
             <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
+            <!--配送出库详情-->
+            <td v-if="entry.goods_code!=undefind">{{entry.goods_code}}</td>
+            <td v-if="entry.goods_name!=undefind">{{entry.goods_name}}</td>
+            <td v-if="entry.origin_stock_amount!=undefind">{{entry.origin_stock_amount}}</td>
+            <td v-if="entry.target_stock_amount!=undefind">{{entry.target_stock_amount}}</td>
+            <td v-if="entry.distribution_required_amount!=undefind">{{entry.distribution_required_amount}}</td>
+            <td v-if="entry.distribution_send_amount!=undefind">{{entry.distribution_send_amount}}</td>
+            <td v-if="entry.distribution_purchase_unit!=undefind">{{entry.distribution_purchase_unit}}</td>
+            <td v-if="entry.distribution_unit!=undefind">{{entry.distribution_unit}}</td>
+            <td v-if="entry.distribution_reference_number!=undefind">{{entry.distribution_reference_number}}</td>
           </tr>
           </tbody>
         </table>
@@ -149,6 +159,16 @@
             <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
             <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
             <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
+            <!--配送出库详情-->
+            <td v-if="entry.goods_code!=undefind">{{entry.goods_code}}</td>
+            <td v-if="entry.goods_name!=undefind">{{entry.goods_name}}</td>
+            <td v-if="entry.origin_stock_amount!=undefind">{{entry.origin_stock_amount}}</td>
+            <td v-if="entry.target_stock_amount!=undefind">{{entry.target_stock_amount}}</td>
+            <td v-if="entry.distribution_required_amount!=undefind">{{entry.distribution_required_amount}}</td>
+            <td v-if="entry.distribution_send_amount!=undefind">{{entry.distribution_send_amount}}</td>
+            <td v-if="entry.distribution_purchase_unit!=undefind">{{entry.distribution_purchase_unit}}</td>
+            <td v-if="entry.distribution_unit!=undefind">{{entry.distribution_unit}}</td>
+            <td v-if="entry.distribution_reference_number!=undefind">{{entry.distribution_reference_number}}</td>
           </tr>
           </tbody>
         </table>

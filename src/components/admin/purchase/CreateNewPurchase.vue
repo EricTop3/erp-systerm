@@ -25,7 +25,7 @@
               <input type="text" class="form-control" placeholder="" style="width: 450px;" v-model="note">
             </div>
             <span class="btn btn-primary" data-toggle="modal" data-target="#data-cite-templ" @click="inclucdePurchaseData">引用原始单据</span>
-            <span class="btn btn-default"  @click="modal.addGoodModal=true">添加商品</span>
+            <span class="btn btn-default"  @click="addStockGoods">添加商品</span>
             <span class="btn btn-default"  data-toggle="modal" data-target="#procurement-submit-templ" @click="uploadPurchase">提交采购</span>
           </form>
         </div>
@@ -181,7 +181,7 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.reference_type = 'ProductItem'
+          obj.reference_type = self.reference_type
           obj.amount = val.amount
           obj.price = val.price
           items.push(obj)
@@ -214,13 +214,20 @@
           })
         }
       },
+//      添加商品
+      addStockGoods: function ( ){
+        self.reference_type = 'Purchase'
+        this.modal.addGoodModal=true
+      },
 //     引入数据
       inclucdePurchaseData: function () {
+        self.reference_type  = "ProductItem",
          this.modal.parentIntroModal = true
       },
     },
     data: function () {
       return {
+        reference_type : "ProductItem",
         showPage: [],
         selectedSupplier: '',
         note: '',
