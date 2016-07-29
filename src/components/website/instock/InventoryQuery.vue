@@ -57,7 +57,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl,token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -90,7 +90,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
       cancel: function () {

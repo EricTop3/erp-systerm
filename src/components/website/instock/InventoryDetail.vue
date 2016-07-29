@@ -16,7 +16,7 @@
   import SiteNav from '../SiteNav'
   import Page from '../../common/Page'
   import  SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl, token,exchangeData} from '../../../publicFunction/index'
+  import {requestUrl, token,exchangeData, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -52,7 +52,7 @@
           this.list = response.data.body
           exchangeData(this.list)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      明细列表渲染 /front-system/stock/inventory/{id}/detail
@@ -72,7 +72,7 @@
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       }
     },

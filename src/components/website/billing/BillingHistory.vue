@@ -12,8 +12,9 @@
       <form class="form-inline text-center">
         <div class="form-group">
           <label>时间段</label>
-          <date-picker  :value.sync="startTime"></date-picker> -
-          <date-picker  :value.sync="endTime"></date-picker>
+          <date-picker :value.sync="startTime"></date-picker>
+          -
+          <date-picker :value.sync="endTime"></date-picker>
         </div>
         <span type="submit" class="btn btn-info ml10" @click="search">搜索</span>
         <span type="submit" class="btn btn-warning" @click="cancel">撤销搜索</span>
@@ -38,7 +39,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl,token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -73,7 +74,7 @@
           this.page = response.data.body.pagination
           this.historyGridData = response.data.body.list
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
       checkDetail: function (event) {

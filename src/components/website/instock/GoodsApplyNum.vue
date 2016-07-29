@@ -68,7 +68,7 @@
   import ListValidate from '../../common/ListValidate'
   import ListDelete from '../../common/ListDelete'
   import DatePicker from '../../common/DatePicker'
-  import { requestUrl,token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import { requestUrl,token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -96,7 +96,7 @@
           var self = this
           exchangeData(this.list)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //     删除请求
@@ -130,7 +130,7 @@
       }).then(function (response) {
         this.creators = response.data.body
       }, function (err) {
-        console.log(err)
+        error(err)
       })
     },
     methods: {
@@ -156,7 +156,7 @@
             }
           })
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
       cancel: function () {

@@ -49,7 +49,7 @@
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
   import Summary from '../../common/Summary'
-  import {requestUrl, token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestUrl, token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -96,7 +96,7 @@
       }).then(function (response) {
         this.creators = response.data.body
       }, function (err) {
-        console.log(err)
+        error(err)
       })
     },
     methods: {
@@ -120,7 +120,7 @@
           this.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
       cancel: function () {

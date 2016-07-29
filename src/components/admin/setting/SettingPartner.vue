@@ -63,81 +63,83 @@
     </div>
     <div slot="body">
       <validator name="validation1">
-      <form action="" method="post" class="form-horizontal">
-        <div class="form-group">
-          <label class="col-sm-4 control-label">合作形式</label>
-          <div class="col-sm-8">
-            <select class="form-control" v-model="postData.type" v-validate:type="{required: true}">
-              <option value="">请选择</option>
-              <option value="1">供应商</option>
-              <option value="2">合作工厂</option>
-            </select>
-            <div v-if="$validation1.type.touched">
-              <p class="error" v-if="$validation1.type.required">请选择供应商或合作工厂</p>
+        <form action="" method="post" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">合作形式</label>
+            <div class="col-sm-8">
+              <select class="form-control" v-model="postData.type" v-validate:type="{required: true}">
+                <option value="">请选择</option>
+                <option value="1">供应商</option>
+                <option value="2">合作工厂</option>
+              </select>
+              <div v-if="$validation1.type.touched">
+                <p class="error" v-if="$validation1.type.required">请选择供应商或合作工厂</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">编号</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code" v-validate:code="{required: true}">
-            <div v-if="$validation1.code.touched">
-              <p class="error" v-if="$validation1.code.required">这是必填项</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">编号</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code"
+                     v-validate:code="{required: true}">
+              <div v-if="$validation1.code.touched">
+                <p class="error" v-if="$validation1.code.required">这是必填项</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">公司全称</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name" v-validate:name="{required: true}">
-            <div v-if="$validation1.name.touched">
-              <p class="error" v-if="$validation1.name.required">这是必填项</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">公司全称</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name"
+                     v-validate:name="{required: true}">
+              <div v-if="$validation1.name.touched">
+                <p class="error" v-if="$validation1.name.required">这是必填项</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">纳税人识别码</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.taxpayer_identification">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">纳税人识别码</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.taxpayer_identification">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">注册地址</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.register_address">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">注册地址</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.register_address">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">注册电话</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.register_phone">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">注册电话</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.register_phone">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">开户银行</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.account_bank">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">开户银行</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.account_bank">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">联系人</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_person">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">联系人</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_person">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">联系人手机</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填1" v-model="postData.contact_phone">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">联系人手机</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填1" v-model="postData.contact_phone">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">详细地址</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_address">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">详细地址</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_address">
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
       </validator>
     </div>
     <div slot="footer">
@@ -155,81 +157,83 @@
     </div>
     <div slot="body">
       <validator name="validation2">
-      <form action="" method="post" class="form-horizontal">
-        <div class="form-group">
-          <label class="col-sm-4 control-label">合作形式</label>
-          <div class="col-sm-8">
-            <select class="form-control" v-model="postData.type" v-validate:type="{required: true}">
-              <option value="">请选择</option>
-              <option value="1">供应商</option>
-              <option value="2">合作工厂</option>
-            </select>
-            <div v-if="$validation2.type.touched">
-              <p class="error" v-if="$validation2.type.required">请选择供应商或合作工厂</p>
+        <form action="" method="post" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">合作形式</label>
+            <div class="col-sm-8">
+              <select class="form-control" v-model="postData.type" v-validate:type="{required: true}">
+                <option value="">请选择</option>
+                <option value="1">供应商</option>
+                <option value="2">合作工厂</option>
+              </select>
+              <div v-if="$validation2.type.touched">
+                <p class="error" v-if="$validation2.type.required">请选择供应商或合作工厂</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">编号</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code" v-validate:code="{required: true}">
-            <div v-if="$validation2.code.touched">
-              <p class="error" v-if="$validation2.code.required">这是必填项</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">编号</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code"
+                     v-validate:code="{required: true}">
+              <div v-if="$validation2.code.touched">
+                <p class="error" v-if="$validation2.code.required">这是必填项</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">公司全称</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name" v-validate:name="{required: true}">
-            <div v-if="$validation2.name.touched">
-              <p class="error" v-if="$validation2.name.required">这是必填项</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">公司全称</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name"
+                     v-validate:name="{required: true}">
+              <div v-if="$validation2.name.touched">
+                <p class="error" v-if="$validation2.name.required">这是必填项</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">纳税人识别码</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.taxpayer_identification">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">纳税人识别码</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.taxpayer_identification">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">注册地址</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.register_address">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">注册地址</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.register_address">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">注册电话</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.register_phone">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">注册电话</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.register_phone">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">开户银行</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.account_bank">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">开户银行</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.account_bank">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">联系人</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_person">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">联系人</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_person">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">联系人手机</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_phone">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">联系人手机</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_phone">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">详细地址</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_address">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">详细地址</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="选填" v-model="postData.contact_address">
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
       </validator>
     </div>
     <div slot="footer">
@@ -331,6 +335,7 @@
     requestUrl,
     requestSystemUrl,
     token,
+    error,
     searchRequest,
     exchangeData,
     postDataToApi,
@@ -435,7 +440,7 @@
           this.modifyGetedData(this.postData)
           this.editModal = true
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      编辑后保存
@@ -460,7 +465,7 @@
           this.editModal = false
           this.getlistData(1)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      查看
@@ -474,7 +479,7 @@
           this.postData = response.data.body
           this.viewModal = true
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      表单验证

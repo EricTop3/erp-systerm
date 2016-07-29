@@ -174,7 +174,7 @@
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestUrl, token, searchRequest, exchangeData} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, exchangeData, error} from '../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
@@ -223,7 +223,7 @@
           this.page = response.data.body.pagination
           this.modifyGetedData(this.listdata)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      取消搜索
@@ -268,7 +268,7 @@
           this.formData = response.data.body
           this.editModal = true
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      编辑后保存
@@ -286,7 +286,7 @@
           this.editModal = false
           this.getlistdata(1)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //      账号权限管理

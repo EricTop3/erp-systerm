@@ -35,11 +35,12 @@
         </div>
         <div class="form-group ml10">
           <label>出库时间段</label>
-          <date-picker :value.sync="query.start_time"></date-picker>-
+          <date-picker :value.sync="query.start_time"></date-picker>
+          -
           <date-picker :value.sync="query.end_time"></date-picker>
         </div>
         <button class="btn btn-info" @click="search">搜索</button>
-        <a v-link="{ path: '/instock/AllotOut'}" ><span class="btn btn-primary">新建出库</span></a>
+        <a v-link="{ path: '/instock/AllotOut'}"><span class="btn btn-primary">新建出库</span></a>
       </form>
     </div>
     <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page"></summary>
@@ -52,7 +53,16 @@
   import Page from '../../common/Page'
   import Summary from '../../common/Summary'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl,token,searchRequest,exchangeData,deleteRequest,finishRequest,checkRequest} from '../../../publicFunction/index'
+  import {
+    requestUrl,
+    token,
+    searchRequest,
+    exchangeData,
+    deleteRequest,
+    finishRequest,
+    checkRequest,
+    error
+  } from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -69,21 +79,21 @@
       //      删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest('/front-system/stock/issue/',id,function(response){
+        deleteRequest('/front-system/stock/issue/', id, function (response) {
           console.log('deleted')
         })
       },
       //     審核请求
       checkFromApi: function (id) {
         var self = this
-        checkRequest('/front-system/stock/check/',id,function(response){
+        checkRequest('/front-system/stock/check/', id, function (response) {
           console.log('finished')
         })
       },
       //     完成請求
       finishFromApi: function (id) {
         var self = this
-        finishRequest('/front-system/stock/finish/',id,function(response){
+        finishRequest('/front-system/stock/finish/', id, function (response) {
           console.log('finished')
         })
       }
@@ -99,7 +109,7 @@
       }).then(function (response) {
         this.creators = response.data.body
       }, function (err) {
-        console.log(err)
+        error(err)
       })
 //      渲染仓库
       this.$http({
@@ -108,8 +118,8 @@
         headers: {'X-Overpowered-Token': token},
       }).then(function (response) {
         this.store = response.data.body
-      },function (err) {
-        console.log(err)
+      }, function (err) {
+        error(err)
       })
     },
     methods: {
@@ -134,7 +144,7 @@
           this.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
       //      搜索页面
@@ -151,7 +161,7 @@
             receipts_store_id: this.query.receipts_store,
             per_page: 16
           },
-          function (response){
+          function (response) {
             self.list = response.data.body.list
             self.page = response.data.body.pagination
             exchangeData(self.list)

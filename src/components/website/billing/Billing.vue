@@ -64,7 +64,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import SiteNav from '../SiteNav'
-  import {requestUrl, token} from '../../../publicFunction/index'
+  import {requestUrl, token, error} from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -115,7 +115,7 @@
           })
 
         }, function (err) {
-          console.log(err)
+          error(err)
         })
       },
 //    确定结算
@@ -127,8 +127,7 @@
           this.settlementModal = false
           this.todayGridData.status = true
         }, function (error) {
-          console.log(error)
-
+          error(error)
         })
       },
       detail: function (event) {
