@@ -27,131 +27,6 @@
   </table>
   <!-- 翻页 -->
   <page :total="page.total" :current.sync="page.current_page" :display="page.per_page" :last-page="page.last_page" v-if="!tabFlag && tableData.length>0"></page>
-  <!--有列表切换的时候的情况-->
-  <div v-if="tabFlag">
-    <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
-      <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- 入库明细 -->
-      <div role="tabpanel" class="tab-pane active" v-if="detailModal">
-        <table class="table table-striped table-bordered table-hover">
-          <thead>
-          <tr class="text-center">
-            <th v-for="value in  tableHeader">
-              {{value}}
-            </th>
-            <th>操作</th>
-
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="text-center" v-for="entry in tableData" track-by="$index" :id="[entry.id ? entry.id : '']">
-            <td v-if="entry.code">{{entry.code}}</td>
-            <td v-if="entry.name">{{entry.name}}</td>
-            <td v-if="entry.unit_name">{{entry.unit_name}}</td>
-            <td v-if="entry.specification_unit">{{entry.specification_unit}}</td>
-            <!--收货数量-->
-            <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
-            <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
-            <td v-if="entry.received_amount!=undefind"><count :count.sync="entry.received_amount"></count>{{entry.unit_name}}</td>
-            <td v-if="entry.additional_amount!=undefind"><count :count.sync="entry.additional_amount"></count>{{entry.unit_name}}</td>
-            <td v-if="entry.refund_amount!=undefind"><count :count.sync="entry.refund_amount"></count>{{entry.unit_name}}</td>
-            <td v-if="entry.received_price!=undefind"><count :count.sync="entry.received_price"></count>/{{entry.unit_name}}</td>
-            <td v-if="entry.amount!=undefind"><count :count.sync="entry.amount"></count>{{entry.production_unit_name}}</td>
-            <td v-if="entry.price!=undefind"><count :count.sync="entry.price"></count>/{{entry.production_unit_name}}</td>
-            <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
-            <!--库存配送出库数量-->
-            <td v-if="entry.in_stock!=undefind">{{entry.in_stock}}</td>
-            <td v-if="entry.out_stock!=undefind">{{entry.out_stock}}</td>
-            <td v-if="entry.stock_required_amount!=undefind">{{entry.stock_required_amount}}</td>
-            <td v-if="entry.stock_send_amount!=undefind"><count :count.sync="entry.stock_send_amount"></count></td>
-            <td v-if="entry.stock_unit_name!=undefind">{{entry.stock_unit_name}}</td>
-            <td v-if="entry.new_instock_unit!=undefind">{{entry.new_instock_unit}}</td>
-            <td v-if="entry.stock_origen_number!=undefind">{{entry.stock_origen_number}}</td>
-            <!--工厂生产单-->
-            <td v-if="entry.factory_instock_unit!=undefind">{{entry.factory_instock_unit}}</td>
-            <td v-if="entry.factory_total_stock!=undefind">{{entry.factory_total_stock}}</td>
-            <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
-            <td v-if="entry.factory_product_amount!=undefind"><count :count.sync="entry.factory_product_amount"></count>{{entry.factory_product_amount}}</td>
-            <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
-            <!--委外生产单-->
-            <td v-if="entry.delegation_unit!=undefind">{{entry.delegation_unit}}</td>
-            <td v-if="entry.delegation_total_stock!=undefind">{{entry.delegation_total_stock}}</td>
-            <td v-if="entry.delegation_require_goods!=undefind">{{entry.delegation_require_goods}}</td>
-            <td v-if="entry.delegation_product_amount!=undefind"><count :count.sync="entry.delegation_product_amount"></count>{{entry.production_unit_name}}</td>
-            <td v-if="entry.delegation_product_price!=undefind"><count :count.sync="entry.delegation_product_price"></count>{{entry.production_unit_name}}</td>
-            <td v-if="entry.delegation_origen_source!=undefind">{{entry.delegation_origen_source}}</td>
-            <td>
-              <slot name="operate">
-                <list-delete :delete-data.sync="tableData" ></list-delete>
-              </slot>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-              <!--:last-page="page.last_page"></page>-->
-      </div>
-
-      <!-- 入库汇总 -->
-      <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
-          <table class="table table-striped table-bordered table-hover">
-            <thead>
-            <tr class="text-center">
-              <th v-for="value in  tableHeader">
-                {{value}}
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="text-center" v-for="entry in summaryData" track-by="$index" :id="[entry.id ? entry.id : '']">
-              <td v-if="entry.code">{{entry.code}}</td>
-              <td v-if="entry.name">{{entry.name}}</td>
-              <td v-if="entry.unit_name">{{entry.unit_name}}</td>
-              <!--<td v-if="entry.specification_unit">{{entry.specification_unit}}</td>-->
-              <!--收货数量-->
-              <td v-if="entry.stock!=undefind">{{entry.stock}}</td>
-              <td v-if="entry.main_reference_value!=undefind">{{entry.main_reference_value}}</td>
-              <td v-if="entry.received_amount!=undefind">{{entry.received_amount}}</td>
-              <td v-if="entry.additional_amount!=undefind">{{entry.additional_amount}}</td>
-              <td v-if="entry.refund_amount!=undefind">{{entry.refund_amount}}</td>
-              <td v-if="entry.received_price!=undefind">{{entry.received_price}}</td>
-              <td v-if="entry.amount!=undefind">{{entry.amount}}</td>
-              <td v-if="entry.price!=undefind">{{entry.price}}</td>
-              <td v-if="entry.origen_source!=undefind">{{entry.origen_source}}</td>
-              <td v-if="entry.demanding_number">{{entry.demanding_number}}</td>
-              <td v-if="entry.distribution_number">{{entry.distribution_number}}</td>
-              <!--库存配送出库数量-->
-              <td v-if="entry.in_stock!=undefind">{{entry.in_stock}}</td>
-              <td v-if="entry.out_stock!=undefind">{{{entry.out_stock}}</td>
-              <td v-if="entry.stock_required_amount!=undefind">{{entry.stock_required_amount}}</td>
-              <td v-if="entry.stock_send_amount!=undefind"><count :count.sync="entry.stock_send_amount"></count></td>
-              <td v-if="entry.stock_unit_name!=undefind">{{entry.stock_unit_name}}</td>
-              <td v-if="entry.new_instock_unit!=undefind">{{entry.new_instock_unit}}</td>
-              <td v-if="entry.stock_origen_number!=undefind">{{entry.stock_origen_number}}</td>
-              <!--工厂生产单-->
-              <td v-if="entry.factory_instock_unit!=undefind">{{entry.factory_instock_unit}}</td>
-              <td v-if="entry.factory_total_stock!=undefind">{{entry.factory_total_stock}}</td>
-              <td v-if="entry.factory_required_amount!=undefind">{{entry.factory_required_amount}}</td>
-              <td v-if="entry.factory_product_amount!=undefind">{{entry.factory_product_amount}}</td>
-              <td v-if="entry.factory_origen_number!=undefind">{{entry.factory_origen_number}}</td>
-              <!--委外生产单-->
-              <td v-if="entry.delegation_require_goods!=undefind">{{entry.delegation_require_goods}}</td>
-              <td v-if="entry.delegation_total_stock!=undefind">{{entry.delegation_total_stock}}</td>
-              <!--<td>{{20130516168}}</td>-->
-            </tr>
-            </tbody>
-          </table>
-          <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-          <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-                <!--:last-page="page.last_page"></page>-->
-        </div>
-    </div>
-  </div>
 </template>
 <script>
   import ListDelete from '../common/ListDelete'
@@ -164,9 +39,7 @@
     props: {
       tableHeader: [],
       tableData: [],
-      summaryData: [],
       page:{},
-      tabFlag: false,
       operate: false
     },
     events: {
@@ -196,27 +69,6 @@
         var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$dispatch("gotoDetail",detailId)
       },
-      changeActive: function (event) {
-        var cur = $(event.currentTarget)
-        cur.addClass('active').siblings('li').removeClass('active')
-        switch (Number(cur.attr('id'))){
-          case 1:
-            this.detailModal = true
-            this.summaryModal = false
-            this.$dispatch('detail')
-            break
-          case 2:
-            this.detailModal = false
-            this.summaryModal = true
-            this.$dispatch('summary')
-        }
-      }
-    },
-    data: function () {
-      return {
-        detailModal: true,
-        summaryModal: false
-      }
     }
   }
 </script>

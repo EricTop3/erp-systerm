@@ -106,7 +106,7 @@
       deleteFromApi: function (id) {
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/purchase/purchase/'+ id,function(response){
-          console.log('deleted')
+          self.listData({})
         })
       },
 //     審核请求

@@ -12,14 +12,80 @@
         </ol>
         <!--详情页面-->
         <summary-detail
-          :tab-flag='tabFlag'
-          :detail-list="detailList"
           :table-header="gridColumns"
           :table-data="list"
-          :second-table-header='gridColumns2'
           :grid-operate="gridOperate"
-          :page.sync="page">
+        >
         </summary-detail>
+        <!--有列表切换的时候的情况-->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- 入库明细 -->
+          <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+            <!--表格详情列表-->
+            <table class="table table-striped table-bordered table-hover">
+              <thead>
+              <tr class="text-center">
+                <th v-for="value in  gridColumns2">
+                  {{value}}
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <td>{{entry.item_code}}</td>
+                <td>{{entry.item_name}}</td>
+                <td>{{entry.main_reference_value}}</td>
+                <td v-if="editFlag"><count :count.sync =entry.received_amount></count></td>
+                <td v-if="!editFlag">{{entry.received_amount}}</td>
+                <td v-if="editFlag"><count :count.sync =entry.additional_amount></count></td>
+                <td v-if="!editFlag">{{entry.additional_amount}}</td>
+                <td v-if="editFlag"><count :count.sync =entry.refund_amount></count></td>
+                <td v-if="!editFlag">{{entry.refund_amount}}</td>
+                <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元</td>
+                <td v-if="!editFlag">{{entry.unit_price}}元</td>
+                <td >{{entry.reference_number}}</td>
+              </tr>
+              </tbody>
+            </table>
+            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+            <!--:last-page="page.last_page"></page>-->
+          </div>
+
+          <!-- 入库汇总 -->
+          <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+            <!--表格详情列表-->
+            <table class="table table-striped table-bordered table-hover">
+              <thead>
+              <tr class="text-center">
+                <th v-for="value in  gridColumns2">
+                  {{value}}
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <td>{{entry.item_code}}</td>
+                <td>{{entry.item_name}}</td>
+                <td>{{entry.main_reference_value}}</td>
+                <td>{{entry.received_amount}}</td>
+                <td>{{entry.additional_amount}}</td>
+                <td>{{entry.refund_amount}}</td>
+                <td>{{entry.unit_price}}元</td>
+                <td>{{entry.reference_number}}</td>
+              </tr>
+              </tbody>
+            </table>
+            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+            <!--:last-page="page.last_page"></page>-->
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -36,6 +102,8 @@
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
   import SummaryDetail from '../../common/SummaryDetail'
+  import Count from '../../common/Count'
+  import Price from  '../../common/Price'
   import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
   export default{
     components: {
@@ -46,7 +114,9 @@
       Summary: Summary,
       DatePicker: DatePicker,
       LeftPurchase: LeftPurchase,
-      SummaryDetail: SummaryDetail
+      SummaryDetail: SummaryDetail,
+      Count: Count,
+      Price: Price
     },
     events: {
 //    绑定翻页事件
@@ -78,7 +148,7 @@
       checkFromApi: function (id) {
         var self = this
         checkRequest(requestSystemUrl+ '/backend-system/purchase/receive/'+ id +'/checked',function(response){
-          console.log('checked')
+          self.editFlag = false
         })
       },
 //     完成請求
@@ -87,6 +157,11 @@
         finishRequest(requestSystemUrl +'/backend-system/purchase/receive/'+ id +'/finished',function(response){
           console.log('finished')
         })
+      },
+
+//           编辑
+      editGoods: function () {
+        this.editFlag = true
       }
     },
     ready: function () {
@@ -104,8 +179,7 @@
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
           $.each(self.detailList,function(index,val){
-            delete val.unit_name
-            val.origen_source = val.reference_number
+              val.unit_price =  (val.unit_price*0.01).toFixed(2)
           })
         })
 //        获取采购列表详情
@@ -113,14 +187,32 @@
           self.list = response.data.body
           changeStatus(self.list)
         })
-      }
+      },
+//      切换
+      changeActive: function (event) {
+    var cur = $(event.currentTarget)
+    cur.addClass('active').siblings('li').removeClass('active')
+    switch (Number(cur.attr('id'))){
+      case 1:
+        this.detailModal = true
+        this.summaryModal = false
+        this.$dispatch('detail')
+        break
+      case 2:
+        this.detailModal = false
+        this.summaryModal = true
+        this.$dispatch('summary')
+    }
+  }
     },
     data: function () {
       return {
         page: [],
         list: {},
+        editFlag: false,
+        detailModal: true,
+        summaryModal: false,
         detailList: [],
-        tabFlag: true,
         gridColumns: {
           document_number: '收货单号',
           checked: '审核状态',

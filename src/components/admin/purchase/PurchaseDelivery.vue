@@ -111,7 +111,7 @@
       deleteFromApi: function (id) {
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/purchase/receive/'+ id,function(response){
-          console.log('deleted')
+          self.fetlistFormApi({})
         })
       },
 //     審核请求

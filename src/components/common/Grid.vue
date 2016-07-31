@@ -78,10 +78,6 @@
   }
 </script>
 <style scoped>
-  table thead tr th {
-    text-align: center
-  }
-
   table thead tr th:first-child {
     text-align: left;
   }
@@ -89,4 +85,5 @@
   table tbody tr td:first-child {
     text-align: left;
   }
+
 </style>

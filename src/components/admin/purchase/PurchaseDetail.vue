@@ -12,17 +12,83 @@
         </ol>
         <!--详情页面-->
         <summary-detail
-          :tab-flag='tabFlag'
-          :detail-list="detailList"
           :table-header="gridColumns"
           :table-data="list"
-          :second-table-header='gridColumns2'
           :grid-operate="gridOperate"
-          :page.sync="page">
+        >
         </summary-detail>
+        <!--有列表切换的时候的情况-->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <!-- 入库明细 -->
+            <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+              <!--表格详情列表-->
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr class="text-center">
+                  <th v-for="value in  gridColumns2">
+                   {{value}}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+                  <td>{{entry.item_code}}</td>
+                  <td>{{entry.item_name}}</td>
+                  <td>{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.unit_specification}}</td>
+                  <td>{{entry.current_stock}}{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.demand_amount}}{{entry.purchase_unit_name}}</td>
+                  <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count>{{entry.purchase_unit_name}}</td>
+                  <td v-if='!editFlag'>{{entry.main_reference_value}}  {{entry.purchase_unit_name}}</td>
+                  <td v-if='editFlag'> <price :price.sync='entry.purchase_unit_price' ></price>元/{{entry.purchase_unit_name}}</td>
+                  <td v-if='!editFlag'>{{entry.purchase_unit_price }}  元/{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.reference_number}}</td>
+                </tr>
+                </tbody>
+              </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
+            </div>
+
+            <!-- 入库汇总 -->
+            <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+              <!--表格详情列表-->
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr class="text-center">
+                  <th v-for="value in  gridColumns2">
+                    {{value}}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+                  <td>{{entry.item_code}}</td>
+                  <td>{{entry.item_name}}</td>
+                  <td>{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.unit_specification}}</td>
+                  <td>{{entry.current_stock}}{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.demand_amount}}{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.main_reference_value}}{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.purchase_unit_price }}元/{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.reference_number}}</td>
+                </tr>
+                </tbody>
+              </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
+            </div>
+          </div>
+        </div>
     </div>
   </div>
-    </div>
 </template>
 <style>
 </style>
@@ -32,6 +98,8 @@
   import Page from '../../common/Page'
   import AdminNav from '../AdminNav'
   import Modal from '../../common/Modal'
+  import Count from '../../common/Count'
+  import Price from  '../../common/Price'
   import Summary from '../../common/Summary'
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
@@ -46,7 +114,9 @@
       Summary: Summary,
       DatePicker: DatePicker,
       LeftPurchase: LeftPurchase,
-      SummaryDetail: SummaryDetail
+      SummaryDetail: SummaryDetail,
+      Count: Count,
+      Price: Price
     },
     events: {
 //    绑定翻页事件
@@ -78,7 +148,7 @@
       checkFromApi: function (id) {
         var self = this
         checkRequest(requestSystemUrl+ '/backend-system/purchase/purchase/'+ id +'/checked',function(response){
-          console.log('checked')
+          self.editFlag =  false
         })
       },
 //     完成請求
@@ -87,6 +157,10 @@
         finishRequest(requestSystemUrl +'/backend-system/purchase/purchase/'+ id +'/finished',function(response){
           console.log('finished')
         })
+      },
+//     编辑
+      editGoods: function () {
+        this.editFlag = true
       }
     },
     ready: function () {
@@ -103,11 +177,8 @@
 //       获取商品列表详情
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
-          $.each(self.detailList,function(indec,val){
-            delete  val.unit_name
-            val.required_amount= val.demand_amount
-            val.pruchase_amount = val.main_reference_value
-            delete val.main_reference_value
+          $.each(self.detailList,function(index,val){
+            val.purchase_unit_price =  (val.purchase_unit_price*0.01).toFixed(2)
           })
         })
 //        获取采购列表详情
@@ -115,12 +186,31 @@
           self.list = response.data.body
           changeStatus(self.list)
         })
+      },
+//     切换
+      changeActive: function (event) {
+        var cur = $(event.currentTarget)
+        cur.addClass('active').siblings('li').removeClass('active')
+        switch (Number(cur.attr('id'))){
+          case 1:
+            this.detailModal = true
+            this.summaryModal = false
+            this.$dispatch('detail')
+            break
+          case 2:
+            this.detailModal = false
+            this.summaryModal = true
+            this.$dispatch('summary')
+        }
       }
     },
     data: function () {
       return {
         page: [],
         list: {},
+        editFlag: false,
+        detailModal: true,
+        summaryModal: false,
         detailList: [],
         tabFlag: true,
         gridOperate: true,
