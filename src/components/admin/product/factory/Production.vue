@@ -52,7 +52,7 @@
             <span type="submit" class="btn btn-primary" @click="searchMethod()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
               <span class="btn fr btn-info">导出excel</span>
-              <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span
+              <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryCreat'}">新建生产单</span>
           </form>
         </div>
 
@@ -199,8 +199,8 @@
           checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
-          operated_at: '配送时间',
-          amount: '配送数量'
+          operated_at: '生產时间',
+          amount: '生產數量'
         },
         timewidth: "timewidth",
         searchData: {

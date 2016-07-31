@@ -6,9 +6,7 @@
   export default{
     name: 'count',
     props: {
-      count: {
-        required: true
-      },
+      count: '',
       amount: {
       },
       flag: false,

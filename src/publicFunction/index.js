@@ -266,6 +266,7 @@ export function  postDataToApi (url, data, callback, error) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
+      console.log(err)
       error && error(err)
     })
 }

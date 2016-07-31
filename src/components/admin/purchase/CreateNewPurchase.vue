@@ -174,15 +174,16 @@
 //      添加商品确认增加
       confirmAdd: function () {
         var self = this
+        detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
+          val.purchase_amount ===''
+          val.purchase_price ===''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
           }
         })
         this.renderstockGoods = self.dataArray
-//       处理商品数据
-        detailGoodsInfo(this.renderstockGoods,'ProductItem')
       },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
@@ -192,6 +193,8 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
+          val.purchase_amount ===''
+          val.purchase_price ===''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -231,6 +234,9 @@
           obj.reference_type = val.reference_type
           obj.amount = val.purchase_amount
           obj.price = val.purchase_price
+          if(val.purchase_amount ==='' ||val.purchase_price ===''){
+            uploadFlag = false
+          }
           items.push(obj)
         });
 //      采购需要填写的数据
@@ -239,12 +245,6 @@
           note: this.note,
           provider_id: this.selectedSupplier
         }
-//      判断采购数量和采购单价是否为空
-        $.each(items,function(index,val){
-          if(val.amount ==='' ||val.price ===''){
-            uploadFlag = false
-          }
-        })
 //       提交之前的判断
         if(this.selectedSupplier===''){
           this.modal.errModal = true

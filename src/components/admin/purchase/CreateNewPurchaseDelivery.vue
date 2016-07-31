@@ -195,6 +195,10 @@
         detailGoodsInfo(this.origenData.secondData,'Purchase')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
+          val.refund_amount ===''
+          val.received_amount ===''
+          val.additional_amount===""
+          val.price === ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -227,6 +231,9 @@
           obj.refund_amount = val.refund_amount
           obj.received_amount = val.received_amount
           obj.price = val.purchase_price
+          if(val.refund_amount ==='' ||val.received_amount ==='' || val.additional_amount==="" ||val.price){
+            uploadFlag = false
+          }
           items.push(obj)
         });
 //      采购需要填写的数据
@@ -237,12 +244,6 @@
           provider_id: this.selectedWarehouse,
           warehouse_id:  this.selectedWarehouse
         }
-//      判断采购数量和采购单价是否为空
-        $.each(items,function(index,val){
-          if(val.refund_amount ==='' ||val.received_amount ==='' || val.additional_amount==="" ||val.price){
-            uploadFlag = false
-          }
-        })
 //       提交之前的判断
         if(this.time===''){
           this.modal.errModal = true
