@@ -3,7 +3,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2"  role="navigation">
+      <div class="col-lg-2" role="navigation">
         <left-production></left-production>
       </div>
       <div class="col-lg-10">
@@ -19,22 +19,24 @@
           <form class="form-inline">
             <div class="form-group">
               <label>单号</label>
-              <input type="text" class="form-control" placeholder="" style="width: 130px;" v-model="searchData.document_number">
+              <input type="text" class="form-control" placeholder="" style="width: 130px;"
+                     v-model="searchData.document_number">
             </div>
             <div class="form-group ml10">
               <label>审核状态</label>
               <select class="form-control" v-model="searchData.checked">
                 <option value="">全部</option>
-                <option value="1">未审核 </option>
+                <option value="1">未审核</option>
                 <option value="2">已审核</option>
                 <option value="3">已完成</option>
               </select>
             </div>
+
             <div class="form-group ml10">
               <label>生产车间库</label>
               <select class="form-control" v-model="searchData.warehouse_id">
                 <option value="">请选择</option>
-                <option v-for="item in listProviderA" track-by="$index" :value="item.id">{{item.name}}
+                <option v-for="item in listProviderA" track-by="$index" :value="item.id">{{item.warehouses_name}}
                 <option v-for="item in listProviderB" track-by="$index" :value="item.id">{{item.name}}
               </select>
             </div>
@@ -120,14 +122,14 @@
       //     删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/produce/pick/'+ id,function(response){
+        deleteRequest(requestSystemUrl + '/backend-system/produce/pick/' + id, function (response) {
           self.getlistData(1)
         })
       },
 //     審核请求
       checkFromApi: function (id) {
         var self = this
-        checkRequest(requestSystemUrl + '/backend-system/produce/pick/' + id + '/checked',function(response){
+        checkRequest(requestSystemUrl + '/backend-system/produce/pick/' + id + '/checked', function (response) {
           self.getlistData(1)
         })
       },
@@ -139,8 +141,8 @@
         })
       },
 //    查看详情
-      gotoDetail: function (id){
-        window.location.href = '/#!/admin/production/getSupplies/'+ id
+      gotoDetail: function (id) {
+        window.location.href = '/#!/admin/production/getSupplies/' + id
       }
     },
     ready: function () {
@@ -164,7 +166,7 @@
           receive_end_time: self.searchData.receive_end_time,
           page: page
         }
-        getDataFromApi(url,data,function(response){
+        getDataFromApi(url, data, function (response) {
           self.listdata = response.data.body.list
           self.page = response.data.body.pagination
           exchangeData(self.listdata)
@@ -175,19 +177,19 @@
         this.searchData = {}
         this.getlistData(1)
       },
-//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/reference-document/warehouse-stock'
+//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
       getlistProviderA: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/provider/provider'
-        getDataFromApi(url,{},function(response){
+        var url = requestSystemUrl + '/backend-system/provider/provider-minimal-list'
+        getDataFromApi(url, {}, function (response) {
           self.listProviderA = response.data.body.list
         })
       },
       getlistProviderB: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/reference-document/warehouse-stock'
-        getDataFromApi(url,{},function(response){
-          self.listProviderB = response.data.body.list
+        var url = requestSystemUrl + '/backend-system/store/store/warehouses-list'
+        getDataFromApi(url, {}, function (response) {
+          self.listProviderB = response.data.body
         })
       }
     },
@@ -200,7 +202,7 @@
         listProviderB: [],
         listdata: [],
         page: [],
-        gridColumns:{
+        gridColumns: {
           document_number: '领料单号',
           checked: '审核状态',
           stream_origin: '生产车间库',

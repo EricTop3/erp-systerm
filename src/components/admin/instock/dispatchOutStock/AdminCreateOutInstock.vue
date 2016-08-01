@@ -214,7 +214,7 @@
         var self = this
         var saveDataArray = []
         var detailArrayFromApi = []
-        detailGoodsInfo(this.origenData.secondData,'Receiving')
+        detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
           val.distribution_amount ===''
@@ -361,7 +361,7 @@
         },
         origenData: {
           title: '原始要货配料单',
-          dataUrl: requestSystemUrl + '/backend-system/reference-document/receive',
+          dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
           firstDataTitle: {
             "document_number": "货单号",
             "store_name": "要货仓库",
