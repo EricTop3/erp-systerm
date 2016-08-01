@@ -34,7 +34,7 @@
             </div>
             <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
             <div class="form-group ml10">
-              <label>采购时间段</label>
+              <label>制单时间段</label>
               <date-picker :value.sync="time.startTime"></date-picker> -
               <date-picker :value.sync="time.endTime"></date-picker>
             </div>
@@ -45,13 +45,8 @@
                 <option :value="item.id" v-for="item in search.providerList">{{item.name}}</option>
               </select>
             </div>
-            <div class="form-group mt20">
-              <label>收货时间段</label>
-              <date-picker :value.sync="time.startTime1"></date-picker> -
-              <date-picker :value.sync="time.endTime1"></date-picker>
-            </div>
-            <span type="submit" class="btn btn-primary  mt20" @click="searchMethod">搜索</span>
-            <span class="btn btn-warning  mt20" @click="cancelSearch">撤销搜索</span>
+            <span type="submit" class="btn btn-primary " @click="searchMethod">搜索</span>
+            <span class="btn btn-warning  " @click="cancelSearch">撤销搜索</span>
           </form>
         </div>
         <!-- 表格 -->
@@ -192,7 +187,6 @@
           auditor_name: '审核人',
           provider_name: '供应商',
           created_at: '制单日期',
-          terminated_at: '到货日期',
           total_sum: '采购金额'
         }
       }
