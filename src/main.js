@@ -56,7 +56,7 @@ import FactoryProductDetail from 'components/admin/product/factory/FactoryProduc
 import ProductionDelegationCreat from 'components/admin/product/productionDelegation/ProductionDelegationCreat'
 import ProductionDelegationCreatNew from 'components/admin/product/productionDelegation/ProductionDelegationCreatNew'
 import ProductionDelegationCreateDetail from 'components/admin/product/productionDelegation/ProductionDelegationCreateDetail'
-import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplies'
+import ProductionGetSupplies from 'components/admin/product/productionGetSupplies/ProductionGetSupplie'
 import InstockList from 'components/admin/product/ProductFactoryInstock/InstockList'
 import CreateInstock from 'components/admin/product/ProductFactoryInstock/CreateInstock'
 import InstockDetail from 'components/admin/product/ProductFactoryInstock/InstockDetail'
