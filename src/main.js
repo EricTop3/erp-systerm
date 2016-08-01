@@ -60,9 +60,9 @@ import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplie
 import InstockList from 'components/admin/product/ProductFactoryInstock/InstockList'
 import CreateInstock from 'components/admin/product/ProductFactoryInstock/CreateInstock'
 import InstockDetail from 'components/admin/product/ProductFactoryInstock/InstockDetail'
-import ProductionCreatInstock from 'components/admin/product/ProductionCreatInstock'
 import ProductionDelegationInstock from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstock'
 import ProductionDelegationInstockNew from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockNew'
+import ProductionDelegationInstockDetail from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockDetail'
 import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
 import AdminMember from 'components/admin/member/MemberIndex'
 import Retail from 'components/admin/retail/Retail'
@@ -293,6 +293,9 @@ router.map({
   },
   '/admin/production/delegationInstock/ProductionDelegationInstockNew': {
     component: ProductionDelegationInstockNew
+  },
+  '/admin/production/delegationInstock/ProductionDelegationInstockDetail/:queryId': {
+    component: ProductionDelegationInstockDetail
   },
   '/admin/production/creatOrder': {
     component: ProductionCreatOrder

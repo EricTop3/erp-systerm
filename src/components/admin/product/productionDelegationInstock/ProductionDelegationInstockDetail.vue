@@ -8,128 +8,80 @@
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
           <li class="active">委外生产入库单</li>
-          <li class="active">新建委外生产入库单</li>
+          <li class="active">查看委外生产入库单</li>
         </ol>
 
-        <!-- 页头 -->
-        <div class="page-header">
-          <form class="form-inline">
-            <div class="form-group">
-              <label>收货日期</label>
-              <date-picker :value.sync="sendTime"></date-picker>
-            </div>
-            <div class="form-group">
-              <label>合作工厂</label>
-              <select class="form-control" v-model="selectedFactory">
-                <option value="">请选择</option>
-                <option :value="item.id" v-for="item in cooperativeFactory">{{item.name}}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>调入仓库</label>
-              <select class="form-control" v-model="selectedInHouse">
-                <option value="">请选择</option>
-                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>备注</label>
-              <input type="text" class="form-control" v-model="note" style="width: 250px">
-            </div>
-            <span class="btn btn-primary" @click="inclucdePurchaseData">引用原始单据</span>
-            <span class="btn btn-default" @click="uploadPurchase">提交收货</span>
-          </form>
-        </div>
+        <!--详情页面-->
+        <summary-detail
+          :table-header="gridColumns"
+          :table-data="list"
+          :grid-operate="gridOperate">
+        </summary-detail>
 
-        <!--入库明细入库汇总-->
-        <div>
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">出库明细</a></li>
-            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">出库汇总</a></li>
-          </ul>
-          <!-- Tab panes -->
-          <div class="tab-content">
-            <!-- 出库明细 -->
-            <div role="tabpanel" class="tab-pane active" v-if="detailModal">
-              <table class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr class="text-center">
-                  <th v-for="value in  gridColumns">
-                    {{value}}
-                  </th>
-                  <th>操作</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
-                  <td>{{entry.item_code}}</td>
-                  <td>{{entry.item_name}}</td>
-                  <td>{{entry.main_reference_value}}</td>
-                  <td><count :count.sync =entry.distribution_amount></count>{{entry.unit_name}}</td>
-                  <td><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
-                  <td>{{entry.stock}}</td>
-                  <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.reference_number}}</td>
-                  <td>
-                    <slot name="operate">
-                      <list-delete :delete-data.sync="tableData" ></list-delete>
-                    </slot>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-              <!--:last-page="page.last_page"></page>-->
-            </div>
+        <!--有列表切换的时候的情况-->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- 入库明细 -->
+          <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+            <!--表格详情列表-->
+            <table class="table table-striped table-bordered table-hover">
+              <thead>
+              <tr class="text-center">
+                <th v-for="value in gridColumns2">
+                  {{value}}
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <td>{{entry.item_code}}</td>
+                <td>{{entry.item_name}}</td>
+                <td>{{entry.unit_specification}}</td>
+                <td>{{entry.origin_stock_amount}}</td>
+                <td>{{entry.reference_number}}</td>
+                <td v-if="editFlag"><count :count.sync =entry.refund_amount></count></td>
+                <td v-if="!editFlag">{{entry.refund_amount}}</td>
+                <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元</td>
+                <td v-if="!editFlag">{{entry.unit_price}}元</td>
+                <td >{{entry.reference_number}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
 
-            <!-- 出库汇总 -->
-            <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
-              <table class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr class="text-center">
-                  <th v-for="value in  gridColumns">
-                    {{value}}
-                  </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
-                  <td>{{entry.item_code}}</td>
-                  <td>{{entry.item_name}}</td>
-                  <td>{{entry.stock}}</td>
-                  <td>{{entry.stock}}</td>
-                  <td>{{entry.main_reference_value}}</td>
-                  <td>{{entry.distribution_amount}}</td>
-                  <td>{{entry.unit_name}}</td>
-                  <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.reference_number}}</td>
-                </tr>
-                </tbody>
-              </table>
-              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-              <!--:last-page="page.last_page"></page>-->
-            </div>
+          <!-- 入库汇总 -->
+          <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+            <!--表格详情列表-->
+            <table class="table table-striped table-bordered table-hover">
+              <thead>
+              <tr class="text-center">
+                <th v-for="value in  gridColumns2">
+                  {{value}}
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <td>{{entry.item_code}}</td>
+                <td>{{entry.item_name}}</td>
+                <td>{{entry.main_reference_value}}</td>
+                <td>{{entry.received_amount}}</td>
+                <td>{{entry.additional_amount}}</td>
+                <td>{{entry.refund_amount}}</td>
+                <td>{{entry.unit_price}}元</td>
+                <td>{{entry.reference_number}}</td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!--引入原始数据-->
-  <introduce-data
-    :title="origenData.title"
-    :url="origenData.dataUrl"
-    :instroduce-data-modal.sync='modal.parentIntroModal'
-    :instroduce-data-modal-size="modal.parentIntroModalSize"
-    :first-data-title="origenData.firstDataTitle"
-    :first-data.sync="origenData.firstData"
-    :second-data-title="origenData.secondDataTitle"
-    :second-data.sync="origenData.secondData">
-  </introduce-data>
-
-  <!--错误信息-->
-  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -182,36 +134,49 @@
       })
     },
     events: {
-//      引入原始数据添加商品
-      includeConfirmAdd: function () {
-        var self = this
-        var saveDataArray = []
-        var detailArrayFromApi = []
-        detailGoodsInfo(this.origenData.secondData,'pick')
-        saveDataArray = this.stockGoods.concat(this.origenData.secondData)
-        $.each(saveDataArray, function (index, val) {
-          val.distribution_amount === ''
-          if (val.choice && !val.again) {
-            val.again = true
-            self.dataArray.push(val)
-          }
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.$http({
+          url:requestSystemUrl + '/backend-system/produce/outsource/',
+          data: {
+            page: currentpage
+          },
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          this.page = response.data.body.pagination
+          this.list = response.data.body.list
+          var self = this
+          exchangeData(this.list)
+        }, function (err) {
+          console.log(err)
         })
-        this.renderstockGoods = self.dataArray
       },
-//     删除商品
+//      删除请求
       deleteFromApi: function (id) {
         var self = this
-        $.each(this.renderstockGoods, function (index, val) {
-          if (val.id === id) {
-            self.renderstockGoods.splice(index, 1)
-          }
+        deleteRequest(requestSystemUrl+ '/backend-system/produce/outsource/'+ id,function(response){
+          console.log('deleted')
         })
       },
-//      分页
-      pagechange: function (currentpage) {
-        this.current_page = currentpage
-        this.localPage(this.old)
-        this.rederSetGoods = this.old
+//     審核请求
+      checkFromApi: function (id) {
+        var self = this
+        checkRequest(requestSystemUrl+ '/backend-system/produce/outsource/'+ id +'/checked',function(response){
+          self.editFlag = false
+          console.log('checked')
+        })
+      },
+//     完成請求
+      finishFromApi: function (id) {
+        var self = this
+        finishRequest(requestSystemUrl +'/backend-system/produce/outsource/'+ id +'/finished',function(response){
+          console.log('finished')
+        })
+      },
+//           编辑
+      editGoods: function () {
+        this.editFlag = true
       }
     },
     methods: {

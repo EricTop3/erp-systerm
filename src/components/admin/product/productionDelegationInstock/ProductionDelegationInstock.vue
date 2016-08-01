@@ -139,7 +139,7 @@
       },
 //    查看详情
       gotoDetail: function (id) {
-//        window.location.href = '#!/admin/production/delegationCreatDetail/' + id
+        window.location.href = '#!/admin/production/delegationInstock/ProductionDelegationInstockDetail/' + id
       }
     },
     ready: function () {
