@@ -24,12 +24,12 @@
               <label>登录名</label>
               <input type="text" class="form-control" placeholder="" v-model="searchData.account">
             </div>
-            <button type="submit" class="btn btn-primary" @click="getlistdata()">搜索</button>
+            <span class="btn btn-primary" @click="getlistdata()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
             <span class="btn btn-info spanblocks fr" @click="createModal=true">新建账号</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
-
         <!-- 表格 -->
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
@@ -68,7 +68,6 @@
       <button type="button" class="btn btn-primary" @click="confirmPermission()">确定</button>
     </div>
   </modal>
-
   <!--模态框HTML-->
 
   <!--模态框-新建账号-->
@@ -165,6 +164,7 @@
   <error-tip :err-modal.sync="messageTipModal" :err-info="messageTip"></error-tip>
 </template>
 <style>
+
 </style>
 <script>
   import $ from 'jquery'
@@ -174,7 +174,15 @@
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestUrl, token, searchRequest, exchangeData, error} from '../../../publicFunction/index'
+  import {
+    requestUrl,
+    requestSystemUrl,
+    getDataFromApi,
+    token,
+    searchRequest,
+    exchangeData,
+    error
+  } from '../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
@@ -192,6 +200,12 @@
     },
     ready: function () {
       this.getlistdata(1)
+    },
+    computed: {
+//      导出
+      exports: function () {
+        return this.exportUrl = requestSystemUrl + '/backend-system/stock/store/account/export-excel' + '?account='+ this.searchData.account + '&name=' + this.searchData.name
+      }
     },
     methods: {
 //      对获取到的数据进行处理
@@ -299,6 +313,7 @@
     },
     data: function () {
       return {
+        exportUrl: '',
         PermissionModal: false,
         PermissionModalSize: 'modal-sm',
         createModal: false,
