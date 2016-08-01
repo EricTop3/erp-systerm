@@ -12,7 +12,7 @@
         <!--<div class="form-group ml10">-->
           <!--<input type="text" class="form-control" placeholder="验证码" style="width: 100px;;">-->
         <!--</div>-->
-        <button type="submit" class="btn btn-info ml10" @click="uploadLogin">登录</button>
+        <span type="submit" class="btn btn-info ml10" @click="uploadLogin">登录</span>
       </form>
     </div>
   </div>
