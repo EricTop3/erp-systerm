@@ -34,7 +34,7 @@
               <label>生产车间库</label>
               <select class="form-control" v-model="searchData.warehouse_id">
                 <option value="">请选择</option>
-                <option v-for="item in listProviderA" track-by="$index" :value="item.id">{{item.name}}
+                <option v-for="item in listProviderA" track-by="$index" :value="item.id">{{item.warehouses_name}}
                 <option v-for="item in listProviderB" track-by="$index" :value="item.id">{{item.name}}
               </select>
             </div>
@@ -175,7 +175,7 @@
         this.searchData = {}
         this.getlistData(1)
       },
-//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/reference-document/warehouse-stock'
+//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
       getlistProviderA: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/provider/provider'
@@ -185,7 +185,7 @@
       },
       getlistProviderB: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/reference-document/warehouse-stock'
+        var url = requestSystemUrl + '/backend-system/store/store/warehouses-list'
         getDataFromApi(url,{},function(response){
           self.listProviderB = response.data.body.list
         })
