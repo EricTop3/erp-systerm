@@ -56,7 +56,8 @@ import FactoryProductDetail from 'components/admin/product/factory/FactoryProduc
 import ProductionDelegationCreat from 'components/admin/product/productionDelegation/ProductionDelegationCreat'
 import ProductionDelegationCreatNew from 'components/admin/product/productionDelegation/ProductionDelegationCreatNew'
 import ProductionDelegationCreateDetail from 'components/admin/product/productionDelegation/ProductionDelegationCreateDetail'
-import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplies'
+import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplies/ProductionGetSupplies'
+import ProductionGetSuppliesDetail from 'components/admin/product/ProductionGetSupplies/ProductionGetSuppliesDetail'
 import ProductionCreatInstock from 'components/admin/product/ProductionCreatInstock'
 import ProductionDelegationInstock from 'components/admin/product/ProductionDelegationInstock'
 import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
@@ -274,6 +275,9 @@ router.map({
   },
   '/admin/production/getSupplies': {
     component: ProductionGetSupplies
+  },
+  '/admin/production/getSupplies/:queryId': {
+    component: ProductionGetSuppliesDetail
   },
   '/admin/production/creatInstock': {
     component: ProductionCreatInstock
