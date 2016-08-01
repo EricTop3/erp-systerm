@@ -43,8 +43,7 @@
                 <td>{{entry.target_stock_amount}}</td>
                 <td>{{entry.purchase_amount}}</td>
                 <td v-if="!editFlag">{{entry.number}}</td>
-
-                <td v-if="editFlag"><count :count.sync =entry.number></count></td>
+                <td v-if="editFlag"><count :count.sync =entry.number :flag.sync="editFlag"></count></td>
                 <td>{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
                 <td>{{entry.reference_number}}</td>
@@ -103,7 +102,7 @@
   import LeftInstock from '../../common/LeftInstock'
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi} from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -135,12 +134,9 @@
           console.log(err)
         })
       },
-//      删除请求
-      deleteFromApi: function (id) {
-        var self = this
-        deleteRequest(requestSystemUrl+ '/backend-system/purchase/purchase/'+ id,function(response){
-          console.log('deleted')
-        })
+//    编辑
+      saveDataToApi: function () {
+
       },
 //     審核请求
       checkFromApi: function (id) {
