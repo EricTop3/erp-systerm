@@ -78,9 +78,6 @@
                 </tr>
                 </tbody>
               </table>
-              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-              <!--:last-page="page.last_page"></page>-->
             </div>
 
             <!-- 出库汇总 -->
@@ -107,9 +104,6 @@
                 </tr>
                 </tbody>
               </table>
-              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-              <!--:last-page="page.last_page"></page>-->
             </div>
           </div>
         </div>
@@ -264,7 +258,7 @@
           this.modal.errInfo = 'high,你的配送数量不能为空哟'
         }else{
           postDataToApi(url,data,function (response) {
-//            window.location.href = "#!/admin/production/delegationInstock"
+            window.location.href = "#!/admin/production/delegationInstock"
           })
         }
       },

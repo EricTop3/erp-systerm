@@ -295,6 +295,12 @@ router.map({
   '/admin/production/delegationInstock': {
     component: ProductionDelegationInstock
   },
+  '/admin/production/delegationInstock/ProductionDelegationInstockNew': {
+    component: ProductionDelegationInstockNew
+  },
+  '/admin/production/delegationInstock/ProductionDelegationInstockDetail/:queryId': {
+    component: ProductionDelegationInstockDetail
+  },
   '/admin/production/creatOrder': {
     component: ProductionCreatOrder
   },
