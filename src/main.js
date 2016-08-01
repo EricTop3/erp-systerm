@@ -58,8 +58,13 @@ import ProductionDelegationCreatNew from 'components/admin/product/productionDel
 import ProductionDelegationCreateDetail from 'components/admin/product/productionDelegation/ProductionDelegationCreateDetail'
 import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplies/ProductionGetSupplies'
 import ProductionGetSuppliesDetail from 'components/admin/product/ProductionGetSupplies/ProductionGetSuppliesDetail'
+import ProductionGetSupplies from 'components/admin/product/ProductionGetSupplies'
+import InstockList from 'components/admin/product/ProductFactoryInstock/InstockList'
+import CreateInstock from 'components/admin/product/ProductFactoryInstock/CreateInstock'
+import InstockDetail from 'components/admin/product/ProductFactoryInstock/InstockDetail'
 import ProductionCreatInstock from 'components/admin/product/ProductionCreatInstock'
-import ProductionDelegationInstock from 'components/admin/product/ProductionDelegationInstock'
+import ProductionDelegationInstock from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstock'
+import ProductionDelegationInstockNew from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockNew'
 import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
 import AdminMember from 'components/admin/member/MemberIndex'
 import Retail from 'components/admin/retail/Retail'
@@ -281,9 +286,20 @@ router.map({
   },
   '/admin/production/creatInstock': {
     component: ProductionCreatInstock
+  '/admin/production/factoryInstock': {
+    component: InstockList
+  },
+  '/admin/production/factoryInstock/createInstock': {
+    component: CreateInstock
+  },
+  '/admin/production/factoryInstock/detail/:queryId': {
+    component: InstockDetail
   },
   '/admin/production/delegationInstock': {
     component: ProductionDelegationInstock
+  },
+  '/admin/production/delegationInstock/ProductionDelegationInstockNew': {
+    component: ProductionDelegationInstockNew
   },
   '/admin/production/creatOrder': {
     component: ProductionCreatOrder

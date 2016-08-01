@@ -1,45 +1,53 @@
 <template>
   <admin-nav></admin-nav>
+
   <div class="container-fluid">
     <div class="row">
-      <left-production></left-production>
+      <div class="col-lg-2"  role="navigation">
+        <left-production></left-production>
+      </div>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
-          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
-          <li class="active">委外生产单</li>
-          <li class="active">新建委外生产单</li>
+          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产</li>
+          <li class="active">工厂生产</li>
+          <li class="active">新建生产单</li>
         </ol>
 
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group ml10">
-              <label>生产时间</label>
-              <date-picker :value.sync="startTime"></date-picker>
+              <label>收货日期</label>
+              <date-picker :value.sync="sendTime"></date-picker>
             </div>
             <div class="form-group">
-              <label>合作工厂</label>
-              <select class="form-control" v-model="selectedSupplier">
+              <label>生产工厂</label>
+              <select class="form-control" v-model="selectedOutHouse">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in supplierList" >{{item.name}}</option>
+                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
             </div>
-            <div class="form-group  ml10">
-              <label>备注</label>
-              <input type="text" class="form-control" placeholder="" style="width: 450px;" v-model="note">
+            <div class="form-group">
+              <label>调入仓库</label>
+              <select class="form-control" v-model="selectedInHouse">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
+              </select>
             </div>
-            <span class="btn btn-primary" data-toggle="modal" data-target="#data-cite-templ" @click="inclucdePurchaseData">引用原始单据</span>
-            <span class="btn btn-default"  @click="modal.addGoodModal=true">添加商品</span>
-            <span class="btn btn-default"  data-toggle="modal" data-target="#procurement-submit-templ" @click="uploadPurchase">提交生产</span>
+            <div class="form-group ml10">
+              <label>备注</label>
+              <input type="text" class="form-control" v-model="note" style="width: 250px">
+            </div>
+            <span class="btn btn-primary" @click="inclucdePurchaseData">引用原始单据</span>
+            <span class="btn btn-default" @click="uploadPurchase">提交收货</span>
           </form>
         </div>
-
         <!--入库明细入库汇总-->
         <div>
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)">入库明细</a></li>
-            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)">入库汇总</a></li>
+            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
@@ -58,20 +66,22 @@
                 <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
+                  <td>{{entry.main_reference_value}}</td>
+                  <td><count :count.sync =entry.defective_amount></count></td>
+                  <td><count :count.sync =entry.stock_amount></count></td>
+                  <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.stock}}{{entry.unit_name}}</td>
-                  <td>{{entry.required_amount}}{{entry.unit_name}}</td>
-                  <td><count :count.sync =entry.purchase_amount></count>{{entry.unit_name}}</td>
-                  <td><price :price.sync =entry.purchase_price></price>元/{{entry.unit_name}}</td>
-                  <td>{{entry.refence_number}}</td>
                   <td>
                     <slot name="operate">
-                      <list-delete :delete-data.sync="tableData" ></list-delete>
+                      <list-delete :delete-data.sync="renderstockGoods" ></list-delete>
                     </slot>
                   </td>
                 </tr>
                 </tbody>
               </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
             </div>
 
             <!-- 入库汇总 -->
@@ -88,15 +98,17 @@
                 <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
+                  <td>{{entry.main_reference_value}}</td>
+                  <td>{{entry.unit_name}}</td>
+                  <td>{{entry.unit_name}}</td>
+                  <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.stock}}{{entry.unit_name}}</td>
-                  <td>{{entry.required_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purchase_amount}}{{entry.purchase_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purcahse_price}}{{entry.purcahse_price}}元/{{entry.unit_name}}</td>
-                  <td>{{entry.refence_number}}</td>
                 </tr>
                 </tbody>
               </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
             </div>
           </div>
         </div>
@@ -128,7 +140,6 @@
   </stock-goods>
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
-
 </template>
 <style>
 </style>
@@ -138,27 +149,21 @@
   import Page from '../../../common/Page'
   import AdminNav from '../../AdminNav'
   import StockGoods from '../../../common/StockGoodsOperate'
-  import LeftProduction from '../../common/LeftProduction'
-  import DatePicker from  '../../../common/DatePicker'
+  import DatePicker from '../../../common/DatePicker'
   import Summary from '../../../common/Summary'
   import IntroduceData  from '../../../common/IntroduceData'
-  import ListDelete  from '../../../common/ListDelete'
-  import Count from '../../../common/Count'
-  import Price from '../../../common/Price'
   import ErrorTip from '../../../common/ErrorTip'
+  import LeftProduction from '../../common/LeftProduction'
+  import Count from '../../../common/Count'
+  import ListDelete from '../../../common/ListDelete'
   import {
-    requestUrl,
     requestSystemUrl,
-    getDataFromApi,
     token,
-    exchangeData,
     searchRequest,
-    deleteRequest,
-    checkRequest,
-    finishRequest,
-    detailGoodsInfo,
+    getDataFromApi,
     postDataToApi,
-    changeStatus } from '../../../../publicFunction/index'
+    detailGoodsInfo
+  } from '../../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
@@ -166,38 +171,21 @@
       Page: Page,
       StockGoods:StockGoods,
       DatePicker: DatePicker,
-      LeftProduction: LeftProduction,
-      Count: Count,
       Summary: Summary,
       IntroduceData: IntroduceData,
       ErrorTip: ErrorTip,
-      ListDelete: ListDelete,
-      Price: Price
+      LeftProduction: LeftProduction,
+      Count: Count,
+      ListDelete: ListDelete
     },
     ready: function () {
       var self = this
-//    供应商请求接口
-      var url = requestSystemUrl + '/backend-system/provider/provider'
-//    获取供应商列表
-      getDataFromApi(url,{},function(response){
-        self.supplierList = response.data.body.list
+//    获取仓库列表
+      getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',{},function(response){
+        self.warehouseList = response.data.body.list
       })
     },
     events: {
-//      添加商品确认增加
-      confirmAdd: function () {
-        var self = this
-        detailGoodsInfo(self.stockGoods,'ProductItem')
-        $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount ===''
-          val.purchase_price ===''
-          if (val.choice && !val.again) {
-            val.again = true
-            self.dataArray.push(val)
-          }
-        })
-        this.renderstockGoods = self.dataArray
-      },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
@@ -206,8 +194,8 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.purchase_amount === ''
-          val.purchase_price === ''
+          val.defective_amount === ''
+          val.stock_amount === ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -232,48 +220,50 @@
       }
     },
     methods: {
-//     提交采购
+//     提交生产入库
       uploadPurchase: function () {
         var self = this
-        console.log( self.reference_type )
         var items = []
         var uploadFlag = true
-//      采购请求地址
-        var url = requestSystemUrl + '/backend-system/produce/outsource'
+//      提交生产出库请求地址
+        var url = requestSystemUrl + '/backend-system/production/factory'
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.reference_type = val.reference_type
-          obj.amount = val.purchase_amount
-          obj.price = val.purchase_price
-          if(val.purchase_amount ==='' || val.purchase_price ===''){
+          obj.amount = val.main_reference_value
+          obj.defective_amount = val.defective_amount
+          obj.stock_amount =val.stock_amount
+          if(val.defective_amount ==='' ||val.stock_amount ==='' ){
             uploadFlag = false
           }
           items.push(obj)
         });
-//      采购需要填写的数据
+//      提交配送出库需要填写的数据
         var data = {
           items: items,
           note: this.note,
-          operated_at: this.startTime,
-          provider_id: this.selectedSupplier
+          operated_at: this.sendTime,
+          warehouse_id: this.selectedInHouse,
+          provider_id: this.selectedOutHouse
         }
 //       提交之前的判断
-        if(this.startTime===''){
+        if(this.sendTime===''){
           this.modal.errModal = true
-          this.modal.errInfo = 'high，你还添加时间！'
-        }else if(this.selectedSupplier===''){
-          this.modal.errModal = true
-          this.modal.errInfo = 'high，你还没有选择合作工厂！'
+          this.modal.errInfo = 'high，你还没填写配送时间'
         }else if(items.length<1){
           this.modal.errModal = true
-          this.modal.errInfo = 'high,你还没有添加商品！'
+          this.modal.errInfo = 'high,你还没有添加商品哟'
         }else if(!uploadFlag){
           this.modal.errModal = true
-          this.modal.errInfo = 'high,你的采购数量和采购单价不能为空哟'
+          this.modal.errInfo = 'high,你的次品数量和入库量不能为空哟'
         }else{
           postDataToApi(url,data,function (response) {
-            window.location.href = "#!/admin/production/delegationCreat"
+            window.location.href = "#!/admin/production/factoryInstock"
+          },function(err){
+            if(err.data.code ==="220001"){
+              self.modal.errModal = true
+              self.modal.errInfo = err.data.message
+            }
           })
         }
       },
@@ -308,29 +298,31 @@
         detailModal: true,
 //        入库汇总
         summaryModal: false,
-        startTime: '',
         showPage: [],
-        selectedSupplier: '',
+        sendTime: '',
+        selectedOutHouse: '',
+        selectedInHouse: '',
         note: '',
-        supplierList: [],
+        warehouseList: [],
         tabFlag: true,
         gridColumns: {
           code: "货号",
           name: "品名",
-          specification_unit:"单位规格",
-          aruc: "总部库存",
-          order_quantity:"门店要货量",
-          purchase_quantity:"生产数量",
-          purchase_price:"加工单价",
-          source_number: "来源要货单号"
+          specification_unit:"生产数量",
+          aruc: "入库数量",
+          purchase_quantity:"次品数量",
+          origen_number: "单位",
+          unit_spection: "单位规格"
         },
         renderstockGoods: [],
         currentUrl: '',
         purchaseTabelHead: {
           code: "货号",
           name: "品名",
-          specification_unit: "单位规格",
-          category: "商品分类"
+          null: "库存数量",
+          category: "分类",
+          production_unit_name: "单位",
+          specification_unit: "单位规格"
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
@@ -340,13 +332,13 @@
           }
         },
         origenData: {
-          title: '原始门店要货单',
+          title: '原始生产单',
           dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
           firstDataTitle: {
-            "document_number": "要货单号",
-            "store_name": "要货仓库",
-            "amount": "要货数量",
-            "created_at": "配送日期",
+            "document_number": "采购单号",
+            "created_at": "生产日期",
+            "amount": "生产数量",
+            "store_name": "生产工厂",
             "creator_name": "制单人",
             "auditor_name": "审核人"
           },
@@ -372,7 +364,7 @@
         baseUnit: '',
         setGoods: [],
         setGoodsPage: [],
-        dataArray: []
+        dataArray: [],
       }
     }
   }

@@ -7,7 +7,7 @@
           <input type="text" class="form-control" placeholder="用户名" v-model="username">
         </div>
         <div class="form-group ml10">
-          <input type="text" class="form-control" placeholder="密码" v-model="password">
+          <input type="password" class="form-control" placeholder="密码" v-model="password">
         </div>
         <!--<div class="form-group ml10">-->
           <!--<input type="text" class="form-control" placeholder="验证码" style="width: 100px;;">-->

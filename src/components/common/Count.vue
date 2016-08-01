@@ -1,23 +1,28 @@
 <template>
   <input type="text" class="form-control text-center count" v-model="count"
-         @input="countValidate(amount)">
+         @input="countValidate(amount)" @click="clickEdit" @blur="moveEdit">
 </template>
 <script>
   export default{
     name: 'count',
     props: {
       count: '',
-      amount: {
-      },
+      amount: {},
       flag: false,
     },
     methods: {
+//      验证规则
       countValidate: function (amount) {
         var numberRe = /\D/
         if (numberRe.test(this.count)) {
           this.count = ""
         }
         this.$dispatch('calc', this.count, amount)
+      },
+//    取消编辑
+      moveEdit: function () {
+        this.flag = false
+        this.$dispatch('saveDataToApi')
       }
     },
     events: {

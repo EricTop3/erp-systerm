@@ -2,13 +2,13 @@
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="row">
-      <left-instock></left-instock>
+      <left-production></left-production>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
-          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存</li>
-          <li class="active">配送出库</li>
-          <li class="active">查看库存</li>
+          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
+          <li class="active">工厂生产</li>
+          <li class="active">查看生产详情</li>
         </ol>
         <!--详情页面-->
         <summary-detail
@@ -19,8 +19,8 @@
         </summary-detail>
         <!--有列表切换的时候的情况-->
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">出库明细</a></li>
-          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">出库汇总</a></li>
+          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -37,14 +37,14 @@
               </thead>
               <tbody>
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-                <td>{{entry.goods_code}}</td>
-                <td>{{entry.goods_name}}</td>
-                <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.target_stock_amount}}</td>
-                <td>{{entry.purchase_amount}}</td>
-                <td v-if="!editFlag">{{entry.number}}</td>
-                <td v-if="editFlag"><count :count.sync =entry.number :flag.sync="editFlag"></count></td>
-                <td>{{entry.unit_name}}</td>
+                <td>{{entry.item_code}}</td>
+                <td>{{entry.item_name}}</td>
+                <td>{{entry.main_reference_value}}</td>
+                <td v-if='editFlag'><count :count.sync='entry.produce_amount'></count></td>
+                <td v-if='!editFlag'>{{entry.produce_amount}}</td>
+                <td v-if='editFlag'><count :count.sync='defective_amount'></count></td>
+                <td v-if='!editFlag'>{{defective_amount}} </td>
+                <td>{{unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
@@ -70,12 +70,11 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.purchase_unit_name}}</td>
+                <td>{{entry.main_reference_value}}</td>
+                <td>{{entry.produce_amount}}</td>
+                <td >{{defective_amount}} </td>
+                <td>{{unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.current_stock}}{{entry.purchase_unit_name}}</td>
-                <td>{{entry.demand_amount}}{{entry.purchase_unit_name}}</td>
-                <td>{{entry.main_reference_value}}{{entry.purchase_unit_name}}</td>
-                <td>{{entry.purchase_unit_price }}元/{{entry.purchase_unit_name}}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
@@ -99,10 +98,10 @@
   import Modal from '../../../common/Modal'
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
-  import LeftInstock from '../../common/LeftInstock'
+  import LeftProduction from '../../common/LeftProduction'
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi} from '../../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -111,7 +110,7 @@
       AdminNav: AdminNav,
       Summary: Summary,
       DatePicker: DatePicker,
-      LeftInstock:LeftInstock,
+      LeftProduction:LeftProduction,
       SummaryDetail: SummaryDetail,
       Count: Count
     },
@@ -119,7 +118,7 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.$http({
-          url:requestSystemUrl + '/backend-system/purchase/purchase',
+          url:requestSystemUrl + '/backend-system/production/factory/',
           data: {
             page: currentpage
           },
@@ -134,21 +133,24 @@
           console.log(err)
         })
       },
-//    编辑
-      saveDataToApi: function () {
-
+//      删除请求
+      deleteFromApi: function (id) {
+        var self = this
+        deleteRequest(requestSystemUrl+ '/backend-system/production/factory/'+ id,function(response){
+          console.log('deleted')
+        })
       },
 //     審核请求
       checkFromApi: function (id) {
         var self = this
-        checkRequest(requestSystemUrl+ '/backend-system/purchase/purchase/'+ id +'/checked',function(response){
+        checkRequest(requestSystemUrl+ '/backend-system/production/factory/'+ id +'/checked',function(response){
           self.editFlag = false
         })
       },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
-        finishRequest(requestSystemUrl +'/backend-system/purchase/purchase/'+ id +'/finished',function(response){
+        finishRequest(requestSystemUrl +'/backend-system/production/factory/'+ id +'/finished',function(response){
           console.log('finished')
         })
       },
@@ -165,9 +167,9 @@
         var currentId = this.$route.params.queryId
         var self = this
 //        获取商品列表详情
-        var url = requestSystemUrl + '/backend-system/stock/distribution/' + currentId
+        var url = requestSystemUrl + '/backend-system/production/factory/' + currentId
 //       获取单个列表详情
-        var purchaseUrl  = requestSystemUrl + '/backend-system/stock/distribution/' + currentId + '/get'
+        var purchaseUrl  = requestSystemUrl + '/backend-system/production/factory/' + currentId + '/get'
 //       获取商品列表详情
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
@@ -178,7 +180,7 @@
           exchangeData(self.list)
         })
       },
-      //       切换
+//      切换
       changeActive: function (event) {
         var cur = $(event.currentTarget)
         cur.addClass('active').siblings('li').removeClass('active')
@@ -203,25 +205,26 @@
         editFlag: false,
         detailModal: true,
         summaryModal: false,
+        gridOperate: true,
         gridColumns: {
-          order_number: '配送单号',
+          document_number: '收货单号',
           checked: '审核状态',
-          stream_origin_name: '出货仓库',
-          warehouse_name: '调入仓库',
           creator_name: '制单人',
           auditor_name: '审核人',
-          operated_at: '制单日期',
-          amount: '配送数量'
+          stream_origin: '生产工厂',
+          stream_target: '调入仓库',
+          operated_at: '收货日期',
+          stock_amount: '入库数量',
+          defective_amount: '次品数量'
         },
         gridColumns2: {
           code: "货号",
           name: "品名",
-          current_stock: "出货仓库库存",
-          demand_amount:"调入仓库库存",
-          main_reference_value:"要货数量",
-          purchase_unit_price:"配送数量",
-          reference_number: "采购单位",
-          unit_space: '单位规格',
+          unit_space: '生产数量',
+          total_stock: '入库数量',
+          required_amount: '次品数量',
+          product_amount: '单位',
+          unit_specifition: '单位规格',
           origen_number: '来源要货单号',
         }
       }
