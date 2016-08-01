@@ -57,6 +57,7 @@
     </div>
     <!--汇总列表-->
     <summary :table-data="list" :table-header="gridColumns" :page="page" :detail-url="detailUrl"></summary>
+
   </div>
 </template>
 <script>
@@ -68,7 +69,7 @@
   import ListValidate from '../../common/ListValidate'
   import ListDelete from '../../common/ListDelete'
   import DatePicker from '../../common/DatePicker'
-  import { requestUrl,token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest, error} from '../../../publicFunction/index'
+  import { requestUrl,token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest, error,getDataFromSiteApi} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -83,20 +84,14 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.$http({
-          url: requestUrl + '/front-system/stock/enquiry',
-          data: {
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
+        var data = {
+          page: currentpage
+        }
+        getDataFromSiteApi(requestUrl + '/front-system/stock/enquiry',data,function(response){
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
           exchangeData(this.list)
-        }, function (err) {
-          error(err)
         })
       },
 //     删除请求
@@ -136,6 +131,7 @@
     methods: {
 //    生产出库-列表数据渲染
       listData: function (page) {
+
         this.$http({
           url: requestUrl + '/front-system/stock/enquiry',
           method: 'get',
@@ -144,17 +140,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          $.each(this.list, function (index, val) {
-            switch (val.checked) {
-              case 1:
-                val.checked = '已审核'
-                break
-              case 0:
-                val.checked = '未审核'
-                self.validateFlag = true
-                break
-            }
-          })
+          exchangeData(this.list)
         }, function (err) {
           error(err)
         })
