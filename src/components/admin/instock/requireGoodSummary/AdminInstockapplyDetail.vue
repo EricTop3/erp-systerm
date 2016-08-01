@@ -13,16 +13,68 @@
           <li class="active">明细</li>
         </ol>
 
-        <!--详情页面-->
-        <summary-detail
-          :detail-list="listdata"
-          :table-header="gridColumns"
-          :table-data="onedata"
-          :second-table-header='gridColumnsList'
-          :grid-operate="gridOperate"
-          :page.sync="page">
-        </summary-detail>
+        <!--详情页面单条数据-->
+        <table class="table table-striped table-border table-hover">
+          <thead>
+          <tr class="text-center">
+            <td class="text-left">要货单号</td>
+            <td>单据状态</td>
+            <td>要货门店</td>
+            <td>制单人</td>
+            <td>审核人</td>
+            <td>要货日期</td>
+            <td>送货日期</td>
+            <td>要货数量</td>
+            <td>配送数量</td>
+            <td>操作</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center">
+            <td class="text-left">{{onedata.order_number}}</td>
+            <td>{{onedata.checked}}</td>
+            <td>{{onedata.store_name}}</td>
+            <td>{{onedata.creator_name}}</td>
+            <td>{{onedata.auditor_name}}</td>
+            <td>{{onedata.created_at}}</td>
+            <td>{{onedata.operated_at}}</td>
+            <td>{{onedata.amount}}</td>
+            <td>{{onedata.distribution_amount}}</td>
+            <td><span v-if="onedata.checked=='已审核'" class="btn btn-primary btn-sm" @click="finish()">完成</span></td>
+          </tr>
+          <tr><td colspan="10">备注：{{onedata.note}}</td> </tr>
+          </tbody>
+        </table>
 
+        <!--详情页面列表数据-->
+        <table class="table table-striped table-border table-hover">
+          <thead>
+          <tr class="text-center">
+            <td class="text-left">货号</td>
+            <td>品名</td>
+            <td>要货数量</td>
+            <td>配送数量</td>
+            <td>单位</td>
+            <td>单位规格</td>
+            <td>配送单号</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center" v-for="item in listdata">
+            <td class="text-left">{{item.goods_code}}</td>
+            <td>{{item.goods_name}}</td>
+            <td>{{item.requisition_amount}}</td>
+            <td>{{item.distribution_info.amount}}</td>
+            <td>{{item.unit_name}}</td>
+            <td>{{item.unit_specification}}</td>
+            <td>{{item.distribution_info.code}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!--分页-->
+        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+              :last-page="page.last_page" v-if="listdata.length > 0">
+        </page>
       </div>
     </div>
   </div>
@@ -48,6 +100,7 @@
     postDataToApi,
     getDataFromApi,
     deleteRequest,
+    putDataToApi,
     finishRequest
   } from '../../../../publicFunction/index'
   export default{
@@ -66,17 +119,20 @@
       pagechange: function (currentpage) {
         this.getlistdata(currentpage)
       },
-//   ‘完成’调用
+//   '完成'调用
       finishFromApi: function (id) {
         console.log(id)
         var self = this
-        finishRequest(requestSystemUrl + '/backend-system/stock/enquiry/' + id + '/finished', function (response) {
-          self.getlistData(1)
+        var url = requestSystemUrl + '/backend-system/stock/enquiry/' + this.thisId + '/finished'
+        putDataToApi(url,{},function (response) {
+          self.getOneData()
         })
-      }
+      },
     },
     ready: function () {
+//      获取详情列表数据
       this.getlistData(1)
+//      获取详情单条数据
       this.getOneData()
     },
     methods: {
@@ -107,27 +163,6 @@
     data: function () {
       return {
         thisId: '',
-        gridColumns: {
-          order_number: "要货单号",
-          checked: "单据状态",
-          store_name: "要货门店",
-          creator_name: "制单人",
-          auditor_name: "审核人",
-          created_at: "要货日期",
-          operated_at: "送货日期",
-          amount: "要货数量",
-          distribution_amount: "配送数量"
-        },
-        gridOperate: false,
-        gridColumnsList: {
-          goods_code: '货号',
-          goods_name: '品名',
-          requisition_amount: '要货数量',
-          distribution_amount: '配送数量',
-          unit_name: '单位',
-          unit_specification: '单位规格',
-          distribution_code: '配送单号'
-        },
         listdata: [],
         onedata: [],
         page: []
