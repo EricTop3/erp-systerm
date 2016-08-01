@@ -3,7 +3,7 @@
     <div class="container-fluid line-top"></div>
     <div class="container-fluid content">
       <div style="width: 550px; margin: 0 auto;">
-        <h1>HEY  CAKE门店管理系统</h1>
+        <h1>HEY  CAKE后台管理系统</h1>
         <validator name="validation1">
           <form class="form-horizontal">
             <div class="form-group">

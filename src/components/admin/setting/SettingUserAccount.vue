@@ -309,8 +309,8 @@
         accountHeader:{
           store_code: '门店编号',
           store_name: '门店名称',
-          name:'店员名称',
-          account: '登录名',
+          account:'店员名称',
+          name: '登录名',
           status: '账号状态'
         },
         accountList: [],

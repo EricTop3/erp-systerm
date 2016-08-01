@@ -96,21 +96,21 @@
 //     删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest('/front-system/stock/enquiry/',id,function(response){
+        deleteRequest(requestUrl +'/front-system/stock/enquiry/'+ id,function(response){
           console.log('deleted')
         })
       },
 //     審核请求
       checkFromApi: function (id) {
         var self = this
-        checkRequest('/front-system/stock/check/',id,function(response){
+        checkRequest(requestUrl + '/front-system/stock/enquiry/' + id + '/checked'  ,function(response){
           console.log('finished')
         })
       },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
-        finishRequest('/front-system/stock/finish/',id,function(response){
+        finishRequest(requestUrl + '/front-system/stock/enquiry/'+id + '/finished',function(response){
           console.log('finished')
         })
       },
