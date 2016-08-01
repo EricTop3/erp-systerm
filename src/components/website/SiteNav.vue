@@ -2,16 +2,16 @@
   <div class="container-fluid admin-header">
     <div class="row">
       <div class="col-md-2 text-center">
-        <h2>中渝爱都会店</h2>
-        <h3>营业员：张筱雨</h3>
+        <h2>{{store.account}}</h2>
+        <h3>{{store.name}}</h3>
         <span @click="exit" class="exit">[退出]</span></div>
       <div class="col-md-9">
         <ul class="nav nav-pills navbar-right">
           <li><a v-link="{ path: '/site/order'}" >点单</a></li>
           <li><a v-link="{ path: '/site/member'}">会员</a></li>
-          <li><a v-link="{path: '/site/instock' }">库存</a></li>
+          <li><a v-link="{path: '/site/instock }">库存</a></li>
           <li><a v-link="{path: '/site/billing'}">结算</a></li>
-          <li><a v-link="{path: '/site/tranquery' }">交易查询</a></li>
+          <li><a v-link="{path: '/site/tranquery'}">交易查询</a></li>
           <li><a v-link="{path: '/site/microshoporder'}">微商城订单</a></li>
         </ul>
       </div>
@@ -20,14 +20,30 @@
   </div>
 </template>
 <script>
+  import { getDataFromApi,requestSystemUrl } from '../../publicFunction/index'
   export default{
     name: 'site-nav',
+    ready: function() {
+      var self = this
+      getDataFromApi(requestSystemUrl + '/front-system/auth/info',{},function(response){
+        self.store.account = response.data.body.account
+        self.store.name = response.data.body.name
+      })
+    },
     methods: {
       exit: function () {
 //         TODO 未来可能有接口，暂时如此
         window.localStorage.setItem('token',null)
         window.location.href ='#!/site/login'
         window.location.reload()
+      }
+    },
+    data: function () {
+      return {
+        store: {
+          account: '管理系统',
+          name: '张雨'
+        }
       }
     }
   }

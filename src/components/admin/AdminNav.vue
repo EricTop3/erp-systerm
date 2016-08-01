@@ -4,8 +4,8 @@
       <div class="col-md-3 text-center mt10">
         <img src="/static/assets/images/admin_logo.png" class="fl ml30">
         <div class="fl mt30 ml20">
-          <h2 class="fl mt0">管理系统</h2>
-          <h3 class="fl ml10 pt10">您好：张雨</h3>
+          <h2 class="fl mt0">{{systerm.account}}</h2>
+          <h3 class="fl ml10 pt10">您好：{{systerm.name}}</h3>
           <span @click="exit" class="exit">[退出]</span></div>
       </div>
       <div class="col-md-8">
@@ -24,8 +24,16 @@
     </div>
 </template>
 <script>
+   import { getDataFromSiteApi,requestSystemUrl } from '../../publicFunction/index'
     export default{
        name: 'admin-nav',
+       ready: function() {
+         var self = this
+         getDataFromSiteApi(requestSystemUrl + '/backend-system/auth/info',{},function(response){
+           self.systerm.account = response.data.body.account
+           self.systerm.name = response.data.body.name
+         })
+       },
        methods: {
          exit: function () {
 //         TODO 未来可能有接口，暂时如此
@@ -33,7 +41,15 @@
            window.location.href ='#!/admin/login'
            window.location.reload()
          }
-       }
+       },
+      data: function () {
+        return {
+          systerm: {
+            account: '管理系统',
+            name: '张雨'
+          }
+        }
+      }
     }
 </script>
 <style scoped>
