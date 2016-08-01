@@ -39,14 +39,78 @@
             <span class="btn btn-default"  data-toggle="modal" data-target="#procurement-submit-templ" @click="uploadPurchase">提交收货</span>
           </form>
         </div>
-        <!--表格 -->
-        <summary
-          :table-header="gridColumns"
-          :summary-data="renderstockGoods"
-          :table-data="renderstockGoods"
-          :page="page"
-          :tab-flag="tabFlag">
-        </summary>
+        <!--入库明细入库汇总-->
+        <div>
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <!-- 入库明细 -->
+            <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr class="text-center">
+                  <th v-for="value in  gridColumns">
+                    {{value}}
+                  </th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                  <td>{{entry.item_code}}</td>
+                  <td>{{entry.item_name}}</td>
+                  <td>{{entry.unit_name}}</td>
+                  <td>{{entry.unit_specification}}</td>
+                  <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                  <td><count :count.sync =entry.received_amount></count></td>
+                  <td><count :count.sync =entry.additional_amount></count></td>
+                  <td><count :count.sync =entry.refund_amount></count></td>
+                  <td><price :price.sync =entry.purchase_price></price>元</td>
+                  <td>
+                    <slot name="operate">
+                      <list-delete :delete-data.sync="tableData" ></list-delete>
+                    </slot>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
+            </div>
+
+            <!-- 入库汇总 -->
+            <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr class="text-center">
+                  <th v-for="value in  gridColumns">
+                    {{value}}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                  <td>{{entry.item_code}}</td>
+                  <td>{{entry.item_name}}</td>
+                  <td>{{entry.unit_name}}</td>
+                  <td>{{entry.unit_specification}}</td>
+                  <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                  <td>{{entry.purchase_amount}}{{entry.purchase_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.purcahse_price}}{{entry.purcahse_price}}元/{{entry.unit_name}}</td>
+                  <td>{{entry.refence_number}}</td>
+                </tr>
+                </tbody>
+              </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -89,7 +153,10 @@
   import Summary from '../../common/Summary'
   import IntroduceData  from '../../common/IntroduceData'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestSystemUrl, requestUrl,token, searchRequest,getDataFromApi,postDataToApi} from '../../../publicFunction/index'
+  import Count from '../../common/Count'
+  import Price from '../../common/Price'
+  import ListDelete from '../../common/ListDelete'
+  import {requestSystemUrl, requestUrl,token, searchRequest,getDataFromApi,postDataToApi,detailGoodsInfo} from '../../../publicFunction/index'
   export default{
     components:{
       AdminNav: AdminNav,
@@ -101,7 +168,10 @@
       Summary: Summary,
       IntroduceData: IntroduceData,
       ErrorTip: ErrorTip,
-      DatePicker: DatePicker
+      DatePicker: DatePicker,
+      Count: Count,
+      Price: Price,
+      ListDelete: ListDelete
     },
     ready: function () {
       var self = this
@@ -117,47 +187,22 @@
       })
     },
     events: {
-//      添加商品确认增加
-      confirmAdd: function () {
-        var self = this
-        $.each(self.stockGoods, function (index, val) {
-          if (val.choice && !val.again) {
-            val.again = true
-            self.dataArray.push(val)
-          }
-        })
-        this.renderstockGoods = self.dataArray
-        $.each(this.renderstockGoods,function(index,val){
-          val.price =  ''
-          val.amount = ''
-        })
-      },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
+        var saveDataArray = []
         var detailArrayFromApi = []
-        $.each(this.origenData.secondData,function(index,val){
-          var obj = {}
-          obj.again = val.again
-          obj.choice = val.choice
-          obj.id = val.id
-          obj.name = val.item_name
-          obj.code = val.item_code
-          obj.specification_unit =val.unit_specification
-          obj.unit_name = val.unit_name
-          obj.main_reference_value = val.main_reference_value
-          obj.refund_amount = ''
-          obj.received_amount = ''
-          obj.additional_amount = ''
-          obj.received_price = ''
-          detailArrayFromApi.push(obj)
-        })
-        console.log(detailArrayFromApi)
-        this.stockGoods = this.stockGoods.concat(detailArrayFromApi)
-        $.each(self.stockGoods, function (index, val) {
+        detailGoodsInfo(this.origenData.secondData,'Purchase')
+        saveDataArray = this.stockGoods.concat(this.origenData.secondData)
+        $.each(saveDataArray, function (index, val) {
+          val.refund_amount ===''
+          val.received_amount ===''
+          val.additional_amount===""
+          val.price === ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
+
           }
         })
         this.renderstockGoods = self.dataArray
@@ -181,11 +226,14 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.reference_type = 'Purchase'
+          obj.reference_type = val.reference_type
           obj.additional_amount = val.additional_amount
           obj.refund_amount = val.refund_amount
           obj.received_amount = val.received_amount
-          obj.price = val.received_price
+          obj.price = val.purchase_price
+          if(val.refund_amount ==='' ||val.received_amount ==='' || val.additional_amount==="" ||val.price){
+            uploadFlag = false
+          }
           items.push(obj)
         });
 //      采购需要填写的数据
@@ -196,12 +244,6 @@
           provider_id: this.selectedWarehouse,
           warehouse_id:  this.selectedWarehouse
         }
-//      判断采购数量和采购单价是否为空
-        $.each(items,function(index,val){
-          if(val.refund_amount ==='' ||val.received_amount ==='' || val.additional_amount==="" ||val.received_price){
-            uploadFlag = false
-          }
-        })
 //       提交之前的判断
         if(this.time===''){
           this.modal.errModal = true
@@ -228,9 +270,29 @@
       inclucdePurchaseData: function () {
         this.modal.parentIntroModal = true
       },
+//      入库明细与入库汇总切换
+    changeActive: function (event) {
+      var cur = $(event.currentTarget)
+      cur.addClass('active').siblings('li').removeClass('active')
+      switch (Number(cur.attr('id'))){
+        case 1:
+          this.detailModal = true
+          this.summaryModal = false
+          this.$dispatch('detail')
+          break
+        case 2:
+          this.detailModal = false
+          this.summaryModal = true
+          this.$dispatch('summary')
+      }
+    }
     },
     data: function () {
       return {
+//        入库明细
+        detailModal: true,
+//        入库汇总
+        summaryModal: false,
         showPage: [],
         time: '',
         selectedSupplier: '',
@@ -269,13 +331,13 @@
           }
         },
         origenData: {
-          title: '原始门店要货单',
+          title: '原始总部采购单',
           dataUrl: requestSystemUrl + '/backend-system/reference-document/purchase',
           firstDataTitle: {
-            "document_number": "货单号",
-            "store_name": "要货仓库",
-            "amount": "要货数量",
-            "created_at": "配送日期",
+            "document_number": "采购单号",
+            "created_at": "采购日期",
+            "total_sum": "采购金额",
+            "provider": "供应商",
             "creator_name": "制单人",
             "auditor_name": "审核人"
           },
@@ -283,7 +345,8 @@
           secondDataTitle: {
             "item_code": "货号",
             "item_name": "品名",
-            "main_reference_value":"要货数量",
+            "demand_amount": "要货数量",
+            "main_reference_value":"采购数量",
             "unit_name": "单位",
             "unit_specification": "单位规格"
           },

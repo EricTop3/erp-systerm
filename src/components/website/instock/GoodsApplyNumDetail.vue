@@ -8,7 +8,68 @@
       <li class="active">查看要货单</li>
     </ol>
     <!--详情页面-->
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page.sync="page"></summary-detail>
+    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list">
+    </summary-detail>
+    <!--有列表切换的时候的情况-->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+      <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <!-- 入库明细 -->
+      <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+        <!--表格详情列表-->
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+          <tr class="text-center">
+            <th v-for="value in  gridColumns2">
+              {{value}}
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+            <td>{{entry.consumable_code}}</td>
+            <td>{{entry.consumable_name}}</td>
+            <td v-if='editFlag'> <count :count.sync='entry.main_reference_value'></count></td>
+            <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
+            <td>{{entry.unit}}</td>
+            <td>{{entry.unit_specification}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+        <!--:last-page="page.last_page"></page>-->
+      </div>
+
+      <!-- 入库汇总 -->
+      <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+        <!--表格详情列表-->
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+          <tr class="text-center">
+            <th v-for="value in  gridColumns2">
+              {{value}}
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+            <td>{{entry.consumable_code}}</td>
+            <td>{{entry.consumable_name}}</td>
+            <td>{{entry.main_reference_value}}</td>
+            <td>{{entry.unit}}</td>
+            <td>{{entry.unit_specification}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+        <!--:last-page="page.last_page"></page>-->
+      </div>
+    </div>
   </div>
 </template>
 
@@ -18,6 +79,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import Modal from '../../common/Modal'
+  import Count from '../../common/Count'
   import SummaryDetail from '../../common/SummaryDetail'
   import {requestUrl,token,exchangeData, checkRequest, error} from '../../../publicFunction/index'
   export default {
@@ -26,7 +88,8 @@
       Page: Page,
       Modal: Modal,
       SummaryDetail: SummaryDetail,
-      SiteNav: SiteNav
+      SiteNav: SiteNav,
+      Count: Count
     },
     events: {
 //    绑定翻页事件
@@ -38,8 +101,12 @@
         console.log('waadadas')
           var self = this
           checkRequest(requestUrl + '/front-system/stock/enquiry/' + id +'/checked' ,function(response){
-            console.log('checked')
+            self.editFlag = false
           })
+      },
+//     编辑
+      editGoods: function () {
+        this.editFlag = true
       }
     },
     ready: function () {
@@ -80,6 +147,22 @@
         }, function (err) {
           error(err)
         })
+      },
+      //     切换
+      changeActive: function (event) {
+        var cur = $(event.currentTarget)
+        cur.addClass('active').siblings('li').removeClass('active')
+        switch (Number(cur.attr('id'))){
+          case 1:
+            this.detailModal = true
+            this.summaryModal = false
+            this.$dispatch('detail')
+            break
+          case 2:
+            this.detailModal = false
+            this.summaryModal = true
+            this.$dispatch('summary')
+        }
       }
     },
     data: function () {
@@ -88,6 +171,9 @@
         page: [],
         list: [],
         detailList: [],
+        editFlag: false,
+        detailModal: true,
+        summaryModal: false,
         validateModal: false,
         validateFlag: false,
         validateModalSize: 'modal-sm',

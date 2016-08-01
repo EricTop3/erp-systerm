@@ -138,6 +138,24 @@ export function siteLogin(loginUrl,data){
     console.log(err)
   })
 }
+// 引用原始数据和添加商品之间相互转换
+export function detailGoodsInfo (list,type) {
+  $.each(list,function(index,val){
+    console.log(index)
+    val.item_code = val.code ? val.code : val.item_code
+    delete  val.code
+    val.item_name = val.name ? val.name : val.item_name
+    delete  val.name
+    val.unit_name = val.production_unit_name ? val.production_unit_name : val.unit_name
+    delete  val.production_unit_name
+    val.unit_specification = val.specification_unit ? val.specification_unit : val.unit_specification
+    delete  val.specification_unit
+    val.stock = 0
+    val.required_amount = 0
+    val.refence_number = ''
+    val.reference_type =  type
+  })
+}
 // 导出token
 export { token}
 // 所有页面搜索方法
@@ -248,6 +266,7 @@ export function  postDataToApi (url, data, callback, error) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
+      console.log(err)
       error && error(err)
     })
 }

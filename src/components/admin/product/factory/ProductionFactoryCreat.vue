@@ -9,9 +9,9 @@
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
-          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：采购首页</li>
-          <li class="active">库存配送出库</li>
-          <li class="active">新建配送出库</li>
+          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产</li>
+          <li class="active">工厂生产</li>
+          <li class="active">新建生产单</li>
         </ol>
 
         <!-- 页头 -->
@@ -31,17 +31,75 @@
             <span class="btn btn-default" @click="uploadPurchase">提交出库</span>
           </form>
         </div>
+        <!--入库明细入库汇总-->
+        <div>
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <!-- 入库明细 -->
+            <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr class="text-center">
+                  <th v-for="value in  gridColumns">
+                    {{value}}
+                  </th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                  <td>{{entry.item_code}}</td>
+                  <td>{{entry.item_name}}</td>
+                  <td>{{entry.unit_specification}}</td>
+                  <td>{{entry.stock}}{{entry.unit_name}}</td>
+                  <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                  <td><count :count.sync =entry.product_amount></count>{{entry.unit_name}}</td>
+                  <td>{{entry.refence_number}}</td>
+                  <td>
+                    <slot name="operate">
+                      <list-delete :delete-data.sync="renderstockGoods" ></list-delete>
+                    </slot>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
+            </div>
 
-        <!--表格 -->
-        <summary
-          :table-header="gridColumns"
-          :summary-data="renderstockGoods"
-          :table-data="renderstockGoods"
-          :page="page"
-          :tab-flag="tabFlag"
-          :operate="true"
-        >
-        </summary>
+            <!-- 入库汇总 -->
+            <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr class="text-center">
+                  <th v-for="value in  gridColumns">
+                    {{value}}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                  <td>{{entry.item_code}}</td>
+                  <td>{{entry.item_name}}</td>
+                  <td>{{entry.unit_specification}}</td>
+                  <td>{{entry.stock}}{{entry.unit_name}}</td>
+                  <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                  <td>{{entry.product_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.refence_number}}</td>
+                </tr>
+                </tbody>
+              </table>
+              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+              <!--:last-page="page.last_page"></page>-->
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -84,12 +142,15 @@
   import IntroduceData  from '../../../common/IntroduceData'
   import ErrorTip from '../../../common/ErrorTip'
   import LeftProduction from '../../common/LeftProduction'
+  import Count from '../../../common/Count'
+  import ListDelete from '../../../common/ListDelete'
   import {
     requestSystemUrl,
     token,
     searchRequest,
     getDataFromApi,
-    postDataToApi
+    postDataToApi,
+   detailGoodsInfo
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -101,7 +162,9 @@
       Summary: Summary,
       IntroduceData: IntroduceData,
       ErrorTip: ErrorTip,
-      LeftProduction: LeftProduction
+      LeftProduction: LeftProduction,
+      Count: Count,
+      ListDelete: ListDelete
     },
     ready: function () {
       var self = this
@@ -114,45 +177,29 @@
 //      添加商品确认增加
       confirmAdd: function () {
         var self = this
+        detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
+          val.product_amount ===''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
           }
         })
         this.renderstockGoods = self.dataArray
-        $.each(this.renderstockGoods,function(index,val){
-          val.factory_instock_unit = val.specification_unit
-          delete   val.specification_unit
-          val.factory_total_stock = ''
-          val.factory_required_amount = ''
-          val.factory_product_amount = ''
-          val.factory_origen_number = ''
-        })
       },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
+        var saveDataArray = []
         var detailArrayFromApi = []
-        $.each(this.origenData.secondData,function(index,val){
-          var obj = {}
-          obj.again = val.again
-          obj.choice = val.choice
-          obj.id = val.id
-          obj.name = val.item_name
-          obj.code = val.item_code
-          obj.factory_total_stock = ''
-          obj.factory_required_amount = val.main_reference_value
-          obj.factory_product_amount = ''
-          obj.factory_instock_unit =val.unit_specification
-          obj.factory_origen_number = ''
-          detailArrayFromApi.push(obj)
-        })
-        this.stockGoods = this.stockGoods.concat(detailArrayFromApi)
-        $.each(self.stockGoods, function (index, val) {
+        detailGoodsInfo(this.origenData.secondData,'Requisition')
+        saveDataArray = this.stockGoods.concat(this.origenData.secondData)
+        $.each(saveDataArray, function (index, val) {
+          val.product_amount ===''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
+
           }
         })
         this.renderstockGoods = self.dataArray
@@ -184,8 +231,11 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.reference_type = self.reference_type
-          obj.amount = val.factory_product_amount
+          obj.reference_type = val.reference_type
+          obj.amount = val.product_amount
+          if(val.product_amount ===''){
+            uploadFlag = false
+          }
           items.push(obj)
         });
 //      提交配送出库需要填写的数据
@@ -195,10 +245,8 @@
           operated_at: this.sendTime
         }
 //      判断配送出库和采购单价是否为空
-        $.each(items,function(index,val){
-          if(val.factory_product_amount ===''){
-            uploadFlag = false
-          }
+        $.each(this.renderstockGoods,function(index,val){
+
         })
 //       提交之前的判断
        if(this.sendTime===''){
@@ -213,24 +261,46 @@
         }else{
           postDataToApi(url,data,function (response) {
             window.location.href = "#!/admin/production"
+          },function(err){
+            if(err.data.code ==="220001"){
+              self.modal.errModal = true
+              self.modal.errInfo = err.data.message
+            }
           })
         }
       },
 //      添加商品
       addStockGoods: function ( ){
-        this.reference_type = 'Requisition'
         this.modal.addGoodModal=true
       },
 //     引入数据
       inclucdePurchaseData: function () {
-        this.reference_type = 'ProductItem'
         this.modal.parentIntroModal = true
       },
+//      入库明细与入库汇总切换
+      changeActive: function (event) {
+        var cur = $(event.currentTarget)
+        cur.addClass('active').siblings('li').removeClass('active')
+        switch (Number(cur.attr('id'))){
+          case 1:
+            this.detailModal = true
+            this.summaryModal = false
+            this.$dispatch('detail')
+            break
+          case 2:
+            this.detailModal = false
+            this.summaryModal = true
+            this.$dispatch('summary')
+        }
+      }
     },
     data: function () {
       return {
+//        入库明细
+        detailModal: true,
+//        入库汇总
+        summaryModal: false,
         showPage: [],
-        reference_type: 'Requisition',
         sendTime: '',
         selectedOutHouse: '',
         selectedInHouse: '',

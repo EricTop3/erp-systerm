@@ -28,35 +28,35 @@
     <table class="table table-striped table-border table-hover">
       <thead>
       <tr class="text-center">
-        <td class="text-left">货号</td>
-        <td>品名</td>
-        <td>日均销量</td>
-        <td>当前库存</td>
-        <td>要货数量</td>
-        <td>单位</td>
-        <td>单位规格</td>
-        <td>操作</td>
+        <th>货号</th>
+        <th>品名</th>
+        <th>日均销量</th>
+        <th>当前库存</th>
+        <th>要货数量</th>
+        <th>单位</th>
+        <th>单位规格</th>
+        <th>操作</th>
       </tr>
       </thead>
       <tbody>
       <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
-        <td class="text-left">{{item.code}}</td>
+        <td>{{item.code}}</td>
         <td>{{item.name}}</td>
         <td>{{item.sale_amount}}</td>
         <td>{{item.current_stock}}</td>
         <td align="center">
           <count :count.sync="item.sale_refund"></count>
         </td>
-        <td>{{item.unit}}</td>
-        <td>{{item.unit_specification}}</td>
+        <td>{{item.sell_unit_name}}</td>
+        <td>{{item.specification_unit}}</td>
         <td>
           <list-delete :delete-data.sync="rederStockGoods"></list-delete>
         </td>
       </tr>
       </tbody>
     </table>
-    <!--分页-->
-    <page :total='len' :current='current_page' :display='per_page' :last-page='totalPage'></page>
+    <!--&lt;!&ndash;分页&ndash;&gt;-->
+    <!--<page :total='len' :current='current_page' :display='per_page' :last-page='totalPage'></page>-->
   </div>
   <!--模态框-添加商品-->
   <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
