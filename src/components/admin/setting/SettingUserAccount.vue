@@ -102,7 +102,7 @@
       <div class="form-group">
         <label for="" class="col-sm-4 control-label">密码</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" placeholder="" v-model="clerk.password">
+          <input type="password" class="form-control" placeholder="" v-model="clerk.password">
         </div>
       </div>
       <div class="form-group">
@@ -127,7 +127,7 @@
       <div class="form-group">
         <label for="" class="col-sm-4 control-label">门店名称</label>
         <div class="col-sm-8">
-          <label for="" class="col-sm-4 title">{{editClerkInfo.storeName}}</label>
+          <label for="" class="title">{{editClerkInfo.storeName}}</label>
         </div>
       </div>
     <div class="form-group">
@@ -139,13 +139,13 @@
     <div class="form-group">
       <label for="" class="col-sm-4 control-label">登录名</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" placeholder=""  v-model="editClerkInfo.account">
+        <label for="" class="title">{{editClerkInfo.account}}</label>
       </div>
     </div>
     <div class="form-group">
       <label for="" class="col-sm-4 control-label">密码</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" placeholder="">
+        <input type="password" class="form-control" placeholder="请填写密码"  v-model="editClerkInfo.password">
       </div>
     </div>
     <div class="form-group">
@@ -157,7 +157,7 @@
     </div>
       </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="addClerkConfirm">确定</button>
+      <button type="button" class="btn btn-primary" @click="editClerkConfirm">确定</button>
     </div>
   </modal>
 </template>
@@ -168,7 +168,7 @@
   import LeftSetting from '../common/LeftSetting'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
-  import {requestSystemUrl,getDataFromApi,postDataToApi, exchangeData,searchRequest} from '../../../publicFunction/index'
+  import {requestSystemUrl,getDataFromApi,postDataToApi, exchangeData,searchRequest,putDataToApi} from '../../../publicFunction/index'
   var accountId = 0
   export default{
     components:{
@@ -244,6 +244,7 @@
       editClerk: function (event) {
         var self = this
         accountId = Number($(event.currentTarget).parents('tr').attr('id'))
+        self.getAccountName({})
         $.each(this.accountList,function(index,val){
           if(accountId ===val.id){
             self.editClerkInfo.account =val.account
@@ -257,8 +258,20 @@
             }
           }
         })
-        console.log(accountId)
         this.modal.editModal = true
+      },
+//      确认编辑
+      editClerkConfirm: function () {
+        var self = this
+        var data  = {
+          name: this.editClerkInfo.name,
+          password: this.editClerkInfo.password,
+          status: this.editClerkInfo.status
+        }
+        putDataToApi(requestSystemUrl + '/backend-system/store/store-account/' + accountId,data,function(response){
+          self.getAccountName({})
+          self.modal.editModal  = false
+        })
       },
 //     搜索
       search: function () {
