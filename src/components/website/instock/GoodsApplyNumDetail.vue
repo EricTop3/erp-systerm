@@ -81,7 +81,7 @@
   import Modal from '../../common/Modal'
   import Count from '../../common/Count'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,token,exchangeData, checkRequest, error} from '../../../publicFunction/index'
+  import {requestUrl,token,exchangeData, checkRequest, error,changeStatus} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -98,7 +98,6 @@
       },
 //    审核请求
       checkFromApi: function (id){
-        console.log('waadadas')
           var self = this
           checkRequest(requestUrl + '/front-system/stock/enquiry/' + id +'/checked' ,function(response){
             self.editFlag = false

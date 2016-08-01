@@ -56,8 +56,7 @@
       </form>
     </div>
     <!--汇总列表-->
-    <summary :table-data="list" :table-header="gridColumns" :page="page" :detail-url="detailUrl"></summary>
-
+    <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
   </div>
 </template>
 <script>
@@ -115,6 +114,10 @@
           console.log('finished')
         })
       },
+//      查看详情
+      gotoDetail: function (id){
+        window.location.href = '#!/site/instock/GoodsApplyNum/'+ id
+      }
     },
     ready: function () {
       this.listData(16)

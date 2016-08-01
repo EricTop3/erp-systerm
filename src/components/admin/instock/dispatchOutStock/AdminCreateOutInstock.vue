@@ -361,7 +361,7 @@
         },
         origenData: {
           title: '原始要货配料单',
-          dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
+          dataUrl: requestSystemUrl + '/backend-system/reference-document/receive',
           firstDataTitle: {
             "document_number": "货单号",
             "store_name": "要货仓库",
