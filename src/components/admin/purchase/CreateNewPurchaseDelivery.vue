@@ -96,7 +96,6 @@
                 <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                   <td>{{entry.purchase_amount}}{{entry.purchase_amount}}{{entry.unit_name}}</td>
