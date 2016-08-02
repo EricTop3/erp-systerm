@@ -46,17 +46,6 @@
             <span class="btn fr btn-info">导出excel</span>
           </form>
         </div>
-        <!--<td class="text-left">货号</td>
-        <td>品名</td>
-        <td>仓库</td>
-        <td>期初库存量</td>
-        <td>期间入库量</td>
-        <td>期间出库量</td>
-        <td>期末库存量</td>
-        <td>单位</td>
-        <td>单位规格</td>
-        <td>操作</td>-->
-        <!--v-link="{ path: '/admin/instock/inStockDetail/2' }"-->
         <!-- 表格 -->
         <grid :data="productList" :columns="gridColumns" :operate="productOperate">
           <div slot="operateList">
