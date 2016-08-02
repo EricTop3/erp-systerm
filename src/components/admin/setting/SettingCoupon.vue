@@ -16,7 +16,7 @@
 
         <!-- 页头 -->
         <div class="page-header">
-          <span class="btn btn-info fr spanblocks" data-toggle="modal" data-target="#sale-add-templ">新增促销</span>
+          <span class="btn btn-info fr spanblocks" @click="createModal=true">新增促销</span>
           <div class="clearboth"></div>
         </div>
 
@@ -32,161 +32,334 @@
           </tr>
           </thead>
           <tbody>
-          <tr class="text-center">
-            <td class="text-left">满299元减88元</td>
-            <td>打折 系数 88</td>
-            <td>2016-06-01</td>
-            <td>2016-06-30</td>
+          <tr class="text-center" v-for="item in listdata" :id="item.id">
+            <td class="text-left">{{item.display_name}}</td>
             <td>
-              <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#sale-edit-templ">编辑</span>
-              <span class="btn btn-warning btn-sm" data-toggle="modal" data-target="#sale-del-templ">删除</span>
+              <template v-if="item.type=='discount'">折扣</template>
+              <template v-if="item.type=='reduce'">减少</template>
+               系数 {{item.value}}</td>
+            <td>{{item.begin_time}}</td>
+            <td>{{item.end_time}}</td>
+            <td>
+              <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
+              <span class="btn btn-warning btn-sm" @click="deletes($event)">删除</span>
             </td>
           </tr>
           </tbody>
         </table>
-
-        <!-- 翻页 -->
-        <nav class="text-right">
-          <ul class="pagination">
-            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-          </ul>
-        </nav>
+        <!--分页-->
+        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+              :last-page="page.last_page" v-if="listdata.length > 0">
+        </page>
+        <!-- 表格 -->
 
       </div>
     </div>
   </div>
 
   <!--模态框-新增促销-->
-  <div class="modal fade" id="sale-add-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">新增促销</h4>
-        </div>
-        <div class="modal-body">
-          <form class="form-horizontal">
-            <div class="form-group">
-              <label class="col-sm-3 control-label">开始时间</label>
-              <div class="col-sm-9">
-                <input type="text"class="form-control date_picker" placeholder="开始时间">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">结束时间</label>
-              <div class="col-sm-9">
-                <input type="text"class="form-control date_picker" placeholder="结束时间">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">促销名称</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" placeholder="如：现金抵扣卷100元">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">促销规则</label>
-              <div class="col-sm-9 form-inline">
-                <select class="form-control" style="width: 114px;">
-                  <option>抵扣</option>
-                </select>
-                <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;">
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-primary">提交</button>
-        </div>
-      </div>
+  <modal :show.sync="createModal" :modal-size="createModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="createModal=false"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">新增促销</h4>
     </div>
-  </div>
+    <div slot="body">
+      <validator name="validation1">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">开始时间</label>
+          <div class="col-sm-9">
+            <date-picker :value.sync="addFormData.begin_time" :time-text="timetext1"></date-picker>
+            <div v-if="flag1">
+              <p class="error">这是必填字段</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">结束时间</label>
+          <div class="col-sm-9">
+            <date-picker :value.sync="addFormData.end_time" :time-text="timetext2"></date-picker>
+            <div v-if="flag2">
+              <p class="error">这是必填字段</p>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">促销名称</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" placeholder="如：现金抵扣卷100元" v-model="addFormData.display_name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">促销规则</label>
+          <div class="col-sm-9 form-inline">
+            <select class="form-control" style="width: 114px;" v-model="addFormData.type">
+              <option value="">请选择</option>
+              <option value="discount">折扣</option>
+              <option value="reduce">减少</option>
+            </select>
+            <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" v-model="addFormData.value" v-validate:value="[ 'required' ]">
+            <div v-if="$validation1.value.touched">
+              <p class="error" v-if="$validation1.value.required">这是必填字段</p>
+            </div>
+          </div>
+        </div>
+      </form>
+      </validator>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-primary" @click="onSubmit($event)">提交</button>
+      <button type="button" class="btn btn-default" @click="createModal=false">取消</button>
+    </div>
+  </modal>
   <!--模态框HTML-->
 
   <!--模态框-编辑促销-->
-  <div class="modal fade" id="sale-edit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">编辑促销</h4>
-        </div>
-        <div class="modal-body">
-          <form class="form-horizontal">
-            <div class="form-group">
-              <label class="col-sm-3 control-label">开始时间</label>
-              <div class="col-sm-9">
-                <input type="text"class="form-control date_picker" placeholder="开始时间" value="2016-06-01">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">结束时间</label>
-              <div class="col-sm-9">
-                <input type="text"class="form-control date_picker" placeholder="结束时间"  value="2016-06-30">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">促销名称</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" placeholder="如：现金抵扣卷100元" value="现金抵扣卷100元">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">促销规则</label>
-              <div class="col-sm-9 form-inline">
-                <select class="form-control" style="width: 114px;">
-                  <option>抵扣</option>
-                </select>
-                <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" >
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-primary">提交</button>
-        </div>
-      </div>
+  <modal :show.sync="editModal" :modal-size="editModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="editModal=false"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">新增促销</h4>
     </div>
-  </div>
-  <!--模态框HTML-->
+    <div slot="body">
+      <validator name="validation2">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">开始时间</label>
+          <div class="col-sm-9">
+            <date-picker :value.sync="formData.begin_time" :time-text="timetext1" :timewidth="timewidth"></date-picker>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">结束时间</label>
+          <div class="col-sm-9">
+            <date-picker :value.sync="formData.end_time" :time-text="timetext2" :timewidth="timewidth"></date-picker>
+          </div>
+          <div v-if="flag2">
+            <p class="error">这是必填字段</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">促销名称</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" placeholder="如：现金抵扣卷100元" v-model="formData.display_name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">促销规则</label>
+          <div class="col-sm-9 form-inline">
+            <select class="form-control" style="width: 114px;" v-model="formData.type">
+              <option value="">请选择</option>
+              <option value="discount">折扣</option>
+              <option value="reduce">减少</option>
+            </select>
+            <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" v-model="formData.value" v-validate:value="[ 'required' ]">
+            <div v-if="$validation1.value.touched">
+              <p class="error" v-if="$validation1.value.required">这是必填字段</p>
+            </div>
+          </div>
+        </div>
+      </form>
+      </validator>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-primary" @click="EditonSubmit($event)">保存</button>
+      <button type="button" class="btn btn-default" @click="editModal=false">取消</button>
+    </div>
+  </modal>
+    <!--模态框HTML-->
 
   <!--模态框-删除-->
-  <div class="modal fade" id="sale-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">删除</h4>
-        </div>
-        <div class="modal-body">
-          <h4>删除弹出框！</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        </div>
-      </div>
+  <modal :show.sync="deleteModal" :modal-size="deleteModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="deleteModal=false"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">删除</h4>
     </div>
-  </div>
+    <div slot="body">
+      <h4>确认删除该促销吗？</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-primary" @click="confirmDelete()">确定</button>
+      <button type="button" class="btn btn-default" @click="deleteModal=false">取消</button>
+    </div>
+  </modal>
   <!--模态框HTML-->
 
 </template>
 <style>
+  .timewidth {width: 225px !important;}
 </style>
 <script>
+  import $ from 'jquery'
   import AdminNav from '../AdminNav'
   import LeftSetting from '../common/LeftSetting'
+  import Grid from '../../common/Grid'
+  import Modal from '../../common/Modal'
+  import Page from '../../common/Page'
+  import ErrorTip from '../../common/ErrorTip'
+  import DatePicker from  '../../common/DatePicker'
+  import {requestUrl, requestSystemUrl, token, searchRequest, exchangeData, error, putDataToApi, postDataToApi, getDataFromApi, deleteRequest} from '../../../publicFunction/index'
   export default{
     components: {
+      AdminNav: AdminNav,
       LeftSetting: LeftSetting,
-      AdminNav: AdminNav
+      Grid: Grid,
+      Modal: Modal,
+      Page: Page,
+      DatePicker: DatePicker,
+      ErrorTip: ErrorTip
+    },
+    events: {
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.getlistData(currentpage)
+      }
+    },
+    ready: function () {
+      this.getlistData(1)
+    },
+    methods: {
+//      列表数据渲染
+      getlistData: function (page) {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/coupon/coupon'
+        var data = {
+          page: page || ''
+        }
+        getDataFromApi(url, data, function (response) {
+          self.listdata = response.data.body.list
+          self.page = response.data.body.pagination
+        })
+      },
+//      编辑
+      edit: function (event) {
+        this.editModal = true
+        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
+        var url = requestSystemUrl + '/backend-system/coupon/coupon/' +this.thisId
+        var self = this
+        getDataFromApi(url,{},function (response) {
+          self.formData = response.data.body
+        })
+      },
+//      保存编辑
+      confirmEdit: function () {
+        var url = requestSystemUrl + '/backend-system/coupon/coupon/' +this.thisId
+        var data = {
+          display_name: this.formData.display_name,
+          type: this.formData.type,
+          value: this.formData.value,
+          begin_time: this.formData.begin_time,
+          end_time: this.formData.end_time
+        }
+        var self = this
+        putDataToApi(url, data, function (response) {
+          self.editModal = false
+          self.getlistData(1)
+        })
+      },
+//      删除
+      deletes: function (event) {
+        this.deleteModal = true
+        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
+      },
+//      确认删除
+      confirmDelete: function () {
+        var url = requestSystemUrl + '/backend-system/coupon/coupon/' + this.thisId
+        var self = this
+        deleteRequest(url,function (response) {
+          self.deleteModal = false
+          self.getlistData(1)
+        })
+      },
+//      添加促销
+      createSubmit: function () {
+        var url = requestSystemUrl + '/backend-system/coupon/coupon'
+        var data = {
+          display_name: this.addFormData.display_name,
+          type: this.addFormData.type,
+          value: this.addFormData.value,
+          begin_time: this.addFormData.begin_time,
+          end_time: this.addFormData.end_time
+        }
+        var self = this
+        if(self.addFormData.begin_time != '' && self.addFormData.end_time != ''){
+          postDataToApi(url,data,function (response) {
+            self.createModal = false
+            self.getlistData(1)
+            self.addFormData = {}
+          })
+        }else {
+          if(self.addFormData.begin_time == ''){
+            self.flag1 = true
+          }
+          if(self.addFormData.end_time == '') {
+            self.flag2 = true
+          }
+        }
+      },
+//      表单验证
+      onSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation1.invalid) {
+            console.log(self.$validation1.invalid)
+            self.$validation1.value.touched = true
+            e.preventDefault()
+          } else {
+            console.log(self.$validation1.invalid)
+            self.createSubmit()
+          }
+        })
+      },
+//      编辑保存的表单验证
+      EditonSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            console.log(self.$validation2.invalid)
+            self.$validation2.value.touched = true
+            e.preventDefault()
+          } else {
+            console.log(self.$validation2.invalid)
+            self.confirmEdit()
+          }
+        })
+      }
+    },
+    data: function () {
+      return {
+        flag1: false,
+        flag2: false,
+        timewidth: 'timewidth',
+        timetext1: '开始时间',
+        timetext2: '结束时间',
+        createModal: false,
+        createModalSize: 'modal-sm',
+        editModal: false,
+        editModalSize: 'modal-sm',
+        deleteModal: false,
+        deleteModalSize: 'modal-sm',
+        thisId: '',
+        listdata: [],
+        page: [],
+        formData: {
+          display_name: '',
+          type: '',
+          value: '',
+          begin_time: '',
+          end_time: ''
+        },
+        addFormData: {
+          display_name: '',
+          type: '',
+          value: '',
+          begin_time: '',
+          end_time: ''
+        }
+      }
     }
   }
 </script>

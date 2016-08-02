@@ -12,7 +12,7 @@
       </div>
     </div>
     <div slot='footer'>
-      <button type='button' class='btn btn-primary' @click='errModal = false'>关闭</button>
+      <button type='button' class='btn btn-primary' @click='close'>关闭</button>
     </div>
   </modal>
 </template>
@@ -26,6 +26,11 @@
      props: {
        errInfo: 'high,这是错误提示哟',
        errModal: false
+     },
+     methods:{
+       close: function () {
+         this.errModal = false
+       }
      },
      data: function () {
        return {
