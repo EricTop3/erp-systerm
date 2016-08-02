@@ -57,7 +57,7 @@
       </form>
     </div>
     <!--表格 -->
-    <summary :table-header="gridColumns" :table-data="list" :page="page" :detail-url="detailUrl"></summary>
+    <summary :table-header="gridColumns" :table-data="list" :page="page" :check-url="checkUrl"></summary>
   </div>
 </template>
 <script>
@@ -75,7 +75,8 @@
     deleteRequest,
     checkRequest,
     finishRequest,
-    error
+    error,
+    changeStatus
   } from '../../../publicFunction/index'
   export default {
     components: {
@@ -146,7 +147,7 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
-          exchangeData(this.list)
+          changeStatus(this.list)
         }, function (err) {
           error(err)
         })
@@ -174,6 +175,7 @@
       return {
         page: [],
         list: [],
+        checkUrl:requestUrl +  '/front-system/stock/',
         creators: [],
         orderNumber: '',
         selectedCheck: '',
