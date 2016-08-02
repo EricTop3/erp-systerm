@@ -225,7 +225,7 @@
             <td class="form-inline">
               <div class="form-group">
                 <select class="form-control" v-model="item.unit">
-                  <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
+                  <option v-for="items in item.units" :value="items.id">{{items.name}}</option>
                 </select>
               </div>
             </td>
@@ -321,6 +321,7 @@
             obj['id'] = val.product_id
             obj['value'] = val.consumption
             obj['unit'] = val.consumption_unit
+            obj['units'] = val.unit
             self.rederSetGoods.push(obj)
           })
         }
@@ -356,15 +357,6 @@
         this.rederSetGoods = this.old
       }
     },
-/*//    验证
-    validators: {
-     /!* numeric: function (val/!*,rule*!/) {
-       return /^[-+]?[0-9]+$/.test(val)
-       },
-       url: function (val) {
-       return /^(http\:\/\/|https\:\/\/)(.{4,})$/.test(val)
-       }*!/
-    },*/
     methods: {
       onSubmit: function (e) {
         // validate manually
@@ -618,7 +610,7 @@
           materials: {
             id: '',
             value: '',
-            unit: ''
+            units: ''
           }
         }
       }

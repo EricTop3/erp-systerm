@@ -224,8 +224,8 @@
             </td>
             <td class="form-inline">
               <div class="form-group">
-                <select class="form-control" v-model="item.unit">
-                  <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
+                <select class="form-control" v-model="item.units">
+                  <option v-for="items in item.unit" :value="items.id">{{items.name}}</option>
                 </select>
               </div>
             </td>
@@ -295,6 +295,8 @@
         this.old = self.dataArray
         this.localPage(this.old)
         this.rederSetGoods = this.old
+
+        console.log(this.rederSetGoods[0].unit)
       },
 //      分页
       pagechange: function (currentpage) {
@@ -303,15 +305,6 @@
         this.rederSetGoods = this.old
       }
     },
-/*//    验证方法
-    validators: {
-     /!* numeric: function (val/!*,rule*!/) {
-       return /^[-+]?[0-9]+$/.test(val)
-       },
-       url: function (val) {
-       return /^(http\:\/\/|https\:\/\/)(.{4,})$/.test(val)
-       }*!/
-    },*/
     methods: {
 //    验证
       onSubmit: function (e) {
@@ -337,7 +330,7 @@
           var obj = {}
           obj['id'] = val.id
           obj['value'] = val.value
-          obj['unit'] = val.unit
+          obj['unit'] = val.units
           materials.push(obj)
         })
 //          启用BOM单
@@ -562,7 +555,7 @@
           materials: {
             id: '',
             value: '',
-            unit: ''
+            units: ''
           }
         }
       }
