@@ -129,7 +129,7 @@
           self.listData({})
         })
       },
-//     審核请求
+//     审核请求
       checkFromApi: function (id) {
         var self = this
         checkRequest(requestSystemUrl + '/backend-system/produce/outsource/' + id + '/checked', function (response) {
@@ -176,20 +176,29 @@
       searchMethod: function () {
         var data = {
           document_number: this.search.code,
-          created_id: this.search.selectedMaker,
           checked: this.search.selectedStatus,
+          created_id: this.search.selectedMaker,
           start_time: this.time.startTime,
-          iprovider_id: this.search.selectedFactory,
           end_time: this.time.endTime,
           start_receive_time: this.time.startTime1,
           end_receive_time: this.time.endTime1,
+          iprovider_id: this.search.selectedFactory,
+          stream_origin_id: this.search.selectedFactory,
         }
         this.listData(data)
       },
 //     取消搜索
       cancelSearch: function () {
+        this.search.code = ''
+        this.search.selectedStatus = ''
+        this.search.selectedMaker = ''
+        this.time.startTime = ''
+        this.time.endTime = ''
+        this.time.startTime1 = ''
+        this.time.endTime1 = ''
+        this.search.selectedFactory = ''
         this.listData({})
-      },
+      }
     },
     data: function () {
       return {

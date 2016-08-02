@@ -39,14 +39,13 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
+                <td>{{entry.produce_amount}}{{entry.unit_name}}</td>
+                <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                <td v-if="editFlag"><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
+                <td v-if="!editFlag">{{entry.defective_amount}}/{{entry.unit_name}}</td>
+                <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元/{{entry.unit_name}}</td>
+                <td v-if="!editFlag">{{entry.unit_price}}元/{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.reference_number}}</td>
-                <td v-if="editFlag"><count :count.sync =entry.refund_amount></count></td>
-                <td v-if="!editFlag">{{entry.refund_amount}}</td>
-                <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元</td>
-                <td v-if="!editFlag">{{entry.unit_price}}元</td>
-                <td >{{entry.reference_number}}</td>
               </tr>
               </tbody>
             </table>
@@ -67,12 +66,11 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.main_reference_value}}</td>
-                <td>{{entry.received_amount}}</td>
-                <td>{{entry.additional_amount}}</td>
-                <td>{{entry.refund_amount}}</td>
-                <td>{{entry.unit_price}}元</td>
-                <td>{{entry.reference_number}}</td>
+                <td>{{entry.produce_amount}}/{{entry.unit_name}}</td>
+                <td>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
+                <td>{{entry.defective_amount}}/{{entry.unit_name}}</td>
+                <td>{{entry.unit_price}}元/{{entry.unit_name}}</td>
+                <td>{{entry.unit_specification}}</td>
               </tr>
               </tbody>
             </table>
