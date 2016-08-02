@@ -157,6 +157,18 @@
         getDataFromApi(url,data,function(response){
           self.productList2 = response.data.body.list
           self.page = response.data.body.pagination
+          $.each(self.productList2, function (index, val) {
+            val.in_stock = ''
+            val.out_stock = ''
+            if (val.amount > 0) {
+              val.in_stock = val.amount
+              val.out_stock = '无'
+            } else {
+              val.in_stock = '无'
+              val.out_stock = val.amount*(-1)
+            }
+          })
+          console.log(self.productList2.in_stock)
         })
       },
 //    查询
@@ -176,8 +188,8 @@
         productList2: [],
         gridColumns2: {
           document_number: "单号",
-          bs: "出库量",
-          bsd: "入库量",
+          out_stock: "出库量",
+          in_stock: "入库量",
           current_stock: "即时库存",
           unit_name: "单位",
           operated_type: "操作类型",
