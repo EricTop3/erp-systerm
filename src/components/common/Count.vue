@@ -1,6 +1,6 @@
 <template>
   <input type="text" class="form-control text-center count" v-model="count"
-         @input="countValidate(amount)" @click="clickEdit" @blur="moveEdit">
+         @input="countValidate(amount)" @blur="moveEdit">
 </template>
 <script>
   export default{

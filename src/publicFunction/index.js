@@ -5,7 +5,11 @@ import Vue from 'vue'
 export var requestUrl = 'http://192.168.1.150:1401/v1'
 //  请求服务器路径真实接口
 export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
-var token =  window.localStorage.getItem('token') ?  window.localStorage.getItem('token') : ''
+var token =  window.localStorage.getItem('token')
+export var storeName = window.localStorage.getItem('storeName')
+export var storeAccount = window.localStorage.getItem('storeAccount')
+export var systermName = window.localStorage.getItem('systermName')
+export var systermAccount = window.localStorage.getItem('systermAccount')
 //后台0,1状态没完成状态的展示方式
 export function changeStatus(origindata) {
   if(!(origindata instanceof Array)){
@@ -112,32 +116,6 @@ export function exchangeData(origindata) {
     })
   }
 }
-//后台登录方法
-export function adminLogin(loginUrl,data){
-  token = null
-  var cur = new Vue()
-  cur.$http.post(loginUrl,data).then(function(response){
-    var curtoken = response.headers('X-Overpowered-Token-Set')
-    window.localStorage.setItem('token', curtoken)
-    token =  window.localStorage.getItem('token')
-    window.location.href ='#!/admin/setting'
-  },function(err){
-    console.log(err)
-  })
-}
-//前台登录方法
-export function siteLogin(loginUrl,data){
-  token = null
-  var cur = new Vue()
-  cur.$http.post(loginUrl,data).then(function(response){
-    var curtoken = response.headers('X-Overpowered-Token-Set')
-    window.localStorage.setItem('token', curtoken)
-    token =  window.localStorage.getItem('token')
-    window.location.href ='#!/site/order'
-  },function(err){
-    console.log(err)
-  })
-}
 // 引用原始数据和添加商品之间相互转换
 export function detailGoodsInfo (list,type) {
   $.each(list,function(index,val){
@@ -156,7 +134,7 @@ export function detailGoodsInfo (list,type) {
     val.reference_type =  type
   })
 }
-// 导出token
+// 导出token,门店账号,系统账号
 export { token}
 // 所有页面搜索方法
 export function searchRequest (url, data, callback) {
@@ -297,4 +275,42 @@ export function  detailNull (val) {
 // 前后台错误代码验证方法
 export function error(err) {
   console.log(err)
+}
+//后台登录方法
+export function adminLogin(loginUrl,data){
+  token = null
+  var cur = new Vue()
+  cur.$http.post(loginUrl,data).then(function(response){
+    var curtoken = response.headers('X-Overpowered-Token-Set')
+    window.localStorage.setItem('token', curtoken)
+    token =  window.localStorage.getItem('token')
+    getDataFromApi(requestSystemUrl + '/backend-system/auth/info',{},function(response){
+      window.localStorage.setItem('systermName', response.data.body.name)
+      window.localStorage.setItem('systermAccount', response.data.body.account)
+      systermName = window.localStorage.getItem('systermName')
+      systermAccount = window.localStorage.getItem('systermAccount')
+      window.location.href = '#!/admin/setting'
+    })
+  },function(err){
+    console.log(err)
+  })
+}
+//前台登录方法
+export function siteLogin(loginUrl,data){
+  token = null
+  var cur = new Vue()
+  cur.$http.post(loginUrl,data).then(function(response){
+    var curtoken = response.headers('X-Overpowered-Token-Set')
+    window.localStorage.setItem('token', curtoken)
+    token =  window.localStorage.getItem('token')
+    getDataFromSiteApi(requestSystemUrl + '/front-system/auth/info',{},function(response){
+      window.localStorage.setItem('storeName', response.data.body.name)
+      window.localStorage.setItem('storeAccount', response.data.body.account)
+      storeName = window.localStorage.getItem('storeName')
+      storeAccount = window.localStorage.getItem('storeAccount')
+      window.location.href ='#!/site/order'
+    })
+  },function(err){
+    console.log(err)
+  })
 }

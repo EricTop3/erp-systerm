@@ -17,13 +17,16 @@
           <label>收货时间</label>
           <date-picker :value.sync="time"></date-picker>
         </div>
-        <span class="btn btn-info" data-toggle="modal" data-target="#inventory-cite-templ"
-              @click="parentIntroModal=true">引用原始数据</span>
+        <span class="btn btn-info" @click="inclucdeData">引用原始数据</span>
         <span class="btn btn-primary" data-toggle="modal" @click="goodsUpload()">提交入货</span>
       </form>
     </div>
     <!--表格 -->
-    <summary :table-header="gridColumns" :summary-data="summryData" :table-data="detailData" :page="page"   :detail-url="detailUrl" :tab-flag="tabFlag"></summary>
+    <summary
+      :table-header="gridColumns"
+      :table-data="detailData"
+      :page="page">
+    </summary>
   </div>
   <!--模态框-删除-->
   <modal :show.sync="deleteModal" :modal-size="deleteModalSize">
@@ -40,10 +43,17 @@
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="deleteModal=false">关闭</button>
     </div>
   </modal>
-  <!--模态框-引用原始数据-->
-  <introduce-data :instroduce-data-modal.sync='parentIntroModal' :instroduce-data-modal-size="parentIntroModalSize" :add-data.sync="stockGoods"></introduce-data>
-  <!--模态框HTML-->
-
+  <!--引入原始数据-->
+  <introduce-data
+    :title="origenData.title"
+    :url="origenData.dataUrl"
+    :instroduce-data-modal.sync='parentIntroModal'
+    :instroduce-data-modal-size="parentIntroModalSize"
+    :first-data-title="origenData.firstDataTitle"
+    :first-data.sync="origenData.firstData"
+    :second-data-title="origenData.secondDataTitle"
+    :second-data.sync="origenData.secondData">
+  </introduce-data>
   <!--错误信息弹出-->
   <error-tip :err-modal.sync="messageTipModal" :err-info="messageTip"></error-tip>
 </template>
@@ -58,7 +68,7 @@
   import ErrorTip from '../../common/ErrorTip'
   import DatePicker from  '../../common/DatePicker'
   import Summary from '../../common/Summary'
-  import {requestUrl, token, error} from '../../../publicFunction/index'
+  import {requestUrl, token, requestSystemUrl,error} from '../../../publicFunction/index'
   var deleteId = ''
   var data = []
   export default {
@@ -125,16 +135,15 @@
       }
     },
     ready: function () {
-      this.listData(1)
     },
     methods: {
-//      删除弹出框
+//    删除弹出框
       isDelete: function (event) {
         var currentId = Number($(event.currentTarget).parents('tr').attr('id'))
         deleteId = currentId
         this.deleteModal = true
       },
-//      确认删除
+//    确认删除
       confirmDelelte: function () {
         var goodList = this.rederStockGoods
         this.deleteModal = false
@@ -144,20 +153,11 @@
           }
         })
       },
-//   列表数据渲染
-      listData: function (page) {
-        this.$http({
-          url: requestUrl + '/front-system/store/resource',
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.citeData = response.data.body.list
-        }, function (err) {
-          error(err)
-        })
+//     引入数据
+      inclucdeData: function () {
+        this.parentIntroModal = true
       },
-//      提交入货
+//     提交入货
       goodsUpload: function () {
         var goods = []
         $.each(this.rederStockGoods, function (index, val) {
@@ -214,6 +214,27 @@
         summryData: [],
         detailData: [],
         page: [],
+        origenData: {
+          title: '原始门店要货单',
+          dataUrl: requestSystemUrl + '/front-system/reference-document/distribution',
+          firstDataTitle: {
+            "document_number": "货单号",
+            "store_name": "要货仓库",
+            "amount": "要货数量",
+            "created_at": "配送日期",
+            "creator_name": "制单人",
+            "auditor_name": "审核人"
+          },
+          firstData: [],
+          secondDataTitle: {
+            "item_code": "货号",
+            "item_name": "品名",
+            "main_reference_value":"要货数量",
+            "unit_name": "单位",
+            "unit_specification": "单位规格"
+          },
+          secondData: []
+        },
         gridColumns: {
           goods_code: '货号',
           goods_name: '品名',

@@ -24,20 +24,15 @@
     </div>
 </template>
 <script>
-   import { getDataFromSiteApi,requestSystemUrl } from '../../publicFunction/index'
+   import {systermName,systermAccount } from '../../publicFunction/index'
     export default{
        name: 'admin-nav',
-       ready: function() {
-         var self = this
-         getDataFromSiteApi(requestSystemUrl + '/backend-system/auth/info',{},function(response){
-           self.systerm.account = response.data.body.account
-           self.systerm.name = response.data.body.name
-         })
-       },
        methods: {
          exit: function () {
 //         TODO 未来可能有接口，暂时如此
            window.localStorage.setItem('token',null)
+           window.localStorage.setItem('systermName',null)
+           window.localStorage.setItem('systermAccount',null)
            window.location.href ='#!/admin/login'
            window.location.reload()
          }
@@ -45,8 +40,8 @@
       data: function () {
         return {
           systerm: {
-            account: '管理系统',
-            name: '张雨'
+            account: systermAccount,
+            name: systermName
           }
         }
       }

@@ -207,12 +207,9 @@
         </div>
       </div>
       <div class="form-group">
-        <label for=""
-               class="col-sm-4 control-label">找零</label>
-
+        <label for=""   class="col-sm-4 control-label">找零</label>
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : (paymentAmount*100-finalPrice*100)*0.01
-            }}</p>
+          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : (paymentAmount*100-finalPrice*100)*0.01 }}</p>
         </div>
       </div>
     </div>
