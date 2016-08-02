@@ -69,7 +69,6 @@
                   <td><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
                   <td>{{entry.stock}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.reference_number}}</td>
                   <td>
                     <slot name="operate">
                       <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -95,12 +94,10 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.stock}}</td>
-                  <td>{{entry.stock}}</td>
                   <td>{{entry.main_reference_value}}</td>
                   <td>{{entry.distribution_amount}}</td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.reference_number}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -184,7 +181,7 @@
         detailGoodsInfo(this.origenData.secondData,'pick')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.distribution_amount === ''
+          val.distribution_amount = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -255,7 +252,7 @@
           this.modal.errInfo = 'high,你还没有添加商品哟'
         }else if(!uploadFlag){
           this.modal.errModal = true
-          this.modal.errInfo = 'high,你的配送数量不能为空哟'
+          this.modal.errInfo = 'high,你的入库数量和次品数量不能为空哟'
         }else{
           postDataToApi(url,data,function (response) {
             window.location.href = "#!/admin/production/delegationInstock"
@@ -305,7 +302,6 @@
           c: "次品数量",
           purchase_price:"加工单价",
           unit_specification: "单位规格",
-          d: "来源要货单号"
         },
         stockGoods: [],
         renderstockGoods: [],
