@@ -34,7 +34,10 @@
           <tbody>
           <tr class="text-center" v-for="item in listdata" :id="item.id">
             <td class="text-left">{{item.display_name}}</td>
-            <td>{{item.type}} 系数 {{item.value}}</td>
+            <td>
+              <template v-if="item.type=='discount'">折扣</template>
+              <template v-if="item.type=='reduce'">减少</template>
+               系数 {{item.value}}</td>
             <td>{{item.begin_time}}</td>
             <td>{{item.end_time}}</td>
             <td>
@@ -67,7 +70,7 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">开始时间</label>
           <div class="col-sm-9">
-            <date-picker :value.sync="formData.begin_time" :time-text="timetext1"></date-picker>
+            <date-picker :value.sync="addFormData.begin_time" :time-text="timetext1"></date-picker>
             <div v-if="flag1">
               <p class="error">这是必填字段</p>
             </div>
@@ -77,7 +80,7 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">结束时间</label>
           <div class="col-sm-9">
-            <date-picker :value.sync="formData.end_time" :time-text="timetext2"></date-picker>
+            <date-picker :value.sync="addFormData.end_time" :time-text="timetext2"></date-picker>
             <div v-if="flag2">
               <p class="error">这是必填字段</p>
             </div>
@@ -86,18 +89,18 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">促销名称</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" placeholder="如：现金抵扣卷100元" v-model="formData.display_name">
+            <input type="text" class="form-control" placeholder="如：现金抵扣卷100元" v-model="addFormData.display_name">
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3 control-label">促销规则</label>
           <div class="col-sm-9 form-inline">
-            <select class="form-control" style="width: 114px;" v-model="formData.type">
+            <select class="form-control" style="width: 114px;" v-model="addFormData.type">
               <option value="">请选择</option>
               <option value="discount">折扣</option>
               <option value="reduce">减少</option>
             </select>
-            <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" v-model="formData.value" v-validate:value="[ 'required' ]">
+            <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" v-model="addFormData.value" v-validate:value="[ 'required' ]">
             <div v-if="$validation1.value.touched">
               <p class="error" v-if="$validation1.value.required">这是必填字段</p>
             </div>
@@ -270,29 +273,29 @@
           self.deleteModal = false
           self.getlistData(1)
         })
-
       },
 //      添加促销
       createSubmit: function () {
         var url = requestSystemUrl + '/backend-system/coupon/coupon'
         var data = {
-          display_name: this.formData.display_name,
-          type: this.formData.type,
-          value: this.formData.value,
-          begin_time: this.formData.begin_time,
-          end_time: this.formData.end_time
+          display_name: this.addFormData.display_name,
+          type: this.addFormData.type,
+          value: this.addFormData.value,
+          begin_time: this.addFormData.begin_time,
+          end_time: this.addFormData.end_time
         }
         var self = this
-        if(self.formData.begin_time != '' && self.formData.end_time != ''){
+        if(self.addFormData.begin_time != '' && self.addFormData.end_time != ''){
           postDataToApi(url,data,function (response) {
             self.createModal = false
             self.getlistData(1)
+            self.addFormData = {}
           })
         }else {
-          if(self.formData.begin_time == ''){
+          if(self.addFormData.begin_time == ''){
             self.flag1 = true
           }
-          if(self.formData.end_time == '') {
+          if(self.addFormData.end_time == '') {
             self.flag2 = true
           }
         }
@@ -343,6 +346,13 @@
         listdata: [],
         page: [],
         formData: {
+          display_name: '',
+          type: '',
+          value: '',
+          begin_time: '',
+          end_time: ''
+        },
+        addFormData: {
           display_name: '',
           type: '',
           value: '',
