@@ -169,7 +169,7 @@ export function deleteRequest (url,callback) {
     })
 }
 // 审核按钮请求方法
-export function checkRequest (url,callback) {
+export function checkRequest (url,callback,error) {
   var cur = new Vue()
   cur.$http({
       url: url,
@@ -179,6 +179,7 @@ export function checkRequest (url,callback) {
     .then(function (response) {
       callback && callback(response)
     }, function (err) {
+      error && error(err)
       console.log(err)
     })
 }

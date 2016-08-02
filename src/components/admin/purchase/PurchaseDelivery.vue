@@ -53,7 +53,8 @@
           <summary
             :table-header="gridColumns"
             :table-data="list"
-            :page="page"
+            :page= "page"
+            :check-url = checkUrl
           >
           </summary>
         </div>
@@ -114,13 +115,6 @@
           self.fetlistFormApi({})
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl + '/backend-system/purchase/receive/' + id + '/checked',function(response){
-          console.log('checked')
-        })
-      },
 //    查看详情
       gotoDetail: function (id){
         window.location.href = '#!/admin/purchase/delivery/deliverydetail/'+ id
@@ -140,6 +134,7 @@
           "refund_amount": '退货数量'
         },
         list: [],
+        checkUrl: requestSystemUrl + '/backend-system/purchase/receive/',
         time:{
           startTime:'',
           endTime:'',

@@ -10,7 +10,6 @@
           <li class="active">委外生产入库单</li>
           <li class="active">列表</li>
         </ol>
-
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
@@ -54,9 +53,8 @@
             <a v-link="{ path: '/admin/production/delegationInstock/ProductionDelegationInstockNew' }" class="btn btn-info spanblocks fr mr10">新建委外入库单</a>
           </form>
         </div>
-
         <!-- 表格 -->
-        <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
+        <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url="checkUrl"></summary>
       </div>
     </div>
   </div>
@@ -121,14 +119,6 @@
           self.listData({})
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl + '/backend-system/production/outsource/' + id + '/checked', function (response) {
-          console.log('checked')
-          self.listData({})
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -187,6 +177,7 @@
       return {
         page: [],
         list: [],
+        checkUrl: requestSystemUrl + '/backend-system/production/outsource/',
         time: {
           startTime: '',
           endTime: '',
