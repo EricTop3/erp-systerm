@@ -42,8 +42,8 @@
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
         checkRequest(this.checkUrl +currentId+ '/checked' ,function (){
           if(!(self.list instanceof Array)){
-            if (this.list.id === currentId) {
-              this.list.checked = '已审核'
+            if (self.list.id === currentId) {
+              self.list.checked = '已审核'
             }
           }else{
             $.each(self.list, function (index, val) {

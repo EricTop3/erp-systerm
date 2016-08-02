@@ -16,7 +16,7 @@
       </td>
       <td  v-if="operate">
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" v-if="tableData.checked==='未审核'"></list-validate>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" :check-url="checkUrl" v-if="tableData.checked==='未审核'"></list-validate>
           <span class="btn btn-primary btn-sm" @click="edit" v-if="tableData.checked==='未审核'">编辑</span>
         </slot>
     </tr>
@@ -34,7 +34,8 @@
     props: {
       gridOperate: true,
       tableHeader: [],
-      tableData: []
+      tableData: [],
+      checkUrl: '',
     },
     components: {
       Page: Page,

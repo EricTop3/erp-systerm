@@ -8,7 +8,12 @@
       <li class="active">查看要货单</li>
     </ol>
     <!--详情页面-->
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list">
+    <summary-detail
+      :detail-list="detailList"
+      :table-header="gridColumns"
+      :table-data="list"
+      :check-url="checkUrl"
+    >
     </summary-detail>
     <!--有列表切换的时候的情况-->
     <ul class="nav nav-tabs" role="tablist">
@@ -169,6 +174,7 @@
         id: 0,
         page: [],
         list: [],
+        checkUrl: requestUrl + '/front-system/stock/enquiry/',
         detailList: [],
         editFlag: false,
         detailModal: true,
