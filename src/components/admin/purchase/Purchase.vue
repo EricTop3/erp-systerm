@@ -50,7 +50,12 @@
           </form>
         </div>
         <!-- 表格 -->
-        <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
+        <summary
+          :table-data="list"
+          :table-header="gridColumns"
+          :page="page"
+          :check-url="checkUrl">
+        </summary>
       </div>
     </div>
   </div>
@@ -102,13 +107,6 @@
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/purchase/purchase/'+ id,function(response){
           self.listData({})
-        })
-      },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl + '/backend-system/purchase/purchase/' + id + '/checked',function(response){
-          console.log('checked')
         })
       },
 //     完成請求
@@ -166,6 +164,7 @@
       return {
         page: [],
         list: [],
+        checkUrl: requestSystemUrl + '/backend-system/purchase/purchase/',
         time:{
           startTime:'',
           startTime1:'',

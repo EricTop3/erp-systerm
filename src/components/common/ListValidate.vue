@@ -19,6 +19,7 @@
 </template>
 <script>
   import $ from 'jquery'
+  import {checkRequest,token} from '../../publicFunction/index'
 //  import Modal from '../common/Modal'
   var currentId = 0
   export default{
@@ -28,28 +29,33 @@
 //    },
     props: {
       list: {
-        required: true
+        required: true,
       },
+      checkUrl: '',
       flag: false
 //      validateModal: false
     },
     methods: {
 //    审核
       validate: function (event) {
+        var self = this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
-        if(!(this.list instanceof Array)){
-          if (this.list.id === currentId) {
-            this.list.checked = '已审核'
-          }
-        }else{
-          $.each(this.list, function (index, val) {
-            if (val.id === currentId) {
-              val.checked = '已审核'
+        checkRequest(this.checkUrl +currentId+ '/checked' ,function (){
+          if(!(self.list instanceof Array)){
+            if (self.list.id === currentId) {
+              self.list.checked = '已审核'
             }
-          })
-        }
-        this.$dispatch("check",currentId)
-        this.$dispatch("finishEdit")
+          }else{
+            $.each(self.list, function (index, val) {
+              if (val.id === currentId) {
+                val.checked = '已审核'
+              }
+            })
+          }
+          self.$dispatch("finishEdit")
+        },function(err){
+          self.$dispatch("checkFail",err)
+        })
       }
     }
   }

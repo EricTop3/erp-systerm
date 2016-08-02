@@ -137,7 +137,6 @@
       this.getlistData(1)
       this.userNamelistData()
       this.userAccountlistData()
-
     },
     methods: {
 //      列表数据渲染

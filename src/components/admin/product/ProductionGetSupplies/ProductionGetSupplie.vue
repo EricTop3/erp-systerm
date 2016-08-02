@@ -72,7 +72,9 @@
         <summary
           :table-data="listdata"
           :table-header="gridColumns"
-          :page="page">
+          :page="page"
+          :check-url="checkUrl"
+        >
         </summary>
       </div>
     </div>
@@ -123,13 +125,6 @@
       deleteFromApi: function (id) {
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/produce/pick/' + id, function (response) {
-          self.getlistData(1)
-        })
-      },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl + '/backend-system/produce/pick/' + id + '/checked', function (response) {
           self.getlistData(1)
         })
       },
@@ -202,6 +197,7 @@
         listProviderB: [],
         listdata: [],
         page: [],
+        checkUrl: requestSystemUrl + '/backend-system/produce/pick/',
         gridColumns: {
           document_number: '领料单号',
           checked: '审核状态',

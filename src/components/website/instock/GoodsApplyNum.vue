@@ -56,7 +56,7 @@
       </form>
     </div>
     <!--汇总列表-->
-    <summary :table-data="list" :table-header="gridColumns" :page="page"></summary>
+    <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url = 'checkUrl'></summary>
   </div>
 </template>
 <script>
@@ -177,6 +177,7 @@
     data: function () {
       return {
         page: [],
+        checkUrl: requestUrl + '/front-system/stock/enquiry/',
         detailUrl: '/#!/site/instock/GoodsApplyNum/',
         showRight: false,
         creators: [],

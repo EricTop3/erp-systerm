@@ -12,7 +12,6 @@
           <li class="active">库存配送出库</li>
           <li class="active">列表</li>
         </ol>
-
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
@@ -62,13 +61,15 @@
             <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span>
           </form>
         </div>
-
         <!-- 表格 -->
         <summary
           :table-data="list"
           :table-header="gridColumns"
-          :page="page">
+          :page="page"
+          :check-url="checkUrl">
         </summary>
+        <!--错误信息-->
+        <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
       </div>
     </div>
   </div>
@@ -84,6 +85,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import LeftInstock from '../../common/LeftInstock'
+  import ErrorTip from '../../../common/ErrorTip'
   import {
     requestUrl,
     requestSystemUrl,
@@ -103,7 +105,8 @@
       AdminNav: AdminNav,
       Summary: Summary,
       DatePicker: DatePicker,
-      LeftInstock: LeftInstock
+      LeftInstock: LeftInstock,
+      ErrorTip: ErrorTip
     },
     events: {
 //    绑定翻页事件
@@ -131,13 +134,6 @@
           self.listData({})
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl + '/backend-system/stock/distribution/' + id + '/checked',function(response){
-          console.log('checked')
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -161,6 +157,15 @@
         self.warehouseList = response.data.body.list
       })
       this.listData({})
+    },
+    events: {
+      checkFail: function (err){
+        console.log(typeof err.data.code )
+        if(Number(err.data.code) === 220000){
+          this.modal.errModal = true
+          this.modal.errInfo =  err.data.message
+        }
+      }
     },
     methods: {
 //      列表数据渲染
@@ -195,6 +200,7 @@
         page: [],
         list: [],
         warehouseList: [],
+        checkUrl: requestSystemUrl + '/backend-system/stock/distribution/',
         time:{
           startTime:'',
           startTime1:'',
@@ -202,6 +208,10 @@
           endTime1:'',
         },
         orderMaker: [],
+        modal: {
+          errModal: false,
+          errInfo: 'high,这是错误提示'
+        },
         gridColumns: {
           order_number: '配送单号',
           checked: '审核状态',
