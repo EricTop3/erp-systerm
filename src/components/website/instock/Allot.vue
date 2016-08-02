@@ -13,36 +13,86 @@
       <form action="" method="post" class="form-inline">
         <div class="form-group">
           <label>备注</label>
-          <input type="text" class="form-control" placeholder="">
+          <input type="text" class="form-control" placeholder="" v-model="note">
           <label>收货时间</label>
           <date-picker :value.sync="time"></date-picker>
         </div>
         <span class="btn btn-info" @click="inclucdeData">引用原始数据</span>
-        <span class="btn btn-primary" data-toggle="modal" @click="goodsUpload()">提交入货</span>
+        <span class="btn btn-primary" data-toggle="modal" @click="goodsUpload">提交入货</span>
       </form>
     </div>
-    <!--表格 -->
-    <summary
-      :table-header="gridColumns"
-      :table-data="detailData"
-      :page="page">
-    </summary>
+    <!--入库明细入库汇总-->
+    <div>
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
+        <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!-- 入库明细 -->
+        <div role="tabpanel" class="tab-pane active" v-if="detailModal">
+          <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr class="text-center">
+              <th v-for="value in  gridColumns">
+                {{value}}
+              </th>
+              <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <td>{{entry.item_code}}</td>
+              <td>{{entry.item_name}}</td>
+              <td>{{entry.purchase_amount}}</td>
+              <td>{{entry.main_reference_value}}</td>
+              <td><count :count.sync = 'entry.realInstock_amount'></count></td>
+              <td>{{entry.unit_name}}</td>
+              <td>{{entry.unit_specification}}</td>
+              <td>{{entry.refence_number}}</td>
+              <td>
+                <slot name="operate">
+                  <list-delete :delete-data.sync="tableData" ></list-delete>
+                </slot>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+          <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+          <!--:last-page="page.last_page"></page>-->
+        </div>
+
+        <!-- 入库汇总 -->
+        <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+          <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr class="text-center">
+              <th v-for="value in  gridColumns">
+                {{value}}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <td>{{entry.item_code}}</td>
+              <td>{{entry.item_name}}</td>
+              <td>{{entry.purchase_amount}}</td>
+              <td>{{entry.main_reference_value}}</td>
+              <td>{{entry.realInstock_amount}}</td>
+              <td>{{entry.unit_name}}</td>
+              <td>{{entry.unit_specification}}</td>
+              <td>{{entry.refence_number}}</td>
+            </tr>
+            </tbody>
+          </table>
+          <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
+          <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
+          <!--:last-page="page.last_page"></page>-->
+        </div>
+      </div>
+    </div>
   </div>
-  <!--模态框-删除-->
-  <modal :show.sync="deleteModal" :modal-size="deleteModalSize">
-    <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">删除</h4>
-    </div>
-    <div slot="body">
-      <h4>删除弹出框！</h4>
-    </div>
-    <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmDelelte()">保存</button>
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="deleteModal=false">关闭</button>
-    </div>
-  </modal>
   <!--引入原始数据-->
   <introduce-data
     :title="origenData.title"
@@ -68,7 +118,7 @@
   import ErrorTip from '../../common/ErrorTip'
   import DatePicker from  '../../common/DatePicker'
   import Summary from '../../common/Summary'
-  import {requestUrl, token, requestSystemUrl,error} from '../../../publicFunction/index'
+  import {requestUrl, token, requestSystemUrl,detailGoodsInfo,error,postSiteDataToApi} from '../../../publicFunction/index'
   var deleteId = ''
   var data = []
   export default {
@@ -85,48 +135,60 @@
     },
     events: {
 //      确认增加
-      confirmAdd: function () {
+      includeConfirmAdd: function () {
         var self = this
-        $.each(self.stockGoods, function (index, val) {
-          if (val.checked) {
+        var saveDataArray = []
+        var detailArrayFromApi = []
+        detailGoodsInfo(this.origenData.secondData,'Requisition')
+        saveDataArray = this.stockGoods.concat(this.origenData.secondData)
+        $.each(saveDataArray, function (index, val) {
+          if (val.choice && !val.again) {
+            val.again = true
             self.dataArray.push(val)
           }
         })
-        data =  self.dataArray
-        this.rederStockGoods = self.dataArray
-        $.each(this.rederStockGoods, function (index, val) {
-          val.now_number = val.distribution_number
-          $.each(self.citeData, function (index1, val1) {
-            if (val.store_distribution_id === val1.id) {
-              val.store_distribution_id = val1.code
-            }
-          })
-        })
-        this.detailData =  this.rederStockGoods
+        console.log(self.dataArray)
+        this.renderstockGoods = self.dataArray
       },
-//    入库汇总函数双循环遍历数量相加
-      summary: function () {
-        var goodsName = []
-        var self = this
-        self.summryData = self.rederStockGoods
-        $.each(self.summryData,function(index,val){
-           var currentName = val.goods_name
-           for(var i= index + 1; i<self.summryData.length; i++){
-             if(self.summryData[i]['goods_name']){
-               if(self.summryData[i]['goods_name'] === currentName ) {
-                 val.demanding_number = Number(val.demanding_number) + Number(self.summryData[i].demanding_number)
-                 val.distribution_number = Number(val.distribution_number) + Number(self.summryData[i].distribution_number)
-                 val.now_number =  Number(val.now_number) + Number(self.summryData[i].now_number)
-                 self.summryData.splice(i, 1)
-               }
-             }
-           }
-        })
-        self.rederStockGoods =   this.detailData
-      },
+////    入库汇总函数双循环遍历数量相加
+//      summary: function () {
+//        var goodsName = []
+//        var self = this
+//        self.summryData = self.rederStockGoods
+//        $.each(self.summryData,function(index,val){
+//           var currentName = val.goods_name
+//           for(var i= index + 1; i<self.summryData.length; i++){
+//             if(self.summryData[i]['goods_name']){
+//               if(self.summryData[i]['goods_name'] === currentName ) {
+//                 val.demanding_number = Number(val.demanding_number) + Number(self.summryData[i].demanding_number)
+//                 val.distribution_number = Number(val.distribution_number) + Number(self.summryData[i].distribution_number)
+//                 val.now_number =  Number(val.now_number) + Number(self.summryData[i].now_number)
+//                 self.summryData.splice(i, 1)
+//               }
+//             }
+//           }
+//        })
+//        self.rederStockGoods =   this.detailData
+//      },
 //      入库明细函数
       detail: function () {
         this.detailData = data
+      },
+//    入库明细与入库汇总切换
+      changeActive: function (event) {
+        var cur = $(event.currentTarget)
+        cur.addClass('active').siblings('li').removeClass('active')
+        switch (Number(cur.attr('id'))){
+          case 1:
+            this.detailModal = true
+            this.summaryModal = false
+            this.$dispatch('detail')
+            break
+          case 2:
+            this.detailModal = false
+            this.summaryModal = true
+            this.$dispatch('summary')
+        }
       },
 //    绑定翻页事件
       pagechange: function (currentpage) {
@@ -160,24 +222,23 @@
 //     提交入货
       goodsUpload: function () {
         var goods = []
-        $.each(this.rederStockGoods, function (index, val) {
+        $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
-          obj['consumable_id'] = val.id
-          obj['consumable_amount'] = val.now_number
-          obj['distribution_amount'] = Number(val.distribution_number)
+          obj['reference_id'] = val.id
+          obj['amount'] = val.realInstock_amount
           goods.push(obj)
         })
-
         if (this.time === '') {
           this.messageTipModal = true
           this.messageTip = 'high,你还没有填写日期哟'
-        } else if (this.rederStockGoods.length < 1) {
+        } else if (this.renderstockGoods.length < 1) {
           this.messageTipModal = true
           this.messageTip = 'high,你忘记添加商品了哟'
         } else {
           this.$http.post(requestUrl + '/front-system/stock/recipient', {
             'items': goods,
-            'date': this.time
+            'operated_at': this.time,
+            note: this.note
           }, {
             headers: {'X-Overpowered-Token': token}
           }).then(function (response) {
@@ -197,6 +258,11 @@
     },
     data: function () {
       return {
+//       入库明细
+        detailModal: true,
+//       入库汇总
+        summaryModal: false,
+        note: '',
         time: '',
         tabFlag: true,
         messageTip: '请填写正确的信息！',
@@ -209,7 +275,7 @@
         deleteModalSize: 'modal-sm',
         stockGoods: [],
         dataArray: [],
-        rederStockGoods: [],
+        renderstockGoods: [],
         renderData: [],
         summryData: [],
         detailData: [],

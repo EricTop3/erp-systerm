@@ -7,8 +7,14 @@
       <li class="active">收货单汇总</li>
       <li class="active">查看收货单</li>
     </ol>
-    <!--详情页面-->
-    <summary-detail :tab-flag='tabFlag' :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header='gridColumns2' :grid-operate="gridOperate" :page.sync="page"></summary-detail>
+    <!--表格-->
+    <summary-detail
+      :table-header="gridColumns"
+      :table-data="list"
+      :grid-operate="gridOperate"
+      :check-url = "checkUrl"
+    >
+    </summary-detail>
   </div>
   <!--模态框HTML-->
 </template>
@@ -21,7 +27,7 @@
   import Modal from '../../common/Modal'
   import ListValidate from '../../common/ListValidate'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl, token,searchRequest,exchangeData,error } from '../../../publicFunction/index'
+  import {requestUrl, token,searchRequest,exchangeData,error,changeStatus } from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -57,7 +63,7 @@
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.list = response.data.body
-          exchangeData(this.list)
+          changeStatus(this.list)
         }, function (err) {
           error(err)
         })
@@ -80,29 +86,13 @@
         this.inventoryAuditModal = true
         console.log(this.dataId)
       },
-//     确认审核
-      sureInventory: function () {
-        console.log(this.dataId)
-        this.$http.put(requestUrl + '/front-system/stock/inventory/' + this.dataId,
-          {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-Overpowered-Token': token
-            }
-          }).then(function (response) {
-          this.inventoryAuditModal = false
-          this.checked = '已审核'
-
-        }, function (err) {
-          error(err)
-        })
-      }
     },
     data: function () {
       return {
         id: 0,
         tabFlag: true,
         page: [],
+        checkUrl: requestUrl + '/front-system/stock/inventory/',
         inventoryAuditModal: false,
         inventoryAuditModalSize: 'modal-sm',
         dataId: '',

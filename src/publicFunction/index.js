@@ -249,6 +249,22 @@ export function  postDataToApi (url, data, callback, error) {
       error && error(err)
     })
 }
+// 前台post提交方法
+export function  postSiteDataToApi (url, data, callback, error) {
+  var cur = new Vue()
+  cur.$http({
+      url: url,
+      method: 'post',
+      data: data,
+      headers: {'X-Overpowered-Token': token}
+    })
+    .then(function (response) {
+      callback && callback(response)
+    }, function (err) {
+      console.log(err)
+      error && error(err)
+    })
+}
 //  put提交数据的方法
 export function  putDataToApi (url, data, callback, callbackErr) {
   var cur = new Vue()
