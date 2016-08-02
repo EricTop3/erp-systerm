@@ -16,22 +16,23 @@
           <form class="form-inline">
             <div class="form-group">
               <label>仓库</label>
-              <select class="form-control">
-                <option>水星店</option>
+              <select class="form-control" v-model="search.selectedHouse">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>操作类型</label>
               <select class="form-control">
-                <option>请选择</option>
+                <option>暂时没有接口</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>盘点时间段</label>
-              <input type="text"class="form-control date_picker" placeholder="开始时间"> -
-              <input type="text"class="form-control date_picker" placeholder="结束时间">
+              <date-picker :value.sync="search.start_time"></date-picker>-
+              <date-picker :value.sync="search.ned_time"></date-picker>
             </div>
-            <button type="submit" class="btn btn-primary">查询</button>
+            <button type="submit" class="btn btn-primary" @click="searchMethod">查询</button>
           </form>
         </div>
 
@@ -48,84 +49,36 @@
             <td>期末库存量</td>
             <td>单位</td>
             <td>单位规格</td>
-            <td>操作</td>
+            <!--<td>操作</td>-->
           </tr>
           </thead>
           <tbody>
           <tr class="text-center">
-            <td class="text-left">WP51254668856654</td>
-            <td>伊利牛奶</td>
-            <td>总部仓库</td>
-            <td>100</td>
-            <td>200</td>
-            <td>150</td>
-            <td>150</td>
-            <td>箱</td>
-            <td>1箱*20盒*250ml</td>
-            <td></td>
+            <td class="text-left">{{productList1.goods_code}}</td>
+            <td>{{productList1.goods_name}}</td>
+            <td>{{productList1.warehouse_name}}</td>
+            <td>{{productList1.start_stock}}</td>
+            <td>{{productList1.in_stock}}</td>
+            <td>{{productList1.out_stock}}</td>
+            <td>{{productList1.current_stock}}</td>
+            <td>{{productList1.unit_name}}</td>
+            <td>{{productList1.unit_specification}}</td>
+            <!--<td></td>-->
           </tr>
           </tbody>
         </table>
 
         <!-- 表格 -->
-        <table class="table table-striped table-border table-hover">
-          <thead>
-          <tr class="text-center">
-            <td class="text-left">单号</td>
-            <td>出库量</td>
-            <td>入库量</td>
-            <td>即时库存</td>
-            <td>单位</td>
-            <td>操作类型</td>
-            <td>操作人</td>
-            <td>时间</td>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="text-center">
-            <td class="text-left">1654679184236564</td>
-            <td>4</td>
-            <td>100</td>
-            <td>196</td>
-            <td>箱</td>
-            <td>零售出库</td>
-            <td>张三</td>
-            <td>2016-6-1  18:16:30</td>
-          </tr>
-          <tr class="text-center">
-            <td class="text-left">1654679184236564</td>
-            <td>4</td>
-            <td>100</td>
-            <td>196</td>
-            <td>箱</td>
-            <td>零售出库</td>
-            <td>张三</td>
-            <td>2016-6-1  18:16:30</td>
-          </tr>
-          <tr class="text-center">
-            <td class="text-left">1654679184236564</td>
-            <td>4</td>
-            <td>100</td>
-            <td>196</td>
-            <td>箱</td>
-            <td>零售出库</td>
-            <td>张三</td>
-            <td>2016-6-1  18:16:30</td>
-          </tr>
-          </tbody>
-        </table>
+        <grid :data="productList2" :columns="gridColumns2" :operate="productOperate2"></grid>
+
         <!-- 翻页 -->
-        <nav class="text-right">
-          <ul class="pagination">
-            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-          </ul>
-        </nav>
+        <page
+          :total='page.total'
+          :current.sync='page.current_page'
+          :display='page.per_page'
+          :last-page='page.last_page' v-if="productList2.length>0">
+        </page>
+
       </div>
     </div>
   </div>
@@ -136,29 +89,111 @@
   import Grid from '../../../common/Grid'
   import Page from '../../../common/Page'
   import LeftInstock from '../../common/LeftInstock'
+  import DatePicker from '../../../common/DatePicker'
+  import {
+    requestUrl,
+    requestSystemUrl,
+    token,
+    searchRequest,
+    getDataFromApi,
+    postDataToApi,
+    exchangeData,
+    deleteRequest
+  } from '../../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
       AdminNav: AdminNav,
+      DatePicker: DatePicker,
       LeftInstock: LeftInstock
     },
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-//        this.detailListData(currentpage)
-        console.log(currentpage)
+        var self = this
+        var currentId = this.$route.params.queryId
+        this.$http({
+          url: requestSystemUrl + '/backend-system/stock/log/' + currentId,
+          data: {
+            page: currentpage
+          },
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          self.page = response.data.body.pagination
+          self.productList2 = response.data.body.list
+        }, function (err) {
+          console.log(err)
+        })
       }
     },
     ready: function () {
+      var self = this
+//    仓库请求接口
+      var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+//    获取仓库列表
+      getDataFromApi(url, {}, function (response) {
+        self.warehouseList = response.data.body.list
+      })
+
+//       获取单条详情
+      var currentId = this.$route.params.queryId
+      var urlOne  = requestSystemUrl + '/backend-system/stock/log/' + currentId + '/detail'
+      getDataFromApi(urlOne,{},function(response){
+        self.productList1 = response.data.body
+      })
+
+//      获取列表数据
+      this.getOneData({})
     },
-    methods: {},
+    methods: {
+      getOneData: function (data) {
+        var currentId = this.$route.params.queryId
+        var self = this
+
+//        获取列表详情
+        var url = requestSystemUrl + '/backend-system/stock/log/' + currentId
+        getDataFromApi(url,data,function(response){
+          self.productList2 = response.data.body.list
+          self.page = response.data.body.pagination
+        })
+      },
+//    查询
+      searchMethod: function () {
+        var data = {
+          start_time: this.search.start_time,
+          ned_time: this.search.ned_time
+        }
+        this.getOneData(data)
+      },
+    },
     data: function () {
-      return {}
+      return {
+        page: [],
+        productList1: [],
+        productOperate2: false,
+        productList2: [],
+        gridColumns2: {
+          document_number: "单号",
+          bs: "出库量",
+          bsd: "入库量",
+          current_stock: "即时库存",
+          unit_name: "单位",
+          operated_type: "操作类型",
+          creator_name: "操作人",
+          created_at: "时间"
+        },
+        warehouseList: [],
+        search: {
+          selectedHouse: '',
+          start_time: '',
+          ned_time: '',
+        }
+      }
     }
   }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   h1 {
     color: #42b983;
