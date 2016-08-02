@@ -127,7 +127,25 @@
     :request-data="request.productData">
   </stock-goods>
   <!--错误信息-->
-  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo">
+  </error-tip>
+  <!--库存不足跳转的提示-->
+  <modal :show.sync='modal.skipModal' :modal-size="modal.skipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal'  aria-label='Close'><span
+        aria-hidden='true' @click="errModal=false">&times;</span></button>
+      <h4 class='modal-title'>友情提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{modal.errInfo}}</p>
+      </div>
+    </div>
+
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='skip'>关闭</button>
+    </div>
+  </modal>
 </template>
 <style>
 </style>
@@ -135,6 +153,7 @@
   import $ from 'jquery'
   import Grid from '../../../common/Grid'
   import Page from '../../../common/Page'
+  import Modal from '../../../common/Modal'
   import AdminNav from '../../AdminNav'
   import StockGoods from '../../../common/StockGoodsOperate'
   import DatePicker from '../../../common/DatePicker'
@@ -164,6 +183,7 @@
       ErrorTip: ErrorTip,
       LeftProduction: LeftProduction,
       Count: Count,
+      Modal: Modal,
       ListDelete: ListDelete
     },
     ready: function () {
@@ -199,7 +219,6 @@
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
-
           }
         })
         this.renderstockGoods = self.dataArray
@@ -244,10 +263,6 @@
           note: this.note,
           operated_at: this.sendTime
         }
-//      判断配送出库和采购单价是否为空
-        $.each(this.renderstockGoods,function(index,val){
-
-        })
 //       提交之前的判断
        if(this.sendTime===''){
           this.modal.errModal = true
@@ -262,12 +277,15 @@
           postDataToApi(url,data,function (response) {
             window.location.href = "#!/admin/production"
           },function(err){
-            if(err.data.code ==="220001"){
-              self.modal.errModal = true
+            if(err.data.code ==="220001" ){
+              self.modal.skipModal = true
               self.modal.errInfo = err.data.message
             }
           })
         }
+      },
+      skip: function () {
+        window.location.href = '#!/admin/production/getSupplies'
       },
 //      添加商品
       addStockGoods: function ( ){
@@ -360,7 +378,9 @@
           parentIntroModal: false,
           parentIntroModalSize: 'modal-lg',
           errModal: false,
-          errInfo: 'high。这是友情提醒'
+          errInfo: 'high。这是友情提醒',
+          skipModal: false,
+          skipModalSize: 'modal-sm'
         },
         category: '',
         baseUnit: '',
