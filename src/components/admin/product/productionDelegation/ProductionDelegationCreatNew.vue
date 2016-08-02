@@ -91,8 +91,8 @@
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.required_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purchase_amount}}{{entry.purchase_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purcahse_price}}{{entry.purcahse_price}}元/{{entry.unit_name}}</td>
+                  <td>{{entry.purchase_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.purchase_price}}元/{{entry.unit_name}}</td>
                   <td>{{entry.refence_number}}</td>
                 </tr>
                 </tbody>
@@ -189,8 +189,8 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount ===''
-          val.purchase_price ===''
+          val.purchase_amount = ''
+          val.purchase_price = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -206,8 +206,8 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.purchase_amount === ''
-          val.purchase_price === ''
+          val.purchase_amount = ''
+          val.purchase_price = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -232,13 +232,13 @@
       }
     },
     methods: {
-//     提交采购
+//     提交委外生产
       uploadPurchase: function () {
         var self = this
         console.log( self.reference_type )
         var items = []
         var uploadFlag = true
-//      采购请求地址
+//      委外生产请求地址
         var url = requestSystemUrl + '/backend-system/produce/outsource'
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
@@ -246,12 +246,12 @@
           obj.reference_type = val.reference_type
           obj.amount = val.purchase_amount
           obj.price = val.purchase_price
-          if(val.purchase_amount ==='' || val.purchase_price ===''){
+          if(val.purchase_amount == '' || val.purchase_price == ''){
             uploadFlag = false
           }
           items.push(obj)
         });
-//      采购需要填写的数据
+//      委外生产需要填写的数据
         var data = {
           items: items,
           note: this.note,
@@ -262,18 +262,24 @@
         if(this.startTime===''){
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还添加时间！'
-        }else if(this.selectedSupplier===''){
+        }else if(this.selectedSupplier === ''){
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没有选择合作工厂！'
-        }else if(items.length<1){
+        }else if(items.length < 1){
           this.modal.errModal = true
           this.modal.errInfo = 'high,你还没有添加商品！'
         }else if(!uploadFlag){
           this.modal.errModal = true
-          this.modal.errInfo = 'high,你的采购数量和采购单价不能为空哟'
+          this.modal.errInfo = 'high,你的生产数量和加工单价不能为空哟'
         }else{
           postDataToApi(url,data,function (response) {
             window.location.href = "#!/admin/production/delegationCreat"
+          },function (err) {
+            if (err.data.code == '220001') {
+              self.modal.errModal = true
+              self.modal.errInfo = '库存不足，已生产领料单，请前往领料单查看！'
+            }
+            console.log(err)
           })
         }
       },
