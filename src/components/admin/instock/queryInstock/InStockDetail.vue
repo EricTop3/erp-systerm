@@ -14,13 +14,6 @@
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
-            <div class="form-group">
-              <label>仓库</label>
-              <select class="form-control" v-model="search.selectedHouse">
-                <option value="">请选择</option>
-                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
-              </select>
-            </div>
             <div class="form-group ml10">
               <label>操作类型</label>
               <select class="form-control">
@@ -130,12 +123,6 @@
     },
     ready: function () {
       var self = this
-//    仓库请求接口
-      var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
-//    获取仓库列表
-      getDataFromApi(url, {}, function (response) {
-        self.warehouseList = response.data.body.list
-      })
 
 //       获取单条详情
       var currentId = this.$route.params.queryId
@@ -196,9 +183,7 @@
           creator_name: "操作人",
           created_at: "时间"
         },
-        warehouseList: [],
         search: {
-          selectedHouse: '',
           start_time: '',
           ned_time: '',
         }
