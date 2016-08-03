@@ -17,13 +17,15 @@
         <div class="form-group ml10">
           <label>状态</label>
           <select class="form-control" v-model="selectedCheck">
-            <option value="1">已审核</option>
+            <option value="">请选择</option>
             <option value="0">未审核</option>
+            <option value="1">已审核</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
           <select class="form-control" v-model="createPersonId">
+            <option value="">请选择</option>
             <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>

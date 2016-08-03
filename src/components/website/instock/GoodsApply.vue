@@ -194,7 +194,7 @@
             }
           ).then(function (reponse) {
             var id = reponse.data.body.id
-            window.location.href = '/#!/site/instock/GoodsApplyNum/' + id
+            window.location.href = '/#!/site/instock/GoodsApplyNum'
           }, function (err) {
             if (err.data.code === '100000') {
               this.messageTipModal = true

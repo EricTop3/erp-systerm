@@ -324,7 +324,7 @@
   import CountContainer from '../../common/CountContainer'
   import Page from '../../common/Page'
   import Slide from 'vue-slide'
-  import {requestUrl, token,searchRequest} from '../../../publicFunction/index'
+  import {requestUrl, token,searchRequest,getDataFromSiteApi,postSiteDataToApi} from '../../../publicFunction/index'
   //  商品信息数组
   var orderItems = []
   //  订单类型
@@ -342,38 +342,50 @@
       SiteNav: SiteNav
     },
     compiled: function () {
-//        分类
-      this.$http({
-        url: requestUrl + '/front-system/order/category',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token}
-      }).then(function (response) {
-        this.category = response.data.body.list
-      }, function (err) {
-        console.log(err)
+      var self = this
+//    分类
+      getDataFromSiteApi(requestUrl + '/front-system/order/category',{},function(response){
+        self.category = response.data.body.list
       })
 //    产品
-      this.$http({
-        url: requestUrl + '/front-system/order/product',
-        method: 'get',
-        data: {
-          per_page: 20
-        },
-        headers: {'X-Overpowered-Token': token}
-      }).then(function (response) {
-        this.productFromCategory = response.data.body.list
-        this.page = response.data.body.pagination
-      }, function (err) {
-        console.log(err)
+      getDataFromSiteApi(requestUrl + '/front-system/order/product',{},function(response){
+        self.productFromCategory = response.data.body.list
+        self.page = response.data.body.pagination
       })
+//      this.$http({
+//        url: requestUrl + '/front-system/order/category',
+//        method: 'get',
+//        headers: {'X-Overpowered-Token': token}
+//      }).then(function (response) {
+//        this.category = response.data.body.list
+//      }, function (err) {
+//        console.log(err)
+//      })
+////    产品
+//      this.$http({
+//        url: requestUrl + '/front-system/order/product',
+//        method: 'get',
+//        data: {
+//          per_page: 20
+//        },
+//        headers: {'X-Overpowered-Token': token}
+//      }).then(function (response) {
+//        this.productFromCategory = response.data.body.list
+//        this.page = response.data.body.pagination
+//      }, function (err) {
+//        console.log(err)
+//      })
 //      优惠
-      this.$http(requestUrl + '/front-system/order/coupon', {
-        headers: {'X-Overpowered-Token': token}
-      }).then(function (response) {
-        this.couponName = response.data.body
-      }, function (err) {
-        console.log(err)
+      getDataFromSiteApi(requestUrl + '/front-system/order/coupon',{},function(response) {
+        self.couponName = response.data.body
       })
+//      this.$http(requestUrl + '/front-system/order/coupon', {
+//        headers: {'X-Overpowered-Token': token}
+//      }).then(function (response) {
+//        this.couponName = response.data.body
+//      }, function (err) {
+//        console.log(err)
+//      })
     },
     ready: function () {
       const orderType = $('.ordertype-list')
@@ -645,20 +657,16 @@
       },
 //      点击分类请求数据
       fetchProduct: function (event) {
+        var self = this
         const categoryId = Number($(event.currentTarget).attr('id'))
+        var data = {
+          category_id: categoryId,
+          per_page: 16
+        }
         $(event.currentTarget).addClass('btn-primary').removeClass('btn-warning').siblings().removeClass('btn-primary').addClass('btn-warning')
-        this.$http({
-          url: requestUrl + '/front-system/order/product',
-          method: 'get',
-          data: {
-            category_id: categoryId,
-            per_page: 16
-          }
-        }).then(function (response) {
-          this.productFromCategory = response.data.body.list
-          this.page = response.data.body.pagination
-        }, function (err) {
-          console.log(err)
+        getDataFromSiteApi(requestUrl + '/front-system/order/product',data,function(response){
+          self.productFromCategory = response.data.body.list
+          self.page = response.data.body.pagination
         })
       },
 //      点击删除当前列表商品

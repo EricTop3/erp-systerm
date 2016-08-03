@@ -12,18 +12,20 @@
       <form class="form-inline">
         <div class="form-group">
           <label>单号</label>
-          <input type="text" class="form-control" placeholder="" v-model="orderNumber">
+          <input type="text" class="form-control" placeholder="请输入单号" v-model="orderNumber">
         </div>
         <div class="form-group ml10">
           <label>状态</label>
           <select class="form-control" v-model="selectedCheck">
-            <option value="1">已审核</option>
+            <option value="">请选择</option>
             <option value="0">未审核</option>
+            <option value="1">已审核</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
           <select class="form-control" v-model="createPersonId">
+            <option value="">请选择</option>
             <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
@@ -51,8 +53,8 @@
           >
           </date-picker>
         </div>
-        <button type="submit" class="btn btn-info" @click="search()">搜索</button>
-        <a v-link="{ path: '/instock/GoodsApply'}"><span class="btn btn-primary">申请要货</span></a>
+        <span  class="btn btn-info" @click="search()" >搜索</span>
+        <a v-link="{ path: '/site/instock/GoodsApply'}"><span class="btn btn-primary">申请要货</span></a>
       </form>
     </div>
     <!--汇总列表-->
@@ -86,11 +88,12 @@
         var data = {
           page: currentpage
         }
+        var self = this
         getDataFromSiteApi(requestUrl + '/front-system/stock/enquiry',data,function(response){
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
-          exchangeData(this.list)
+          console.log( response.data.body.pagination)
+          self.page = response.data.body.pagination
+          self.list = response.data.body.list
+          exchangeData(self.list)
         })
       },
 //     删除请求
@@ -120,16 +123,12 @@
       }
     },
     ready: function () {
-      this.listData(16)
-      this.$http({
-        url: requestUrl + '/front-system/create/order/users',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.creators = response.data.body
-      }, function (err) {
-        error(err)
+      var self = this
+      //      获取制单人
+      getDataFromSiteApi( requestUrl + '/front-system/account',{},function(response){
+        self.creators = response.data.body.list
       })
+      this.listData(16)
     },
     methods: {
 //    生产出库-列表数据渲染
@@ -176,7 +175,7 @@
     },
     data: function () {
       return {
-        page: [],
+        page: {},
         checkUrl: requestUrl + '/front-system/stock/enquiry/',
         detailUrl: '/#!/site/instock/GoodsApplyNum/',
         showRight: false,

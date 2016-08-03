@@ -174,8 +174,8 @@
           order_number: '单号',
           checked: '审核状态',
           receipt_status: '单据状态',
-          auditor: '制单人',
-          creator: '审核人',
+          creator: '制单人',
+          auditor: '审核人',
           created_at: '制单日期',
           delivery_date: '送货日期',
           amount: '要货数量'
