@@ -155,6 +155,32 @@
           console.log('finished')
         })
       },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.id
+          obj['id'] = val.id
+          obj['amount'] = val.number
+          obj['reference_type'] = val.item_type
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+//        var url = requestSystemUrl + '/backend-system/stock/distribution/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+        })
+      }
     },
     ready: function () {
       this.listData()

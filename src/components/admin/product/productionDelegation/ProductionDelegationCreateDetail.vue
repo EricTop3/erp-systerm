@@ -43,10 +43,10 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
-                <td>{{entry.demand_amount}}/{{entry.unit_name}}</td>
-                <td v-if="editFlag"><count :count.sync =entry.refund_amount></count>{{entry.unit_name}}</td>
-                <td v-if="!editFlag">{{entry.refund_amount}}/{{entry.unit_name}}</td>
+                <td>{{entry.origin_stock_amount}}</td>
+                <td>{{entry.demand_amount}}</td>
+                <td v-if="editFlag"><count :count.sync =entry.main_reference_value></count>{{entry.unit_name}}</td>
+                <td v-if="!editFlag">{{entry.main_reference_value}}/{{entry.unit_name}}</td>
                 <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元/{{entry.unit_name}}</td>
                 <td v-if="!editFlag">{{entry.unit_price}}元/{{entry.unit_name}}</td>
                 <td >{{entry.reference_number}}</td>
@@ -71,11 +71,11 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
+                <td>{{entry.origin_stock_amount}}</td>
+                <td>{{entry.demand_amount}}</td>
                 <td>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
-                <td>{{entry.demand_amount}}/{{entry.unit_name}}</td>
-                <td>{{entry.additional_amount}}/{{entry.unit_name}}</td>
-                <td>{{entry.refund_amount}}/{{entry.unit_name}}</td>
-                <td>{{entry.unit_price}}元/{{entry.unit_name}}</td>
+                <td>{{entry.unit_price}}/{{entry.unit_name}}</td>
+                <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
             </table>
@@ -101,6 +101,7 @@
   import Price from  '../../../common/Price'
   import {
     requestUrl,
+    putDataToApi,
     requestSystemUrl,
     getDataFromApi,
     token,
@@ -127,6 +128,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
+        var self = this
         this.$http({
           url:requestSystemUrl + '/backend-system/produce/outsource/',
           data: {
@@ -135,9 +137,8 @@
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
+          self.page = response.data.body.pagination
+          self.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
           console.log(err)
@@ -157,6 +158,32 @@
           console.log('finished')
         })
       },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['amount'] = val.main_reference_value
+          obj['reference_type'] = val.item_type
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/backend-system/produce/outsource/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+        })
+      }
     },
     ready: function () {
       this.listData()
@@ -217,14 +244,14 @@
           amount: '加工费用'
         },
         gridColumns2: {
-          code: "货号",
-          name: "品名",
-          unit_space: '单位规格',
-          total_stock: '总部库存',
-          required_amount: "门店要货量",
-          product_amount:'生产数量',
+          item_code: "货号",
+          item_name: "品名",
+          unit_specification: '单位规格',
+          origin_stock_amount: '总部库存',
+          demand_amount: "门店要货数量",
+          main_reference_value:'生产数量',
           unit_price:"加工单价",
-          origen_number:"来源要货单号"
+          reference_number:"来源要货单号"
         }
       }
     }
