@@ -13,6 +13,7 @@
       :table-header="gridColumns"
       :table-data="list"
       :check-url="checkUrl"
+      :edit-flag.sync = 'editFlag'
     >
     </summary-detail>
     <!--有列表切换的时候的情况-->
@@ -101,17 +102,6 @@
       pagechange: function (currentpage) {
         this.listData(currentpage)
       },
-//    审核请求
-      checkFromApi: function (id){
-          var self = this
-          checkRequest(requestUrl + '/front-system/stock/enquiry/' + id +'/checked' ,function(response){
-            self.editFlag = false
-          })
-      },
-//     编辑
-      editGoods: function () {
-        this.editFlag = true
-      }
     },
     ready: function () {
       console.log(this.list)

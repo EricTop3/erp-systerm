@@ -18,7 +18,10 @@
         <summary-detail
           :table-header="gridColumns"
           :table-data="onedata"
-          :grid-operate="gridOperate">
+          :grid-operate="gridOperate"
+          :check-url = "checkUrl"
+          :edit-flag.sync = 'editFlag'
+        >
         </summary-detail>
 
         <!--有列表切换的时候的情况-->
@@ -138,13 +141,6 @@
           self.getlistData(1)
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl + '/backend-system/produce/pick/' + id + '/checked',function(response){
-          self.getlistData(1)
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -152,10 +148,6 @@
           self.getlistData(1)
         })
       },
-//      编辑
-      editGoods: function () {
-        this.editFlag = true
-      }
     },
     ready: function () {
       this.getlistData(1)
@@ -204,6 +196,7 @@
       return {
         editFlag: false,
         thisId: '',
+        checkUrl: requestSystemUrl + '/backend-system/produce/pick/',
         detailModal: true,
         summaryModal: false,
         gridOperate: true,
