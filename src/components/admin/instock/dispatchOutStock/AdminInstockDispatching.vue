@@ -70,6 +70,7 @@
           :page="page"
           :check-url="checkUrl"
           :finish-url = "checkUrl"
+          :finish-flag = "true"
         >
         </summary>
         <!--错误信息-->

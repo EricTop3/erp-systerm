@@ -28,7 +28,6 @@
       },
 //     每页显示条数
       display: {
-        type: Number,
         default: 10
       },
 //     当前页码
