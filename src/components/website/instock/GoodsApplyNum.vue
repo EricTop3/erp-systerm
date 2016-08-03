@@ -58,7 +58,7 @@
       </form>
     </div>
     <!--汇总列表-->
-    <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url = 'checkUrl'></summary>
+    <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url = 'checkUrl' :finish-url="checkUrl"></summary>
   </div>
 </template>
 <script>
@@ -101,20 +101,6 @@
         var self = this
         deleteRequest(requestUrl +'/front-system/stock/enquiry/'+ id,function(response){
           console.log('deleted')
-        })
-      },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestUrl + '/front-system/stock/enquiry/' + id + '/checked'  ,function(response){
-          console.log('finished')
-        })
-      },
-//     完成請求
-      finishFromApi: function (id) {
-        var self = this
-        finishRequest(requestUrl + '/front-system/stock/enquiry/'+id + '/finished',function(response){
-          console.log('finished')
         })
       },
 //      查看详情
@@ -177,7 +163,6 @@
       return {
         page: {},
         checkUrl: requestUrl + '/front-system/stock/enquiry/',
-        detailUrl: '/#!/site/instock/GoodsApplyNum/',
         showRight: false,
         creators: [],
         orderNumber: '',

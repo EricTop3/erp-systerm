@@ -54,7 +54,9 @@
             :table-header="gridColumns"
             :table-data="list"
             :page= "page"
-            :check-url = checkUrl
+            :check-url ="checkUrl"
+            :finish-url="checkUrl"
+            :finish-flag="true"
           >
           </summary>
         </div>

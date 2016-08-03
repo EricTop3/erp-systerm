@@ -184,7 +184,7 @@ export function checkRequest (url,callback,error) {
     })
 }
 // 完成按钮请求方法
-export function finishRequest (url,callback) {
+export function finishRequest (url,callback,error) {
   var cur = new Vue()
   cur.$http({
       url:  url,
@@ -195,6 +195,7 @@ export function finishRequest (url,callback) {
       callback && callback(response)
     }, function (err) {
       console.log(err)
+      error  &&  error()
     })
 }
 // 后端获取数据的方法

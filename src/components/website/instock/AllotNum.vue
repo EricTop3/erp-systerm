@@ -59,7 +59,7 @@
       </form>
     </div>
     <!--表格 -->
-    <summary :table-header="gridColumns" :table-data="list" :page="page" :check-url="checkUrl"></summary>
+    <summary :table-header="gridColumns" :table-data="list" :page="page" :check-url="checkUrl" :finish-url="checkUrl"></summary>
   </div>
 </template>
 <script>
@@ -99,13 +99,6 @@
         var self = this
         deleteRequest('/front-system/stock/recipient/', id, function (response) {
           console.log('deleted')
-        })
-      },
-//     完成請求
-      finishFromApi: function (id) {
-        var self = this
-        finishRequest('/front-system/stock/finish/', id, function (response) {
-          console.log('finished')
         })
       },
 //    查看详情
