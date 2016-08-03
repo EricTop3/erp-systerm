@@ -62,7 +62,7 @@
                   <select class='form-control' style='width: 150px;' v-model="order_mata_data.strategy_id"
                           @change="select($event)">
                     <option selected="selected" value="0">无优惠</option>
-                    <option :value="item.id" v-for="item in couponName" :name="item.name">{{item.name}}</option>
+                    <option :value="item.id" v-for="item in couponName" :name="item.display_name">{{item.display_name}}</option>
                   </select>
                 </div>
                 <div class='form-group ml10'>
@@ -352,40 +352,10 @@
         self.productFromCategory = response.data.body.list
         self.page = response.data.body.pagination
       })
-//      this.$http({
-//        url: requestUrl + '/front-system/order/category',
-//        method: 'get',
-//        headers: {'X-Overpowered-Token': token}
-//      }).then(function (response) {
-//        this.category = response.data.body.list
-//      }, function (err) {
-//        console.log(err)
-//      })
-////    产品
-//      this.$http({
-//        url: requestUrl + '/front-system/order/product',
-//        method: 'get',
-//        data: {
-//          per_page: 20
-//        },
-//        headers: {'X-Overpowered-Token': token}
-//      }).then(function (response) {
-//        this.productFromCategory = response.data.body.list
-//        this.page = response.data.body.pagination
-//      }, function (err) {
-//        console.log(err)
-//      })
 //      优惠
-      getDataFromSiteApi(requestUrl + '/front-system/order/coupon',{},function(response) {
-        self.couponName = response.data.body
+      getDataFromSiteApi(requestUrl + '/front-system/coupon',{},function(response) {
+        self.couponName = response.data.body.list
       })
-//      this.$http(requestUrl + '/front-system/order/coupon', {
-//        headers: {'X-Overpowered-Token': token}
-//      }).then(function (response) {
-//        this.couponName = response.data.body
-//      }, function (err) {
-//        console.log(err)
-//      })
     },
     ready: function () {
       const orderType = $('.ordertype-list')

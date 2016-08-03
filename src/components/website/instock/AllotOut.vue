@@ -18,7 +18,8 @@
         <div class="form-group">
           <label>收货仓库</label>
           <select class="form-control" v-model="receiptsStore">
-            <option v-for="item in store" :value="item.id">{{item.display_name}}</option>
+            <option value="">请选择</option>
+            <option v-for="item in store" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
@@ -30,7 +31,6 @@
         <span class="btn btn-primary" @click="upLoadEnquiry()">提交出货</span>
       </form>
     </div>
-
 
     <!-- 表格 -->
     <table class="table table-striped table-border table-hover">
@@ -47,7 +47,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
+      <tr class="text-center" v-for="item in renderStockGoods" track-by="$index" :id="item.id">
         <td class="text-left">{{item.code}}</td>
         <td>{{item.name}}</td>
         <td>{{item.sale_amount}}</td>
@@ -58,20 +58,28 @@
         <td>{{item.unit}}</td>
         <td>{{item.unit_specification}}</td>
         <td>
-          <list-delete :delete-data.sync="rederStockGoods"></list-delete>
+          <list-delete :delete-data.sync="renderStockGoods"></list-delete>
         </td>
       </tr>
       </tbody>
     </table>
 
     <!--分页-->
-    <page :total='rederStockGoods.length' :current.sync='current_page' :display='per_page' :last-page='totalPage'
-          v-if="rederStockGoods.length>0">
+    <page :total='renderStockGoods.length' :current.sync='current_page' :display='per_page' :last-page='totalPage'
+          v-if="renderStockGoods.length>0">
     </page>
   </div>
   <!--模态框-添加商品-->
-  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :add-data.sync="stockGoods"></stock-goods>
+  <stock-goods
+    :stock-add-good-modal.sync="addGoodModal"
+    :stock-add-good-modal-size="addGoodModalSize"
+    :add-data.sync="stockGoods"
+    :page.sync="showPage"
+    :goods-list-title="goodsListTitle"
+    :get-render-data="renderStockGoods"
+    :product-url="productUrl"
+    :category-url="categoryUrl">
+  </stock-goods>
   <!--模态框HTML-->
 
   <!--模态框-删除-->
@@ -118,7 +126,7 @@
   import Page from '../../common/Page'
   import ListDelete from '../../common/ListDelete'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token, error} from '../../../publicFunction/index'
+  import {requestUrl, token, error,getDataFromSiteApi,postSiteDataToApi} from '../../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
@@ -132,15 +140,10 @@
       SiteNav: SiteNav
     },
     ready: function () {
+      var self = this
 //      渲染仓库
-      this.$http({
-        url: requestUrl + '/front-system/stock/get-store',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.store = response.data.body
-      }, function (err) {
-        error(err)
+      getDataFromSiteApi(requestUrl + '/front-system/warehouse-minimal-list',{},function(response){
+        self.store = response.data.body.list
       })
     },
     events: {
@@ -148,20 +151,12 @@
       confirmAdd: function () {
         var self = this
         $.each(self.stockGoods, function (index, val) {
-          if (val.checked) {
+          if (val.choice && !val.again) {
+            val.again = true
             self.dataArray.push(val)
           }
         })
-        this.rederStockGoods = self.dataArray
-        console.log(this.rederStockGoods.length)
-        console.log(this.per_page)
-        if (this.rederStockGoods.length % this.per_page === 0) {
-          this.totalPage = this.rederStockGoods.length / this.per_page
-        } else {
-          this.totalPage = (Math.floor(this.rederStockGoods.length / this.per_page)) + 1
-        }
-        self.dataArray = []
-        this.addGoodModal = false
+        this.renderStockGoods = self.dataArray
       }
     },
     methods: {
@@ -173,7 +168,7 @@
       },
 //      确认删除
       confirmDelelte: function () {
-        var goodList = this.rederStockGoods
+        var goodList = this.renderStockGoods
         this.deleteModal = false
         $.each(goodList, function (index, val) {
           if (val.id === deleteId) {
@@ -184,9 +179,10 @@
 //      提交出货
       upLoadEnquiry: function () {
         var goods = []
-        $.each(this.rederStockGoods, function (index, val) {
+        var self =  this
+        $.each(this.renderStockGoods, function (index, val) {
           var obj = {}
-          obj['consumable_id'] = Number(val.id)
+          obj['reference_id'] = Number(val.id)
           obj['amount'] = Number(val['sale_refund'])
           goods.push(obj)
         })
@@ -194,27 +190,23 @@
         if (this.date === '') {
           this.messageTipModal = true
           this.messageTip = 'high,你还没有填写日期哟'
-        } else if (this.rederStockGoods.length < 1) {
+        } else if (this.renderStockGoods.length < 1) {
           this.messageTipModal = true
           this.messageTip = 'high,你忘记添加商品了哟'
         } else if (this.receiptsStore === '') {
           this.messageTipModal = true
           this.messageTip = 'high,你忘记添加收货仓库了哟'
         } else {
-          this.$http.post(requestUrl + '/front-system/stock/issue',
-            {
-              items: goods,
-              date: this.date,
-              remarks: this.remarks,
-              receipts_store_id: this.receiptsStore
-            }
-          ).then(function (reponse) {
-            console.log(reponse)
-            window.location.href = '/?#!/site/instock/AllotOutBills/1'
-          }, function (err) {
-            console.log(err.data.body.error)
-            this.messageTipModal = true
-            this.messageTip = err.data.body.error
+          postSiteDataToApi(requestUrl + '/front-system/stock/distribution', {
+            items: goods,
+            operated_at: self.date,
+            remarks: self.remarks,
+            warehouse_id: self.receiptsStore
+          },function (response) {
+            window.location.href = '/?#!/site/instock/AllotOutBills/'
+          },function (err){
+            self.messageTipModal = true
+            self.messageTip = err.data.body.error
           })
         }
       }
@@ -239,7 +231,18 @@
         addGoodModalSize: 'modal-lg',
         stockGoods: [],
         dataArray: [],
-        rederStockGoods: []
+        renderStockGoods: [],
+        goodsListTitle: {
+          'code': '货号',
+          'name': '品名',
+          'sale_amount': '日均销量',
+          'current_stock': '当前库存',
+          'production_unit_name': '单位',
+          'specification_unit': '单位规格',
+          'category': '商品分类'
+        },
+        productUrl: requestUrl + '/front-system/product',
+        categoryUrl: requestUrl + '/front-system/order/category'
       }
     }
   }

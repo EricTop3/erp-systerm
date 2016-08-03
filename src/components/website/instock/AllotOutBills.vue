@@ -17,6 +17,7 @@
         <div class="form-group ml10">
           <label>审核状态</label>
           <select class="form-control" v-model="query.check_status">
+            <option value="">请选择</option>
             <option value="1">已审核</option>
             <option value="0">未审核</option>
           </select>
@@ -24,7 +25,8 @@
         <div class="form-group ml10">
           <label>收货仓库</label>
           <select class="form-control" v-model="query.receipts_store">
-            <option v-for="item in store" :value="item.id">{{item.display_name}}</option>
+            <option value="">请选择</option>
+            <option v-for="item in store" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
@@ -40,10 +42,10 @@
           <date-picker :value.sync="query.end_time"></date-picker>
         </div>
         <button class="btn btn-info" @click="search">搜索</button>
-        <a v-link="{ path: '/instock/AllotOut'}"><span class="btn btn-primary">新建出库</span></a>
+        <a v-link="{ path: '/site/instock/AllotOut'}"><span class="btn btn-primary">新建出库</span></a>
       </form>
     </div>
-    <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page"></summary>
+    <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page" :check-url="checkUrl"></summary>
   </div>
 </template>
 <script>
@@ -53,6 +55,7 @@
   import Page from '../../common/Page'
   import Summary from '../../common/Summary'
   import DatePicker from '../../common/DatePicker'
+  import {getDataFromSiteApi} from '../../../publicFunction/index'
   import {
     requestUrl,
     token,
@@ -79,54 +82,29 @@
       //      删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest('/front-system/stock/issue/', id, function (response) {
-          console.log('deleted')
-        })
-      },
-      //     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest('/front-system/stock/check/', id, function (response) {
-          console.log('finished')
-        })
-      },
-      //     完成請求
-      finishFromApi: function (id) {
-        var self = this
-        finishRequest('/front-system/stock/finish/', id, function (response) {
-          console.log('finished')
+        deleteRequest(requestUrl + '/front-system/stock/distribution/'+ id, function (response) {
+         self.listData(1)
         })
       }
     },
     ready: function () {
+      var self = this
 //      渲染数据列表
       this.listData(1)
-//      渲染制单人
-      this.$http({
-        url: requestUrl + '/front-system/create/order/users',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.creators = response.data.body
-      }, function (err) {
-        error(err)
+//     渲染制单人
+      getDataFromSiteApi( requestUrl + '/front-system/account',{},function(response){
+        self.creators = response.data.body.list
       })
 //      渲染仓库
-      this.$http({
-        url: requestUrl + '/front-system/stock/get-store',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.store = response.data.body
-      }, function (err) {
-        error(err)
+      getDataFromSiteApi(requestUrl + '/front-system/warehouse-minimal-list',{},function(response){
+        self.store = response.data.body.list
       })
     },
     methods: {
 //    列表数据渲染
       listData: function (page) {
         this.$http({
-          url: requestUrl + '/front-system/stock/issue',
+          url: requestUrl + '/front-system/stock/distribution',
           method: 'get',
           headers: {'X-Overpowered-Token': token},
           data: {
@@ -151,7 +129,7 @@
       search: function () {
         var self = this
         searchRequest(
-          requestUrl + '/front-system/stock/issue',
+          requestUrl + '/front-system/stock/distribution',
           {
             start_time: this.query.start_time,
             end_time: this.query.end_time,
@@ -173,6 +151,8 @@
       return {
         store: [],
         creators: [],
+        showPage: [],
+        checkUrl: requestUrl + '/front-system/stock/distribution/',
         list: [],
         page: [],
         detailUrl: '/#!/site/instock/AllotOutBills/',
@@ -180,11 +160,11 @@
         gridColumns: {
           order_number: '货号',
           checked: '审核状态',
-          receipts_store: '收货仓库',
-          creator: '制单人',
-          auditor: '审核人',
-          date: '出货日期',
-          number: '出货数量'
+          warehouse_name: '收货仓库',
+          creator_name: '制单人',
+          auditor_name: '审核人',
+          operated_at: '出货日期',
+          amount: '出货数量'
         },
         query: {
           start_time: '',
