@@ -12,6 +12,7 @@
           <li class="active">库存配送出库</li>
           <li class="active">列表</li>
         </ol>
+
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
@@ -61,12 +62,14 @@
             <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span>
           </form>
         </div>
+
         <!-- 表格 -->
         <summary
           :table-data="list"
           :table-header="gridColumns"
           :page="page"
-          :check-url="checkUrl">
+          :check-url="checkUrl"
+        >
         </summary>
         <!--错误信息-->
         <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
@@ -74,8 +77,6 @@
     </div>
   </div>
 </template>
-<style>
-</style>
 <script>
   import $ from 'jquery'
   import Grid from '../../../common/Grid'
@@ -131,7 +132,7 @@
       deleteFromApi: function (id) {
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/stock/distribution/'+ id,function(response){
-          self.listData({})
+          console.log('deleted')
         })
       },
 //     完成請求
@@ -144,7 +145,15 @@
 //    查看详情
       gotoDetail: function (id){
         window.location.href = '#!/admin/instock/dispatching/'+ id
-      }
+      },
+//    审核失败
+      checkFail: function (err){
+        var self = this
+          if(Number(err.data.code) === 220000){
+            self.modal.errModal = true
+            self.modal.errInfo =  err.data.message
+          }
+        }
     },
     ready: function () {
       var self = this
@@ -157,15 +166,6 @@
         self.warehouseList = response.data.body.list
       })
       this.listData({})
-    },
-    events: {
-      checkFail: function (err){
-        console.log(typeof err.data.code )
-        if(Number(err.data.code) === 220000){
-          this.modal.errModal = true
-          this.modal.errInfo =  err.data.message
-        }
-      }
     },
     methods: {
 //      列表数据渲染
@@ -199,8 +199,12 @@
       return {
         page: [],
         list: [],
-        warehouseList: [],
         checkUrl: requestSystemUrl + '/backend-system/stock/distribution/',
+        warehouseList: [],
+        modal:{
+          errModal: false,
+          errInfo: 'high,这是错误提示'
+        },
         time:{
           startTime:'',
           startTime1:'',
@@ -208,10 +212,6 @@
           endTime1:'',
         },
         orderMaker: [],
-        modal: {
-          errModal: false,
-          errInfo: 'high,这是错误提示'
-        },
         gridColumns: {
           order_number: '配送单号',
           checked: '审核状态',

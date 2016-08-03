@@ -15,6 +15,8 @@
           :table-header="gridColumns"
           :table-data="list"
           :grid-operate="gridOperate"
+          :edit-flag.sync="editFlag"
+          :check-url = 'checkUrl'
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -86,6 +88,8 @@
           </div>
         </div>
       </div>
+      <!--错误信息-->
+      <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
     </div>
   </div>
 </template>
@@ -102,6 +106,7 @@
   import LeftInstock from '../../common/LeftInstock'
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
+  import ErrorTip  from '../../../common/ErrorTip'
   import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi} from '../../../../publicFunction/index'
   export default{
     components: {
@@ -113,7 +118,8 @@
       DatePicker: DatePicker,
       LeftInstock:LeftInstock,
       SummaryDetail: SummaryDetail,
-      Count: Count
+      Count: Count,
+      ErrorTip: ErrorTip
     },
     events: {
 //    绑定翻页事件
@@ -134,17 +140,6 @@
           console.log(err)
         })
       },
-//    编辑
-      saveDataToApi: function () {
-
-      },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl+ '/backend-system/purchase/purchase/'+ id +'/checked',function(response){
-          self.editFlag = false
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -152,9 +147,13 @@
           console.log('finished')
         })
       },
-//      编辑
-      editGoods: function () {
-        this.editFlag = true
+//         审核失败
+      checkFail: function (err){
+        var self = this
+        if(Number(err.data.code) === 220000){
+          self.modal.errModal = true
+          self.modal.errInfo =  err.data.message
+        }
       }
     },
     ready: function () {
@@ -203,6 +202,11 @@
         editFlag: false,
         detailModal: true,
         summaryModal: false,
+        checkUrl: requestSystemUrl + '/backend-system/stock/distribution/',
+        modal:{
+          errModal: false,
+          errInfo: 'high,这是错误提示'
+        },
         gridColumns: {
           order_number: '配送单号',
           checked: '审核状态',

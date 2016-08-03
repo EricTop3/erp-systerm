@@ -15,6 +15,8 @@
           :table-header="gridColumns"
           :table-data="list"
           :grid-operate="gridOperate"
+          :check-url = "checkUrl"
+          :edit-flag = "editFlag"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -144,13 +146,6 @@
           console.log('deleted')
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl+ '/backend-system/purchase/receive/'+ id +'/checked',function(response){
-          self.editFlag = false
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -209,6 +204,7 @@
       return {
         page: [],
         list: {},
+        checkUrl: requestSystemUrl+ '/backend-system/purchase/receive/',
         editFlag: false,
         detailModal: true,
         summaryModal: false,

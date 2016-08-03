@@ -44,11 +44,13 @@
           if(!(self.list instanceof Array)){
             if (self.list.id === currentId) {
               self.list.checked = '已审核'
+              self.list.auditor = window.localStorage.getItem("storeName")
             }
           }else{
             $.each(self.list, function (index, val) {
               if (val.id === currentId) {
                 val.checked = '已审核'
+                val.auditor = window.localStorage.getItem("storeName")
               }
             })
           }

@@ -15,7 +15,10 @@
         <summary-detail
           :table-header="gridColumns"
           :table-data="list"
-          :grid-operate="gridOperate">
+          :grid-operate="gridOperate"
+          :check-url = "checkUrl"
+          :edit-flag.sync = "editFlag"
+        >
         </summary-detail>
         <!--有列表切换的时候的情况-->
         <ul class="nav nav-tabs" role="tablist">
@@ -147,14 +150,6 @@
           console.log('deleted')
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl+ '/backend-system/produce/outsource/'+ id +'/checked',function(response){
-          self.editFlag = false
-          console.log('checked')
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -162,10 +157,6 @@
           console.log('finished')
         })
       },
-//           编辑
-      editGoods: function () {
-        this.editFlag = true
-      }
     },
     ready: function () {
       this.listData()
@@ -209,6 +200,7 @@
       return {
         page: [],
         list: {},
+        checkUrl: requestSystemUrl+ '/backend-system/produce/outsource/',
         editFlag: false,
         detailModal: true,
         summaryModal: false,

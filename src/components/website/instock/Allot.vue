@@ -242,7 +242,7 @@
           }, {
             headers: {'X-Overpowered-Token': token}
           }).then(function (response) {
-            window.location.href = '?#!/site/instock/AllotNum/1'
+            window.location.href = '?#!/site/instock/AllotNum/'
           }, function (err) {
             if(err.data.code==='100000' || err.data.code==='900000'){
               this.messageTipModal = true

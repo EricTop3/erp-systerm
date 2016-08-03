@@ -4,11 +4,13 @@
 </template>
 <script>
   import $ from 'jquery'
+  import {finishRequest} from '../../publicFunction/index'
   var currentId = 0
   export default{
     name: 'list-finish',
     props: {
       list: [],
+      finishUrl: '',
       flag: false
     },
     methods: {
@@ -16,6 +18,7 @@
       finish: function (event) {
         var self=this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
+        finishRequest(self.finishUrl +  currentId +'/finished' )
         this.$dispatch("finish",currentId)
         $.each(this.list, function (index, val) {
           if (val.id === currentId &&(val.checked === '已审核')) {

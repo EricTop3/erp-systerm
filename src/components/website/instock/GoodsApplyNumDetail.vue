@@ -13,6 +13,7 @@
       :table-header="gridColumns"
       :table-data="list"
       :check-url="checkUrl"
+      :edit-flag.sync = 'editFlag'
     >
     </summary-detail>
     <!--有列表切换的时候的情况-->
@@ -101,17 +102,6 @@
       pagechange: function (currentpage) {
         this.listData(currentpage)
       },
-//    审核请求
-      checkFromApi: function (id){
-          var self = this
-          checkRequest(requestUrl + '/front-system/stock/enquiry/' + id +'/checked' ,function(response){
-            self.editFlag = false
-          })
-      },
-//     编辑
-      editGoods: function () {
-        this.editFlag = true
-      }
     },
     ready: function () {
       console.log(this.list)
@@ -179,16 +169,13 @@
         editFlag: false,
         detailModal: true,
         summaryModal: false,
-        validateModal: false,
-        validateFlag: false,
-        validateModalSize: 'modal-sm',
         gridOperate: true,
         gridColumns: {
           order_number: '单号',
           checked: '审核状态',
           receipt_status: '单据状态',
-          auditor: '制单人',
-          creator: '审核人',
+          creator: '制单人',
+          auditor: '审核人',
           created_at: '制单日期',
           delivery_date: '送货日期',
           amount: '要货数量'

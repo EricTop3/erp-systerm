@@ -17,13 +17,15 @@
         <div class="form-group ml10">
           <label>状态</label>
           <select class="form-control" v-model="selectedCheck">
-            <option value="1">已审核</option>
+            <option value="">请选择</option>
             <option value="0">未审核</option>
+            <option value="1">已审核</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
           <select class="form-control" v-model="createPersonId">
+            <option value="">请选择</option>
             <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
@@ -76,7 +78,8 @@
     checkRequest,
     finishRequest,
     error,
-    changeStatus
+    changeStatus,
+    getDataFromSiteApi
   } from '../../../publicFunction/index'
   export default {
     components: {
@@ -87,36 +90,35 @@
       SiteNav: SiteNav
     },
     events: {
-//    绑定翻页事件
+//     绑定翻页事件
       pagechange: function (currentpage) {
         this.listData(currentpage)
       },
-//      删除请求
+//     删除请求
       deleteFromApi: function (id) {
         var self = this
         deleteRequest('/front-system/stock/recipient/', id, function (response) {
           console.log('deleted')
         })
       },
-      //     完成請求
+//     完成請求
       finishFromApi: function (id) {
         var self = this
         finishRequest('/front-system/stock/finish/', id, function (response) {
           console.log('finished')
         })
+      },
+//    查看详情
+      gotoDetail: function (id){
+        window.location.href = '#!/site/instock/AllotNum/'+ id
       }
     },
     ready: function () {
       this.listData(1)
+      var self = this
 //      获取制单人
-      this.$http({
-        url: requestUrl + '/front-system/create/order/users',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.creators = response.data.body
-      }, function (err) {
-        error(err)
+      getDataFromSiteApi( requestUrl + '/front-system/account',{},function(response){
+        self.creators = response.data.body.list
       })
     },
     methods: {

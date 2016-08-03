@@ -16,6 +16,8 @@
           :table-header="gridColumns"
           :table-data="list"
           :grid-operate="gridOperate"
+          :check-url = "checkUrl"
+          :edit-flag.sync = 'editFlag'
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -141,23 +143,12 @@
           console.log('deleted')
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl+ '/backend-system/production/factory/'+ id +'/checked',function(response){
-          self.editFlag = false
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
         finishRequest(requestSystemUrl +'/backend-system/production/factory/'+ id +'/finished',function(response){
           console.log('finished')
         })
-      },
-//      编辑
-      editGoods: function () {
-        this.editFlag = true
       }
     },
     ready: function () {
@@ -207,6 +198,7 @@
         detailModal: true,
         summaryModal: false,
         gridOperate: true,
+        checkUrl: requestSystemUrl+ '/backend-system/production/factory/',
         gridColumns: {
           document_number: '收货单号',
           checked: '审核状态',

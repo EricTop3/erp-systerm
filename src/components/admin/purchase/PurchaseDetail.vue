@@ -15,6 +15,8 @@
           :table-header="gridColumns"
           :table-data="list"
           :grid-operate="gridOperate"
+          :check-url="checkUrl"
+          :edit-flag.sync ="editFlag"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -158,10 +160,6 @@
           console.log('finished')
         })
       },
-//     编辑
-      editGoods: function () {
-        this.editFlag = true
-      }
     },
     ready: function () {
       this.listData()
@@ -206,6 +204,7 @@
     },
     data: function () {
       return {
+        checkUrl: requestSystemUrl+ '/backend-system/purchase/purchase/',
         page: [],
         list: {},
         editFlag: false,
