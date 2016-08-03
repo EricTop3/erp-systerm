@@ -179,9 +179,6 @@
         editFlag: false,
         detailModal: true,
         summaryModal: false,
-        validateModal: false,
-        validateFlag: false,
-        validateModalSize: 'modal-sm',
         gridOperate: true,
         gridColumns: {
           order_number: '单号',

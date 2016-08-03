@@ -35,6 +35,7 @@
       gridOperate: true,
       tableHeader: [],
       tableData: [],
+      editFlag: false,
       checkUrl: '',
     },
     components: {
@@ -44,19 +45,18 @@
       ListValidate: ListValidate,
     },
     events: {
-//    审核
-      check: function (id){
-        this.$dispatch("checkFromApi",id)
+      finishEdit: function () {
+        this.editFlag = false
       }
     },
     methods: {
       edit: function () {
+        this.editFlag = true
         this.$dispatch('editGoods')
       },
     },
     data: function () {
       return {
-        editFlag: false,
         operate: true
       }
     }
