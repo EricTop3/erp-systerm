@@ -7,7 +7,7 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存</li>
-          <li class="active">配送出库</li>
+          <li class="active">库存配送出库</li>
           <li class="active">查看库存</li>
         </ol>
         <!--详情页面-->
@@ -37,6 +37,7 @@
                 </th>
               </tr>
               </thead>
+
               <tbody>
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.goods_code}}</td>
@@ -52,9 +53,6 @@
               </tr>
               </tbody>
             </table>
-            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-            <!--:last-page="page.last_page"></page>-->
           </div>
 
           <!-- 入库汇总 -->
@@ -70,21 +68,18 @@
               </thead>
               <tbody>
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-                <td>{{entry.item_code}}</td>
-                <td>{{entry.item_name}}</td>
-                <td>{{entry.purchase_unit_name}}</td>
-                <td>{{entry.unit_specification}}</td>
-                <td>{{entry.current_stock}}{{entry.purchase_unit_name}}</td>
-                <td>{{entry.demand_amount}}{{entry.purchase_unit_name}}</td>
-                <td>{{entry.main_reference_value}}{{entry.purchase_unit_name}}</td>
-                <td>{{entry.purchase_unit_price }}元/{{entry.purchase_unit_name}}</td>
+                <td>{{entry.goods_code}}</td>
+                <td>{{entry.goods_name}}</td>
+                <td>{{entry.origin_stock_amount}}</td>
+                <td>{{entry.target_stock_amount}}</td>
+                <td>{{entry.purchase_amount}}</td>
+                <td>{{entry.number}}</td>
+                <td>{{entry.unit_name}}</td>
+                <td>{{entry.unit_specification }}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
             </table>
-            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-            <!--:last-page="page.last_page"></page>-->
           </div>
         </div>
       </div>
@@ -154,6 +149,32 @@
           self.modal.errModal = true
           self.modal.errInfo =  err.data.message
         }
+      },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['amount'] = val.number
+          obj['reference_type'] = val.item_type
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/backend-system/stock/distribution/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+        })
       }
     },
     ready: function () {
@@ -214,19 +235,19 @@
           warehouse_name: '调入仓库',
           creator_name: '制单人',
           auditor_name: '审核人',
-          operated_at: '制单日期',
+          operated_at: '配送时间',
           amount: '配送数量'
         },
         gridColumns2: {
-          code: "货号",
-          name: "品名",
-          current_stock: "出货仓库库存",
-          demand_amount:"调入仓库库存",
-          main_reference_value:"要货数量",
-          purchase_unit_price:"配送数量",
-          reference_number: "采购单位",
-          unit_space: '单位规格',
-          origen_number: '来源要货单号',
+          goods_code: "货号",
+          goods_name: "品名",
+          origin_stock_amount: "出货仓库库存",
+          target_stock_amount:"调入仓库库存",
+          purchase_amount:"要货数量",
+          number:"配送数量",
+          unit_name: "采购单位",
+          unit_specification: '单位规格',
+          reference_number: '来源要货单号',
         }
       }
     }

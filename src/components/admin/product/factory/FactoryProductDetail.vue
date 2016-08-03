@@ -42,10 +42,10 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.origin_stock_amount}}{{entry.unit_name}}</td>
+                <td>{{entry.origin_stock_amount}}/{{entry.unit_name}}</td>
                 <td>{{entry.demand_amount}}{{entry.unit_name}}</td>
                 <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count>{{entry.unit_name}}</td>
-                <td v-if='!editFlag'>{{entry.main_reference_value}}  {{entry.unit_name}}</td>
+                <td v-if='!editFlag'>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
@@ -94,7 +94,7 @@
   import LeftProduction from '../../common/LeftProduction'
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
+  import {requestUrl,putDataToApi,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -140,6 +140,32 @@
           console.log('finished')
         })
       },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['amount'] = val.main_reference_value
+          obj['reference_type'] = val.item_type
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/backend-system/produce/factory/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+        })
+      }
     },
     ready: function () {
       this.listData()
@@ -199,13 +225,13 @@
           amount: '生产数量'
         },
         gridColumns2: {
-          code: "货号",
-          name: "品名",
-          unit_space: '单位规格',
-          total_stock: '总部库存',
-          required_amount: '门店要货量',
-          product_amount: '生产数量',
-          origen_number: '来源要货单号',
+          item_code: "货号",
+          item_name: "品名",
+          unit_specification: '单位规格',
+          origin_stock_amount: '总部库存',
+          demand_amount: '门店要货数量',
+          main_reference_value: '生产数量',
+          reference_number: '来源要货单号',
         }
       }
     }
