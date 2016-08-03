@@ -292,7 +292,35 @@ export function  detailNull (val) {
 }
 // 前后台错误代码验证方法
 export function error(err) {
-  console.log(err)
+  if (err.status === 401) {
+    if(window.location.href.indexOf('admin')>=0){
+      window.location.href = '/#!/admin/login'
+    }else{
+      window.location.href = '/#!/site/login'
+    }
+  }
+  // if (err.data.code == '100000') {
+  //   //请求失败，参数存在错误或请求格式存在问题
+  // }
+  // if (err.data.code == '100001') {
+  //   alert('请求方法不符合对应的资源或该方法被拒绝')
+  //   //请求方法不符合对应的资源或该方法被拒绝
+  // }
+  // if (err.data.code == '100008') {
+  //   //请求中提供的实体超出限制，请检查上传数据的长度，进行必要的压缩
+  // }
+  // if (err.data.code == '110003') {
+  //   //被拒绝的请求，该操作未授权
+  // }
+  // if (err.data.code == '120000') {
+  //   //请求的资源未找到
+  // }
+  // if (err.data.code == '900000') {
+  //   //服务器遇到未知错误
+  // }
+  // if (err.data.code == '900001') {
+  //   //服务器正在维护，暂时无法提供支持
+  // }
 }
 //后台登录方法
 export function adminLogin(loginUrl,data){
