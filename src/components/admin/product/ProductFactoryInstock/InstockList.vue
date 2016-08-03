@@ -9,8 +9,8 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
-          <li class="active">工厂生产单</li>
-          <li class="active">列表</li>
+          <li class="active">工厂生产入库单</li>
+          <li class="active">入库单列表</li>
         </ol>
 
         <!-- 页头 -->
@@ -36,34 +36,24 @@
               </select>
             </div>
             <div class="form-group ml10 ">
-              <label>制单时间段</label>
+              <label>收货时间段</label>
               <date-picker :value.sync="searchData.start_time" :time-text="timetext1"
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
-            <div class="form-group ml10 ">
-              <label>生产时间段</label>
-              <date-picker :value.sync="searchData.start_receive_time" :time-text="timetext1"
-                           :timewidth="timewidth"></date-picker>
-              <date-picker :value.sync="searchData.end_receive_time" :time-text="timetext2"
-                           :timewidth="timewidth"></date-picker>
-            </div>
             <span type="submit" class="btn btn-primary" @click="searchMethod()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-              <span class="btn fr btn-info">导出excel</span>
-              <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryCreat'}">新建生产单</span>
+            <span class="btn fr btn-info">导出excel</span>
+            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryInstock/createInstock'}">新建入库单</span>
           </form>
         </div>
-
         <!-- 表格 -->
         <summary
           :table-data="list"
           :table-header="gridColumns"
           :page="page"
           :check-url="checkUrl"
-          :finish-url="checkUrl"
-          :finish-flag="true"
         >
         </summary>
       </div>
@@ -109,7 +99,7 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.$http({
-          url: requestUrl + '/backend-system/stock/distribution',
+          url: requestUrl + '/backend-system/production/factory',
           data: {
             page: currentpage
           },
@@ -127,20 +117,20 @@
 //     删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/produce/factory/'+ id,function(response){
+        deleteRequest(requestSystemUrl + '/backend-system/production/factory/'+ id,function(response){
           self.listData({})
         })
       },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
-        finishRequest(requestSystemUrl + '/backend-system/produce/factory/'+ id +'/finished',function(response){
+        finishRequest(requestSystemUrl + '/backend-system/production/factory/'+ id +'/finished',function(response){
           console.log('finished')
         })
       },
 //    查看详情
       gotoDetail: function (id){
-        window.location.href = '#!/admin/production/factory/'+ id
+        window.location.href = '#!/admin/production/factoryInstock/detail/'+ id
       }
     },
     ready: function () {
@@ -155,7 +145,7 @@
 //      列表数据渲染
       listData: function (data) {
         var self = this
-        var url = requestUrl + '/backend-system/produce/factory'
+        var url = requestUrl + '/backend-system/production/factory'
         getDataFromApi(url,data,function(response){
           self.list = response.data.body.list
           self.page = response.data.body.pagination
@@ -181,7 +171,7 @@
     },
     data: function () {
       return {
-        checkUrl: requestSystemUrl + '/backend-system/produce/factory/',
+        checkUrl:requestSystemUrl + '/backend-system/production/factory/',
         page: [],
         list: [],
         warehouseList: [],
@@ -193,12 +183,14 @@
         },
         orderMaker: [],
         gridColumns: {
-          document_number: '生产单号',
+          document_number: '收货单号',
           checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
-          operated_at: '生產时间',
-          amount: '生產數量'
+          stream_origin: '调入仓库',
+          operated_at: '收货日期',
+          stock_amount: '入库数量',
+          defective_amount: '次品数量',
         },
         timewidth: "timewidth",
         searchData: {

@@ -74,6 +74,8 @@
           :table-header="gridColumns"
           :page="page"
           :check-url="checkUrl"
+          :finish-url="checkUrl"
+          :finish-flag = 'true'
         >
         </summary>
       </div>

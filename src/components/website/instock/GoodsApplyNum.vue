@@ -58,7 +58,7 @@
       </form>
     </div>
     <!--汇总列表-->
-    <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url = 'checkUrl' :finish-url="checkUrl"></summary>
+    <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url = 'checkUrl' :finish-url="checkUrl" :finish-flag="true"></summary>
   </div>
 </template>
 <script>

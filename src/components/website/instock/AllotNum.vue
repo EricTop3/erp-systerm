@@ -59,7 +59,7 @@
       </form>
     </div>
     <!--表格 -->
-    <summary :table-header="gridColumns" :table-data="list" :page="page" :check-url="checkUrl" :finish-url="checkUrl"></summary>
+    <summary :table-header="gridColumns" :table-data="list" :page="page" :check-url="checkUrl"></summary>
   </div>
 </template>
 <script>
@@ -97,8 +97,8 @@
 //     删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest('/front-system/stock/recipient/', id, function (response) {
-          console.log('deleted')
+        deleteRequest( requestUrl + '/front-system/stock/recipient/'+ id, function (response) {
+         self.listData({})
         })
       },
 //    查看详情
@@ -134,6 +134,7 @@
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.page = response.data.body.pagination
+          console.log(this.page)
           this.list = response.data.body.list
           changeStatus(this.list)
         }, function (err) {
@@ -161,7 +162,7 @@
     },
     data: function () {
       return {
-        page: [],
+        page: {},
         list: [],
         checkUrl:requestUrl +  '/front-system/stock/recipient/',
         creators: [],
