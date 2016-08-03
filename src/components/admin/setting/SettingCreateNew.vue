@@ -160,16 +160,16 @@
             <br>
             <div class="form-group ml10">
               <label>零售单价</label>
-              <input v-if="!(createList.product_type != 2 || createList.sell_status == 1)" type="text" class="form-control" v-model="createList.aruc">
-              <input v-else type="text" class="form-control"  v-model="createList.aruc" v-validate:goodsaruc="['required']">
+              <input v-if="!(createList.product_type != 2 || createList.sell_status == 1)" type="text" class="form-control" v-model="createList.aruc" @input="priceValidateA()">
+              <input v-else type="text" class="form-control"  v-model="createList.aruc" v-validate:goodsaruc="['required']" @input="priceValidateA()">
               <div v-if="createList.product_type != 2 || createList.sell_status == 1" style="float: right;">
                 <p v-if="$validationSet.goodsaruc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
             <div class="form-group ml10">
               <label>采购加工单价</label>
-              <input v-if="createList.product_type != 2" type="text" class="form-control" v-model="createList.apuc">
-              <input v-else type="text" class="form-control" v-model="createList.apuc" v-validate:goodsapuc="['required']">
+              <input v-if="createList.product_type != 2" type="text" class="form-control" v-model="createList.apuc" @input="priceValidateB()">
+              <input v-else type="text" class="form-control" v-model="createList.apuc" v-validate:goodsapuc="['required']" @input="priceValidateB()">
               <div v-if="createList.product_type == 2" style="float: right;">
                 <p v-if="$validationSet.goodsapuc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
@@ -306,6 +306,22 @@
       }
     },
     methods: {
+//        价格正则1
+      priceValidateA: function () {
+        var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
+        if (!re.test(this.createList.aruc)) {
+          this.createList.aruc =  ''
+
+        }
+      },
+//        价格正则2
+      priceValidateB: function () {
+        var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
+        if (!re.test(this.createList.apuc)) {
+          this.createList.apuc =  ''
+
+        }
+      },
 //    验证
       onSubmit: function (e) {
         // validate manually
