@@ -7,9 +7,10 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
-          <li class="active">工厂生产</li>
-          <li class="active">查看生产详情</li>
+          <li class="active">工厂生产入库单</li>
+          <li class="active">查看工厂生产入库单详情</li>
         </ol>
+
         <!--详情页面-->
         <summary-detail
           :table-header="gridColumns"
