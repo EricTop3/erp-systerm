@@ -15,7 +15,9 @@
           :table-header="gridColumns"
           :table-data="list"
           :grid-operate="gridOperate"
-        >
+          :check-url = "checkUrl"
+          :edit-flag.sync = "editFlag"
+           >
         </summary-detail>
         <!--有列表切换的时候的情况-->
         <ul class="nav nav-tabs" role="tablist">
@@ -131,13 +133,6 @@
           console.log('deleted')
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl+ '/backend-system/produce/factory/'+ id +'/checked',function(response){
-          self.editFlag = false
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -145,10 +140,6 @@
           console.log('finished')
         })
       },
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-      }
     },
     ready: function () {
       this.listData()
@@ -172,26 +163,27 @@
         })
       },
 //      切换
-      changeActive: function (event) {
-        var cur = $(event.currentTarget)
-        cur.addClass('active').siblings('li').removeClass('active')
-        switch (Number(cur.attr('id'))){
-          case 1:
-            this.detailModal = true
-            this.summaryModal = false
-            this.$dispatch('detail')
-            break
-          case 2:
-            this.detailModal = false
-            this.summaryModal = true
-            this.$dispatch('summary')
-        }
+    changeActive: function (event) {
+      var cur = $(event.currentTarget)
+      cur.addClass('active').siblings('li').removeClass('active')
+      switch (Number(cur.attr('id'))){
+        case 1:
+          this.detailModal = true
+          this.summaryModal = false
+          this.$dispatch('detail')
+          break
+        case 2:
+          this.detailModal = false
+          this.summaryModal = true
+          this.$dispatch('summary')
       }
+    }
     },
     data: function () {
       return {
         page: [],
         list: {},
+        checkUrl:requestSystemUrl+ '/backend-system/produce/factory/',
         detailList: [],
         editFlag: false,
         detailModal: true,
