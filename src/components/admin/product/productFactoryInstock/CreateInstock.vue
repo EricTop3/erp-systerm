@@ -194,8 +194,8 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.defective_amount === ''
-          val.stock_amount === ''
+          val.defective_amount = ''
+          val.stock_amount = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -230,9 +230,9 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.amount = val.main_reference_value
-          obj.defective_amount = val.defective_amount
-          obj.stock_amount =val.stock_amount
+          obj.amount = val.defective_amount
+          obj.defective_amount = val.stock_amount
+          obj.stock_amount = val.main_reference_value
           if(val.defective_amount ==='' ||val.stock_amount ==='' ){
             uploadFlag = false
           }

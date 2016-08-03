@@ -50,9 +50,6 @@
               </tr>
               </tbody>
             </table>
-            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-            <!--:last-page="page.last_page"></page>-->
           </div>
 
           <!-- 入库汇总 -->
@@ -78,9 +75,6 @@
               </tr>
               </tbody>
             </table>
-            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-            <!--:last-page="page.last_page"></page>-->
           </div>
         </div>
       </div>
@@ -116,6 +110,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
+        var self = this
         this.$http({
           url:requestSystemUrl + '/backend-system/purchase/purchase',
           data: {
@@ -124,9 +119,8 @@
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
+          self.page = response.data.body.pagination
+          self.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
           console.log(err)
