@@ -54,7 +54,10 @@
           :table-data="list"
           :table-header="gridColumns"
           :page="page"
-          :check-url="checkUrl">
+          :check-url="checkUrl"
+          :finish-url="checkUrl"
+          :finish-flag="true"
+        >
         </summary>
       </div>
     </div>
@@ -107,13 +110,6 @@
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/purchase/purchase/'+ id,function(response){
           self.listData({})
-        })
-      },
-//     完成請求
-      finishFromApi: function (id) {
-        var self = this
-        finishRequest(requestSystemUrl + '/backend-system/purchase/purchase/'+ id +'/finished',function(response){
-          console.log('finished')
         })
       },
 //    查看详情

@@ -52,7 +52,9 @@
         <summary
           :table-data="list"
           :table-header="gridColumns"
-          :page="page">
+          :page="page"
+          :check-url="checkUrl"
+        >
         </summary>
       </div>
     </div>
@@ -119,13 +121,6 @@
           self.listData({})
         })
       },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl + '/backend-system/production/factory/' + id + '/checked',function(response){
-          console.log('checked')
-        })
-      },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -176,6 +171,7 @@
     },
     data: function () {
       return {
+        checkUrl:requestSystemUrl + '/backend-system/production/factory/',
         page: [],
         list: [],
         warehouseList: [],

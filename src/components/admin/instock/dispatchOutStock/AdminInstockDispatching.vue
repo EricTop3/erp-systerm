@@ -69,6 +69,7 @@
           :table-header="gridColumns"
           :page="page"
           :check-url="checkUrl"
+          :finish-url = "checkUrl"
         >
         </summary>
         <!--错误信息-->
@@ -135,13 +136,6 @@
           console.log('deleted')
         })
       },
-//     完成請求
-      finishFromApi: function (id) {
-        var self = this
-        finishRequest(requestSystemUrl + '/backend-system/stock/distribution/'+ id +'/finished',function(response){
-          console.log('finished')
-        })
-      },
 //    查看详情
       gotoDetail: function (id){
         window.location.href = '#!/admin/instock/dispatching/'+ id
@@ -149,11 +143,11 @@
 //    审核失败
       checkFail: function (err){
         var self = this
-          if(Number(err.data.code) === 220000){
-            self.modal.errModal = true
-            self.modal.errInfo =  err.data.message
-          }
+        if(Number(err.data.code) === 220000){
+          self.modal.errModal = true
+          self.modal.errInfo =  err.data.message
         }
+      }
     },
     ready: function () {
       var self = this

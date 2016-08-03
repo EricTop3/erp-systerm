@@ -77,6 +77,8 @@
         >
         </summary>
       </div>
+      <!--错误信息-->
+      <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
     </div>
   </div>
 </template>
@@ -94,6 +96,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import LeftProduction from '../../common/LeftProduction'
+  import ErrorTip from '../../../common/ErrorTip'
   import {
     requestUrl,
     requestSystemUrl,
@@ -114,7 +117,8 @@
       AdminNav: AdminNav,
       Summary: Summary,
       DatePicker: DatePicker,
-      LeftProduction: LeftProduction
+      LeftProduction: LeftProduction,
+      ErrorTip:    ErrorTip
     },
     events: {
 //    绑定翻页事件
@@ -127,6 +131,14 @@
         deleteRequest(requestSystemUrl + '/backend-system/produce/pick/' + id, function (response) {
           self.getlistData(1)
         })
+      },
+//      审核失败
+      checkFail: function (err) {
+        var self = this
+        if (Number(err.data.code) === 220000) {
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
+        }
       },
 //     完成請求
       finishFromApi: function (id) {
@@ -197,6 +209,10 @@
         listProviderB: [],
         listdata: [],
         page: [],
+        modal: {
+          errModal: false,
+          errInfo: 'high，你的库存不足，请去工厂采购'
+        },
         checkUrl: requestSystemUrl + '/backend-system/produce/pick/',
         gridColumns: {
           document_number: '领料单号',

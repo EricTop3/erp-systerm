@@ -18,13 +18,14 @@
       finish: function (event) {
         var self=this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
-        finishRequest(self.finishUrl +  currentId +'/finished' )
-        this.$dispatch("finish",currentId)
-        $.each(this.list, function (index, val) {
-          if (val.id === currentId &&(val.checked === '已审核')) {
-            val.checked = '已完成'
-            self.$remove()
-          }
+        finishRequest(self.finishUrl +  currentId +'/finished',function () {
+          $.each(self.list, function (index, val) {
+            if (val.id === currentId &&(val.checked === '已审核')) {
+              val.checked = '已完成'
+              self.$remove()
+            }
+          })
+          self.$dispatch("finishToApi",currentId)
         })
       }
     }
