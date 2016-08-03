@@ -17,7 +17,8 @@
       <td  v-if="operate">
         <slot name="operate">
           <list-validate :list.sync="tableData" :flag.sync="validateFlag" :check-url="checkUrl" v-if="tableData.checked==='未审核'"></list-validate>
-          <span class="btn btn-primary btn-sm" @click="edit" v-if="tableData.checked==='未审核'">编辑</span>
+          <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="tableData.checked==='未审核' && isExist">编辑</span>
+          <span class="btn btn-success btn-sm" @click="save($event)" v-if="tableData.checked==='未审核' && !isExist">保存</span>
         </slot>
     </tr>
     </tbody>
@@ -50,13 +51,21 @@
       }
     },
     methods: {
-      edit: function () {
-        this.editFlag = true
-        this.$dispatch('editGoods')
+//      编辑
+      edit: function (event) {
+        this.isExist = false
+        this.$dispatch('editGoods',event)
       },
+//      保存
+      save: function (event) {
+        this.isExist = true
+        this.$dispatch('saveGoods',event)
+      }
     },
     data: function () {
       return {
+        isExist: true,
+        editFlag: false,
         operate: true
       }
     }

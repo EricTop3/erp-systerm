@@ -42,20 +42,16 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.main_reference_value}}</td>
-                <td v-if='editFlag'><count :count.sync='entry.produce_amount'></count></td>
-                <td v-if='!editFlag'>{{entry.produce_amount}}</td>
-                <td v-if='editFlag'><count :count.sync='defective_amount'></count></td>
-                <td v-if='!editFlag'>{{defective_amount}} </td>
-                <td>{{unit_name}}</td>
+                <td>{{entry.produce_amount}}</td>
+                <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count></td>
+                <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
+                <td v-if='editFlag'><count :count.sync='entry.defective_amount'></count></td>
+                <td v-if='!editFlag'>{{entry.defective_amount}} </td>
+                <td>{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
             </table>
-            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-            <!--:last-page="page.last_page"></page>-->
           </div>
 
           <!-- 入库汇总 -->
@@ -73,22 +69,19 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.main_reference_value}}</td>
                 <td>{{entry.produce_amount}}</td>
-                <td >{{defective_amount}} </td>
-                <td>{{unit_name}}</td>
+                <td>{{entry.main_reference_value}}</td>
+                <td>{{entry.defective_amount}} </td>
+                <td>{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
             </table>
-            <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-            <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-            <!--:last-page="page.last_page"></page>-->
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 <style>
@@ -104,7 +97,18 @@
   import LeftProduction from '../../common/LeftProduction'
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
+  import {
+    requestUrl,
+    requestSystemUrl,
+    getDataFromApi,
+    token,
+    exchangeData,
+    detailNull,
+    searchRequest,
+    deleteRequest,
+    checkRequest,
+    putDataToApi,
+    finishRequest } from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -120,6 +124,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
+        var self = this
         this.$http({
           url:requestSystemUrl + '/backend-system/production/factory/',
           data: {
@@ -128,9 +133,8 @@
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
+          self.page = response.data.body.pagination
+          self.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
           console.log(err)
@@ -148,6 +152,31 @@
         var self = this
         finishRequest(requestSystemUrl +'/backend-system/production/factory/'+ id +'/finished',function(response){
           console.log('finished')
+        })
+      },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.id
+          obj['amount'] = val.main_reference_value
+          obj['defective_amount'] = val.defective_amount
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/backend-system/production/factory/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
         })
       }
     },
@@ -218,7 +247,6 @@
           required_amount: '次品数量',
           product_amount: '单位',
           unit_specifition: '单位规格',
-          origen_number: '来源要货单号',
         }
       }
     }
