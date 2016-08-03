@@ -98,13 +98,6 @@
           console.log('deleted')
         })
       },
-      //     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest('/front-system/stock/check/', id, function (response) {
-          console.log('finished')
-        })
-      },
       //     完成請求
       finishFromApi: function (id) {
         var self = this
@@ -175,7 +168,7 @@
       return {
         page: [],
         list: [],
-        checkUrl:requestUrl +  '/front-system/stock/',
+        checkUrl:requestUrl +  '/front-system/stock/recipient/',
         creators: [],
         orderNumber: '',
         selectedCheck: '',
