@@ -68,7 +68,10 @@
         <summary
           :table-header="gridColumns"
           :table-data="listdata"
-          :page="page">
+          :page="page"
+          :check-url='checkUrl'
+          :finish-url="checkUrl"
+          :finish-flag="true">
         </summary>
 
       </div>
@@ -118,15 +121,10 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.getlistdata(currentpage)
+        this.getlistData(currentpage)
       },
-//   ‘完成’调用
-      finishFromApi: function (id) {
-        console.log(id)
-        var self = this
-        finishRequest(requestSystemUrl + '/backend-system/stock/enquiry/' + id + '/finished', function (response) {
-          self.getlistData(1)
-        })
+      finishToApi: function () {
+        this.getlistData(1)
       },
       //    查看详情
       gotoDetail: function (id) {
@@ -200,6 +198,7 @@
     },
     data: function () {
       return {
+        checkUrl: requestSystemUrl + '/backend-system/stock/enquiry/',
         userAccountListdata: [],
         userNameListdata: [],
         timewidth: "timewidth",

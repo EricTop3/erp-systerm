@@ -40,7 +40,7 @@
             <td>{{onedata.operated_at}}</td>
             <td>{{onedata.amount}}</td>
             <td>{{onedata.distribution_amount}}</td>
-            <td><span v-if="onedata.checked=='已审核'" class="btn btn-primary btn-sm" @click="finish()">完成</span></td>
+            <td><span v-if="onedata.checked=='已审核'" class="btn btn-primary btn-sm" @click="finishBtn()">完成</span></td>
           </tr>
           <tr><td colspan="10">备注：{{onedata.note}}</td> </tr>
           </tbody>
@@ -121,13 +121,12 @@
       },
 //   '完成'调用
       finishFromApi: function (id) {
-        console.log(id)
         var self = this
         var url = requestSystemUrl + '/backend-system/stock/enquiry/' + this.thisId + '/finished'
         putDataToApi(url,{},function (response) {
           self.getOneData()
         })
-      },
+      }
     },
     ready: function () {
 //      获取详情列表数据
@@ -157,6 +156,15 @@
         getDataFromApi(url, {}, function (response) {
           self.onedata = response.data.body
           exchangeData(self.onedata)
+        })
+      },
+//      完成按钮
+      finishBtn: function () {
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/backend-system/stock/enquiry/' + this.thisId + '/finished'
+        putDataToApi(url,{},function (response) {
+          self.getOneData()
         })
       }
     },

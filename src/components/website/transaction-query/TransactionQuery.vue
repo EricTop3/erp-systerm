@@ -31,12 +31,13 @@
         <div class="form-group ml10">
           <label>营业员</label>
           <select class="form-control" v-model="operator">
-            <option>全部</option>
+            <option value="">请选择</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>进度</label>
           <select class="form-control">
+            <option value="">请选择</option>
             <option>全部</option>
           </select>
         </div>
@@ -65,15 +66,28 @@
       <div class="tab-content">
         <!-- begin零售单 -->
         <div role="tabpanel" class="tab-pane active" v-if='retailShow===true'>
-          <!-- 表格 -->
-          <grid :data="queryList" :columns="retailGridColumns" :operate="gridOperate">
-            <div slot="operateList">
-              <span class="btn btn-primary btn-sm" data-toggle="modal"
-                    data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
-              <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkRetailGoods-templ"
+          <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr class="text-center">
+              <th v-for="value in retailGridColumns">
+                {{value}}
+              </th>
+              <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" v-for="entry in queryList" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <td v-for="value in  retailGridColumns">
+                {{entry[$key]}}
+              </td>
+              <td  :id="[entry.id ? entry.id : '']">
+                <span class="btn btn-primary btn-sm" data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
+                <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkRetailGoods-templ"
                     @click="lookDetail($event)">查看</span>
-            </div>
-          </grid>
+              </td>
+            </tr>
+            </tbody>
+          </table>
           <!-- 翻页 -->
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
@@ -149,16 +163,15 @@
                 :last-page="page.last_page"></page>
         </div>
         <!-- end预约单 -->
-
       </div>
     </div>
   </div>
 
   <!-- begin退货 -->
-  <modal :show.sync="refundModal" :modal-size="refundModalSize">
+  <modal :show.sync="modal.refundModal" :modal-size="modal.refundModalSize">
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true" @click="refundModal=false">&times;</span></button>
+        aria-hidden="true" @click="modal.refundModal=false">&times;</span></button>
       <h4 class="modal-title">退货</h4>
     </div>
     <div slot="body">
@@ -174,20 +187,20 @@
         </thead>
         <tbody>
         <tr v-for="item in returnGoodsList" class="text-aligen">
-          <td>{{item.consumable_name}}</td>
-          <td>￥{{item.actual_price |priceChange}}</td>
-          <td>{{item.total_sell}}</td>
+          <td>{{item.name}}</td>
+          <td>￥{{item.new_price |priceChange}}</td>
+          <td>{{item.amount}}</td>
           <td>
-            <count :count.sync="item.total_refund" :amount.sync='item.total_sell' :flag.sync="refundFlag"></count>
+            <count :count.sync="item.return_number"   :flag.sync="refundFlag"></count>
           </td>
-          <td>￥{{(item.actual_price * item.total_refund)|priceChange}}</td>
+          <td>￥{{(item.new_price * item.return_number)|priceChange}}</td>
         </tr>
         </tbody>
       </table>
       <div class="panel">
         <div class="panel-body">
           <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
-            class="pull-right btn-primary btn" @click="onlyReturnOnce"
+            class="pull-right btn-primary btn" @click="confirmRefoundGoods"
             :disabled="refundFlag"
             :class="{'btn-primary':!refundFlag,'btn-warning':refundFlag}">确定退货</span>
           </p>
@@ -200,7 +213,7 @@
   <!-- end退货 -->
 
   <!-- begin查看零售单 -->
-  <modal :show.sync="deleteModal" :modal-size.sync='deleteModalSize'>
+  <modal :show.sync="modal.deleteModal" :modal-size.sync='modal.deleteModalSize'>
     <div slot="header">
       <button type="button" class="close" aria-label="Close"><span
         aria-hidden="true" @click="deleteModal=false">&times;</span></button>
@@ -221,11 +234,11 @@
         </thead>
         <tbody>
         <tr v-for="item in listDetail">
-          <td>{{item.consumable_name}}</td>
-          <td>{{item.original_price | priceChange}}</td>
-          <td>{{item.actual_price | priceChange}}</td>
-          <td>{{item.total_sell }}</td>
-          <td>{{item.total_refund }}</td>
+          <td>{{item.name}}</td>
+          <td>{{item.old_price | priceChange}}</td>
+          <td>{{item.new_price | priceChange}}</td>
+          <td>{{item.amount }}</td>
+          <td>{{item.return_number }}</td>
           <td>{{item.total_sum | priceChange}}</td>
           <td>{{ item.note==="" ? '无备注' : item.note }}</td>
         </tr>
@@ -233,19 +246,19 @@
       </table>
       <div class="panel">
         <div class="panel-body">
-          <p>优惠备注：{{coupon_note===""? '无备注' : coupon_note }}</p>
+          <p>优惠备注：{{coupon_note=== null ? '无备注' : coupon_note }}</p>
 
-          <p>订单备注：{{order_note===""? '无备注' : order_note }}</p>
+          <p>订单备注：{{order_note=== null ?  '无备注' : order_note }}</p>
         </div>
       </div>
     </div>
     <div slot="footer"></div>
   </modal>
   <!--回款-->
-  <modal :show.sync="paymentModal" :modal-size.sync='paymentModalSize'>
+  <modal :show.sync="modal.paymentModal" :modal-size.sync='modal.paymentModalSize'>
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true" @click="paymentModal=false">&times;</span></button>
+        aria-hidden="true" @click="modal.paymentModal=false">&times;</span></button>
       <h4 class="modal-title">挂账回款</h4>
     </div>
     <div slot="body" class="gzhk">
@@ -278,7 +291,7 @@
   </modal>
 
   <!-- begin门店收货 -->
-  <modal :show.sync="storeReceivedModal" :modal-size.sync='storeReceivedModalSize'>
+  <modal :show.sync="modal.storeReceivedModal" :modal-size.sync='modal.storeReceivedModalSize'>
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
@@ -289,13 +302,13 @@
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-info" data-dismiss="modal" @click="storeConfirmReceived">确定</button>
-      <button type="button" class="btn btn-primary" @click="storeReceivedModal=false">取消</button>
+      <button type="button" class="btn btn-primary" @click="modal.storeReceivedModal=false">取消</button>
     </div>
   </modal>
   <!-- end门店收货 -->
 
   <!-- begin客户收货 -->
-  <modal :show.sync="userReceivedModal" :modal-size.sync='userReceivedModalSize'>
+  <modal :show.sync="modal.userReceivedModal" :modal-size.sync='modal.userReceivedModalSize'>
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
@@ -306,13 +319,13 @@
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-info" data-dismiss="modal" @click="userConfirmReceived">确定</button>
-      <button type="button" class="btn btn-primary" @click="userReceivedModal=false">取消</button>
+      <button type="button" class="btn btn-primary" @click="modal.userReceivedModal=false">取消</button>
     </div>
   </modal>
   <!-- end客户收货 -->
 
   <!-- begin退款 -->
-  <modal :show.sync="returnMoneyModal" :modal-size.sync='returnMoneyModalSize'>
+  <modal :show.sync="modal.returnMoneyModal" :modal-size.sync='modal.returnMoneyModalSize'>
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
@@ -323,10 +336,11 @@
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-info" data-dismiss="modal" @click="confirmReturnMoney">确定</button>
-      <button type="button" class="btn btn-primary" @click="returnMoneyModal=false">取消</button>
+      <button type="button" class="btn btn-primary" @click="modal.returnMoneyModal=false">取消</button>
     </div>
   </modal>
-  <!-- end退款 -->
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <script>
   import $ from 'jquery'
@@ -336,9 +350,11 @@
   import Count from '../../common/Count'
   import DatePicker from '../../common/DatePicker'
   import Modal from  '../../common/Modal'
-  import {requestUrl, token, searchRequest, error,getDataFromSiteApi} from '../../../publicFunction/index'
+  import ErrorTip from '../../common/ErrorTip'
+  import {requestUrl, token, searchRequest, error,getDataFromSiteApi,putDataToApi} from '../../../publicFunction/index'
   var detailId = 0
   var paymentid = 0
+  var refundId = 0
   export default {
     components: {
       SiteNav: SiteNav,
@@ -346,7 +362,8 @@
       Grid: Grid,
       Page: Page,
       Modal: Modal,
-      DatePicker: DatePicker
+      DatePicker: DatePicker,
+      ErrorTip: ErrorTip
     },
     route: {
       activate: function () {
@@ -388,6 +405,24 @@
           page: current
         }
         this.fetchData(url, data, this.finishPage)
+      },
+//    输入退货数量的时候
+      countEmmit: function (count){
+        var self = this
+        var len = 0
+        $.each(this.returnGoodsList,function(index,val){
+          (function(){
+            if( Number(val.return_number ) > Number(val.amount) || Number(val.return_number ) === 0){
+              val.return_number = ''
+              self.refundFlag = true
+            }else {
+              len ++
+            }
+          })(val)
+        })
+       if(len ===this.returnGoodsList.length ){
+         self.refundFlag = false
+       }
       }
     },
     ready: function () {
@@ -530,7 +565,7 @@
       },
 //     查看详情
       lookDetail: function (event) {
-        this.deleteModal = true
+        this.modal.deleteModal = true
         detailId = Number($(event.currentTarget).parents('tr').attr('id'))
         var url = requestUrl + '/front-system/order/' + detailId + '/detail'
         this.fetchData(url, this.finishLookDetail)
@@ -539,18 +574,18 @@
       userReceived: function (event) {
         var button = $(event.currentTarget)
         this.currentButton = button
-        this.userReceivedModal = true
+        this.modal.userReceivedModal = true
         this.receivedId = $(event.currentTarget).parents('tr').attr('id')
       },
 //      客户确认签收
       userConfirmReceived: function () {
-        this.userReceivedModal = false
+        this.modal.userReceivedModal = false
         this.$http({
           url: requestUrl + '/front-system/order/sign/' + this.receivedId,
           method: 'put',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.userReceivedModal = false
+          this.modal.userReceivedModal = false
           $(this.currentButton).remove()
         }, function (err) {
           error(err)
@@ -560,20 +595,20 @@
       storeReceived: function (event) {
         var button = $(event.currentTarget)
         this.currentButton = button
-        this.storeReceivedModal = true
+        this.modal.storeReceivedModal = true
         this.receivedId = $(event.currentTarget).parents('tr').attr('id')
         console.log(this.receivedId)
       },
 //      门店确认签收
       storeConfirmReceived: function () {
-        this.storeReceivedModal = false
+        this.modal.storeReceivedModal = false
         this.$http({
           url: requestUrl + '/front-system/order/receipt/' + this.receivedId,
           method: 'put',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           var self = this
-          this.storeReceivedModal = false
+          this.modal.storeReceivedModal = false
           var url = requestUrl + '/front-system/order'
           var data = {
             order_type: this.orderType,
@@ -590,18 +625,18 @@
       returnMondy: function (event) {
         var button = $(event.currentTarget)
         this.currentButton = button
-        this.returnMoneyModal = true
+        this.modal.returnMoneyModal = true
         this.receivedId = $(event.currentTarget).parents('tr').attr('id')
       },
 //      确认退款
       confirmReturnMoney: function () {
-        this.returnMoneyModal = false
+        this.modal.returnMoneyModal = false
         this.$http({
           url: requestUrl + '/front-system/order/refund-money/' + this.receivedId,
           method: 'put',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.returnMoneyModal = false
+          this.modal.returnMoneyModal = false
           $(this.currentButton).remove()
         }, function (err) {
           error(err)
@@ -611,30 +646,46 @@
       returnGoods: function (event) {
         var button = $(event.currentTarget)
         var self = this
-        this.refundModal = true
-        var id = $(event.currentTarget).parents('tr').attr('id')
-        getDataFromSiteApi(requestUrl + '/front-system/order/refund-goods/' + id ,{},function(response){
-          self.returnGoodsList = response.data.body.list
-          $.each(self.returnGoodsList, function (index, value) {
-            value.total_refund = value.total_sell
-          })
+        this.modal.refundModal = true
+        refundId= Number($(event.currentTarget).parents('tr').attr('id'))
+        getDataFromSiteApi(requestUrl + '/front-system/order/'+  refundId + '/detail',{},function (response) {
+            self.returnGoodsList = response.data.body.list
+            $.each(self.returnGoodsList,function(index,val){
+              val.return_number = val.amount
+            })
         })
         this.currentButton = button
       },
 //      退货后隐藏按钮
-      onlyReturnOnce: function () {
-        if (this.refundFlag === true) {
+      confirmRefoundGoods: function () {
+        var items = []
+        var self = this
+        $.each(self.returnGoodsList,function(index,val){
+          var obj = {}
+          obj.amount = val.return_number
+          obj.id = val.id
+          items.push(obj)
+        })
+        if (self.refundFlag === true) {
           return false
         } else {
-          $(this.currentButton).remove()
-          this.refundModal = false
+          putDataToApi(requestUrl + '/front-system/order/refund-goods/'+refundId,items,function (response) {
+            self.modal.refundModal = false
+            self.currentButton.remove()
+          },function (err) {
+            if(err.data.code ==="200002") {
+              self.modal.refundModal = false
+              self.modal.errModal = true
+              self.modal.errInfo  = "high,该订单已经退货不能重复退货"
+            }
+          })
         }
       },
 //      回款
       payment: function (event) {
         var button = $(event.currentTarget)
         this.currentButton = button
-        this.paymentModal = true
+        this.modal.paymentModal = true
         var self = this
         paymentid = Number($(event.currentTarget).parents('tr').attr('id'))
         $.each(this.queryList, function (index, val) {
@@ -669,7 +720,7 @@
       },
 //      点击全部回款金额
       paymentAll: function () {
-        this.paymentModal = true
+        this.modal.paymentModal = true
         this.paymentAmount = (this.totalPayMent * 0.01).toFixed(2)
       },
 //       确定回款
@@ -681,7 +732,7 @@
           data: {payment: payment},
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.paymentModal = false
+          this.modal.paymentModal = false
           $(this.currentButton).remove()
         }, function (err) {
           error(err)
@@ -694,18 +745,22 @@
         startTime: '',
         orderNumber: '',
         endTime: '',
-        refundModal: false,
-        refundModalSize: 'modal-lg',
-        deleteModal: false,
-        deleteModalSize: 'modal-lg',
-        paymentModal: false,
-        paymentModalSize: 'modal-sm',
-        storeReceivedModal: false,
-        storeReceivedModalSize: 'modal-sm',
-        userReceivedModal: false,
-        userReceivedModalSize: 'modal-sm',
-        returnMoneyModal: false,
-        returnMoneyModalSize: 'modal-sm',
+        modal:{
+           errModal: false,
+           errInfo: 'high,这是退货错误提示',
+           refundModal: false,
+           refundModalSize: 'modal-lg',
+           deleteModal: false,
+           deleteModalSize: 'modal-lg',
+           paymentModal: false,
+           paymentModalSize: 'modal-sm',
+           storeReceivedModal: false,
+           storeReceivedModalSize: 'modal-sm',
+           userReceivedModal: false,
+           userReceivedModalSize: 'modal-sm',
+           returnMoneyModal: false,
+           returnMoneyModalSize: 'modal-sm',
+         },
         totalPayMent: 0,
         paymentAmount: 0,
         guazhangShow: false,
@@ -723,14 +778,15 @@
         gridCheck: true,
         gridOperate: true,
         receivedId: '',
+        isRedfundGoos: false,
         retailGridColumns: {
           order_number: '小票编号',
           created_at: '下单时间',
           total_sum: '合计金额',
-          total_amount: '合计数量',
+          total_sell: '合计数量',
           member_card_number: '会员卡号',
           coupon_name: '优惠方式',
-          pay_method: '支付方式',
+          payment: '支付方式',
           after_sales: '售后',
           operator: '营业员'
         },
@@ -763,7 +819,7 @@
         var price = 0
         var returnGoodsList = this.returnGoodsList
         $.each(returnGoodsList, function (index, value) {
-          price += value.actual_price * value.total_refund
+          price += value.new_price * value.return_number
         })
         return (price * 0.01).toFixed(2)
       }

@@ -44,6 +44,13 @@
                   <option :value="item.code" v-for="item in search.providerList">{{item.name}}</option>
                 </select>
               </div>
+              <div class="form-group ml10">
+                <label>收货仓库</label>
+                <select class="form-control" v-model="search.stream_origin_id">
+                  <option value="">请选择</option>
+                  <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
+                </select>
+              </div>
               <span type="submit" class="btn btn-primary" @click="searchMethod">搜索</span>
               <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
               <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr">新建收货单</a>
@@ -53,8 +60,9 @@
           <summary
             :table-header="gridColumns"
             :table-data="list"
-            :page= "page"
+            :page.sync= "page"
             :check-url ="checkUrl"
+            :finish-url="checkUrl"
           >
           </summary>
         </div>
@@ -78,7 +86,7 @@
     },
     ready: function (){
       var self = this
-      //    获取制单人
+//         获取制单人
       getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
         self.search.orderMaker = response.data.body.list
         console.log( self.search.orderMaker)
@@ -86,6 +94,10 @@
 //    获取供应商
       getDataFromApi(requestUrl + '/backend-system/provider/provider',{},function(response){
         self.search.providerList = response.data.body.list
+      })
+//      获取仓库列表
+      getDataFromApi(requestSystemUrl + '/backend-system/warehouse-minimal-list',{},function(response){
+        self.warehouseList = response.data.body.list
       })
       this.fetlistFormApi({})
     },
@@ -122,11 +134,13 @@
     },
     data: function () {
       return {
+        warehouseList: [],
         gridColumns: {
           "document_number": "货号",
           "checked": "审核状态",
           "creator_name": "制单人",
           "auditor_name": "审核人",
+          "warehouse": "收货仓库",
           "provider_name": "供应商",
           "operated_at": "收货日期",
           "actual_amount": "实际入库量",
@@ -143,6 +157,7 @@
           selectedStatus: '',
           selectedMaker: '',
           selectedSuppier: '',
+          stream_origin_id: '',
           alotStock: [],
           code: '',
           orderMaker: [],
@@ -169,6 +184,7 @@
           provider_id: this.search.selectedSuppier,
           start_receive_time: this.time.startTime,
           end_receive_time: this.time.endTime,
+          warehouse_id: this.search.stream_origin_id
         }
         this.fetlistFormApi(data)
       },
