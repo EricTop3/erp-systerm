@@ -118,7 +118,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.getlistdata(currentpage)
+        this.getlistData(currentpage)
       },
 //   ‘完成’调用
       finishFromApi: function (id) {

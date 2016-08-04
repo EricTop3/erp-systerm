@@ -81,6 +81,7 @@ import AdminInstockSale from 'components/admin/instock/saleStock/AdminInstockSal
 import AdminInstockApply from 'components/admin/instock/requireGoodSummary/AdminInstockApply'
 import AdminInstockapplyDetail from 'components/admin/instock/requireGoodSummary/AdminInstockapplyDetail'
 import AdminInstockProduction from 'components/admin/instock/productInstock/AdminInstockProduction'
+import AdminInstockProductionDetail from 'components/admin/instock/productInstock/AdminInstockProductionDetail'
 import AdminMicroShopOrder from 'components/admin/micro-shop-order/MicroShopOrder'
 import AdminLogin from 'components/admin/login/AdminLogin'
 Vue.filter('priceChange', priceChange)
@@ -339,6 +340,9 @@ router.map({
   },
   '/admin/instock/production': {
     component: AdminInstockProduction
+  },
+  '/admin/instock/production/Detail/:queryId': {
+    component: AdminInstockProductionDetail
   },
   '/admin/instock/apply': {
     component: AdminInstockApply
