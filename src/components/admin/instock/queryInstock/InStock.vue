@@ -41,7 +41,7 @@
               <label><input type="checkbox" class="checkbox" v-model="search.safeInstock">库存警戒中 </label>
             </div>
 
-            <button type="submit" class="btn btn-primary" @click="searchMethod">搜索</button>
+            <button class="btn btn-primary" @click="searchMethod">搜索</button>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
             <span class="btn fr btn-info">导出excel</span>
           </form>

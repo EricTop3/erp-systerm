@@ -43,11 +43,11 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.produce_amount}}{{entry.unit_name}}</td>
-                <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                <td v-if="editFlag"><count :count.sync=entry.main_reference_value></count>{{entry.unit_name}}</td>
+                <td v-if="!editFlag">{{entry.main_reference_value}}/{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
                 <td v-if="!editFlag">{{entry.defective_amount}}/{{entry.unit_name}}</td>
-                <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元/{{entry.unit_name}}</td>
-                <td v-if="!editFlag">{{entry.unit_price}}元/{{entry.unit_name}}</td>
+                <td>{{entry.unit_price}}元/{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
               </tr>
               </tbody>
@@ -99,6 +99,7 @@
   import Price from  '../../../common/Price'
   import {
     requestUrl,
+    putDataToApi,
     requestSystemUrl,
     getDataFromApi,
     token,
@@ -125,6 +126,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
+        var self = this
         this.$http({
           url:requestSystemUrl + '/backend-system/production/outsource',
           data: {
@@ -133,9 +135,8 @@
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
+          self.page = response.data.body.pagination
+          self.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
           console.log(err)
@@ -168,15 +169,16 @@
         $.each(self.detailList,function (index,val) {
           var obj = {}
           obj['reference_id'] = val.id
-          obj['id'] = val.id
-          obj['amount'] = val.number
+          obj['id'] = val.item_id
+          obj['amount'] = val.main_reference_value
+          obj['defective_amount'] = val.defective_amount
           obj['reference_type'] = val.item_type
           item.push(obj)
         })
         var data = {
           items: item
         }
-//        var url = requestSystemUrl + '/backend-system/stock/distribution/'+ id
+        var url = requestSystemUrl + '/backend-system/production/outsource/'+ id
         putDataToApi(url,data,function (res) {
           console.log('yes')
         })
@@ -243,10 +245,10 @@
           total_sum: '加工费用'
         },
         gridColumns2: {
-          code: "货号",
-          name: "品名",
+          item_code: "货号",
+          item_name: "品名",
           produce_amount:'生产数量',
-          total_stock: '入库数量',
+          main_reference_value: '入库数量',
           defective_amount: "次品数量",
           unit_price:"加工单价",
           unit_specification: '单位规格'
