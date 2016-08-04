@@ -333,7 +333,7 @@
         },
         origenData: {
           title: '原始生产单',
-          dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
+          dataUrl: requestSystemUrl + '/backend-system/reference-document/produce',
           firstDataTitle: {
             "document_number": "采购单号",
             "created_at": "生产日期",
