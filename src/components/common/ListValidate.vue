@@ -51,11 +51,11 @@
               if (val.id === currentId) {
                 val.checked = '已审核'
                 if(window.location.href.indexOf('/admin')>0){
-                  val.auditor_name = window.localStorage.getItem("systermAccount")
-                  val.auditor =  window.localStorage.getItem("systermAccount")
+                  val.auditor_name = window.localStorage.getItem("systermName")
+                  val.auditor =  window.localStorage.getItem("systermName")
                 }else{
-                  val.auditor_name = window.localStorage.getItem("storeAccount")
-                  val.auditor = window.localStorage.getItem("storeAccount")
+                  val.auditor_name = window.localStorage.getItem("storeName")
+                  val.auditor = window.localStorage.getItem("storeName")
                 }
               }
             })
