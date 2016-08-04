@@ -62,8 +62,6 @@
             :table-data="list"
             :page.sync= "page"
             :check-url ="checkUrl"
-            :finish-url="checkUrl"
-            :finish-flag = 'true'
           >
           </summary>
         </div>

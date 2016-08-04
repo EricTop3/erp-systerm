@@ -323,7 +323,7 @@ export function error(err) {
   // }
 }
 // 后台登录方法
-export function adminLogin(loginUrl,data){
+export function adminLogin(loginUrl,data, callback){
   token = null
   var cur = new Vue()
   cur.$http.post(loginUrl,data).then(function(response){
@@ -338,11 +338,12 @@ export function adminLogin(loginUrl,data){
       window.location.href = '#!/admin/setting'
     })
   },function(err){
+    callback && callback(err)
     console.log(err)
   })
 }
 //前台登录方法
-export function siteLogin(loginUrl,data){
+export function siteLogin(loginUrl,data,callback){
   token = null
   var cur = new Vue()
   cur.$http.post(loginUrl,data).then(function(response){
@@ -357,6 +358,7 @@ export function siteLogin(loginUrl,data){
       window.location.href ='#!/site/order'
     })
   },function(err){
+    callback && callback(err)
     console.log(err)
   })
 }

@@ -33,7 +33,7 @@
           </div>
           <button type="submit" class="btn btn-primary" @click="search">搜索</button>
           <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-          <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#person-add-templ" @click="modal.addClerkModal=true">新增店员</span>
+          <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#person-add-templ" @click="addClerk">新增店员</span>
           <span class="btn btn-info spanblocks fr mr10"  data-toggle="modal" data-target="#account-add-templ" @click="modal.addStoreModal=true">新增门店</span>
         </form>
       </div>
@@ -225,6 +225,10 @@
         })
       },
 //      新增店员
+      addClerk: function () {
+        this.modal.addClerkModal=true
+      },
+//      确定新增店员
       addClerkConfirm: function () {
         var self = this
         var addStoreUrl=requestSystemUrl + '/backend-system/store/store-account'
@@ -242,6 +246,13 @@
       },
 //      编辑店员
       editClerk: function (event) {
+        this.editClerkInfo = {
+          storeName:'',
+            account: '',
+            name: '',
+            password: '',
+            status: 0,
+        }
         var self = this
         accountId = Number($(event.currentTarget).parents('tr').attr('id'))
         self.getAccountName({})

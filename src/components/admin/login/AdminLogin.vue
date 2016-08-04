@@ -38,24 +38,52 @@
       </div>
     </div>
     <div class="container-fluid line-bottom"></div>
+    <!--错误信息-->
+    <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
   </div>
 </template>
 <script>
   import {requestSystemUrl,postDataToApi,adminLogin} from '../../../publicFunction/index'
+  import ErrorTip from '../../common/ErrorTip'
   export default{
+    components:{
+      ErrorTip: ErrorTip
+    },
     methods: {
       // 获取数据的方法
       loginUpload: function () {
-        var loginUrl =  requestSystemUrl + '/backend-system/auth/login'
-        var data = {
-          name: this.username,
-          password: this.password
+        var self = this
+        if(this.userName ===""){
+          this.modal.errModal = true,
+          this.modal.errInfo = '请输入您的登录名'
+        } else if(this.password ===""){
+          this.modal.errModal = true,
+          this.modal.errInfo = '请输入您的密码'
+        }else{
+          var loginUrl =  requestSystemUrl + '/backend-system/auth/login'
+          var data = {
+            account: this.username,
+            password: this.password
+          }
+          adminLogin(loginUrl,data,function (err) {
+             if(err.data.code ==='100000'){
+               self.modal.errModal = true,
+               self.modal.errInfo = '你的账号不存在'
+             }
+            if(err.data.code ==='110004'){
+                self.modal.errModal = true,
+                self.modal.errInfo = '你的密码错误'
+            }
+          })
         }
-        adminLogin(loginUrl,data)
       }
     },
     data: function () {
       return {
+        modal: {
+         errModal: false,
+         errInfo: ''
+        },
         username: '',
         password: ''
       }

@@ -100,7 +100,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          changeStatus(this.list)
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -136,7 +136,7 @@
         getDataFromApi(url,data,function(response){
           self.list = response.data.body.list
           self.page = response.data.body.pagination
-          changeStatus(self.list)
+          exchangeData(self.list)
         })
       },
       searchMethod: function(){
