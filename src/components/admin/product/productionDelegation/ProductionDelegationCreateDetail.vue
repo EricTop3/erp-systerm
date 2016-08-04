@@ -173,6 +173,7 @@
           obj['reference_id'] = val.item_id
           obj['id'] = val.id
           obj['amount'] = val.main_reference_value
+          obj['price'] = val.unit_price
           obj['reference_type'] = val.item_type
           item.push(obj)
         })
