@@ -169,7 +169,7 @@
         $.each(self.detailList,function (index,val) {
           var obj = {}
           obj['reference_id'] = val.id
-          obj['id'] = val.id
+          obj['id'] = val.item_id
           obj['amount'] = val.main_reference_value
           obj['defective_amount'] = val.defective_amount
           obj['reference_type'] = val.item_type
