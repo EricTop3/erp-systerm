@@ -48,7 +48,7 @@
       loginUpload: function () {
         var loginUrl =  requestSystemUrl + '/backend-system/auth/login'
         var data = {
-          account: this.username,
+          name: this.username,
           password: this.password
         }
         adminLogin(loginUrl,data)

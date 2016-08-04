@@ -31,8 +31,8 @@
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
-          <option value="">请选择</option>
           <select class="form-control" v-model="query.create_person">
+            <option value="">请选择</option>
             <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
@@ -135,7 +135,7 @@
           this.list = response.data.body.list
           exchangeData(this.list)
         }, function (err) {
-          error(err)
+            console.log(err)
         })
       },
       //      搜索页面

@@ -26,7 +26,7 @@
       uploadLogin: function () {
         var loginUrl =  requestUrl + '/front-system/auth/login'
         var data = {
-          account: this.username,
+          name: this.username,
           password: this.password
         }
         siteLogin(loginUrl,data)

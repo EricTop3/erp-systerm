@@ -133,13 +133,13 @@
     <div class="form-group">
       <label for="" class="col-sm-4 control-label">店员名称</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" placeholder=""  value="王小二" v-model="editClerkInfo.name">
+        <input type="text" class="form-control" placeholder=""  value="王小二" v-model="editClerkInfo.account">
       </div>
     </div>
     <div class="form-group">
       <label for="" class="col-sm-4 control-label">登录名</label>
       <div class="col-sm-8">
-        <label for="" class="title">{{editClerkInfo.account}}</label>
+        <label for="" class="title">{{editClerkInfo.name}}</label>
       </div>
     </div>
     <div class="form-group">

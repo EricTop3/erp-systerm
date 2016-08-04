@@ -206,7 +206,6 @@
             window.location.href = '/?#!/site/instock/AllotOutBills/'
           },function (err){
             self.messageTipModal = true
-            self.messageTip = err.data.body.error
           })
         }
       }

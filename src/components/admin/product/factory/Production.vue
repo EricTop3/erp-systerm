@@ -118,6 +118,9 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
+          $.each(this.list,function (index,val){
+            val.amount =  val.amount + val. val.amount
+          } )
           var self = this
           exchangeData(this.list)
         }, function (err) {
@@ -197,8 +200,8 @@
           checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
-          operated_at: '生產时间',
-          amount: '生產數量'
+          operated_at: '生产时间',
+          amount: '生产數量'
         },
         timewidth: "timewidth",
         searchData: {
