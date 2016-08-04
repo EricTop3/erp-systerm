@@ -49,7 +49,7 @@
               <td><count :count.sync = 'entry.realInstock_amount'></count></td>
               <td>{{entry.unit_name}}</td>
               <td>{{entry.unit_specification}}</td>
-              <td>{{entry.refence_number}}</td>
+              <td>{{entry.reference_number}}</td>
               <td>
                 <slot name="operate">
                   <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -82,7 +82,7 @@
               <td>{{entry.realInstock_amount}}</td>
               <td>{{entry.unit_name}}</td>
               <td>{{entry.unit_specification}}</td>
-              <td>{{entry.refence_number}}</td>
+              <td>{{entry.reference_number}}</td>
             </tr>
             </tbody>
           </table>
@@ -284,9 +284,9 @@
           title: '原始门店要货单',
           dataUrl: requestSystemUrl + '/front-system/reference-document/distribution',
           firstDataTitle: {
-            "document_number": "货单号",
-            "store_name": "要货仓库",
-            "amount": "要货数量",
+            "document_number": "配送单号",
+            "store_name": "调出仓库",
+            "amount": "配送数量",
             "created_at": "配送日期",
             "creator_name": "制单人",
             "auditor_name": "审核人"
@@ -295,7 +295,8 @@
           secondDataTitle: {
             "item_code": "货号",
             "item_name": "品名",
-            "main_reference_value":"要货数量",
+            "purchase_amount": "要货数量",
+            "main_reference_value":"配送数量",
             "unit_name": "单位",
             "unit_specification": "单位规格"
           },
