@@ -295,8 +295,6 @@
         this.old = self.dataArray
         this.localPage(this.old)
         this.rederSetGoods = this.old
-
-        console.log(this.rederSetGoods[0].unit)
       },
 //      分页
       pagechange: function (currentpage) {

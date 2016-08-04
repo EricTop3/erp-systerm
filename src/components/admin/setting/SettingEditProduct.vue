@@ -224,8 +224,8 @@
             </td>
             <td class="form-inline">
               <div class="form-group">
-                <select class="form-control" v-model="item.unit">
-                  <option v-for="items in item.units" :value="items.id">{{items.name}}</option>
+                <select class="form-control" v-model="item.units">
+                  <option v-for="items in item.unit" :value="items.id">{{items.name}}</option>
                 </select>
               </div>
             </td>
@@ -306,7 +306,7 @@
         self.createList.production_unit = response.data.body.production_unit_id !== null ? response.data.body.production_unit_id : ''
         self.createList.aruc = response.data.body.aruc == 0 ? '' : (Number(response.data.body.aruc) * 0.01).toFixed(2)
         self.createList.apuc = (Number(response.data.body.apuc) * 0.01).toFixed(2)
-//        createList.use_bill_of_material
+
         if(response.data.body.bom == ''){
           self.createList.use_bill_of_material = false
           console.log('没有BOM清单' + self.createList.use_bill_of_material)
@@ -320,9 +320,23 @@
             obj['name'] = val.product_name
             obj['id'] = val.product_id
             obj['value'] = val.consumption
-            obj['unit'] = val.consumption_unit
-            obj['units'] = val.unit
+            obj['units'] = val.consumption_unit
+            obj['unit'] = val.unit
             self.rederSetGoods.push(obj)
+          })
+//      判断商品是否已经被添加
+          $.each(self.rederSetGoods, function (index, val1) {
+            self.dataArray.push(val1)
+            $.each(self.setGoods, function (index, val2) {
+              if (val1.id == val2.id) {
+                console.log("我是rederSetGoods：" + val1.id)
+                console.log("我是setGoods：" + val2.id)
+                if (val2.choice && !val2.again) {
+                  val2.again = true
+                  self.dataArray.push(val2)
+                }
+              }
+            })
           })
         }
       })
@@ -345,6 +359,7 @@
             self.dataArray.push(val)
           }
         })
+        console.log(self.dataArray)
         this.rederSetGoods = self.dataArray
         this.old = self.dataArray
         this.localPage(this.old)
@@ -397,7 +412,7 @@
           var obj = {}
           obj['id'] = val.id
           obj['value'] = val.value
-          obj['unit'] = val.unit
+          obj['unit'] = val.units
           materials.push(obj)
         })
 //          启用BOM单
