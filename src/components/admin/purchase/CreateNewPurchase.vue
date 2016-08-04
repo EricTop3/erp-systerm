@@ -76,7 +76,7 @@
               <table class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr class="text-center">
-                  <th v-for="value in  gridColumns">
+                  <th v-for="value in  gridColumns1">
                     {{value}}
                   </th>
                 </tr>
@@ -306,6 +306,16 @@
           purchase_quantity:"采购数量",
           purchase_price:"采购单价",
           source_number: "来源要货单号"
+        },
+        gridColumns1: {
+          code: "货号",
+          name: "品名",
+          specification_unit:"单位规格",
+          aruc: "总部库存",
+          order_quantity:"门店要货量",
+          purchase_quantity:"采购数量",
+          purchase_price:"采购单价",
+          source_number: "小计"
         },
         renderstockGoods: [],
         currentUrl: '',

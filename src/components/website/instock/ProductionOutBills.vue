@@ -48,7 +48,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token, searchRequest, error} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, error,getDataFromSiteApi} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -78,23 +78,17 @@
     methods: {
 //    生产出库-列表数据渲染
       listData: function (page) {
-        this.$http({
-          url: requestUrl + '/front-system/stock/products',
-          method: 'get',
-          data: {
-            start_time: this.query.start_time || '',
-            end_time: this.query.end_time || '',
-            search: this.query.search || '',
-            category_id: this.query.category || '',
-            page: page,
-            per_page: 16
-          },
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-        }, function (err) {
-          error(err)
+        var self = this
+        getDataFromSiteApi(requestUrl + '/front-system/stock/produce-put', {
+          start_time: this.query.start_time || '',
+          end_time: this.query.end_time || '',
+          search: this.query.search || '',
+          category_id: this.query.category || '',
+          page: page,
+          per_page: 16
+        },function(response){
+          self.page = response.data.body.pagination
+          self.list = response.data.body.list
         })
       },
 //      搜索页面

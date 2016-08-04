@@ -31,6 +31,7 @@
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
+          <option value="">请选择</option>
           <select class="form-control" v-model="query.create_person">
             <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
@@ -47,6 +48,8 @@
     </div>
     <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page" :check-url="checkUrl"></summary>
   </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <script>
   import $ from 'jquery'
@@ -55,6 +58,7 @@
   import Page from '../../common/Page'
   import Summary from '../../common/Summary'
   import DatePicker from '../../common/DatePicker'
+  import ErrorTip from '../../common/ErrorTip'
   import {getDataFromSiteApi} from '../../../publicFunction/index'
   import {
     requestUrl,
@@ -72,7 +76,8 @@
       Page: Page,
       Summary: Summary,
       DatePicker: DatePicker,
-      SiteNav: SiteNav
+      SiteNav: SiteNav,
+      ErrorTip: ErrorTip
     },
     events: {
 //    绑定翻页事件
@@ -85,6 +90,14 @@
         deleteRequest(requestUrl + '/front-system/stock/distribution/'+ id, function (response) {
          self.listData(1)
         })
+      },
+//         审核失败
+      checkFail: function (err){
+        var self = this
+        if(Number(err.data.code) === 220000){
+          self.modal.errModal = true
+          self.modal.errInfo =  err.data.message
+        }
       }
     },
     ready: function () {
@@ -156,6 +169,10 @@
         list: [],
         page: [],
         detailUrl: '/#!/site/instock/AllotOutBills/',
+        modal:{
+         errModal: false,
+         errInfo: "high,这是错误提示"
+        },
         gridOperate: true,
         gridColumns: {
           order_number: '货号',

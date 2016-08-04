@@ -336,7 +336,7 @@
   import Count from '../../common/Count'
   import DatePicker from '../../common/DatePicker'
   import Modal from  '../../common/Modal'
-  import {requestUrl, token, searchRequest, error} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, error,getDataFromSiteApi} from '../../../publicFunction/index'
   var detailId = 0
   var paymentid = 0
   export default {
@@ -610,21 +610,15 @@
 //      退货
       returnGoods: function (event) {
         var button = $(event.currentTarget)
+        var self = this
         this.refundModal = true
         var id = $(event.currentTarget).parents('tr').attr('id')
-        this.$http({
-          url: requestUrl + '/front-system/order/' + id + '/detail',
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.returnGoodsList = response.data.body.list
-          $.each(this.returnGoodsList, function (index, value) {
+        getDataFromSiteApi(requestUrl + '/front-system/order/refund-goods/' + id ,{},function(response){
+          self.returnGoodsList = response.data.body.list
+          $.each(self.returnGoodsList, function (index, value) {
             value.total_refund = value.total_sell
           })
-        }, function (err) {
-          error(err)
         })
-
         this.currentButton = button
       },
 //      退货后隐藏按钮

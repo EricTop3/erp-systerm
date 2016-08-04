@@ -49,7 +49,7 @@
               <td><count :count.sync = 'entry.realInstock_amount'></count></td>
               <td>{{entry.unit_name}}</td>
               <td>{{entry.unit_specification}}</td>
-              <td>{{entry.refence_number}}</td>
+              <td>{{entry.reference_number}}</td>
               <td>
                 <slot name="operate">
                   <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -82,7 +82,7 @@
               <td>{{entry.realInstock_amount}}</td>
               <td>{{entry.unit_name}}</td>
               <td>{{entry.unit_specification}}</td>
-              <td>{{entry.refence_number}}</td>
+              <td>{{entry.reference_number}}</td>
             </tr>
             </tbody>
           </table>
