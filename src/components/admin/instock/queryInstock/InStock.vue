@@ -94,16 +94,17 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
+        var self = this
         this.$http({
-          url: requestUrl + '/backend-system/stock/log',
+          url: requestSystemUrl + '/backend-system/stock/log',
           data: {
             page: currentpage
           },
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.productList = response.data.body.list
+          self.page = response.data.body.pagination
+          self.productList = response.data.body.list
         }, function (err) {
           console.log(err)
         })
@@ -121,7 +122,8 @@
       getDataFromApi(requestSystemUrl + '/backend-system/product/category', {}, function (response) {
         self.category = response.data.body.list
       })
-      this.listData(1)
+      this.listData({})
+
     },
     methods: {
 //      列表数据渲染
@@ -130,6 +132,7 @@
         var url = requestSystemUrl + '/backend-system/stock/log'
         getDataFromApi(url, data, function (response) {
           self.productList = response.data.body.list
+          self.numberChange(self.productList)
           self.page = response.data.body.pagination
         })
       },
@@ -155,6 +158,14 @@
         this.search.selectedHouse = ''
         this.search.safeInstock = ''
         this.listData({})
+      },
+//      负数变为正数
+      numberChange: function (list) {
+        $.each(list, function (index, val) {
+          if ( val.out_stock < 0 ) {
+            val.out_stock = val.out_stock * (-1)
+          }
+        })
       }
     },
     data: function () {

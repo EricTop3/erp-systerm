@@ -8,7 +8,7 @@
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
           <li class="active">库存查询</li>
-          <li class="active">明细</li>
+          <li class="active">出入库明细</li>
         </ol>
 
         <!-- 页头 -->
@@ -42,7 +42,6 @@
             <td>期末库存量</td>
             <td>单位</td>
             <td>单位规格</td>
-            <!--<td>操作</td>-->
           </tr>
           </thead>
           <tbody>
@@ -56,7 +55,6 @@
             <td>{{productList1.current_stock}}</td>
             <td>{{productList1.unit_name}}</td>
             <td>{{productList1.unit_specification}}</td>
-            <!--<td></td>-->
           </tr>
           </tbody>
         </table>
