@@ -322,7 +322,7 @@ export function error(err) {
   //   //服务器正在维护，暂时无法提供支持
   // }
 }
-//后台登录方法
+// 后台登录方法
 export function adminLogin(loginUrl,data){
   token = null
   var cur = new Vue()
