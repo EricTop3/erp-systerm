@@ -201,7 +201,7 @@
           creator_name: '制单人',
           auditor_name: '审核人',
           operated_at: '生产时间',
-          amount: '生产數量'
+          amount: '生产数量'
         },
         timewidth: "timewidth",
         searchData: {

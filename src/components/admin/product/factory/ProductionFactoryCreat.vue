@@ -28,7 +28,7 @@
             </div>
             <span class="btn btn-primary" @click="inclucdePurchaseData">引用原始单据</span>
             <span class="btn btn-default" @click="addStockGoods">添加商品</span>
-            <span class="btn btn-default" @click="uploadPurchase">提交出库</span>
+            <span class="btn btn-default" @click="uploadPurchase">提交生产</span>
           </form>
         </div>
         <!--入库明细入库汇总-->
