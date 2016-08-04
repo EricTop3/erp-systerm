@@ -58,9 +58,9 @@ import ProductionDelegationCreatNew from 'components/admin/product/productionDel
 import ProductionDelegationCreateDetail from 'components/admin/product/productionDelegation/ProductionDelegationCreateDetail'
 import ProductionGetSupplies from 'components/admin/product/productionGetSupplies/ProductionGetSupplie'
 import ProductionGetSuppliesDetail from 'components/admin/product/productionGetSupplies/ProductionGetSuppliesDetail'
-import InstockList from 'components/admin/product/ProductFactoryInstock/InstockList'
-import CreateInstock from 'components/admin/product/ProductFactoryInstock/CreateInstock'
-import InstockDetail from 'components/admin/product/ProductFactoryInstock/InstockDetail'
+import InstockList from 'components/admin/product/productFactoryInstock/InstockList'
+import CreateInstock from 'components/admin/product/productFactoryInstock/CreateInstock'
+import InstockDetail from 'components/admin/product/productFactoryInstock/InstockDetail'
 import ProductionDelegationInstock from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstock'
 import ProductionDelegationInstockNew from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockNew'
 import ProductionDelegationInstockDetail from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockDetail'
@@ -81,6 +81,7 @@ import AdminInstockSale from 'components/admin/instock/saleStock/AdminInstockSal
 import AdminInstockApply from 'components/admin/instock/requireGoodSummary/AdminInstockApply'
 import AdminInstockapplyDetail from 'components/admin/instock/requireGoodSummary/AdminInstockapplyDetail'
 import AdminInstockProduction from 'components/admin/instock/productInstock/AdminInstockProduction'
+import AdminInstockProductionDetail from 'components/admin/instock/productInstock/AdminInstockProductionDetail'
 import AdminMicroShopOrder from 'components/admin/micro-shop-order/MicroShopOrder'
 import AdminLogin from 'components/admin/login/AdminLogin'
 Vue.filter('priceChange', priceChange)
@@ -339,6 +340,9 @@ router.map({
   },
   '/admin/instock/production': {
     component: AdminInstockProduction
+  },
+  '/admin/instock/production/Detail/:queryId': {
+    component: AdminInstockProductionDetail
   },
   '/admin/instock/apply': {
     component: AdminInstockApply

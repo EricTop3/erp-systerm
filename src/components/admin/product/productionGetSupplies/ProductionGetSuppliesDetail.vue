@@ -11,7 +11,7 @@
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产首页</li>
           <li class="active">生产领料单</li>
-          <li class="active">查看</li>
+          <li class="active">查看领料单详情</li>
         </ol>
 
         <!--详情页面 表格-->
@@ -48,13 +48,12 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.material_stock}}{{entry.unit_name}}</td>
-                <td>{{consume}} {{entry.unit_name}}</td>
+                <td>{{entry.material_stock}}</td>
+                <td>{{entry.consume}}/{{entry.consume_unit_name}}</td>
                 <td v-if='editFlag'>
-                  <count :count.sync='entry.main_reference_value'></count>
-                  {{entry.unit_name}}
+                  <count :count.sync='entry.main_reference_value'></count>{{entry.unit_name}}
                 </td>
-                <td v-if='!editFlag'>{{entry.main_reference_value}} {{entry.unit_name}}</td>
+                <td v-if='!editFlag'>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
@@ -76,10 +75,9 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.material_stock}}{{entry.unit_name}}</td>
-                <td>{{consume}} {{entry.unit_name}}</td>
-                <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
-                <td>{{entry.reference_number}}</td>
+                <td>{{entry.material_stock}}</td>
+                <td>{{entry.consume}}/{{entry.consume_unit_name}}</td>
+                <td>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
               </tr>
               </tbody>
             </table>
@@ -107,6 +105,7 @@
   import Count from '../../../common/Count'
   import {
     requestUrl,
+    putDataToApi,
     requestSystemUrl,
     getDataFromApi,
     token,
@@ -148,6 +147,32 @@
           self.getlistData(1)
         })
       },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.id
+          obj['id'] = val.id
+          obj['amount'] = val.main_reference_value
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+
+        var url = requestSystemUrl + '/backend-system/produce/pick/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+        })
+      }
     },
     ready: function () {
       this.getlistData(1)
@@ -190,7 +215,6 @@
             this.$dispatch('summary')
         }
       }
-
     },
     data: function () {
       return {
@@ -217,8 +241,8 @@
           item_name: '品名',
           unit_specification: '单位规格',
           material_stock: '生产车间库存',
-          a: '耗料量',
-          b: '领料量',
+          consume: '耗料量',
+          main_reference_value: '领料量',
           reference_number: '来源生产单号'
         },
         gridColumns3: {
@@ -226,8 +250,8 @@
           item_name: '品名',
           unit_specification: '单位规格',
           material_stock: '生产车间库存',
-          a: '耗料量',
-          b: '领料量'
+          consume: '耗料量',
+          main_reference_value: '领料量'
         },
         searchData: {
           document_number: '',
