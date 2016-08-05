@@ -241,7 +241,7 @@
           operated_at: this.time,
           note: this.note,
           provider_id: this.selectedWarehouse,
-          warehouse_id:  this.selectedWarehouse
+          warehouse_id:  this.selectedAlotStock
         }
 //       提交之前的判断
         if(this.time===''){

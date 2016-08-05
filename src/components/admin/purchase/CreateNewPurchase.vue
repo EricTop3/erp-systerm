@@ -34,6 +34,7 @@
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
             <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+            <li class="summaryCount" v-if="summaryModal"><a href="javascript:void(0)">合计：￥{{summaryPrice|priceChange}}</a></li>
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
@@ -89,8 +90,7 @@
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.required_amount}}{{entry.unit_name}}</td>
                   <td>{{entry.purchase_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purchase_price}}元/{{entry.unit_name}}</td>
-                  <td>{{(entry.purchase_amount*entry.purchase_price*100)|priceChange}}</td>
+                  <td>{{entry.item_price}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -130,6 +130,12 @@
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
+  .nav-tabs  .summaryCount{
+    float: right;
+    color: #f54040;
+    line-height:1.4;
+    font-size: 18px;
+  }
 </style>
 <script>
   import $ from 'jquery'
@@ -184,6 +190,7 @@
           }
         })
         this.renderstockGoods = self.dataArray
+        this.summarystockGoods = self.dataArray
       },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
@@ -270,7 +277,22 @@
       },
 //      汇总方法
       summary: function () {
-        this.summarystockGoods = this.renderstockGoods
+        var self = this
+        self.summaryPrice = 0
+        $.each(this.summarystockGoods,function (index,val) {
+          val.item_price=Number(val.purchase_amount * val.purchase_price).toFixed(2)
+          self.summaryPrice += (val.purchase_amount * val.purchase_price*100)
+           var currentName = val.item_code
+           for(var i= index + 1; i<self.summarystockGoods.length; i++){
+             if(self.summarystockGoods[i]['item_code']){
+               if(self.summarystockGoods[i]['item_code'] === currentName ) {
+                 val.purchase_amount = Number(val.purchase_amount) + Number(self.summarystockGoods[i].purchase_amount)
+                 val.item_price =  val.item_price + self.summarystockGoods[i].item_price
+                 self.summarystockGoods.splice(i, 1)
+               }
+             }
+            }
+        })
       },
 //      入库明细与入库汇总切换
       changeActive: function (event) {
@@ -296,6 +318,7 @@
 //        入库汇总
         summaryModal: false,
         showPage: [],
+        summaryPrice: 0,
         selectedSupplier: '',
         note: '',
         supplierList: [],
@@ -317,7 +340,6 @@
           aruc: "总部库存",
           order_quantity:"门店要货量",
           purchase_quantity:"采购数量",
-          purchase_price:"采购单价",
           source_number: "小计"
         },
         summarystockGoods: [],

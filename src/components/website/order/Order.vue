@@ -386,7 +386,7 @@
               paymentData = 'cash'
               break
             case 'POS刷卡':
-              paymentData = 'post'
+              paymentData = 'pos'
               break
             case '支付宝':
               paymentData = 'alipay'
