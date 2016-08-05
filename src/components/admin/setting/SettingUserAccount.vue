@@ -157,7 +157,7 @@
     </div>
       </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="editClerkConfirm">确定</button>
+      <button type="button" class="btn btn-primary" @click="editClerkConfirm" v-if="canEdit">确定</button>
     </div>
   </modal>
 </template>
@@ -246,13 +246,6 @@
       },
 //      编辑店员
       editClerk: function (event) {
-        this.editClerkInfo = {
-          storeName:'',
-            account: '',
-            name: '',
-            password: '',
-            status: 0,
-        }
         var self = this
         accountId = Number($(event.currentTarget).parents('tr').attr('id'))
         self.getAccountName({})
@@ -270,6 +263,9 @@
           }
         })
         this.modal.editModal = true
+        if(this.editClerkInfo.password!=""){
+          this.canEdit = true
+        }
       },
 //      确认编辑
       editClerkConfirm: function () {
@@ -316,6 +312,7 @@
         clerkName: '',
         storeList: [],
         page: [],
+        canEdit: false,
         currentStatus: 0,
         accountHeader:{
           store_code: '门店编号',

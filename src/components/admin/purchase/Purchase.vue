@@ -75,7 +75,7 @@
   import Summary from '../../common/Summary'
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
