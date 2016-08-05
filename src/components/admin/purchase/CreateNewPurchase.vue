@@ -189,8 +189,7 @@
             self.dataArray.push(val)
           }
         })
-        this.renderstockGoods = self.dataArray
-        this.summarystockGoods = self.dataArray
+        this.renderstockGoods = this.renderstockGoods.concat(self.dataArray)
       },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
@@ -277,21 +276,37 @@
       },
 //      汇总方法
       summary: function () {
+        console.log('q')
         var self = this
+        var saveData = []
+        var count = 0
+        var len = this.summarystockGoods.length
         self.summaryPrice = 0
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
         $.each(this.summarystockGoods,function (index,val) {
-          val.item_price=Number(val.purchase_amount * val.purchase_price).toFixed(2)
-          self.summaryPrice += (val.purchase_amount * val.purchase_price*100)
-           var currentName = val.item_code
-           for(var i= index + 1; i<self.summarystockGoods.length; i++){
-             if(self.summarystockGoods[i]['item_code']){
-               if(self.summarystockGoods[i]['item_code'] === currentName ) {
-                 val.purchase_amount = Number(val.purchase_amount) + Number(self.summarystockGoods[i].purchase_amount)
-                 val.item_price =  val.item_price + self.summarystockGoods[i].item_price
-                 self.summarystockGoods.splice(i, 1)
-               }
-             }
-            }
+          if(val.purchase_amount === undefined){
+            val.purchase_amount = 0
+          }
+          if(val.purchase_price ===undefined){
+            val.purchase_price = 0
+          }
+          (function () {
+            saveData = self.summarystockGoods.slice(index+1)
+            val.item_price=Number(val.purchase_amount * val.purchase_price).toFixed(2)
+            self.summaryPrice += (val.purchase_amount * val.purchase_price*100)
+            $.each(saveData,function (index1,val1){
+              if(val1.item_code){
+                if(val1.item_code === val.item_code){
+                  val.purchase_amount =  Number(val.purchase_amount) + Number(val1.purchase_amount)
+                  val.item_price =  ((val.item_price*100 + val1.item_price*100)*0.01)
+                  saveData.splice(index1, 1)
+                }
+              }
+            })
+            this.summarystockGoods = []
+            this.summarystockGoods =this.summarystockGoods.concat(saveData)
+          })(index,val)
         })
       },
 //      入库明细与入库汇总切换
@@ -318,6 +333,7 @@
 //        入库汇总
         summaryModal: false,
         showPage: [],
+        a: [],
         summaryPrice: 0,
         selectedSupplier: '',
         note: '',

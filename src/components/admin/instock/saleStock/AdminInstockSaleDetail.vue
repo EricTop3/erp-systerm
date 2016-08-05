@@ -9,7 +9,7 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
-          <li class="active">生产出库</li>
+          <li class="active">销售出库</li>
           <li class="active">明细</li>
         </ol>
 
@@ -17,7 +17,7 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>生产时间段</label>
+              <label>销售时间段</label>
               <date-picker :value.sync="searchData.start_time" :time-text="timetext1"
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
@@ -27,14 +27,13 @@
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
           </form>
         </div>
-
-
         <!--详情页面单条数据-->
         <summary-detail
           :table-header="gridcolumns"
           :table-data="onedata"
           :grid-operate="gridOperate">
         </summary-detail>
+
         <!--详情页面列表数据-->
         <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
 
@@ -100,7 +99,7 @@
       getlistData: function (page) {
         this.thisId = this.$route.params.queryId
         var self = this
-        var url = requestSystemUrl + '/backend-system/stock/produce/consume/log/' + this.thisId
+        var url = requestSystemUrl + '/backend-system/stock/sale/log/' + this.thisId
         var data = {
           start_time: this.searchData.start_time,
           end_time: this.searchData.end_time,
@@ -119,7 +118,7 @@
           start_time: this.searchData.start_time,
           end_time: this.searchData.end_time
         }
-        var url = requestSystemUrl + '/backend-system/stock/produce/consume/log/' + this.thisId + '/detail'
+        var url = requestSystemUrl + '/backend-system/stock/sale/log/' + this.thisId + '/detail'
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body
         })
@@ -147,19 +146,20 @@
         page: [],
         gridOperate: false,
         gridcolumns: {
-          warehouse_name: '门店',
+          store_name: '门店',
           goods_code: '货号',
           goods_name: '品名',
-          amount: '生产出库量',
-          unit_name: '单位',
-          unit_specification: '单位规格'
+          amount: '零售出库量',
+          unit_name: '零售单位',
+          unit_specification: '单位规格',
+          category_name: '商品分类'
         },
         gridOperate2: false,
         gridcolumns2: {
           created_at: '时间',
           goods_name: '品名',
-          amount: '生产出库量',
-          unit_name: '单位',
+          amount: '零售出库量',
+          unit_name: '零售单位',
           creator_name: '操作人',
           document_number: '单号'
         },
