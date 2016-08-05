@@ -13,20 +13,21 @@
 
         <!-- 页头 -->
         <div class="page-header">
-          <form class="form-inline">
+          <form class="form-inline text-center">
             <div class="form-group">
               <label>仓库</label>
-              <select class="form-control">
-                <option>水星店</option>
+              <select class="form-control" v-model="selectedHouse">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group  ml10">
               <label>备注</label>
-              <input type="text" class="form-control" placeholder="" style="width: 450px;">
+              <input type="text" class="form-control" style="width: 450px;">
             </div>
-            <span class="btn btn-primary" data-toggle="modal" data-target="#products-add-templ">选择盘点商品</span>
-            <span class="btn btn-default" data-toggle="modal" data-target="#">盘点所有商品</span>
-            <span class="btn btn-default"  data-toggle="modal" data-target="#">提交盘点</span>
+            <span class="btn btn-primary" @click="addStockGoods">选择盘点商品</span>
+            <span class="btn btn-default" @click="inventoryAll">盘点所有商品</span>
+            <span class="btn btn-default" @click="upLoadEnquiry">提交盘点</span>
           </form>
         </div>
 
@@ -45,233 +46,251 @@
           </tr>
           </thead>
           <tbody>
-          <tr class="text-center">
-            <td class="text-left">1654679184236564</td>
-            <td>伊利牛奶</td>
-            <td>105</td>
-            <td align="center" class="form-inline"><input type="text" class="form-control text-center" style="width:100px;" value="100"></td>
-            <td>-5</td>
-            <td>箱</td>
-            <td>1箱*20盒*250ml</td>
-            <td><span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-del-templ">删除</span></td>
-          </tr>
-          <tr class="text-center">
-            <td class="text-left">1654679184236564</td>
-            <td>伊利牛奶</td>
-            <td>105</td>
-            <td align="center" class="form-inline"><input type="text" class="form-control text-center" style="width:100px;" value="100"></td>
-            <td>-5</td>
-            <td>箱</td>
-            <td>1箱*20盒*250ml</td>
-            <td><span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#inventory-del-templ">删除</span></td>
+          <tr class="text-center" v-for="entry in rederStockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+            <td class="text-left">{{entry.code}}</td>
+            <td>{{entry.name}}</td>
+            <td>
+              <span style="color:red;">后台还没</span>
+            </td>
+            <td align="center">
+              <count :count.sync =entry.current_stock></count>
+            </td>
+            <td>
+              <span style="color:red;">反数据给我</span>
+            </td>
+            <td>{{entry.production_unit_name}}</td>
+            <td>{{entry.specification_unit}}</td>
+            <td>
+              <slot name="operate">
+                <list-delete :delete-data.sync="tableData" ></list-delete>
+              </slot>
+            </td>
           </tr>
           </tbody>
         </table>
+        <!--分页-->
+        <page
+          :total='page.len'
+          :current='page.current_page'
+          :display='page.per_page'
+          :last-page='page.last_page' v-if="page.len > 0">
+        </page>
 
-        <!-- 翻页 -->
-        <nav class="text-right">
-          <ul class="pagination">
-            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-          </ul>
-        </nav>
-
+        <!--本地分页-->
+        <page
+          :total='pageLocal.len'
+          :current='pageLocal.current_page'
+          :display='pageLocal.per_page'
+          :last-page='pageLocal.last_page' v-if="pageLocal.len > 0">
+        </page>
       </div>
     </div>
   </div>
-
-  <!--模态框-审核-->
-  <div class="modal fade" id="inventory-audit-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">审核</h4>
-        </div>
-        <div class="modal-body">
-          <h4>审核弹出</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
-
-  <!--模态框-查看-->
-  <div class="modal fade" id="inventory-view-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">查看</h4>
-        </div>
-        <div class="modal-body">
-          <h4>查看弹出</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
-
-  <!--模态框-删除-->
-  <div class="modal fade" id="inventory-del-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">删除</h4>
-        </div>
-        <div class="modal-body">
-          <h4>删除弹出</h4>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="button" class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
 
   <!--模态框-添加商品-->
-  <div class="modal fade" id="products-add-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">添加商品</h4>
-        </div>
-        <div class="modal-body">
-          <!-- 页头 -->
-          <div class="page-header">
-            <form action="" method="post" class="form-inline">
-              <div class="form-group">
-                <label><input type="checkbox">库存警戒中</label>
-              </div>
-              <div class="form-group ml10">
-                <input type="text" class="form-control" placeholder="请输入商品名或商品编号">
-              </div>
-              <span class="btn btn-primary">搜索</span>
-              <span class="btn btn-warning">撤销搜索</span>
-            </form>
-          </div>
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-sm-2" role="navigation" style="padding:0;">
-                <ul class="nav nav-stacked dialog-sidebar">
-                  <li class="header">商品分类</li>
-                  <li class="active"><a href="#">全部<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">包装材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">咖啡原材料<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">面包<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                  <li><a href="#">饼干<span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                </ul>
-              </div>
-              <div class="col-sm-10" style="padding-right: 0;height:580px;overflow:auto;">
-                <table class="table table-striped table-border table-hover">
-                  <thead>
-                  <tr>
-                    <td><label><input type="checkbox"> 全选</label></td>
-                    <td>货号</td>
-                    <td>品名</td>
-                    <td>日均销量</td>
-                    <td>当前库存</td>
-                    <td>单位</td>
-                    <td>单位规格</td>
-                    <td>商品分类</td>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr><tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr><tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr><tr>
-                    <td><input type="checkbox"></td>
-                    <td>WB2545236584</td>
-                    <td>伊利牛奶</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>箱</td>
-                    <td>1箱*20盒*250ml</td>
-                    <td>咖啡原材料</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary">确定添加</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--模态框HTML-->
+  <stock-goods
+    :get-render-data="rederSetGoods"
+    :stock-add-good-modal.sync="modal.addGoodModal"
+    :stock-add-good-modal-size="modal.addGoodModalSize"
+    :page.sync="showPage"
+    :add-data.sync="stockGoods"
+    :goods-list-title="purchaseTabelHead"
+    :product-url="request.productUrl"
+    :category-url='request.categoryUrl'
+  ></stock-goods>
 
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
 <script>
-  import LeftInstock from '../../common/LeftInstock'
+  import $ from 'jquery'
   import AdminNav from '../../AdminNav'
+  import Grid from '../../../common/Grid'
+  import Page from '../../../common/Page'
+  import ErrorTip from '../../../common/ErrorTip'
+  import ListDelete  from '../../../common/ListDelete'
+  import StockGoods from '../../../common/StockGoodsOperate'
+  import Count from '../../../common/Count'
+  import LeftInstock from '../../common/LeftInstock'
+  import {
+    requestUrl,
+    requestSystemUrl,
+    token,
+    searchRequest,
+    getDataFromApi,
+    postDataToApi,
+    exchangeData,
+    deleteRequest,
+    detailGoodsInfo
+  } from '../../../../publicFunction/index'
   export default{
     components: {
-      LeftInstock: LeftInstock,
-      AdminNav: AdminNav
+      Grid: Grid,
+      Page: Page,
+      AdminNav: AdminNav,
+      Count: Count,
+      StockGoods: StockGoods,
+      ErrorTip: ErrorTip,
+      ListDelete: ListDelete,
+      LeftInstock: LeftInstock
+    },
+    ready: function () {
+      var self = this
+//    仓库请求接口
+      var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+//    获取仓库列表
+      getDataFromApi(url, {}, function (response) {
+        self.warehouseList = response.data.body.list
+      })
+    },
+    events: {
+//           确认增加
+      confirmAdd: function () {
+        var self = this
+        $.each(self.stockGoods, function (index, val) {
+          val.current_stock = ''
+          if (val.choice && !val.again) {
+            val.again = true
+            self.dataArray.push(val)
+          }
+        })
+        self.rederStockGoods = self.dataArray
+        self.old = self.dataArray
+        self.localPage(self.old)
+      },
+//     删除商品
+      delete: function (id) {
+        var self = this
+        $.each(self.rederStockGoods, function (index, val) {
+          if (val.id === id) {
+            self.rederStockGoods.splice(index, 1)
+          }
+        })
+      },
+//      分页
+      pagechange: function (currentpage) {
+        if (this.ispageLocal) {
+          this.inventoryAll(currentpage)
+        } else {
+          console.log('正在启用的是启用本地分页！')
+        }
+      }
+    },
+    methods: {
+//      添加商品
+      addStockGoods: function () {
+        this.modal.addGoodModal=true
+      },
+//      盘点所有商品
+      inventoryAll: function (page) {
+        var self = this
+        var data = {
+          page: page || ''
+        }
+        getDataFromApi(self.request.productUrl, data, function (respon) {
+          self.rederStockGoods = respon.data.body.list
+          self.page.current_page = respon.data.body.pagination.current_page
+          self.page.last_page = respon.data.body.pagination.last_page
+          self.page.per_page = respon.data.body.pagination.per_page
+          self.page.len = respon.data.body.pagination.total
+          self.ispageLocal = true
+        })
+      },
+//      提交盘点
+      upLoadEnquiry: function () {
+        var inventory = []
+        var hasStock = false
+        $.each(this.rederStockGoods, function (index, val) {
+          var obj = {}
+          obj['reference_id'] = val.id
+          obj['current_stock'] = Number(val.current_stock)
+          if (val.current_stock == '') {
+            hasStock = true
+          }
+          inventory.push(obj)
+        })
+
+        if (this.selectedHouse === '') {
+          this.modal.errModal = true
+          this.modal.errInfo = 'high,你还没有填写仓库'
+        } else if (this.rederStockGoods.length < 1) {
+          this.modal.errModal = true
+          this.modal.errInfo = 'high,你忘记添加商品了'
+        } else if (hasStock) {
+          this.modal.errModal = true
+          this.modal.errInfo = 'high,你忘记实际库存量了'
+        } else {
+//       提交盘点请求
+          var url = requestSystemUrl + '/backend-system/stock/inventory'
+          var data = {
+            items: inventory,
+            warehouse_id: this.selectedHouse
+          }
+          postDataToApi(url, data, function (respon) {
+            window.location.href = '/?#!/admin/instock/inventory'
+          })
+        }
+      },
+//     本地分页
+      localPage: function (data) {
+        this.pageLocal.len = data.length
+        console.log(this.pageLocal.len)
+        if (this.pageLocal.len % this.pageLocal.per_page === 0) {
+          this.pageLocal.last_page = this.pageLocal.len / this.pageLocal.per_page
+        } else {
+          this.pageLocal.last_page = (Math.floor(this.pageLocal.len / this.pageLocal.per_page)) + 1
+        }
+//        this.page.current_page * this.page.per_page, this.page.len - this.page.current_page * this.page.per_page
+        var a = data.splice(1,2)
+        console.log('我是' + a)
+        console.log('yes' + data)
+      }
+
+    },
+    data: function () {
+      return {
+//        是否启用本地分页
+        ispageLocal: false,
+        pageLocal: {
+          current_page: 1, // 当前页
+          last_page: 1, // 最后一页
+          per_page: 2, // 一页有多少个
+          len: 0 // 总共的个数
+        },
+        page: {
+          current_page: '',
+          last_page: '',
+          per_page: '',
+          len: ''
+        },
+        showPage: [],
+        selectedHouse: '',
+        old: [],
+        rederStockGoods: [],
+        dataArray: [],
+        warehouseList: [],
+        modal: {
+          addGoodModal: false,
+          addGoodModalSize: 'modal-lg',
+          errModal: false,
+          errInfo: ''
+        },
+        purchaseTabelHead: {
+          code: "货号",
+          name: "品名",
+          a: "日均销量",
+          c: "当前库存",
+          production_unit_name: "单位",
+          specification_unit: "单位规格",
+          category: "商品分类"
+        },
+        request: {
+          productUrl: requestSystemUrl +  '/backend-system/product/product',
+          categoryUrl: requestSystemUrl + '/backend-system/product/category',
+        }
+      }
     }
   }
 </script>

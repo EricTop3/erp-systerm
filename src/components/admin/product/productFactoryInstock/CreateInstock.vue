@@ -56,7 +56,7 @@
               <table class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr class="text-center">
-                  <th v-for="value in  gridColumns">
+                  <th v-for="value in gridColumns">
                     {{value}}
                   </th>
                   <th>操作</th>

@@ -8,7 +8,7 @@
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存</li>
           <li class="active">库存配送出库</li>
-          <li class="active">查看库存</li>
+          <li class="active">查看</li>
         </ol>
         <!--详情页面-->
         <summary-detail
@@ -119,6 +119,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
+        var self = this
         this.$http({
           url:requestSystemUrl + '/backend-system/purchase/purchase',
           data: {
@@ -127,10 +128,9 @@
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
-          exchangeData(this.list)
+          self.page = response.data.body.pagination
+          self.list = response.data.body.list
+          exchangeData(self.list)
         }, function (err) {
           console.log(err)
         })
@@ -158,7 +158,7 @@
       saveGoods: function (event) {
         var self = this
         this.editFlag = false
-        var id = this.$route.params.queryId
+        var id = self.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}

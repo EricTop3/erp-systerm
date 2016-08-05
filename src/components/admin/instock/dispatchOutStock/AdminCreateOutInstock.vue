@@ -84,9 +84,6 @@
                 </tr>
                 </tbody>
               </table>
-              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-              <!--:last-page="page.last_page"></page>-->
             </div>
 
             <!-- 出库汇总 -->
@@ -113,9 +110,6 @@
                 </tr>
                 </tbody>
               </table>
-              <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-              <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-              <!--:last-page="page.last_page"></page>-->
             </div>
           </div>
         </div>
@@ -201,7 +195,7 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.distribution_amount ===''
+          val.distribution_amount = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -217,7 +211,7 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.distribution_amount ===''
+          val.distribution_amount = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)

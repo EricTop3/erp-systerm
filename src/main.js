@@ -72,6 +72,7 @@ import AdminInstock from 'components/admin/instock/queryInstock/InStock'
 import AdminInstockDetail from 'components/admin/instock/queryInstock/InStockDetail'
 import AdminInstockInventory from 'components/admin/instock/inventoryStock/AdminInstockInventory'
 import AdminInstockCreateInventory from 'components/admin/instock/inventoryStock/AdminInstockCreateInventory'
+import AdminInstockInventoryDetail from 'components/admin/instock/inventoryStock/AdminInstockInventoryDetail'
 import AdminInstockDifference from 'components/admin/instock/differenceInstock/AdminInstockDifference'
 import AdminInstockDifferenceDetail from 'components/admin/instock/differenceInstock/AdminInstockDifferenceDetail'
 import AdminInstockDispatching from 'components/admin/instock/dispatchOutStock/AdminInstockDispatching'
@@ -319,6 +320,9 @@ router.map({
   },
   '/admin/instock/createInventory': {
     component: AdminInstockCreateInventory
+  },
+  '/admin/instock/inventoryDetail/:queryId': {
+    component: AdminInstockInventoryDetail
   },
   '/admin/instock/difference': {
     component: AdminInstockDifference
