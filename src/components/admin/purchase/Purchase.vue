@@ -46,7 +46,7 @@
               </select>
             </div>
             <span type="submit" class="btn btn-primary " @click="searchMethod">搜索</span>
-            <span class="btn btn-warning  " @click="cancelSearch">撤销搜索</span>
+            <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
           </form>
         </div>
         <!-- 表格 -->
