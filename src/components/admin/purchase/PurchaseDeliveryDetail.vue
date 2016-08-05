@@ -41,7 +41,7 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.main_reference_value}}</td>
+                <td>{{entry.demand_amount}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.received_amount></count></td>
                 <td v-if="!editFlag">{{entry.received_amount}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.additional_amount></count></td>
@@ -74,12 +74,11 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.main_reference_value}}</td>
+                <td>{{entry.demand_amount}}</td>
                 <td>{{entry.received_amount}}</td>
                 <td>{{entry.additional_amount}}</td>
                 <td>{{entry.refund_amount}}</td>
                 <td>{{entry.unit_price}}元</td>
-                <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
             </table>
@@ -218,13 +217,13 @@
           provider_name: '供应商',
           operated_at: '收货日期',
           demand_amount: '采购数量',
-          received_amount: '实际入库量',
+          actual_amount: '实际入库量',
           refund_amount: '退货数量'
         },
         gridColumns2: {
           code: "货号",
           name: "品名",
-          main_reference_value: "采购数量",
+          demand_amount: "采购数量",
           received_amount:"收货数量",
           additional_amount:"赠送数量",
           refund_amount:"退货数量",

@@ -42,7 +42,7 @@
   import $ from 'jquery'
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
-  import { requestUrl,token,getDataFromApi} from '../../publicFunction/index'
+  import { requestUrl,token,getDataFromApi,exchangeData} from '../../publicFunction/index'
   import _ from 'underscore'
   export default{
     name: 'introduce-data',
@@ -55,6 +55,7 @@
       var url = this.url
       getDataFromApi(url,{},function(response){
         self.firstData = response.data.body.list
+        exchangeData( self.firstData)
       })
     },
     props: {
@@ -94,7 +95,6 @@
       change: function (currentId, currentObjCheck) {
         var self = this
         var fetchedData = []
-        console.log(currentObjCheck)
 //    根据当前id获取产品
         getDataFromApi(this.url + "/" + currentId,{},function(response){
           fetchedData = response.data.body.list

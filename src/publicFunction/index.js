@@ -113,6 +113,9 @@ export function exchangeData(origindata) {
             break
         }
       }
+      if(val.total_sum!=undefined){
+        val.total_sum = (Number(val.total_sum) * 0.01).toFixed(2)
+      }
     })
   }
 }

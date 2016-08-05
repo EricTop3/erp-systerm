@@ -44,7 +44,13 @@
           if(!(self.list instanceof Array)){
             if (self.list.id === currentId) {
               self.list.checked = '已审核'
-              self.list.auditor = window.localStorage.getItem("storeName")
+              if(window.location.href.indexOf('/admin')>0){
+                self.list.auditor = window.localStorage.getItem("systermName")
+                self.list.auditor_name=  window.localStorage.getItem("systermName")
+              }else{
+                self.list.auditor  = window.localStorage.getItem("storeName")
+                self.list.auditor_name= window.localStorage.getItem("storeName")
+              }
             }
           }else{
             $.each(self.list, function (index, val) {

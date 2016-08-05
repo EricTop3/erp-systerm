@@ -135,7 +135,7 @@
       return {
         warehouseList: [],
         gridColumns: {
-          "document_number": "货号",
+          "document_number": "收货单号",
           "checked": "审核状态",
           "creator_name": "制单人",
           "auditor_name": "审核人",

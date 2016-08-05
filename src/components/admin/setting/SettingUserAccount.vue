@@ -34,7 +34,7 @@
           <button type="submit" class="btn btn-primary" @click="search">搜索</button>
           <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
           <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#person-add-templ" @click="addClerk">新增店员</span>
-          <span class="btn btn-info spanblocks fr mr10"  data-toggle="modal" data-target="#account-add-templ" @click="modal.addStoreModal=true">新增门店</span>
+          <span class="btn btn-info spanblocks fr mr10"  data-toggle="modal" data-target="#account-add-templ" @click="addStore">新增门店</span>
         </form>
       </div>
         <!--账户列表-->
@@ -58,7 +58,7 @@
     <div slot="body">
       <div class="form-group">
         <label for="" class="col-sm-4 control-label">门店编号</label>
-        <div class="col-sm-8"><input type="text" class="form-control" v-model="store.storeCode"></div>
+        <div class="col-sm-8"><input type="text" class="form-control" v-model="store.storeCode" @blur="checkStoreCode"></div>
       </div>
       <div class="form-group">
         <label for="" class="col-sm-4 control-label">门店名：</label>
@@ -157,8 +157,10 @@
     </div>
       </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="editClerkConfirm">确定</button>
+      <button type="button" class="btn" @click="editClerkConfirm" :class=" btn-waring ? canEdit : btn-primary">确定</button>
     </div>
+    <!--错误信息-->
+    <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
   </modal>
 </template>
 <script>
@@ -168,6 +170,7 @@
   import LeftSetting from '../common/LeftSetting'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
+  import ErrorTip from '../../common/ErrorTip'
   import {requestSystemUrl,getDataFromApi,postDataToApi, exchangeData,searchRequest,putDataToApi} from '../../../publicFunction/index'
   var accountId = 0
   export default{
@@ -176,7 +179,8 @@
       LeftSetting: LeftSetting,
       Modal: Modal,
       Grid: Grid,
-      Page: Page
+      Page: Page,
+      ErrorTip: ErrorTip
     },
     events: {
       pagechange: function (currentpgae) {
@@ -211,6 +215,14 @@
           exchangeData(self.accountList)
         })
       },
+//   新增门店
+      addStore: function () {
+        this.modal.addStoreModal = true
+        this.store = {
+          storeCode: '',
+          storeName: ''
+        }
+      },
 //     新增门店
       addStoreConfirm: function () {
         var self = this
@@ -224,9 +236,18 @@
           self.modal.addStoreModal  = false
         })
       },
+//     检查门店编号
+      checkStoreCode: function () {
+      },
 //      新增店员
       addClerk: function () {
-        this.modal.addClerkModal=true
+        this.modal.addClerkModal = true
+        this.clerk = {
+          account: '',
+            name: '',
+            password: '',
+            status: 0,
+        }
       },
 //      确定新增店员
       addClerkConfirm: function () {
@@ -246,8 +267,8 @@
       },
 //      编辑店员
       editClerk: function (event) {
-        this.editClerkInfo = {
-          storeName:'',
+        this.editClerkInfo= {
+            storeName:'',
             account: '',
             name: '',
             password: '',
@@ -316,6 +337,7 @@
         clerkName: '',
         storeList: [],
         page: [],
+        canEdit: false,
         currentStatus: 0,
         accountHeader:{
           store_code: '门店编号',
@@ -348,7 +370,9 @@
           addClerkModal: false,
           addClerkModalSize: 'modal-sm',
           editModal: false,
-          editModalSize:  'modal-sm'
+          editModalSize:  'modal-sm',
+          errModal: false,
+          errInfo: ""
         }
       }
     }

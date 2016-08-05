@@ -106,7 +106,7 @@
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -134,7 +134,7 @@
           this.page = response.data.body.pagination
           this.list = response.data.body.list
           var self = this
-          changeStatus(this.list)
+          exchangeData(this.list)
         }, function (err) {
           console.log(err)
         })
@@ -146,20 +146,33 @@
        console.log('deleted')
        })
        },
-//     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest(requestSystemUrl+ '/backend-system/purchase/purchase/'+ id +'/checked',function(response){
-          self.editFlag =  false
-        })
+      //      编辑
+      editGoods: function (event) {
+        this.editFlag = true
       },
-//     完成請求
-      finishFromApi: function (id) {
+//      保存
+      saveGoods: function (event) {
         var self = this
-        finishRequest(requestSystemUrl +'/backend-system/purchase/purchase/'+ id +'/finished',function(response){
-          console.log('finished')
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['amount'] = val.main_reference_value
+          obj['price'] = val.purchase_unit_price
+          obj['reference_type'] = val.item_type
+          item.push(obj)
         })
-      },
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/backend-system/purchase/purchase/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+        })
+      }
     },
     ready: function () {
       this.listData()
@@ -182,7 +195,7 @@
 //        获取采购列表详情
         getDataFromApi(purchaseUrl,{},function(response){
           self.list = response.data.body
-          changeStatus(self.list)
+          exchangeData(self.list)
         })
       },
 //     切换
