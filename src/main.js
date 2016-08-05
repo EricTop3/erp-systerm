@@ -68,6 +68,7 @@ import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
 import AdminMember from 'components/admin/member/MemberIndex'
 import Retail from 'components/admin/retail/Retail'
 import RetailManage from 'components/admin/retail/RetailManage'
+import RetailManageDetail from 'components/admin/retail/RetailManageDetail'
 import AdminInstock from 'components/admin/instock/queryInstock/InStock'
 import AdminInstockDetail from 'components/admin/instock/queryInstock/InStockDetail'
 import AdminInstockInventory from 'components/admin/instock/inventoryStock/AdminInstockInventory'
@@ -78,6 +79,7 @@ import AdminInstockDispatching from 'components/admin/instock/dispatchOutStock/A
 import AdminCreateOutInstock from 'components/admin/instock/dispatchOutStock/AdminCreateOutInstock'
 import DispatchStockDetail from 'components/admin/instock/dispatchOutStock/DispatchStockDetail'
 import AdminInstockSale from 'components/admin/instock/saleStock/AdminInstockSale'
+import AdminInstockSaleDetail from 'components/admin/instock/saleStock/AdminInstockSaleDetail'
 import AdminInstockApply from 'components/admin/instock/requireGoodSummary/AdminInstockApply'
 import AdminInstockapplyDetail from 'components/admin/instock/requireGoodSummary/AdminInstockapplyDetail'
 import AdminInstockProduction from 'components/admin/instock/productInstock/AdminInstockProduction'
@@ -338,6 +340,9 @@ router.map({
   '/admin/instock/sale': {
     component: AdminInstockSale
   },
+  '/admin/instock/sale/Detail/:queryId': {
+    component: AdminInstockSaleDetail
+  },
   '/admin/instock/production': {
     component: AdminInstockProduction
   },
@@ -355,6 +360,9 @@ router.map({
   },
   '/admin/retail/manage': {
     component: RetailManage
+  },
+  '/admin/retail/manage/Detail/:queryId': {
+    component: RetailManageDetail
   },
   '/admin/micromall': {
     component: AdminMicroShopOrder

@@ -195,11 +195,11 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.getlistdata(currentpage)
+        this.getlistData(currentpage)
       }
     },
     ready: function () {
-      this.getlistdata(1)
+      this.getlistData(1)
     },
     computed: {
 //      导出
@@ -222,7 +222,7 @@
         })
       },
 //      获取列表
-      getlistdata: function (page) {
+      getlistData: function (page) {
         this.$http({
           url: requestUrl + '/backend-system/store/account',
           method: 'get',
@@ -244,7 +244,7 @@
       cancelSearch: function () {
         this.searchData.name = ''
         this.searchData.account = ''
-        this.getlistdata(1)
+        this.getlistData(1)
       },
 //      新增账号
       createSubmit: function () {
@@ -263,7 +263,7 @@
           }
         ).then(function (response) {
           this.createModal = false
-          this.getlistdata(1)
+          this.getlistData(1)
         }, function (err) {
           if (err.data.code == '100000') {
             this.createModal = false
@@ -298,7 +298,7 @@
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
           this.editModal = false
-          this.getlistdata(1)
+          this.getlistData(1)
         }, function (err) {
           error(err)
         })

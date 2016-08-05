@@ -1,0 +1,161 @@
+<template>
+  <admin-nav></admin-nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-2" role="navigation">
+        <Left-retail></Left-retail>
+      </div>
+      <div class="col-lg-10">
+        <!-- 路径导航 -->
+        <ol class="breadcrumb">
+          <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：零售首页</li>
+          <li class="active">结算管理</li>
+          <li class="active">结算明细</li>
+        </ol>
+
+        <!--表格1详情页面单条数据-->
+        <table class="table table-striped table-border table-hover">
+          <thead>
+          <tr class="text-center">
+            <td class="text-left">结算编号</td>
+            <td>结算门店</td>
+            <td>状态</td>
+            <td>结算日期</td>
+            <td>合计收入额</td>
+            <td>现金支付额</td>
+            <td>会员卡支付额</td>
+            <td>刷卡支付额</td>
+            <td>微信支付额</td>
+            <td>支付宝支付额</td>
+            <td>操作</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center">
+            <td class="text-left">{{onedata.document_number}}</td>
+            <td>{{onedata.store_name}}</td>
+            <td>{{onedata.status}}</td>
+            <td>{{onedata.settled_at}}</td>
+            <td>{{onedata.total_sum}}</td>
+            <td>{{onedata.cash_total_sum}}</td>
+            <td>{{onedata.vip_total_sum}}</td>
+            <td>{{onedata.pos_total_sum}}</td>
+            <td>{{onedata.weixin_total_sum}}</td>
+            <td>{{onedata.alipay_total_sum}}</td>
+            <td><span class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <!-- end表格1 -->
+
+        <!-- 表格2 详情页面列表数据-->
+        <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
+
+        <!--分页-->
+        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+              :last-page="page.last_page" v-if="listdata.length > 0">
+        </page>
+
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  import $ from 'jquery'
+  import AdminNav from '../AdminNav'
+  import LeftRetail from '../common/LeftRetail'
+  import Grid from '../../common/Grid'
+  import Modal from '../../common/Modal'
+  import Page from '../../common/Page'
+  import ListFinish from '../../common/ListFinish'
+  import ErrorTip from '../../common/ErrorTip'
+  import {
+    requestUrl,
+    requestSystemUrl,
+    token,
+    searchRequest,
+    exchangeData,
+    postDataToApi,
+    getDataFromApi,
+    deleteRequest,
+    putDataToApi,
+    finishRequest
+  } from '../../../publicFunction/index'
+  export default{
+    components: {
+      AdminNav: AdminNav,
+      LeftRetail: LeftRetail,
+      Grid: Grid,
+      Modal: Modal,
+      Page: Page,
+      ErrorTip: ErrorTip,
+      ListFinish: ListFinish
+    },
+    events: {
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.getlistData(currentpage)
+      }
+    },
+    ready: function () {
+//      获取详情列表数据
+      this.getlistData(1)
+//      获取详情单条数据
+      this.getOneData()
+    },
+    methods: {
+//      (获取详情)列表数据渲染
+      getlistData: function (page) {
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId
+        getDataFromApi(url, {}, function (response) {
+          self.listdata = response.data.body.list
+          self.page = response.data.body.pagination
+        })
+      },
+//      获取单条数据
+      getOneData: function () {
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/detail'
+        getDataFromApi(url, {}, function (response) {
+          self.onedata = response.data.body
+        })
+      },
+//      结账
+      settlement: function () {
+//        this.thisId = this.$route.params.queryId
+//        var self = this
+//        var url = requestSystemUrl + '' + this.thisId
+//        putDataToApi(url,{}, function (response) {
+//          self.getlistData(1)
+//        })
+      }
+    },
+    data: function () {
+      return {
+        timewidth: "timewidth",
+        timetext1: "开始时间",
+        timetext2: "结束时间",
+        thisId: '',
+        listdata: [],
+        onedata: [],
+        page: [],
+        thisId: '',
+        gridOperate2: false,
+        gridcolumns2: {
+          document_number: '小票编号',
+          create_at: '下单时间',
+          total_sum: '合计金额',
+          amount: '合计数量',
+          pay_method: '支付方式',
+          vip_card_number: '会员卡号',
+          coupon_strategy_name: '优惠方式',
+          document_number: '营业员'
+        }
+      }
+    }
+  }
+</script>
