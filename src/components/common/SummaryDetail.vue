@@ -65,7 +65,6 @@
     data: function () {
       return {
         isExist: true,
-        editFlag: false,
         operate: true
       }
     }
