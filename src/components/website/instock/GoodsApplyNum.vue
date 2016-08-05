@@ -100,7 +100,7 @@
       deleteFromApi: function (id) {
         var self = this
         deleteRequest(requestUrl +'/front-system/stock/enquiry/'+ id,function(response){
-          console.log('deleted')
+          self.listData(1)
         })
       },
 //      查看详情

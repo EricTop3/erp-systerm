@@ -82,15 +82,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.required_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purchase_amount}}{{entry.purchase_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purcahse_price}}{{entry.purcahse_price}}元/{{entry.unit_name}}</td>
-                  <td>{{entry.refence_number}}</td>
+                  <td>{{entry.purchase_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.purchase_price}}元/{{entry.unit_name}}</td>
+                  <td>{{(entry.purchase_amount*entry.purchase_price*100)|priceChange}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -223,7 +223,6 @@
 //     提交采购
       uploadPurchase: function () {
         var self = this
-        console.log( self.reference_type )
         var items = []
         var uploadFlag = true
 //      采购请求地址
@@ -269,6 +268,10 @@
       inclucdePurchaseData: function () {
          this.modal.parentIntroModal = true
       },
+//      汇总方法
+      summary: function () {
+        this.summarystockGoods = this.renderstockGoods
+      },
 //      入库明细与入库汇总切换
       changeActive: function (event) {
         var cur = $(event.currentTarget)
@@ -282,7 +285,7 @@
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
         }
       }
     },
@@ -317,6 +320,7 @@
           purchase_price:"采购单价",
           source_number: "小计"
         },
+        summarystockGoods: [],
         renderstockGoods: [],
         currentUrl: '',
         purchaseTabelHead: {
