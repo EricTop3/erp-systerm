@@ -39,7 +39,7 @@
     <!-- 翻页 -->
     <!--分页-->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page" v-if="listdata.length > 0">
+          :last-page="page.last_page" v-if="todayDetailGridData.length > 0">
     </page>
   </div>
 
@@ -66,7 +66,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import SiteNav from '../SiteNav'
-  import {requestUrl, token, error, requestSystemUrl, getDataFromApi, postSiteDataToApi} from '../../../publicFunction/index'
+  import {requestUrl, token, error, requestSystemUrl, getDataFromApi, postSiteDataToApi, putDataToApi} from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -85,6 +85,17 @@
       }
     },
     methods: {
+//    确定结算
+      yesSettlement: function () {
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/front-system/settlement/' + this.thisId + '/settle'
+        putDataToApi(url, {}, function (response) {
+          self.settlementModal = false
+          self.todayGridData.status = true
+          self.todayListData(1)
+        })
+      },
 //    获取单条数据
       getOneData: function () {
         this.thisId = this.$route.params.queryId
@@ -110,7 +121,7 @@
       },
 //    对获取到的数据进行处理
       modifyGetedData: function (data) {
-        $.each(data, function (index, val) {
+        $.each(data, function (index, value) {
           if (value.pay_method == 'cash') {
             this.pay_method = '现金支付'
           }

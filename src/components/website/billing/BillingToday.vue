@@ -18,14 +18,32 @@
       <tbody>
       <tr class="text-center">
         <td>{{onedata.settled_at}}</td>
-        <td><template v-if="onedata.total_sum != ''">￥</template>{{onedata.total_sum}}</td>
-        <td><template v-if="onedata.vip_total_sum != ''">￥</template>{{onedata.vip_total_sum}}</td>
-        <td><template v-if="onedata.cash_total_sum !=''">￥</template>{{onedata.cash_total_sum}}</td>
-        <td><template v-if="onedata.pos_total_sum !=''">￥</template>{{onedata.pos_total_sum}}</td>
-        <td><template v-if="onedata.weixin_total_sum !=''">￥</template>{{onedata.weixin_total_sum}}</td>
-        <td><template v-if="onedata.alipay_total_sum !=''">￥</template>{{onedata.alipay_total_sum}}</td>
         <td>
-          <span id="todaySet" class="btn btn-primary btn-sm">今日结算</span>
+          <template v-if="onedata.total_sum != ''">￥</template>
+          {{onedata.total_sum}}
+        </td>
+        <td>
+          <template v-if="onedata.vip_total_sum != ''">￥</template>
+          {{onedata.vip_total_sum}}
+        </td>
+        <td>
+          <template v-if="onedata.cash_total_sum !=''">￥</template>
+          {{onedata.cash_total_sum}}
+        </td>
+        <td>
+          <template v-if="onedata.pos_total_sum !=''">￥</template>
+          {{onedata.pos_total_sum}}
+        </td>
+        <td>
+          <template v-if="onedata.weixin_total_sum !=''">￥</template>
+          {{onedata.weixin_total_sum}}
+        </td>
+        <td>
+          <template v-if="onedata.alipay_total_sum !=''">￥</template>
+          {{onedata.alipay_total_sum}}
+        </td>
+        <td>
+          <span v-if="onedata.status==0" id="todaySet" class="btn btn-primary btn-sm" @click="settlementModal=true">今日结算</span>
           <span class="btn btn-info btn-sm" v-link="{path: '/site/billing/list' }">结算历史</span>
         </td>
       </tr>
@@ -37,9 +55,10 @@
 
     <!--分页-->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page" v-if="listdata.length > 0">
+          :last-page="page.last_page" v-if="todayDetailGridData.length > 0">
     </page>
   </div>
+
   <!--模态框-今日结算-->
   <modal :show.sync="settlementModal" :modal-size="settlementModalSize">
     <div slot="header">
@@ -51,11 +70,13 @@
       <h4 class="text-center">确定结算？</h4>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-info" @click="yesSettlement($event)" data-dismiss="modal">确定</button>
-      <button type="button" class="btn btn-primary" data-dismiss="modal" @click="settlementModal=false">取消</button>
+      <button type="button" class="btn btn-info" @click="yesSettlement()">确定</button>
+      <button type="button" class="btn btn-primary" @click="settlementModal=false">取消</button>
     </div>
   </modal>
   <!--模态框HTML-->
+
+
 </template>
 <script>
   import $ from 'jquery'
@@ -63,7 +84,15 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import SiteNav from '../SiteNav'
-  import {requestUrl, token, error, requestSystemUrl, getDataFromApi, postSiteDataToApi} from '../../../publicFunction/index'
+  import {
+    requestUrl,
+    token,
+    error,
+    requestSystemUrl,
+    getDataFromApi,
+    postSiteDataToApi,
+    putDataToApi
+  } from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -90,7 +119,8 @@
           self.onedata = response.data.body.today
           self.todayDetailGridData = response.data.body.list
           self.modifyGetedData(self.todayDetailGridData)
-          self.page = response.data.body.pagination
+          self.page = response.data.body.page.pagination
+          self.thisId = response.data.body.today.id
         })
       },
 //    对获取到的数据进行处理
@@ -111,20 +141,19 @@
         })
       },
 //    确定结算
-      yesSettlement: function (event) {
-        this.$http.post(requestUrl + '/front-system/settlement/create', {
-          headers: {'X-Overpowered-Token': token}
-        }, function (response) {
-          $('#todaySet').hide()
-          this.settlementModal = false
-          this.todayGridData.status = true
-        }, function (error) {
-          error(error)
+      yesSettlement: function () {
+        var self = this
+        var url = requestSystemUrl + '/front-system/settlement/' + this.thisId + '/settle'
+        putDataToApi(url, {}, function (response) {
+          self.settlementModal = false
+          self.todayGridData.status = true
+          self.todayListData()
         })
       }
     },
     data: function () {
       return {
+        thisId: '',
         onedata: [],
         page: [],
         settlementModal: false,

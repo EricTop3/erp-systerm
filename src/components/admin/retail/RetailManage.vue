@@ -124,11 +124,12 @@
       },
 //      结账
       settlement: function (evnet) {
-//        var self = this
-//        var url = requestSystemUrl + ''
-//        putDataToApi(url,{}, function (response) {
-//          self.getlistData(1)
-//        })
+        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
+        var self = this
+        var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
+        putDataToApi(url,{}, function (response) {
+          self.getlistData(1)
+        })
       },
 //      查看
       view: function (event) {
