@@ -10,75 +10,44 @@
           <li class="active">销售出库</li>
           <li class="active">列表</li>
         </ol>
-
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
               <label>门店</label>
-              <select class="form-control">
-                <option>全部</option>
+              <select class="form-control" v-model="searchData.store_id">
+                <option value="">请选择</option>
+                <option v-for="item in storeData" track-by="$index" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>商品分类</label>
-              <select class="form-control">
-                <option>请选择</option>
+              <select class="form-control" v-model="searchData.category_id">
+                <option value="">请选择</option>
+                <option v-for="item in categoryData" track-by="$index" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
-              <input type="text" class="form-control" placeholder="请输入商品名或货号">
+              <input type="text" class="form-control" placeholder="请输入商品名或货号" v-model="searchData.name">
             </div>
             <div class="form-group ml10">
               <label>销售时间段</label>
-              <input type="text"class="form-control date_picker" placeholder="开始时间"> -
-              <input type="text"class="form-control date_picker" placeholder="结束时间">
+              <date-picker :value.sync="searchData.start_time" :time-text="timetext1"
+                           :timewidth="timewidth"></date-picker>
+              <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
+                           :timewidth="timewidth"></date-picker>
             </div>
-            <button type="submit" class="btn btn-primary">搜索</button>
-            <span class="btn btn-warning">撤销搜索</span>
+            <span class="btn btn-primary" @click=getlistData()>搜索</span>
+            <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
           </form>
         </div>
 
-        <!-- 表格 -->
-        <table class="table table-striped table-border table-hover">
-          <thead>
-          <tr class="text-center">
-            <td class="text-left">门店</td>
-            <td>货号</td>
-            <td>品名</td>
-            <td>零售出库量</td>
-            <td>零售单位</td>
-            <td>单位规格</td>
-            <td>商品分类</td>
-            <td>操作</td>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="text-center">
-            <td class="text-left">两江店</td>
-            <td>164643138431315</td>
-            <td>伊利牛奶</td>
-            <td>2000</td>
-            <td>箱</td>
-            <td>1箱*20盒*250ml</td>
-            <td>咖啡原材料</td>
-            <td><a href="#"><span class="btn btn-primary">销售明细</span></a></td>
-          </tr>
-          </tbody>
-        </table>
-
-        <!-- 翻页 -->
-        <nav class="text-right">
-          <ul class="pagination">
-            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-          </ul>
-        </nav>
+        <!--表格-->
+        <summary
+          :table-header="gridColumns"
+          :table-data="listdata"
+          :page="page">
+        </summary>
       </div>
     </div>
   </div>
@@ -86,12 +55,122 @@
 <style>
 </style>
 <script>
+  import $ from 'jquery'
   import AdminNav from '../../AdminNav'
   import LeftInstock from '../../common/LeftInstock'
+  import Grid from '../../../common/Grid'
+  import Modal from '../../../common/Modal'
+  import Page from '../../../common/Page'
+  import ListFinish from '../../../common/ListFinish'
+  import DatePicker from '../../../common/DatePicker'
+  import ErrorTip from '../../../common/ErrorTip'
+  import Summary from '../../../common/Summary'
+  import {
+    requestUrl,
+    requestSystemUrl,
+    token,
+    searchRequest,
+    exchangeData,
+    postDataToApi,
+    getDataFromApi,
+    deleteRequest,
+    finishRequest,
+    error
+  } from '../../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
-      LeftInstock: LeftInstock
+      LeftInstock: LeftInstock,
+      Grid: Grid,
+      Modal: Modal,
+      Page: Page,
+      ErrorTip: ErrorTip,
+      ListFinish: ListFinish,
+      DatePicker: DatePicker,
+      Summary: Summary
+    },
+    events: {
+//    绑定翻页事件
+      pagechange: function (currentpage) {
+        this.getlistData(currentpage)
+      },
+      //    查看详情
+      gotoDetail: function (id) {
+        window.location.href = '/#!/admin/instock/production/Detail/' + id
+      }
+    },
+    ready: function () {
+      this.getlistData(1)
+      this.categoryListData()
+      this.storeListData()
+    },
+    methods: {
+//      列表数据渲染 /backend-system/stock/sale/log
+      getlistData: function (page) {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/stock/sale/log'
+        var data = {
+          name: this.searchData.name || '',
+          category_id: this.searchData.category_id || '',
+          store_id: this.searchData.store_id || '',
+          start_time: this.searchData.start_time || '',
+          end_time: this.searchData.end_time || '',
+          page: page || ''
+        }
+        getDataFromApi(url, data, function (response) {
+          self.listdata = response.data.body.list
+          self.page = response.data.body.pagination
+        })
+      },
+//      分类列表数据渲染
+      categoryListData: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/product/category'
+        getDataFromApi(url, {}, function (response) {
+          self.categoryData = response.data.body.list
+        })
+      },
+//      门店列表数据渲染
+      storeListData: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/store/store'
+        getDataFromApi(url, {}, function (response) {
+          self.storeData = response.data.body.list
+        })
+      },
+//      取消搜索
+      cancelSearch: function () {
+        this.searchData = {}
+        this.getlistData(1)
+      }
+    },
+    data: function () {
+      return {
+        categoryData: [],
+        storeData: [],
+        timewidth: "timewidth",
+        timetext1: "开始时间",
+        timetext2: "结束时间",
+        gridColumns: {
+          store_name: "门店",
+          goods_code: "货号",
+          goods_name: "品名",
+          amount: "零售出库量",
+          unit_name: "零售单位",
+          unit_specification: "单位规格",
+          category_name: "商品分类"
+        },
+        gridOperate: true,
+        listdata: [],
+        page: [],
+        searchData: {
+          name: '',
+          category_id: '',
+          store_id: '',
+          start_time: '',
+          end_time: ''
+        }
+      }
     }
   }
 </script>

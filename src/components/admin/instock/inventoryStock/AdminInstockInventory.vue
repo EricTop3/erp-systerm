@@ -34,6 +34,7 @@
               </select>
             </div>
             <div class="form-group ml10">
+              <!-- TODO 制单人搜索，搜索出现无数据 -->
               <label>制单人</label>
               <select class="form-control" v-model="search.selectedMaker">
                 <option value="">请选择</option>
@@ -62,10 +63,7 @@
           :table-data="list"
           :table-header="gridColumns"
           :page="page"
-          :check-url="checkUrl"
-          :finish-url="checkUrl"
-          :finish-flag="true"
-        >
+          :check-url="checkUrl">
         </summary>
 
       </div>
@@ -84,15 +82,10 @@
   import DatePicker from  '../../../common/DatePicker'
   import LeftInstock from '../../common/LeftInstock'
   import {
-    requestUrl,
     requestSystemUrl,
     getDataFromApi,
     token,
-    exchangeData,
-    searchRequest,
     deleteRequest,
-    checkRequest,
-    finishRequest,
     changeStatus
   } from '../../../../publicFunction/index'
   export default{
@@ -148,7 +141,7 @@
       },
 //    查看详情
       gotoDetail: function (id) {
-//        window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
+        window.location.href = '?#!/admin/instock/inventoryDetail/'+ id
       }
     },
     methods: {

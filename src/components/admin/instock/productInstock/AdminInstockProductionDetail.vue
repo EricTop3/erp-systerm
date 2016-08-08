@@ -9,7 +9,7 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
-          <li class="active">要货汇总</li>
+          <li class="active">生产出库</li>
           <li class="active">明细</li>
         </ol>
 
@@ -86,7 +86,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.getlistdata(currentpage)
+        this.getlistData(currentpage)
       }
     },
     ready: function () {

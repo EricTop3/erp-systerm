@@ -61,7 +61,7 @@
 //    渲染结算历史列表
       setMentListData: function (page) {
         this.$http({
-          url: requestUrl + '/front-system/settlement/history',
+          url: requestUrl + '/front-system/settlement',
           method: 'get',
           headers: {
             'X-Overpowered-Token': token
@@ -124,14 +124,14 @@
         page: [],
         historyGridData: [],
         historyGridColumns: {
-          settlement_code: "结算编号",
-          settlement_date: "结算时间",
+          document_number: "结算编号",
+          settled_at: "结算时间",
           total_sum: "合计收入额",
-          cash_money: "现金支付额",
-          vip_money: "会员卡支付额",
-          post_money: "刷卡支付额",
-          weixin_money: "微信支付额",
-          alipay_money: "支付宝支付额"
+          cash_total_sum: "现金支付额",
+          vip_total_sum: "会员卡支付额",
+          pos_total_sum: "刷卡支付额",
+          weixin_total_sum: "微信支付额",
+          alipay_total_sum: "支付宝支付额"
         }
       }
     }

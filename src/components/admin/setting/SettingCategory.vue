@@ -157,15 +157,15 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.getlistdata(currentpage)
+        this.getlistData(currentpage)
       }
     },
     ready: function () {
-      this.getlistdata(1)
+      this.getlistData(1)
     },
     methods: {
 //      获取列表
-      getlistdata: function (page) {
+      getlistData: function (page) {
         this.$http({
           url: requestUrl + '/backend-system/product/category',
           data: {page: page},
@@ -204,7 +204,7 @@
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
           this.editModal = false
-          this.getlistdata(1)
+          this.getlistData(1)
         }, function (err) {
           error(err)
         })
@@ -222,7 +222,7 @@
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
           this.deleteModal = false
-          this.getlistdata(1)
+          this.getlistData(1)
         }, function (err) {
           console.log(err)
           if (err.data.code == '100001') {
@@ -246,7 +246,7 @@
             }
           ).then(function (response) {
             this.createModal = false
-            this.getlistdata(1)
+            this.getlistData(1)
           }, function (err) {
             error(err)
           })

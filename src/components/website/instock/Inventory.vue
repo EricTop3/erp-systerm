@@ -35,11 +35,12 @@
         </div>
         <button class="btn btn-info" @click="search">搜索</button>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
-        <a v-link="{ path: '/instock/InventoryCreate'}"><span class="btn btn-primary" style="display: inline-block; float:right;">新建盘点单</span></a>
+        <a v-link="{ path: '/site/instock/InventoryCreate'}"><span class="btn btn-primary" style="display: inline-block; float:right;">新建盘点单</span></a>
       </form>
     </div>
     <!--列表详情-->
     <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page"></summary>
+
   </div>
 </template>
 <script>

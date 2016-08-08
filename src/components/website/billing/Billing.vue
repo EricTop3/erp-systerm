@@ -151,14 +151,14 @@
         },
         todayDetailGridData: [],
         todayDetailGridColumns: {
-          number: "小票编号",
-          created_at: "下单时间",
-          total_sum: "合计金额",
-          total_amount: "合计数量",
-          pay_method: "支付方式",
-          member_card_number: "会员卡号",
-          coupon_name: "优惠方式",
-          creator_name: "营业员"
+          document_number: '小票编号',
+          create_at: '下单时间',
+          total_sum: '合计金额',
+          amount: '合计数量',
+          pay_method: '支付方式',
+          vip_card_number: '会员卡号',
+          coupon_strategy_name: '优惠方式',
+          document_number: '营业员'
         }
       }
     }
@@ -170,4 +170,3 @@
     color: #42b983;
   }
 </style>
-
