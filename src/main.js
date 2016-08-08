@@ -9,8 +9,9 @@ import {priceChange} from './filters/'
 import App from './App'
 import Order from 'components/website/order/Order'
 import SiteLogin from './components/website/login/SiteLogin'
-import Billing from 'components/website/billing/Billing'
-import BillingHistory from 'components/website/billing/BillingHistory'
+import BillingToday from 'components/website/billing/BillingToday'
+import BillingList from 'components/website/billing/BillingList'
+import BillingHistoryDetail from 'components/website/billing/BillingHistoryDetail'
 import MemberIndex from 'components/website/member/MemberIndex'
 import MemberDetail from 'components/website/member/MemberDetail'
 import InStock from 'components/website/instock/InStock'
@@ -136,10 +137,14 @@ router.map({
     component: MemberDetail
   },
   '/site/billing': {
-    component: Billing
+    component: BillingToday
   },
-  '/site/billing/BillingHistory': {
-    component: BillingHistory
+  '/site/billing/list': {
+    component: BillingList
+  },
+  '/site/billing/detail/:queryId': {
+    name: 'billing',
+    component: BillingHistoryDetail
   },
   '/site/instock/GoodsApply': {
     component: GoodsApply
