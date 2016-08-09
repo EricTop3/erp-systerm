@@ -8,32 +8,15 @@
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：零售首页</li>
           <li class="active">结算统计</li>
+          <li class="active">结算明细</li>
         </ol>
-        <!-- 页头 -->
-        <div class="page-header">
-          <form class="form-inline">
-            <div class="form-group">
-              <label>门店</label>
-              <select class="form-control"  v-model="searchData.store_id">
-                <option value="">请选择</option>
-                <option v-for="item in storeData" track-by="$index" :value="item.id">{{item.display_name}}</option>
-              </select>
-            </div>
-            <div class="form-group ml10">
-              <label>时间段</label>
-              <date-picker :value.sync="searchData.start_time" :time-text="timetext1" :timewidth="timewidth"></date-picker> -
-              <date-picker :value.sync="searchData.end_time" :time-text="timetext2" :timewidth="timewidth"></date-picker>
-            </div>
-            <span class="btn btn-primary" @click=search()>搜索</span>
-            <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
-          </form>
-        </div>
 
         <!-- 表格1 -->
         <table class="table table-striped table-border table-hover">
           <thead>
           <tr class="text-center">
             <td>门店</td>
+            <td>结算日期</td>
             <td>合计收入额</td>
             <td>现金支付额</td>
             <td>会员卡支付额</td>
@@ -44,7 +27,8 @@
           </thead>
           <tbody>
           <tr class="text-center">
-            <td>全部</td>
+            <td>{{onedata.store_name}}</td>
+            <td>{{onedata.terminated_at}}</td>
             <td>{{onedata.total_sum}}</td>
             <td>{{onedata.cash_total_sum}}</td>
             <td>{{onedata.vip_total_sum}}</td>
@@ -55,42 +39,13 @@
           </tbody>
         </table>
         <!-- end表格1 -->
-
-        <!-- 表格 -->
-        <table class="table table-striped table-border table-hover">
-          <thead>
-          <tr class="text-center">
-            <td>门店</td>
-            <td>开始日期</td>
-            <td>结束日期</td>
-            <td>合计收入额</td>
-            <td>现金支付额</td>
-            <td>会员卡支付额</td>
-            <td>刷卡支付额</td>
-            <td>微信支付额</td>
-            <td>支付宝支付额</td>
-            <td>操作</td>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="text-center" v-for="item in listdata" :id="[item.store_id ? item.store_id : '']">
-            <td>{{item.store_name}}</td>
-            <td>{{item.created_at}}</td>
-            <td>{{item.terminated_at}}</td>
-            <td>{{item.settled_at}}</td>
-            <td>{{item.total_sum}}</td>
-            <td>{{item.cash_total_sum}}</td>
-            <td>{{item.vip_total_sum}}</td>
-            <td>{{item.pos_total_sum}}</td>
-            <td>{{item.weixin_total_sum}}</td>
-            <td>{{item.alipay_total_sum}}</td>
-            <td>
-              <span class="btn btn-info btn-sm" @click="view($event)">查看</span>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-
+        <!-- 表格2 -->
+        <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
+          <div slot="operateList">
+            <span class="btn btn-warning btn-sm" @click="orderDetail($event)">订单明细</span>
+          </div>
+        </grid>
+        <!-- end表格2 -->
         <!--分页-->
         <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
               :last-page="page.last_page" v-if="listdata.length > 0">
@@ -98,6 +53,48 @@
       </div>
     </div>
   </div>
+  <!-- begin查看零售单 -->
+  <modal :show.sync="viewModal" :modal-size.sync='viewModalSize'>
+    <div slot="header">
+      <button type="button" class="close" aria-label="Close"><span
+        aria-hidden="true" @click="viewModal=false">&times;</span></button>
+      <h4 class="modal-title">订单明细</h4>
+    </div>
+    <div slot="body">
+      <table class="table table-striped table-border table-hover">
+        <thead>
+        <tr>
+          <td>品名</td>
+          <td>原单价</td>
+          <td>零售单价</td>
+          <td>销售数量</td>
+          <td>退货数量</td>
+          <td>小计</td>
+          <td>议价备注</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in listDetail">
+          <td>{{item.name}}</td>
+          <td>{{item.old_price | priceChange}}</td>
+          <td>{{item.new_price | priceChange}}</td>
+          <td>{{item.amount }}</td>
+          <td>{{item.return_number }}</td>
+          <td>{{item.total_sum | priceChange}}</td>
+          <td>{{ item.note==="" ? '无备注' : item.note }}</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="panel">
+        <div class="panel-body">
+          <p>优惠备注：{{coupon_note=== null ? '无备注' : coupon_note }}</p>
+
+          <p>订单备注：{{order_note=== null ?  '无备注' : order_note }}</p>
+        </div>
+      </div>
+    </div>
+    <div slot="footer"></div>
+  </modal>
 </template>
 <style>
 </style>
@@ -146,17 +143,14 @@
     ready: function () {
       this.getlistData(1)
       this.getOneData()
-      this.storeListData()
     },
     methods: {
 //      列表数据渲染 /backend-system/settlement/statistics/statistics
       getlistData: function (page) {
+        this.thisId = this.$route.params.queryId
         var self = this
-        var url = requestSystemUrl + '/backend-system/settlement/statistics/statistics'
+        var url = requestSystemUrl + '/backend-system/settlement/statistics/' + this.thisId + '/statistics'
         var data = {
-          store_id: this.searchData.store_id || '',
-          start_time: this.searchData.start_time || '',
-          end_time: this.searchData.end_time || '',
           page: page || ''
         }
         getDataFromApi(url, data, function (response) {
@@ -167,12 +161,10 @@
       },
 //      单条数据渲染
       getOneData: function () {
+        this.thisId = this.$route.params.queryId
         var self = this
-        var url = requestSystemUrl + '/backend-system/settlement/statistics/total'
-        var data = {
-          start_time: this.searchData.start_time || '',
-          end_time: this.searchData.end_time || ''
-        }
+        var url = requestSystemUrl + '/backend-system/settlement/statistics/' + this.thisId + '/information'
+        var data = {}
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body
           self.modifyGetedOneData(self.onedata)
@@ -183,21 +175,6 @@
         $.each(data, function (index, value) {
           if(value.total_sum != '' && value.total_sum > 0 ){
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
-          }
-          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
-            value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
-          }
-          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
-            value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
-          }
-          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
-            value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
-          }
-          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
-            value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
-          }
-          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
-            value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
         })
       },
@@ -222,49 +199,40 @@
           value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
         }
       },
-//      查看
-      view: function (event) {
-        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = '/#!/admin/retail/statistics/view/' + this.thisId
-      },
-//      门店列表数据渲染
-      storeListData: function () {
+//      获取订单详情
+      getOrderlistData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store'
-        getDataFromApi(url, {}, function (response) {
-          self.storeData = response.data.body.list
+        var url = requestSystemUrl + '/backend-system/settlement/statistics/' + self.thisCode + '/order'
+        var data = {}
+        getDataFromApi(url, data, function (response) {
+          self.listDetail = response.data.body.list
+//          self.modifyGetedData(self.listdata)
         })
       },
-//    搜索
-      search: function () {
-        this.getOneData()
-        this.getlistData(1)
-      },
-//      取消搜索
-      cancelSearch: function () {
-        this.searchData = {}
-        this.getOneData()
-        this.getlistData(1)
+//      查看订单明细
+      orderDetail: function (event) {
+        this.thisCode =$.trim($(event.currentTarget).parents('tr').children('td').eq(0).text())
+        this.viewModal = true
+        this.getOrderlistData()
       }
     },
     data: function () {
       return {
-        storeData: [],
-        timewidth: "timewidth",
-        timetext1: "开始时间",
-        timetext2: "结束时间",
-        gridColumns: {
-          store_name: "门店",
-          created_at: "开始日期",
-          terminated_at: "结束日期",
-          total_sum: "合计收入额",
-          cash_total_sum: "现金支付额",
-          vip_total_sum: "会员卡支付额",
-          pos_total_sum: "刷卡支付额",
-          weixin_total_sum: "微信支付额",
-          alipay_total_sum: "支付宝支付额"
-        },
+        listDetail: [],
+        viewModal: false,
+        viewModalSize: 'modal-lg',
         thisId: '',
+        thisCode: '',
+        gridColumns: {
+          document_number: "小票编号",
+          created_at: "下单时间",
+          total_sum: "合计金额",
+          amount: "合计数量",
+          pay_method: "支付方式",
+          vip_card_number: "会员卡号",
+          coupon_strategy_name: "优惠方式",
+          seller_name: "营业员"
+        },
         gridOperate: true,
         listdata: [],
         onedata: [],

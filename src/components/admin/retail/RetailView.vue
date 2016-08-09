@@ -1,38 +1,22 @@
 <template>
   <admin-nav></admin-nav>
-
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2"  role="navigation">
-        <Left-retail></Left-retail>
-      </div>
+      <left-retail></left-retail>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：零售首页</li>
-          <li class="active">结算管理</li>
+          <li class="active">结算统计</li>
+          <li class="active">查看详情</li>
         </ol>
+
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>门店</label>
-              <select class="form-control"  v-model="searchData.store_id">
-                <option value="">请选择</option>
-                <option v-for="item in storeData" track-by="$index" :value="item.id">{{item.display_name}}</option>
-              </select>
-            </div>
-            <div class="form-group ml10">
-              <label>状态</label>
-              <select class="form-control" v-model="searchData.status">
-                <option value="">请选择</option>
-                <option value="1">未结账</option>
-                <option value="2">已结账</option>
-              </select>
-            </div>
-            <div class="form-group ml10">
               <label>时间段</label>
-              <date-picker :value.sync="searchData.start_time" :time-text="timetext1" :timewidth="timewidth"></date-picker>
+              <date-picker :value.sync="searchData.start_time" :time-text="timetext1" :timewidth="timewidth"></date-picker> -
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2" :timewidth="timewidth"></date-picker>
             </div>
             <span class="btn btn-primary" @click=getlistData(1)>搜索</span>
@@ -41,42 +25,11 @@
         </div>
 
         <!-- 表格 -->
-        <table class="table table-striped table-border table-hover">
-          <thead>
-          <tr class="text-center">
-            <td>结算编号</td>
-            <td>结算门店</td>
-            <td>状态</td>
-            <td>结算日期</td>
-            <td>合计收入额</td>
-            <td>现金支付额</td>
-            <td>会员卡支付额</td>
-            <td>刷卡支付额</td>
-            <td>微信支付额</td>
-            <td>支付宝支付额</td>
-            <td>操作</td>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="text-center" v-for="item in listdata" track-by="$index" :id="[item.id ? item.id : '']" >
-            <td>{{item.document_number}}</td>
-            <td>{{item.store_name}}</td>
-            <td>{{item.status}}</td>
-            <td>{{item.settled_at}}</td>
-            <td>{{item.total_sum}}</td>
-            <td>{{item.cash_total_sum}}</td>
-            <td>{{item.vip_total_sum}}</td>
-            <td>{{item.pos_total_sum}}</td>
-            <td>{{item.weixin_total_sum}}</td>
-            <td>{{item.alipay_total_sum}}</td>
-            <td>
-              <span v-if="item.status=='已结算'" class="btn btn-primary btn-sm" @click="settlement($event)">结账</span>
-              <span class="btn btn-default btn-sm" @click="view($event)">查看</span>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-
+        <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
+          <div slot="operateList">
+            <span class="btn btn-primary btn-sm" @click="viewDetail($event)">结算明细</span>
+          </div>
+        </grid>
         <!--分页-->
         <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
               :last-page="page.last_page" v-if="listdata.length > 0">
@@ -134,13 +87,13 @@
       this.storeListData()
     },
     methods: {
-//      列表数据渲染 /backend-system/stock/sale/log
+//      列表数据渲染 /backend-system/settlement/statistics/statistics
       getlistData: function (page) {
+        this.thisId = this.$route.params.queryId
         var self = this
-        var url = requestSystemUrl + '/backend-system/settlement'
+        var url = requestSystemUrl + '/backend-system/settlement/statistics/statistics/' + this.thisId
         var data = {
           store_id: this.searchData.store_id || '',
-          status: this.searchData.status || '',
           start_time: this.searchData.start_time || '',
           end_time: this.searchData.end_time || '',
           page: page || ''
@@ -172,27 +125,12 @@
           if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
-          if(value.status == '1' ){
-            value.status = "已结算"
-          }
-          if(value.status == '2'){
-            value.status = "已结账"
-          }
-        })
-      },
-//      结账
-      settlement: function (evnet) {
-        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        var self = this
-        var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
-        putDataToApi(url,{}, function (response) {
-          self.getlistData(1)
         })
       },
 //      查看
-      view: function (event) {
+      viewDetail: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = '/#!/admin/retail/manage/Detail/' + this.thisId
+        window.location.href = '/#!/admin/retail/statistics/view/Detail/' + this.thisId
       },
 //      门店列表数据渲染
       storeListData: function () {
@@ -215,9 +153,7 @@
         timetext1: "开始时间",
         timetext2: "结束时间",
         gridColumns: {
-          document_number: "结算编号",
-          store_name: "结算门店",
-          status: "状态",
+          store_name: "门店",
           settled_at: "结算日期",
           total_sum: "合计收入额",
           cash_total_sum: "现金支付额",
@@ -231,8 +167,6 @@
         listdata: [],
         page: [],
         searchData: {
-          store_id: '',
-          status: '',
           start_time: '',
           end_time: ''
         }

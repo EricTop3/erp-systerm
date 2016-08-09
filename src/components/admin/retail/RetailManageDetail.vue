@@ -43,15 +43,13 @@
             <td>{{onedata.pos_total_sum}}</td>
             <td>{{onedata.weixin_total_sum}}</td>
             <td>{{onedata.alipay_total_sum}}</td>
-            <td><span class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
+            <td><span v-if="onedata.status=='已结算'" class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
           </tr>
           </tbody>
         </table>
         <!-- end表格1 -->
-
         <!-- 表格2 详情页面列表数据-->
         <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
-
         <!--分页-->
         <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
               :last-page="page.last_page" v-if="listdata.length > 0">
@@ -113,6 +111,7 @@
         getDataFromApi(url, {}, function (response) {
           self.listdata = response.data.body.list
           self.page = response.data.body.pagination
+          self.modifyGetedData(self.listdata)
         })
       },
 //      获取单条数据
@@ -122,16 +121,52 @@
         var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/detail'
         getDataFromApi(url, {}, function (response) {
           self.onedata = response.data.body
+          self.modifyGetedOneData(self.onedata)
         })
+      },
+//    列表数据处理
+      modifyGetedData: function (data) {
+        $.each(data, function (index, value) {
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+        })
+      },
+//    对获取到的单条数据进行处理
+      modifyGetedOneData: function (value) {
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
+            value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
+          }
+          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
+            value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
+          }
+          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
+            value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
+          }
+          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
+            value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
+          }
+          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
+            value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+          }
+          if(value.status == '1' ){
+            value.status = "已结算"
+          }
+          if(value.status == '2'){
+            value.status = "已结账"
+          }
       },
 //      结账
       settlement: function () {
-//        this.thisId = this.$route.params.queryId
-//        var self = this
-//        var url = requestSystemUrl + '' + this.thisId
-//        putDataToApi(url,{}, function (response) {
-//          self.getlistData(1)
-//        })
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
+        putDataToApi(url,{}, function (response) {
+          self.getOneData()
+        })
       }
     },
     data: function () {
@@ -147,13 +182,13 @@
         gridOperate2: false,
         gridcolumns2: {
           document_number: '小票编号',
-          create_at: '下单时间',
+          created_at: '下单时间',
           total_sum: '合计金额',
           amount: '合计数量',
           pay_method: '支付方式',
           vip_card_number: '会员卡号',
           coupon_strategy_name: '优惠方式',
-          document_number: '营业员'
+          seller_name: '营业员'
         }
       }
     }
