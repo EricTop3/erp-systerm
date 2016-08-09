@@ -68,6 +68,8 @@ import ProductionDelegationInstockDetail from 'components/admin/product/producti
 import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
 import AdminMember from 'components/admin/member/MemberIndex'
 import Retail from 'components/admin/retail/Retail'
+import RetailView from 'components/admin/retail/RetailView'
+import RetailViewDetail from 'components/admin/retail/RetailViewDetail'
 import RetailManage from 'components/admin/retail/RetailManage'
 import RetailManageDetail from 'components/admin/retail/RetailManageDetail'
 import AdminInstock from 'components/admin/instock/queryInstock/InStock'
@@ -366,6 +368,12 @@ router.map({
   },
   '/admin/retail': {
     component: Retail
+  },
+  '/admin/retail/statistics/view/:queryId': {
+    component: RetailView
+  },
+  '/admin/retail/statistics/view/Detail/:queryId': {
+    component: RetailViewDetail
   },
   '/admin/retail/manage': {
     component: RetailManage

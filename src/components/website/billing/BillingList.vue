@@ -6,7 +6,6 @@
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：结算首页</li>
       <li class="active">结算历史</li>
     </ol>
-
     <!-- 页头 -->
     <div class="page-header">
       <form class="form-inline text-center">
@@ -24,13 +23,13 @@
     <!-- 表格 -->
     <grid :data="historyGridData" :columns="historyGridColumns" :operate="gridOperate">
       <div slot="operateList">
-        <span class="btn btn-warning btn-sm" @click="checkDetail($event)">结算明细</span>
+        <span class="btn btn-info btn-sm" @click="checkDetail($event)">结算明细</span>
       </div>
     </grid>
-
     <!-- 翻页 -->
     <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
           :last-page='page.last_page'></page>
+
   </div>
 </template>
 <script>
@@ -71,11 +70,35 @@
         getDataFromApi(url, data, function (response) {
           self.page = response.data.body.pagination
           self.historyGridData = response.data.body.list
+          self.modifyGetedOneData(self.historyGridData)
         })
       },
       checkDetail: function (event) {
         var id = $(event.currentTarget).parents('tr').attr('id')
         window.location.href = '/#!/site/billing/detail/' + id
+      },
+//      对获取的单条数据处理2
+      modifyGetedOneData: function (data){
+        $.each(data, function (index, value) {
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
+            value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
+          }
+          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
+            value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
+          }
+          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
+            value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
+          }
+          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
+            value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
+          }
+          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
+            value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+          }
+        })
       },
 //    取消搜索
       cancel: function () {
