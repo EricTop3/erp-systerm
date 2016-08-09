@@ -374,6 +374,7 @@
           }
           switch ($(this).html()) {
             case '零售订单':
+
               orderTypeData = 1
               break
             case '挂账订单':

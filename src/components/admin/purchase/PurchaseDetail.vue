@@ -23,6 +23,7 @@
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
             <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+            <li class="summaryCount" v-if="summaryModal"><a href="javascript:void(0)">合计：￥{{summaryPrice|priceChange}}</a></li>
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
@@ -64,22 +65,20 @@
               <table class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr class="text-center">
-                  <th v-for="value in  gridColumns2">
+                  <th v-for="value in  gridColumns1">
                     {{value}}
                   </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.purchase_unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.current_stock}}{{entry.purchase_unit_name}}</td>
                   <td>{{entry.demand_amount}}{{entry.purchase_unit_name}}</td>
-                  <td>{{entry.main_reference_value}}{{entry.purchase_unit_name}}</td>
-                  <td>{{entry.purchase_unit_price }}元/{{entry.purchase_unit_name}}</td>
-                  <td>{{entry.reference_number}}</td>
+                  <td>{{entry.item_amount}}{{entry.purchase_unit_name}}</td>
+                  <td>￥{{entry.item_price|priceChange}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -146,7 +145,7 @@
        console.log('deleted')
        })
        },
-      //      编辑
+//      编辑
       editGoods: function (event) {
         this.editFlag = true
       },
@@ -206,14 +205,44 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
+            this.summaryDetail()
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
         }
-      }
+      },
+//      汇总方法
+      summary: function () {
+        var self = this
+        self.summaryPrice = 0
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_amount = val.main_reference_value
+          val.item_price = Number(val.item_amount  *  val.purchase_unit_price * 100)
+          self.summaryPrice += val.item_price
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//     汇总方法
+      summaryMethod: function (ObjPropInArr, array){
+            var hash={};
+            var result=[];
+            for(var i=0;i<array.length;i++){
+              if(hash[array[i][ObjPropInArr]]){
+                hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
+                hash[array[i][ObjPropInArr]].item_price+=array[i].item_price;
+              }else{
+                hash[array[i][ObjPropInArr]]=array[i];
+              }
+            }
+            for(var j in hash){
+              result.push(hash[j])
+            }
+            return result
+     }
     },
     data: function () {
       return {
@@ -223,6 +252,8 @@
         editFlag: false,
         detailModal: true,
         summaryModal: false,
+        summaryPrice: 0,
+        summarystockGoods: [],
         detailList: [],
         tabFlag: true,
         gridOperate: true,
@@ -235,6 +266,15 @@
           created_at: '制单日期',
           terminated_at: '到货日期',
           total_sum: '采购金额'
+        },
+        gridColumns1: {
+          code: "货号",
+          name: "品名",
+          unit_specification:"单位规格",
+          current_stock: "库存数量",
+          demand_amount:"要货数量",
+          main_reference_value:"采购数量",
+          purchase_unit_price:"小计",
         },
         gridColumns2: {
           code: "货号",

@@ -91,22 +91,21 @@
               <table class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr class="text-center">
-                  <th v-for="value in  gridColumns">
+                  <th v-for="value in  gridColumns1">
                     {{value}}
                   </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.stock}}</td>
                   <td>{{entry.stock}}</td>
                   <td>{{entry.main_reference_value}}</td>
-                  <td>{{entry.distribution_amount}}</td>
+                  <td>{{entry.item_amount}}</td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.reference_number}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -302,13 +301,39 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
         }
+      },
+      //          汇总方法
+      summary: function () {
+        var self = this
+        self.summaryPrice = 0
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self. renderstockGoods)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_amount = val.distribution_amount
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//     汇总方法
+      summaryMethod: function (ObjPropInArr, array){
+        var hash={};
+        var result=[];
+        for(var i=0;i<array.length;i++){
+          if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
+          }else{
+            hash[array[i][ObjPropInArr]]=array[i];
+          }
+        }
+        for(var j in hash){
+          result.push(hash[j])
+        }
+        return result
       }
     },
     data: function () {
@@ -335,6 +360,16 @@
           purchase_price:"采购单位",
           unit_specification: "单位规格",
           a: "来源要货单号"
+        },
+        gridColumns1: {
+          code: "货号",
+          name: "品名",
+          specification_unit:"出货仓库库存",
+          aruc: "调入仓库库存",
+          order_quantity:"要货数量",
+          purchase_quantity:"配送数量",
+          purchase_price:"采购单位",
+          unit_specification: "单位规格"
         },
         renderstockGoods: [],
         currentUrl: '',
