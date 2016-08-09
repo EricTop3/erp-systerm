@@ -120,8 +120,8 @@
       },
 //      全选上面表格加载下面数据
       changeAll: function (checkAll) {
-        self.secondData = []
         var self = this
+        self.secondData = []
         if (checkAll) {
           $.each(this.firstData, function (index, val) {
             var currentId = val.id

@@ -43,7 +43,7 @@
                 <td>{{entry.goods_code}}</td>
                 <td>{{entry.goods_name}}</td>
                 <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.target_stock_amount}}</td>
+                <td>{{entry.origin_stock_amount}}</td>
                 <td>{{entry.purchase_amount}}</td>
                 <td v-if="!editFlag">{{entry.number}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.number :flag.sync="editFlag"></count></td>
@@ -61,22 +61,21 @@
             <table class="table table-striped table-bordered table-hover">
               <thead>
               <tr class="text-center">
-                <th v-for="value in  gridColumns2">
+                <th v-for="value in  gridColumns3">
                   {{value}}
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.goods_code}}</td>
                 <td>{{entry.goods_name}}</td>
                 <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.target_stock_amount}}</td>
+                <td>{{entry.origin_stock_amount}}</td>
                 <td>{{entry.purchase_amount}}</td>
-                <td>{{entry.number}}</td>
+                <td>{{entry.item_amount}}</td>
                 <td>{{entry.unit_name}}</td>
-                <td>{{entry.unit_specification }}</td>
-                <td>{{entry.reference_number}}</td>
+                <td>{{entry.unit_specification}}</td>
               </tr>
               </tbody>
             </table>
@@ -206,13 +205,39 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
         }
+      },
+      //          汇总方法
+      summary: function () {
+        var self = this
+        self.summaryPrice = 0
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_amount = val.number
+        })
+        this.summarystockGoods = this.summaryMethod ("goods_code", this.summarystockGoods)
+      },
+//     汇总方法
+      summaryMethod: function (ObjPropInArr, array){
+        var hash={};
+        var result=[];
+        for(var i=0;i<array.length;i++){
+          if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
+          }else{
+            hash[array[i][ObjPropInArr]]=array[i];
+          }
+        }
+        for(var j in hash){
+          result.push(hash[j])
+        }
+        return result
       }
     },
     data: function () {
@@ -220,6 +245,7 @@
         page: [],
         list: {},
         detailList: [],
+        summarystockGoods: [],
         editFlag: false,
         detailModal: true,
         summaryModal: false,
@@ -248,6 +274,16 @@
           unit_name: "采购单位",
           unit_specification: '单位规格',
           reference_number: '来源要货单号',
+        },
+        gridColumns3: {
+          code: "货号",
+          name: "品名",
+          specification_unit:"出货仓库库存",
+          aruc: "调入仓库库存",
+          order_quantity:"要货数量",
+          purchase_quantity:"配送数量",
+          purchase_price:"采购单位",
+          unit_specification: "单位规格"
         }
       }
     }

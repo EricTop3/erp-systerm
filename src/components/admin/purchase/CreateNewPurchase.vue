@@ -89,8 +89,8 @@
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.required_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.purchase_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.item_price}}</td>
+                  <td>{{entry.item_amount}}{{entry.unit_name}}</td>
+                  <td>￥{{entry.item_price | priceChange}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -276,38 +276,33 @@
       },
 //      汇总方法
       summary: function () {
-        console.log('q')
         var self = this
-        var saveData = []
-        var count = 0
-        var len = this.summarystockGoods.length
         self.summaryPrice = 0
         this.summarystockGoods = []
         this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
-        $.each(this.summarystockGoods,function (index,val) {
-          if(val.purchase_amount === undefined){
-            val.purchase_amount = 0
-          }
-          if(val.purchase_price ===undefined){
-            val.purchase_price = 0
-          }
-          (function () {
-            saveData = self.summarystockGoods.slice(index+1)
-            val.item_price=Number(val.purchase_amount * val.purchase_price).toFixed(2)
-            self.summaryPrice += (val.purchase_amount * val.purchase_price*100)
-            $.each(saveData,function (index1,val1){
-              if(val1.item_code){
-                if(val1.item_code === val.item_code){
-                  val.purchase_amount =  Number(val.purchase_amount) + Number(val1.purchase_amount)
-                  val.item_price =  ((val.item_price*100 + val1.item_price*100)*0.01)
-                  saveData.splice(index1, 1)
-                }
-              }
-            })
-            this.summarystockGoods = []
-            this.summarystockGoods =this.summarystockGoods.concat(saveData)
-          })(index,val)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_amount = val.purchase_amount
+          val.item_price = Number(val.item_amount  * val.purchase_price * 100)
+          self.summaryPrice += val.item_price
         })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//       汇总方法
+      summaryMethod: function  (ObjPropInArr, array){
+        var hash={};
+        var result=[];
+        for(var i=0;i<array.length;i++){
+          if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_amount=Number(array[i].purchase_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
+            hash[array[i][ObjPropInArr]].item_price+=array[i].item_price;
+          }else{
+            hash[array[i][ObjPropInArr]]=array[i];
+          }
+        }
+        for(var j in hash){
+          result.push(hash[j])
+        }
+        return result
       },
 //      入库明细与入库汇总切换
       changeActive: function (event) {
@@ -317,7 +312,6 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false

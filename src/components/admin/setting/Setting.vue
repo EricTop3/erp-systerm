@@ -63,8 +63,8 @@
         <!-- 表格 -->
         <grid :data="productList" :columns="gridColumns" :operate="productOperate">
           <div slot="operateList">
-            <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#set-price-templ">价格波动</span>
-            <span class="btn btn-default btn-sm" data-toggle="modal" @click="edit($event)">编辑</span>
+            <span class="btn btn-primary btn-sm" @click="fluctuations($event)">价格波动</span>
+            <span class="btn btn-default btn-sm" @click="edit($event)">编辑</span>
             <list-delete :delete-data.sync="productList"></list-delete>
           </div>
         </grid>
@@ -79,73 +79,10 @@
     </div>
   </div>
 
-  <!--模态框-历史价格波动-->
-  <div class="modal fade" id="set-price-templ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form action="" method="post" class="form-horizontal">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">历史价格波动</h4>
-          </div>
-          <div class="modal-body">
-            <!-- 表格 -->
-            <table class="table table-striped table-bordered table-hover">
-              <thead>
-              <tr class="text-center">
-                <td class="text-left">修改日期</td>
-                <td>历史零售单价</td>
-                <td>历史采购单价</td>
-                <td>编辑人</td>
-              </tr>
-              </thead>
-              <tbody>
-              <tr class="text-center">
-                <td class="text-left">2015-05-12 18:00:00</td>
-                <td>￥20.00</td>
-                <td>￥20.00</td>
-                <td>admin</td>
-              </tr>
-              <tr class="text-center">
-                <td class="text-left">2015-05-12 18:00:00</td>
-                <td>￥20.00</td>
-                <td>￥20.00</td>
-                <td>admin</td>
-              </tr>
-              <tr class="text-center">
-                <td class="text-left">2015-05-12 18:00:00</td>
-                <td>￥20.00</td>
-                <td>￥20.00</td>
-                <td>admin</td>
-              </tr>
-              <tr class="text-center">
-                <td class="text-left">2015-05-12 18:00:00</td>
-                <td>￥20.00</td>
-                <td>￥20.00</td>
-                <td>admin</td>
-              </tr>
-              <tr class="text-center">
-                <td class="text-left">2015-05-12 18:00:00</td>
-                <td>￥20.00</td>
-                <td>￥20.00</td>
-                <td>admin</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <!--模态框HTML-->
-   <modal :show.sync="priceModal" :modal-size="priceModalSize">
+   <modal :show.sync="modal.priceModal" :modal-size="modal.priceModalSize">
       <div slot="header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+        <button type="button" class="close" @click="modal.priceModal = false"><span
           aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">历史价格波动</h4>
       </div>
@@ -153,7 +90,7 @@
         <grid :data="priceList" :columns="priceHeader"></grid>
       </div>
       <div slot="footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" @click="modal.priceModal = false">关闭</button>
       </div>
    </modal>
 </template>
@@ -293,6 +230,15 @@
           })
           self.page =  response.data.body.pagination
         })
+      },
+//      价格波动
+      fluctuations: function (event) {
+        var self = this
+        var currtId = $(event.currentTarget).parents('tr').attr('id')
+        self.modal.priceModal = true
+        getDataFromApi(requestSystemUrl + '/backend-system/product/' + currtId + '/price-wave',{},function (response) {
+          self.priceList = response.data.body.list
+        })
       }
     },
 //    路由
@@ -317,10 +263,17 @@
           name: ''
         },
         productList: [],
-        priceHeader:{},
+        priceList: [],
+        /*TODO 价格波动，未有数据*/
+        priceHeader:{
+          a: '修改日期',
+          b: '历史零售单价',
+          c: '历史采购单价',
+          d: '编辑人'
+        },
         modal: {
           priceModal: false,
-          priceModalSize: 'modal-sm'
+          priceModalSize: 'modal-lg'
         },
         gridColumns: {
           id: '编号',

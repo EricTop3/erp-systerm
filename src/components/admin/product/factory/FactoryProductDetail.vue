@@ -42,10 +42,10 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.origin_stock_amount}}/{{entry.unit_name}}</td>
+                <td>{{entry.origin_stock_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.demand_amount}}{{entry.unit_name}}</td>
                 <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count>{{entry.unit_name}}</td>
-                <td v-if='!editFlag'>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
+                <td v-if='!editFlag'>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
@@ -64,13 +64,13 @@
               </tr>
               </thead>
               <tbody>
-              <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
                 <td>{{entry.origin_stock_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.demand_amount}}{{entry.unit_name}}</td>
-                <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
@@ -196,19 +196,48 @@
         case 1:
           this.detailModal = true
           this.summaryModal = false
-          this.$dispatch('detail')
           break
         case 2:
           this.detailModal = false
           this.summaryModal = true
-          this.$dispatch('summary')
+          this.summary()
       }
-    }
+    },
+      //          汇总方法
+      summary: function () {
+        var self = this
+        self.summaryPrice = 0
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_amount = val.main_reference_value
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//     汇总方法
+      summaryMethod: function (ObjPropInArr, array){
+        var hash={};
+        var result=[];
+        for(var i=0;i<array.length;i++){
+          if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
+            hash[array[i][ObjPropInArr]].demand_amount=Number(array[i]. demand_amount) + Number( hash[array[i][ObjPropInArr]].demand_amount)
+            hash[array[i][ObjPropInArr]].origin_stock_amount=Number(array[i].origin_stock_amount) + Number( hash[array[i][ObjPropInArr]].origin_stock_amount)
+          }else{
+            hash[array[i][ObjPropInArr]]=array[i];
+          }
+        }
+        for(var j in hash){
+          result.push(hash[j])
+        }
+        return result
+      }
     },
     data: function () {
       return {
         page: [],
         list: {},
+        summarystockGoods: [],
         checkUrl:requestSystemUrl+ '/backend-system/produce/factory/',
         detailList: [],
         editFlag: false,
