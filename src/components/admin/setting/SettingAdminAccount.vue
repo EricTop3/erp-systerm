@@ -27,9 +27,9 @@
             <span class="btn btn-primary" @click="getlistdata()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
             <span class="btn btn-info spanblocks fr" @click="createModal=true">新建账号</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
+
         <!-- 表格 -->
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
@@ -200,12 +200,6 @@
     },
     ready: function () {
       this.getlistData(1)
-    },
-    computed: {
-//      导出
-      exports: function () {
-        return this.exportUrl = requestSystemUrl + '/backend-system/stock/store/account/export-excel' + '?account='+ this.searchData.account + '&name=' + this.searchData.name
-      }
     },
     methods: {
 //      对获取到的数据进行处理

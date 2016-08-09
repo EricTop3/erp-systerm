@@ -10,6 +10,7 @@
           <li class="active">采购订单</li>
           <li class="active">列表</li>
         </ol>
+
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
@@ -33,6 +34,7 @@
               </select>
             </div>
             <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             <div class="form-group ml10">
               <label>制单时间段</label>
               <date-picker :value.sync="time.startTime"></date-picker> -
@@ -114,7 +116,23 @@
       },
 //    查看详情
       gotoDetail: function (id){
-          window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
+        window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/purchase/purchase'
+        var data =
+          'created_id=' + this.search.selectedMaker + '&' +
+          'document_number=' + this.search.code + '&' +
+          'checked=' + this.search.selectedStatus + '&' +
+          'start_time=' + this.time.startTime + '&' +
+          'provider_id=' + this.search.selectedSuppier + '&' +
+          'end_time=' + this.time.endTime + '&' +
+          'start_receive_time=' + this.time.startTime1 + '&' +
+          'end_receive_time=' + this.time.endTime1
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     ready: function () {
@@ -148,7 +166,7 @@
           provider_id: this.search.selectedSuppier,
           end_time: this.time.endTime,
           start_receive_time: this.time.startTime1,
-          end_receive_time: this.time.endTime1,
+          end_receive_time: this.time.endTime1
         }
         this.listData(data)
       },
@@ -158,6 +176,7 @@
     },
     data: function () {
       return {
+        exportUrl: '',
         page: [],
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/purchase/purchase/',
