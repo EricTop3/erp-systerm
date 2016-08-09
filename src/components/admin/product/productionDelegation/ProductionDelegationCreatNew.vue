@@ -93,7 +93,7 @@
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.required_amount}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
-                  <td>￥{{entry.item_price}}</td>
+                  <td>￥{{entry.item_price|priceChange}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -314,6 +314,8 @@
         this.summarystockGoods =this.summarystockGoods.concat(self. renderstockGoods)
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.purchase_amount
+          val.item_price = Number(val.item_amount  * val.purchase_price * 100)
+          self.summaryPrice += val.item_price
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
       },
@@ -324,8 +326,9 @@
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
+            hash[array[i][ObjPropInArr]].item_price=Number(array[i].item_price) + Number( hash[array[i][ObjPropInArr]].item_price)
           }else{
-            hash[array[i][ObjPropInArr]]=array[i];
+            hash[array[i][ObjPropInArr]]=array[i]
           }
         }
         for(var j in hash){

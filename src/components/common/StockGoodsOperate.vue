@@ -14,7 +14,7 @@
           <div class="form-group ml10">
             <input type="text" class="form-control" placeholder="请输入商品名或商品编号" v-model="query.search">
           </div>
-          <span class="btn btn-info" @click="search()">搜索</span>
+          <span class="btn btn-info" @click="searchMethod">搜索</span>
           <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
         </form>
       </div>
@@ -96,7 +96,6 @@
     methods: {
 //     公共产品列表请求
       requestApi: function (data) {
-        console.log(token)
         var self = this
         getDataFromApi(this.productUrl,data,function(response){
           self.addData = response.data.body.list
@@ -116,7 +115,7 @@
         this.requestApi(data)
       },
 //      根据搜索进行产品请求
-      search: function () {
+      searchMethod: function () {
         var data = {
           search: this.query.search
         }
