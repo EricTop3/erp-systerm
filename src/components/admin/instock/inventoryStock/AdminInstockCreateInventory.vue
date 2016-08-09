@@ -158,7 +158,7 @@
         })
         self.rederStockGoods = self.dataArray
         self.old = self.dataArray
-        self.localPage(self.old)
+        self.localPage(self.rederStockGoods)
       },
 //     删除商品
       delete: function (id) {
@@ -168,13 +168,17 @@
             self.rederStockGoods.splice(index, 1)
           }
         })
+        if (!self.ispageLocal) {
+          self.localPage(self.rederStockGoods)
+        }
       },
 //      分页
       pagechange: function (currentpage) {
         if (this.ispageLocal) {
           this.inventoryAll(currentpage)
         } else {
-          console.log('正在启用的是启用本地分页！')
+          this.pageLocal.current_page = currentpage
+          this.localPage(this.dataArray)
         }
       }
     },
@@ -236,27 +240,29 @@
 //     本地分页
       localPage: function (data) {
         this.pageLocal.len = data.length
-        console.log(this.pageLocal.len)
+        console.log('数组总长度：' + this.pageLocal.len)
         if (this.pageLocal.len % this.pageLocal.per_page === 0) {
           this.pageLocal.last_page = this.pageLocal.len / this.pageLocal.per_page
         } else {
           this.pageLocal.last_page = (Math.floor(this.pageLocal.len / this.pageLocal.per_page)) + 1
         }
-//        this.page.current_page * this.page.per_page, this.page.len - this.page.current_page * this.page.per_page
-        var a = data.splice(1,2)
-        console.log('我是' + a)
-        console.log('yes' + data)
+
+        var start = (this.pageLocal.current_page * this.pageLocal.per_page) - this.pageLocal.per_page
+        var end = (start + this.pageLocal.per_page) > this.pageLocal.len ? this.pageLocal.len : (start + this.pageLocal.per_page)
+        this.newData = data.slice(start,end)
+        this.rederStockGoods = this.newData
       }
 
     },
     data: function () {
       return {
 //        是否启用本地分页
+        newData: [],
         ispageLocal: false,
         pageLocal: {
           current_page: 1, // 当前页
           last_page: 1, // 最后一页
-          per_page: 2, // 一页有多少个
+          per_page: 16, // 一页有多少个
           len: 0 // 总共的个数
         },
         page: {
