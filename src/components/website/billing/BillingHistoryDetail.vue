@@ -1,9 +1,9 @@
 <template>
   <site-nav></site-nav>
   <div class="container-fluid">
-    <!--测试-->
+
     <!-- 表格 -->
-    <table class="table table-striped table-border table-hover mt20" :data="todayGridData">
+    <table class="table table-striped table-border table-hover mt20" :data="onedata">
       <thead>
       <tr class="text-center">
         <td>结算日期</td>
@@ -18,16 +18,16 @@
       </thead>
       <tbody>
       <tr class="text-center">
-        <td>{{todayGridData.date}}</td>
-        <td>￥{{todayGridData.total_sum}}</td>
-        <td>￥{{todayGridData.vip_money}}</td>
-        <td>￥{{todayGridData.cash_money}}</td>
-        <td>￥{{todayGridData.post_money}}</td>
-        <td>￥{{todayGridData.weixin_money}}</td>
-        <td>￥{{todayGridData.alipay_money}}</td>
+        <td>{{onedata.settled_at}}</td>
+        <td><template v-if="onedata.total_sum != ''">￥</template>{{onedata.total_sum}}</td>
+        <td><template v-if="onedata.vip_total_sum != ''">￥s</template>{{onedata.vip_total_sum}}</td>
+        <td><template v-if="onedata.cash_total_sum !=''">￥</template>{{onedata.cash_total_sum}}</td>
+        <td><template v-if="onedata.pos_total_sum !=''">￥</template>{{onedata.pos_total_sum}}</td>
+        <td><template v-if="onedata.weixin_total_sum !=''">￥</template>{{onedata.weixin_total_sum}}</td>
+        <td><template v-if="onedata.alipay_total_sum !=''">￥</template>{{onedata.alipay_total_sum}}</td>
         <td>
-          <button id="todaySet" class="btn btn-primary btn-sm" :disabled="todayGridData.status" @click="settlementModal=true">今日结算</button>
-          <span class="btn btn-info btn-sm" @click="detail($event)">结算历史</span>
+          <button id="todaySet" class="btn btn-primary btn-sm">今日结算</button>
+          <span class="btn btn-info btn-sm" v-link="{path: '/site/billing/list' }">结算历史</span>
         </td>
       </tr>
       </tbody>
@@ -37,8 +37,10 @@
     <grid :data="todayDetailGridData" :columns="todayDetailGridColumns"></grid>
 
     <!-- 翻页 -->
-    <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
-          :last-page='page.last_page'></page>
+    <!--分页-->
+    <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+          :last-page="page.last_page" v-if="todayDetailGridData.length > 0">
+    </page>
   </div>
 
   <!--模态框-今日结算-->
@@ -64,7 +66,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import SiteNav from '../SiteNav'
-  import {requestUrl, token, error} from '../../../publicFunction/index'
+  import {requestUrl, token, error, requestSystemUrl, getDataFromApi, postSiteDataToApi, putDataToApi} from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -73,7 +75,7 @@
       SiteNav: SiteNav
     },
     ready: function () {
-//    渲染当日结算列表
+      this.getOneData()
       this.todayListData(1)
     },
     events: {
@@ -83,39 +85,55 @@
       }
     },
     methods: {
+//    确定结算
+      yesSettlement: function () {
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/front-system/settlement/' + this.thisId + '/settle'
+        putDataToApi(url, {}, function (response) {
+          self.settlementModal = false
+          self.todayGridData.status = true
+          self.todayListData(1)
+        })
+      },
+//    获取单条数据
+      getOneData: function () {
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/front-system/settlement/' + this.thisId + '/detail'
+        getDataFromApi(url, {}, function (response) {
+          self.onedata = response.data.body
+        })
+      },
 //    渲染当日结算列表
       todayListData: function (page) {
-        this.$http({
-          url: requestUrl + '/front-system/settlement',
-          method: 'get',
-          headers: {
-            'X-Overpowered-Token': token
-          },
-          data: {
-            page: page,
-            per_page: 16
+        this.thisId = this.$route.params.queryId
+        var self = this
+        var url = requestSystemUrl + '/front-system/settlement/' + this.thisId
+        var data = {
+            page: page
           }
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.todayGridData = response.data.body.item
-          this.todayDetailGridData = response.data.body.list
-          $.each(this.todayDetailGridData, function (index, value) {
-            if (value.pay_method == 'cash') {
-              this.pay_method = '现金支付'
-            }
-            if (value.pay_method == 'alipay') {
-              this.pay_method = '支付宝支付'
-            }
-            if (value.pay_method == 'weixin') {
-              this.pay_method = '微信支付'
-            }
-            if (value.pay_method == 'vip') {
-              this.pay_method = '会员卡支付'
-            }
-          })
-
-        }, function (err) {
-          error(err)
+        getDataFromApi(url, data, function (response) {
+          self.todayDetailGridData = response.data.body.list
+          self.modifyGetedData(self.todayDetailGridData)
+          self.page = response.data.body.pagination
+        })
+      },
+//    对获取到的数据进行处理
+      modifyGetedData: function (data) {
+        $.each(data, function (index, value) {
+          if (value.pay_method == 'cash') {
+            this.pay_method = '现金支付'
+          }
+          if (value.pay_method == 'alipay') {
+            this.pay_method = '支付宝支付'
+          }
+          if (value.pay_method == 'weixin') {
+            this.pay_method = '微信支付'
+          }
+          if (value.pay_method == 'vip') {
+            this.pay_method = '会员卡支付'
+          }
         })
       },
 //    确定结算
@@ -129,13 +147,12 @@
         }, function (error) {
           error(error)
         })
-      },
-      detail: function (event) {
-        window.location.href = '#!/site/billing/BillingHistory'
       }
     },
     data: function () {
       return {
+        thisId: '',
+        onedata: [],
         page: [],
         settlementModal: false,
         settlementModalSize: 'modal-sm',
@@ -152,13 +169,13 @@
         todayDetailGridData: [],
         todayDetailGridColumns: {
           document_number: '小票编号',
-          create_at: '下单时间',
+          created_at: '下单时间',
           total_sum: '合计金额',
           amount: '合计数量',
           pay_method: '支付方式',
           vip_card_number: '会员卡号',
           coupon_strategy_name: '优惠方式',
-          document_number: '营业员'
+          seller_name: '营业员'
         }
       }
     }

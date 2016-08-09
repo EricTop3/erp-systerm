@@ -12,11 +12,11 @@
       <form class="form-inline text-center">
         <div class="form-group">
           <label>时间段</label>
-          <date-picker :value.sync="startTime"></date-picker>
+          <date-picker :value.sync="startTime" :time-text="timetext1" :timewidth="timewidth"></date-picker>
           -
-          <date-picker :value.sync="endTime"></date-picker>
+          <date-picker :value.sync="endTime" :time-text="timetext2" :timewidth="timewidth"></date-picker>
         </div>
-        <span type="submit" class="btn btn-info ml10" @click="search">搜索</span>
+        <span type="submit" class="btn btn-info ml10" @click="setMentListData(1)">搜索</span>
         <span type="submit" class="btn btn-warning" @click="cancel">撤销搜索</span>
       </form>
     </div>
@@ -39,7 +39,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token, error} from '../../../publicFunction/index'
+  import {requestUrl, token, error, requestSystemUrl, getDataFromApi} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -60,64 +60,35 @@
     methods: {
 //    渲染结算历史列表
       setMentListData: function (page) {
-        this.$http({
-          url: requestUrl + '/front-system/settlement',
-          method: 'get',
-          headers: {
-            'X-Overpowered-Token': token
-          },
-          data: {
-            page: page,
-            per_page: 16
-          }
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.historyGridData = response.data.body.list
-        }, function (err) {
-          error(err)
+        var self = this
+        var url = requestSystemUrl + '/front-system/settlement'
+        var data = {
+          startTime: this.startTime || '',
+          endTime: this.endTime || '',
+          page: page,
+          per_page: 16
+        }
+        getDataFromApi(url, data, function (response) {
+          self.page = response.data.body.pagination
+          self.historyGridData = response.data.body.list
         })
       },
       checkDetail: function (event) {
         var id = $(event.currentTarget).parents('tr').attr('id')
-        window.location.href = '#!/billing/BillingHistoryDetail/' + id
-      },
-//    搜索
-      search: function () {
-        var self = this
-        searchRequest(
-          requestUrl + '/front-system/settlement/list',
-          {
-            startTime: this.startTime || '',
-            endTime: this.endTime || ''
-          },
-          function (response) {
-            self.historyGridData = response.data.body.list
-            self.page = response.data.body.pagination
-
-            self.startTime = ''
-            self.endTime = ''
-          })
+        window.location.href = '/#!/site/billing/detail/' + id
       },
 //    取消搜索
       cancel: function () {
-        var self = this
-        searchRequest(
-          requestUrl + '/front-system/settlement/list',
-          {
-            startTime: this.startTime,
-            endTime: this.endTime
-          },
-          function (response) {
-            self.historyGridData = response.data.body.list
-            self.page = response.data.body.pagination
-
-            self.startTime = ''
-            self.endTime = ''
-          })
+        this.startTime = ''
+        this.endTime = ''
+        this.setMentListData(1)
       }
     },
     data: function () {
       return {
+        timewidth: "timewidth",
+        timetext1: "开始时间",
+        timetext2: "结束时间",
         gridOperate: true,
         startTime: '',
         endTime: '',

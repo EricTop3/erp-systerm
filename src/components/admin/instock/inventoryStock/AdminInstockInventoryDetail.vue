@@ -138,7 +138,7 @@
 
           obj['reference_id'] = val.item_id
           obj['id'] = val.id
-          obj['current_stock'] = val.current_stock
+          obj['current_stock'] = val.main_reference_value
           obj['reference_type'] = val.item_type
           item.push(obj)
         })
