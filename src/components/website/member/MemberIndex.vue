@@ -34,6 +34,7 @@
         <div class="form-group ml10">
           <label>状态搜索</label>
           <select class="form-control" v-model="search.status">
+            <option value="">请选择</option>
             <option value="1">启用</option>
             <option value="0">停用</option>
           </select>
@@ -43,6 +44,7 @@
         <span class="btn btn-primary" @click="modal.creatMemberModal = true">新会员办理</span>
       </form>
     </div>
+
     <!-- 表格 -->
     <grid :data="gridData" :columns="gridColumns" :operate="gridOperate">
       <div slot="operateList">
@@ -68,71 +70,85 @@
     </div>
     <div slot="body">
       <div class="modal-body">
-        <!--TODO 表单各个填写项目的验证 <span style=" float: left; color: red; font-size: 12px; ">请输入正确的手机号码！</span>-->
-        <form action="" method="post" class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-4 control-label">会员卡号：</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="create.member_card">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">姓名：</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="create.name">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">手机号码：</label>
-            <div class="col-sm-8">
-              <input id="new_phoneNum" type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="create.phone">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">微商城密码：</label>
-
-            <div class="col-sm-8">
-              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="create.password">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">生 日：</label>
-
-            <div class="col-sm-8">
-              <date-picker :value.sync="create.birthday"></date-picker>
-              <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">-->
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">等 级：</label>
-            <div class="col-sm-8">
-              <select class="form-control" v-model="create.level">
-                <option value="">请选择</option>
-                <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">充值金额：</label>
-            <div class="col-sm-8">
-              <div class="form-inline">
-                <input type="text" class="form-control" v-model="create.balance" placeholder="请输入充值金额！" style="width:104px;">
-                <select class="form-control ml10" v-model="create.payment">
-                  <option value="cash" selected>现金</option>
-                  <option value="alipay">支付宝</option>
-                  <option value="weixin">微信支付</option>
-                  <!--<option value="vip">会员支付</option>-->
-                  <option value="pos">POSE刷卡</option>
-                </select>
+        <validator name="validationNewMember">
+          <form class="form-horizontal" >
+              <div class="form-group">
+                <label class="col-sm-4 control-label">会员卡号：</label>
+                <div class="col-sm-8">
+                  <!--只能输入数字 number: /^[0-9]+$/-->
+                  <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="create.member_card" v-validate:member_card="{required: true}">
+                  <span v-if="$validationNewMember.member_card.touched">
+                    <span v-if="$validationNewMember.member_card.required" class="errT">请输入会员卡号！</span>
+                    <!--<span v-if="$validationNewMember.member_card.number" style=" float: left; color: red; font-size: 12px;">会员卡号只能输入数字！</span>-->
+                  </span>
+                </div>
               </div>
-            </div>
-          </div>
-        </form>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">姓名：</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="create.name" v-validate:name="{required: true}">
+                  <span v-if="$validationNewMember.name.touched">
+                    <span v-if="$validationNewMember.name.required" class="errT">请输入会员姓名！</span>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">手机号码：</label>
+                <div class="col-sm-8">
+                  <input id="new_phoneNum" type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="create.phone" v-validate:phone="{required: true,minlength: 11,maxlength: 11}">
+                  <span v-if="$validationNewMember.phone.touched">
+                    <span v-if="$validationNewMember.phone.minlength" class="errT">请输入正确的手机号码！</span>
+                    <span v-if="$validationNewMember.phone.maxlength" class="errT">请输入正确的手机号码！</span>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">微商城密码：</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" v-model="create.password">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">生 日：</label>
+                <div class="col-sm-8">
+                  <date-picker :value.sync="create.birthday"></date-picker>
+                  <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">-->
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">等 级：</label>
+                <div class="col-sm-8">
+                  <select class="form-control" v-model="create.level" v-validate:level="{required: true}">
+                    <option value="">请选择</option>
+                    <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
+                  </select>
+                  <span v-if="$validationNewMember.level.touched">
+                    <span v-if="$validationNewMember.level.required" class="errT">请选择会员等级！</span>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">充值金额：</label>
+                <div class="col-sm-8">
+                  <div class="form-inline">
+                    <input type="text" class="form-control" v-model="create.balance" placeholder="请输入充值金额！" style="width:104px;" @input="priceValidate">
+                    <select class="form-control ml10" v-model="create.payment">
+                      <option value="cash" selected>现金</option>
+                      <option value="alipay">支付宝</option>
+                      <option value="weixin">微信支付</option>
+                      <!--<option value="vip">会员支付</option>-->
+                      <option value="pos">POSE刷卡</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </validator>
       </div>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" @click="modal.creatMemberModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" @click="creatNewMember">保存</button>
+      <button type="button" class="btn btn-primary" @click="verifyNewMember($event)">保存</button>
     </div>
   </modal>
 
@@ -145,38 +161,34 @@
     </div>
     <div slot="body">
       <div class="modal-body">
+        <validator name="validationEditMember">
         <form action="" method="post" class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-4 control-label">会员卡号：</label>
-
             <div class="col-sm-8">
-              <input type="text" class="form-control" v-model="edit.member_card" disabled>
+              <span style="display: inline-block; margin-top: 8px;">{{edit.member_card}}</span>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">姓名：</label>
-
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="edit.name">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">手机号码：</label>
-
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="edit.phone" disabled>
+              <span style="display: inline-block; margin-top: 8px;">{{edit.phone}}</span>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">微商城密码：</label>
-
             <div class="col-sm-8">
               <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="edit.password">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">生 日：</label>
-
             <div class="col-sm-8">
               <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="edit.birthday">-->
               <date-picker :value.sync="edit.birthday"></date-picker>
@@ -184,20 +196,23 @@
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">等 级：</label>
-
             <div class="col-sm-8">
-              <select class="form-control" v-model="edit.level">
+              <select class="form-control" v-model="edit.level" v-validate:level="{required: true}">
                 <option value="">请选择</option>
                 <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
               </select>
+              <span v-if="$validationEditMember.level.touched">
+                <span v-if="$validationEditMember.level.required" class="errT">请选择会员等级！</span>
+              </span>
             </div>
           </div>
         </form>
+        </validator>
       </div>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="modal.editModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="edit.id" @click="saveUpdateMember($event)">保存</button>
+      <button type="button" class="btn btn-primary" :value="edit.id" @click="verifyEditMember($event)">保存</button>
     </div>
   </modal>
 
@@ -208,6 +223,7 @@
       <h4 class="modal-title">会员充值</h4>
     </div>
     <div slot="body">
+      <validator name="validationRecharge">
       <form action="" method="post" class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">支付方式：</label>
@@ -216,7 +232,7 @@
               <option value="cash" selected>现金</option>
               <option value="alipay">支付宝</option>
               <option value="weixin">微信支付</option>
-              <option value="vip">会员支付</option>
+              <!--<option value="vip">会员支付</option>-->
               <option value="post">POSE刷卡</option>
             </select>
           </div>
@@ -224,14 +240,24 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">充值金额：</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" v-model="edit.balance">
+            <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">交易单号：</label>
+          <div class="col-sm-8">
+            <input type="text" :disabled="edit.payment == 'cash'" class="form-control" v-model="edit.trade_number" v-validate:trade_number="{required: true}">
+            <span v-if="$validationRecharge.trade_number.touched">
+                <span v-if="$validationRecharge.trade_number.required" class="errT">请填写交易单号！</span>
+            </span>
           </div>
         </div>
       </form>
+      </validator>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" @click="modal.rechargeModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="edit.id" @click="saveRecharge($event)">保存</button>
+      <button type="button" class="btn btn-primary" :value="edit.id" @click="verifyRecharge($event)">保存</button>
     </div>
   </modal>
 
@@ -246,7 +272,6 @@
   import {
     requestSystemUrl,
     token,
-    searchRequest,
     getDataFromSiteApi,
     postSiteDataToApi,
     putDataToApi,
@@ -276,10 +301,10 @@
 
           $.each(self.gridData, function (index, value) {
             value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-            if (value.status == 'start') {
-              self.status = '启用'
+            if (value.status == 1) {
+              value.status = '启用'
             } else {
-              self.status = '停用'
+              value.status = '停用'
             }
           })
         }, function (err) {
@@ -306,10 +331,10 @@
           self.page = response.data.body.pagination
           $.each(self.gridData, function (index, value) {
             value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-            if (value.status == 'start') {
-              self.status = '启用'
+            if (value.status == 1) {
+              value.status = '启用'
             } else {
-              self.status = '停用'
+              value.status = '停用'
             }
           })
         })
@@ -337,10 +362,33 @@
           }
         })
       },
+//      创建新会员验证
+      verifyNewMember: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validationNewMember.invalid) {
+            self.$validationNewMember.member_card.touched = true
+            self.$validationNewMember.name.touched = true
+            self.$validationNewMember.phone.touched = true
+            self.$validationNewMember.level.touched = true
+            e.preventDefault()
+          } else {
+            self.creatNewMember()
+          }
+        })
+      },
+//     金额正则
+      priceValidate: function () {
+        var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
+        if (!re.test(this.create.balance)) {
+          this.create.balance =  ''
+        }
+      },
 //    编辑会员资料
       updateMember: function (event) {
+        var self = this
 //      弹出模态框
-        this.modal.editModal = true
+        self.modal.editModal = true
 //      编辑数据
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
         var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
@@ -349,12 +397,29 @@
         var birthday = $(event.currentTarget).parents('tr').find('td:nth-child(6)').text()
         var level = $(event.currentTarget).parents('tr').find('td:nth-child(7)').text()
 
-        this.edit.id = id
-        this.edit.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
-        this.edit.name = name.replace(/(^\s*)|(\s*$)/g, '')
-        this.edit.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
-        this.edit.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
-        this.edit.level = level.replace(/(^\s*)|(\s*$)/g, '')
+        self.edit.id = id
+        self.edit.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
+        self.edit.name = name.replace(/(^\s*)|(\s*$)/g, '')
+        self.edit.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
+        self.edit.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
+
+        $.each(self.member_level_group, function (index, val) {
+          if (level.replace(/(^\s*)|(\s*$)/g, '') == val.display_name) {
+            self.edit.level = val.id
+          }
+        })
+      },
+//    编辑会员的验证
+      verifyEditMember: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validationEditMember.invalid) {
+            self.$validationEditMember.level.touched = true
+            e.preventDefault()
+          } else {
+            self.saveUpdateMember(e)
+          }
+        })
       },
 //    保存修改的会员数据
       saveUpdateMember: function (event) {
@@ -381,15 +446,28 @@
 
         this.modal.rechargeModal = true
       },
+//      充值金额的验证
+      verifyRecharge: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validationRecharge.invalid) {
+            self.$validationRecharge.trade_number.touched = true
+            e.preventDefault()
+          } else {
+            self.saveRecharge(e)
+          }
+        })
+      },
 //    保存充值金额
       saveRecharge: function (event) {
         var self = this
-        var id = Number($(event.currentTarget).attr('value'))
-        var url = requestSystemUrl + '/front-system/member/member/change-money/' + id
+        var id = self.edit.id
+        var url = requestSystemUrl + '/front-system/member/member/' + id + '/recharge'
         var data = {
           money: self.edit.balance,
           payment: self.edit.payment,
-          member_card: self.edit.member_card
+          member_card: self.edit.member_card,
+          trade_number: self.edit.trade_number
         }
         putDataToApi(url, data, function (response) {
           self.listData({})
@@ -410,8 +488,7 @@
           phone: self.search.phone || '',
           birthday: self.search.birthday || '',
           store_id: self.search.store_id || '',
-          start_time: self.search.start_time || '',
-          end_time: self.search.end_time || ''
+          status: self.search.status || ''
         }
         self.listData(data)
       },
@@ -423,8 +500,7 @@
         self.search.phone = ''
         self.search.birthday = ''
         self.search.store_id = ''
-        self.search.start_time = ''
-        self.search.end_time = ''
+        self.search.status = ''
         self.listData({})
       }
     },
@@ -442,6 +518,7 @@
           rechargeModal: false,
         },
         member_level_group: [],
+//        创建新会员
         create: {
           member_card: '',
           name: '',
@@ -452,6 +529,7 @@
           password: '',
           payment: ''
         },
+//        编辑会员、充值金额
         edit: {
           id: '',
           name: '',
@@ -461,7 +539,8 @@
           status: '',
           phone: '',
           member_card: '',
-          payment: ''
+          payment: '',
+          trade_number: ''
         },
         gridOperate: true,
         gridData: [],
@@ -476,6 +555,7 @@
           register_store_name: "开卡点",
           status: "状态"
         },
+//        搜索
         search: {
           card_number: '',
           name: '',
@@ -499,6 +579,11 @@
 <style>
   .calendar{
     z-index: 1;
+  }
+  .errT{
+    float: left;
+    color: red;
+    font-size: 12px;
   }
 </style>
 

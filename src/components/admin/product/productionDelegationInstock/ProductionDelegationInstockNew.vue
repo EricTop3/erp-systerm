@@ -67,7 +67,7 @@
                   <td>{{entry.main_reference_value}}</td>
                   <td><count :count.sync =entry.distribution_amount></count>{{entry.unit_name}}</td>
                   <td><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
-                  <td>{{entry.stock}}</td>
+                  <td>后台没返值</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>
                     <slot name="operate">
@@ -90,12 +90,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.stock}}</td>
-                  <td>{{entry.main_reference_value}}</td>
-                  <td>{{entry.distribution_amount}}</td>
+                  <td>{{entry.item_stock}}</td>
+                  <td>{{entry.item_main_reference_value}}</td>
+                  <td>{{entry.item_distribution_amount}}</td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                 </tr>
@@ -190,11 +190,13 @@
         this.renderstockGoods = self.dataArray
       },
 //     删除商品
-      deleteFromApi: function (id) {
+      delete: function (id) {
         var self = this
         $.each(this.renderstockGoods, function (index, val) {
           if (val.id === id) {
             self.renderstockGoods.splice(index, 1)
+            val.choice = false
+            val.again = false
           }
         })
       },
@@ -271,13 +273,42 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
         }
+      },
+//      汇总方法
+      summary: function () {
+        var self = this
+        this.summarystockGoods = []
+        this.summarystockGoods = this.summarystockGoods.concat(self.renderstockGoods)
+        $.each(this.summarystockGoods, function (index, val) {
+          val.item_stock = val.stock
+          val.item_main_reference_value = val.main_reference_value
+          val.item_distribution_amount = val.distribution_amount
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//     汇总方法
+      summaryMethod: function (ObjPropInArr, array) {
+        var hash = {};
+        var result = [];
+        for (var i = 0; i < array.length; i++) {
+          if (hash[array[i][ObjPropInArr]]) {
+            hash[array[i][ObjPropInArr]].item_stock = Number(array[i].item_stock) + Number(hash[array[i][ObjPropInArr]].item_stock)
+            hash[array[i][ObjPropInArr]].item_main_reference_value = Number(array[i].item_main_reference_value) + Number(hash[array[i][ObjPropInArr]].item_main_reference_value)
+            hash[array[i][ObjPropInArr]].item_distribution_amount = Number(array[i].item_distribution_amount) + Number(hash[array[i][ObjPropInArr]].item_distribution_amount)
+          } else {
+            hash[array[i][ObjPropInArr]] = array[i]
+          }
+        }
+        for (var j in hash) {
+          result.push(hash[j])
+        }
+        return result
       }
     },
     data: function () {

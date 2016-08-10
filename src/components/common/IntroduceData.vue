@@ -116,7 +116,6 @@
             self.secondData.splice(start, end - start + 1)
           }
         })
-        console.log(self.secondData.length)
       },
 //      全选上面表格加载下面数据
       changeAll: function (checkAll) {

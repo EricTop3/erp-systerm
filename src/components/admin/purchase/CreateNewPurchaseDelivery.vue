@@ -98,7 +98,7 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                  <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                   <td>{{entry.item_refund}}{{entry.unit_name}}</td>
                   <td>￥{{entry.item_price|priceChange}}</td>
@@ -213,7 +213,16 @@
         this.current_page = currentpage
         this.localPage(this.old)
         this.rederSetGoods = this.old
-      }
+      },
+//     删除商品
+      delete: function (id) {
+        var self = this
+        $.each(this.renderstockGoods, function (index, val) {
+          if (val.id === id) {
+            self.renderstockGoods.splice(index, 1)
+          }
+        })
+      },
     },
     methods: {
 //     提交采购
@@ -294,7 +303,8 @@
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.received_amount
           val.item_refund = val.refund_amount
-          val.item_price = Number(val.main_reference_value  * val.purchase_price * 100)
+          val.item_main_reference_value = val.main_reference_value
+          val.item_price = Number(val.item_main_reference_value  * val.purchase_price * 100)
           self.summaryPrice += val.item_price
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
@@ -305,6 +315,7 @@
         var result=[];
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].  item_main_reference_value)
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
             hash[array[i][ObjPropInArr]].item_refund=Number(array[i].item_refund) + Number( hash[array[i][ObjPropInArr]].item_refund)
             hash[array[i][ObjPropInArr]].item_price+=array[i].item_price

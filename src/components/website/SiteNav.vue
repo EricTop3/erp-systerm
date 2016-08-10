@@ -2,7 +2,7 @@
   <div class="container-fluid admin-header">
     <div class="row">
       <div class="col-md-2 text-center">
-        <h2>{{store.account}}</h2>
+        <h2>{{store.info}}</h2>
         <h3>{{store.account}}</h3>
         <span @click="exit" class="exit">[退出]</span></div>
       <div class="col-md-9">
@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-  import {storeName,storeAccount} from '../../publicFunction/index'
+  import {storeName,storeAccount,storeInfo} from '../../publicFunction/index'
   export default{
     name: 'site-nav',
     methods: {
@@ -37,7 +37,8 @@
       return {
         store: {
           name: storeName,
-          account: storeAccount
+          account: storeAccount,
+          info: storeInfo
         }
       }
     }
