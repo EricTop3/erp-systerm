@@ -16,15 +16,6 @@
       :edit-flag.sync = 'editFlag'
     >
     </summary-detail>
-    <!--有列表切换的时候的情况-->
-    <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
-      <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- 入库明细 -->
-      <div role="tabpanel" class="tab-pane active" v-if="detailModal">
         <!--表格详情列表-->
         <table class="table table-striped table-bordered table-hover">
           <thead>
@@ -49,34 +40,6 @@
         <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
         <!--:last-page="page.last_page"></page>-->
       </div>
-
-      <!-- 入库汇总 -->
-      <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
-        <!--表格详情列表-->
-        <table class="table table-striped table-bordered table-hover">
-          <thead>
-          <tr class="text-center">
-            <th v-for="value in  gridColumns2">
-              {{value}}
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
-            <td>{{entry.consumable_code}}</td>
-            <td>{{entry.consumable_name}}</td>
-            <td>{{entry.main_reference_value}}</td>
-            <td>{{entry.unit}}</td>
-            <td>{{entry.unit_specification}}</td>
-          </tr>
-          </tbody>
-        </table>
-        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-        <!--:last-page="page.last_page"></page>-->
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>

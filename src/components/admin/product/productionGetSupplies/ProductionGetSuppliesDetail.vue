@@ -79,7 +79,6 @@
                 <td>{{entry.material_stock}}{{entry.unit_name}}</td>
                 <td>{{consume}} {{entry.unit_name}}</td>
                 <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
-                <td>{{entry.reference_number}}</td>
               </tr>
               </tbody>
             </table>
@@ -182,15 +181,44 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
         }
+      },
+//      汇总方法
+      summary: function () {
+        var self = this
+        self.summaryPrice = 0
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_amount = val.main_reference_value
+          val.item_price = Number(val.item_amount  *  val.purchase_unit_price * 100)
+          self.summaryPrice += val.item_price
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//     汇总方法
+      summaryMethod: function (ObjPropInArr, array){
+        var hash={};
+        var result=[];
+        for(var i=0;i<array.length;i++){
+          if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].material_stock=Number(array[i].material_stock) + Number( hash[array[i][ObjPropInArr]].item_amount)
+            hash[array[i][ObjPropInArr]].consume=Number(array[i].consume) + Number( hash[array[i][ObjPropInArr]].consume)
+            hash[array[i][ObjPropInArr]].main_reference_value=Number(array[i].main_reference_value) + Number( hash[array[i][ObjPropInArr]].main_reference_value)
+          }else{
+            hash[array[i][ObjPropInArr]]=array[i];
+          }
+        }
+        for(var j in hash){
+          result.push(hash[j])
+        }
+        return result
       }
-
     },
     data: function () {
       return {

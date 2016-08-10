@@ -95,12 +95,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.main_reference_value}}</td>
-                  <td>{{entry.unit_name}}</td>
-                  <td>{{entry.unit_name}}</td>
+                  <td>{{entry.item_defective_amount}}</td>
+                  <td>{{entry.item_stock_amount}}</td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                 </tr>
@@ -283,15 +283,43 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
+        }
+      },
+//        汇总方法
+    summary: function () {
+      var self = this
+      this.summarystockGoods = []
+      this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
+      $.each(this.summarystockGoods,function (index,val){
+        val.item_defective_amount = val.defective_amount
+        val.item_stock_amount = val.stock_amount
+      })
+      this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+    },
+//       汇总方法
+    summaryMethod: function  (ObjPropInArr, array){
+      var hash={};
+      var result=[];
+      for(var i=0;i<array.length;i++){
+        if(hash[array[i][ObjPropInArr]]){
+          hash[array[i][ObjPropInArr]].item_defective_amount=Number(array[i].item_defective_amount) + Number( hash[array[i][ObjPropInArr]].item_defective_amount)
+          hash[array[i][ObjPropInArr]].item_stock_amount=Number(array[i].item_stock_amount) + Number( hash[array[i][ObjPropInArr]].item_stock_amount)
+          hash[array[i][ObjPropInArr]].main_reference_value=Number(array[i].main_reference_value) + Number( hash[array[i][ObjPropInArr]].main_reference_value)
+        }else{
+          hash[array[i][ObjPropInArr]]=array[i];
         }
       }
-    },
+      for(var j in hash){
+        result.push(hash[j])
+      }
+      return result
+    }
+  },
     data: function () {
       return {
 //        入库明细

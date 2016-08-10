@@ -8,6 +8,7 @@ export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
 var token =  window.localStorage.getItem('token')
 export var storeName = window.localStorage.getItem('storeName')
 export var storeAccount = window.localStorage.getItem('storeAccount')
+export var storeInfo = window.localStorage.getItem('storeInfo')
 export var systermName = window.localStorage.getItem('systermName')
 export var systermAccount = window.localStorage.getItem('systermAccount')
 //后台0,1状态没完成状态的展示方式
@@ -122,16 +123,11 @@ export function exchangeData(origindata) {
 // 引用原始数据和添加商品之间相互转换
 export function detailGoodsInfo (list,type) {
   $.each(list,function(index,val){
-    console.log(index)
     val.item_code = val.code ? val.code : val.item_code
-    delete  val.code
     val.item_name = val.name ? val.name : val.item_name
-    delete  val.name
     val.unit_name = val.production_unit_name ? val.production_unit_name : val.unit_name
-    delete  val.production_unit_name
     val.unit_specification = val.specification_unit ? val.specification_unit : val.unit_specification
-    delete  val.specification_unit
-    val.stock = 0
+    val.stock = val.stock
     val.required_amount = 0
     val.refence_number = ''
     val.reference_type =  type
@@ -334,8 +330,8 @@ export function adminLogin(loginUrl,data, callback){
     window.localStorage.setItem('token', curtoken)
     token =  window.localStorage.getItem('token')
     getDataFromApi(requestSystemUrl + '/backend-system/auth/info',{},function(response){
-      window.localStorage.setItem('systermName', response.data.body.name)
-      window.localStorage.setItem('systermAccount', response.data.body.account)
+      window.localStorage.setItem('systermAccount', response.data.body.name)
+      window.localStorage.setItem('systermName', response.data.body.account)
       systermName = window.localStorage.getItem('systermName')
       systermAccount = window.localStorage.getItem('systermAccount')
       window.location.href = '#!/admin/setting'
@@ -356,8 +352,10 @@ export function siteLogin(loginUrl,data,callback){
     getDataFromSiteApi(requestSystemUrl + '/front-system/auth/info',{},function(response){
       window.localStorage.setItem('storeName', response.data.body.name)
       window.localStorage.setItem('storeAccount', response.data.body.account)
+      window.localStorage.setItem('storeInfo', response.data.body.store_name)
       storeName = window.localStorage.getItem('storeName')
       storeAccount = window.localStorage.getItem('storeAccount')
+      storeInfo = window.localStorage.getItem('storeInfo')
       window.location.href ='#!/site/order'
     })
   },function(err){
