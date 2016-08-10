@@ -75,7 +75,7 @@
               <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                <td>{{entry.item_demand_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.item_refund}}{{entry.unit_name}}</td>
                 <td>￥{{entry.item_price|priceChange}}</td>
@@ -204,9 +204,10 @@
         this.summarystockGoods = []
         this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
         $.each(this.summarystockGoods,function (index,val){
+          val.item_demand_amount= val.demand_amount
           val.item_amount = val.received_amount
           val.item_refund = val.refund_amount
-          val.item_price = Number(val.main_reference_value  * val.unit_price * 100)
+          val.item_price = Number(val.item_demand_amount  * val.unit_price * 100)
           self.summaryPrice += val.item_price
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
@@ -217,6 +218,7 @@
         var result=[];
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_demand_amount=Number(array[i]. item_demand_amount) + Number( hash[array[i][ObjPropInArr]]. item_demand_amount)
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
             hash[array[i][ObjPropInArr]].item_refund=Number(array[i].item_refund) + Number( hash[array[i][ObjPropInArr]].item_refund)
             hash[array[i][ObjPropInArr]].item_price+=array[i].item_price

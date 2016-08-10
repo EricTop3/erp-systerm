@@ -102,7 +102,7 @@
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.stock}}</td>
                   <td>{{entry.stock}}</td>
-                  <td>{{entry.main_reference_value}}</td>
+                  <td>{{entry.item_main_reference_value}}</td>
                   <td>{{entry.item_amount}}</td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
@@ -219,11 +219,13 @@
         this.renderstockGoods = self.dataArray
       },
 //     删除商品
-      deleteFromApi: function (id) {
+      delete: function (id) {
         var self = this
         $.each(this.renderstockGoods, function (index, val) {
           if (val.id === id) {
             self.renderstockGoods.splice(index, 1)
+            val.choice = false
+            val.again = false
           }
         })
       },
@@ -315,6 +317,7 @@
         this.summarystockGoods = []
         this.summarystockGoods =this.summarystockGoods.concat(self. renderstockGoods)
         $.each(this.summarystockGoods,function (index,val){
+          val.item_main_reference_value = val.main_reference_value
           val.item_amount = val.distribution_amount
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
@@ -325,6 +328,7 @@
         var result=[];
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].item_main_reference_value)
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
           }else{
             hash[array[i][ObjPropInArr]]=array[i];

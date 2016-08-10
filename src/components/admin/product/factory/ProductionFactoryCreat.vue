@@ -224,11 +224,13 @@
         this.renderstockGoods = self.dataArray
       },
 //     删除商品
-      deleteFromApi: function (id) {
+      delete: function (id) {
         var self = this
         $.each(this.renderstockGoods, function (index, val) {
           if (val.id === id) {
             self.renderstockGoods.splice(index, 1)
+            val.choice = false
+            val.again = false
           }
         })
       },

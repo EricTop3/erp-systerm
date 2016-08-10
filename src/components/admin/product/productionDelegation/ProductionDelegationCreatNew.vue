@@ -128,7 +128,23 @@
   </stock-goods>
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
+  <!--库存不足跳转的提示-->
+  <modal :show.sync='modal.skipModal' :modal-size="modal.skipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal'  aria-label='Close'><span
+        aria-hidden='true' @click="errModal=false">&times;</span></button>
+      <h4 class='modal-title'>友情提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{modal.errInfo}}</p>
+      </div>
+    </div>
 
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='skip'>关闭</button>
+    </div>
+  </modal>
 </template>
 <style>
 </style>
@@ -136,6 +152,7 @@
   import $ from 'jquery'
   import Grid from '../../../common/Grid'
   import Page from '../../../common/Page'
+  import Modal from '../../../common/Modal'
   import AdminNav from '../../AdminNav'
   import StockGoods from '../../../common/StockGoodsOperate'
   import LeftProduction from '../../common/LeftProduction'
@@ -164,6 +181,7 @@
       AdminNav: AdminNav,
       Grid: Grid,
       Page: Page,
+      Modal: Modal,
       StockGoods:StockGoods,
       DatePicker: DatePicker,
       LeftProduction: LeftProduction,
@@ -216,11 +234,13 @@
         this.renderstockGoods = self.dataArray
       },
 //     删除商品
-      deleteFromApi: function (id) {
+      delete: function (id) {
         var self = this
         $.each(this.renderstockGoods, function (index, val) {
           if (val.id === id) {
             self.renderstockGoods.splice(index, 1)
+            val.choice = false
+            val.again = false
           }
         })
       },
@@ -276,12 +296,16 @@
             window.location.href = "#!/admin/production/delegationCreat"
           },function (err) {
             if (err.data.code == '220001') {
-              self.modal.errModal = true
+              self.modal.skipModal = true
               self.modal.errInfo = '库存不足，已生产领料单，请前往领料单查看！'
             }
             console.log(err)
           })
         }
+      },
+//     跳转到领料单
+      skip: function () {
+        window.location.href = '#!/admin/production/getSupplies'
       },
 //      添加商品
       addStockGoods: function ( ){
@@ -306,7 +330,7 @@
             this.summary()
         }
       },
-      //          汇总方法
+//      汇总方法
       summary: function () {
         var self = this
         self.summaryPrice = 0
@@ -411,7 +435,9 @@
           parentIntroModal: false,
           parentIntroModalSize: 'modal-lg',
           errModal: false,
-          errInfo: 'high。这是友情提醒'
+          errInfo: 'high。这是友情提醒',
+          skipModal: false,
+          skipModalSize: 'modal-sm'
         },
         category: '',
         baseUnit: '',

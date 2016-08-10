@@ -182,14 +182,14 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount ===''
-          val.purchase_price ===''
+          val.purchase_amount === ''
+          val.purchase_price === ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
           }
         })
-        this.renderstockGoods = this.renderstockGoods.concat(self.dataArray)
+       this.renderstockGoods = self.dataArray
       },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
@@ -204,17 +204,18 @@
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
-
           }
         })
         this.renderstockGoods = self.dataArray
       },
 //     删除商品
-      deleteFromApi: function (id) {
+      delete: function (id) {
         var self = this
         $.each(this.renderstockGoods, function (index, val) {
           if (val.id === id) {
             self.renderstockGoods.splice(index, 1)
+            val.choice = false
+            val.again =  false
           }
         })
       },
@@ -268,7 +269,7 @@
       },
 //      添加商品
       addStockGoods: function ( ){
-        this.modal.addGoodModal=true
+        this.modal.addGoodModal = true
       },
 //     引入数据
       inclucdePurchaseData: function () {
