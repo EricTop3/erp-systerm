@@ -34,6 +34,7 @@
         <div class="form-group ml10">
           <label>状态搜索</label>
           <select class="form-control" v-model="search.status">
+            <option value="">请选择</option>
             <option value="1">启用</option>
             <option value="0">停用</option>
           </select>
@@ -216,7 +217,7 @@
               <option value="cash" selected>现金</option>
               <option value="alipay">支付宝</option>
               <option value="weixin">微信支付</option>
-              <option value="vip">会员支付</option>
+              <!--<option value="vip">会员支付</option>-->
               <option value="post">POSE刷卡</option>
             </select>
           </div>
@@ -225,6 +226,12 @@
           <label class="col-sm-4 control-label">充值金额：</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" v-model="edit.balance">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">交易单号：</label>
+          <div class="col-sm-8">
+            <input type="text" :disabled="edit.payment == 'cash'" class="form-control" v-model="edit.trade_number">
           </div>
         </div>
       </form>
@@ -246,7 +253,6 @@
   import {
     requestSystemUrl,
     token,
-    searchRequest,
     getDataFromSiteApi,
     postSiteDataToApi,
     putDataToApi,
@@ -276,10 +282,10 @@
 
           $.each(self.gridData, function (index, value) {
             value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-            if (value.status == 'start') {
-              self.status = '启用'
+            if (value.status == 1) {
+              value.status = '启用'
             } else {
-              self.status = '停用'
+              value.status = '停用'
             }
           })
         }, function (err) {
@@ -306,10 +312,10 @@
           self.page = response.data.body.pagination
           $.each(self.gridData, function (index, value) {
             value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-            if (value.status == 'start') {
-              self.status = '启用'
+            if (value.status == 1) {
+              value.status = '启用'
             } else {
-              self.status = '停用'
+              value.status = '停用'
             }
           })
         })
@@ -385,11 +391,12 @@
       saveRecharge: function (event) {
         var self = this
         var id = Number($(event.currentTarget).attr('value'))
-        var url = requestSystemUrl + '/front-system/member/member/change-money/' + id
+        var url = requestSystemUrl + '/front-system/member/member/' + id + '/recharge'
         var data = {
           money: self.edit.balance,
           payment: self.edit.payment,
-          member_card: self.edit.member_card
+          member_card: self.edit.member_card,
+          trade_number: self.edit.trade_number
         }
         putDataToApi(url, data, function (response) {
           self.listData({})
@@ -410,8 +417,7 @@
           phone: self.search.phone || '',
           birthday: self.search.birthday || '',
           store_id: self.search.store_id || '',
-          start_time: self.search.start_time || '',
-          end_time: self.search.end_time || ''
+          status: self.search.status || ''
         }
         self.listData(data)
       },
@@ -423,8 +429,7 @@
         self.search.phone = ''
         self.search.birthday = ''
         self.search.store_id = ''
-        self.search.start_time = ''
-        self.search.end_time = ''
+        self.search.status = ''
         self.listData({})
       }
     },
@@ -442,6 +447,7 @@
           rechargeModal: false,
         },
         member_level_group: [],
+//        创建新会员
         create: {
           member_card: '',
           name: '',
@@ -452,6 +458,7 @@
           password: '',
           payment: ''
         },
+//        编辑会员、充值金额
         edit: {
           id: '',
           name: '',
@@ -461,7 +468,8 @@
           status: '',
           phone: '',
           member_card: '',
-          payment: ''
+          payment: '',
+          trade_number: ''
         },
         gridOperate: true,
         gridData: [],
@@ -476,6 +484,7 @@
           register_store_name: "开卡点",
           status: "状态"
         },
+//        搜索
         search: {
           card_number: '',
           name: '',
