@@ -19,30 +19,26 @@
       <tbody>
       <tr class="text-center">
         <td>{{onedata.settled_at}}</td>
-        <td><template v-if="onedata.total_sum != ''">￥</template>{{onedata.total_sum}}</td>
-        <td><template v-if="onedata.vip_total_sum != ''">￥s</template>{{onedata.vip_total_sum}}</td>
-        <td><template v-if="onedata.cash_total_sum !=''">￥</template>{{onedata.cash_total_sum}}</td>
-        <td><template v-if="onedata.pos_total_sum !=''">￥</template>{{onedata.pos_total_sum}}</td>
-        <td><template v-if="onedata.weixin_total_sum !=''">￥</template>{{onedata.weixin_total_sum}}</td>
-        <td><template v-if="onedata.alipay_total_sum !=''">￥</template>{{onedata.alipay_total_sum}}</td>
+        <td>{{onedata.total_sum}}</td>
+        <td>{{onedata.vip_total_sum}}</td>
+        <td>{{onedata.cash_total_sum}}</td>
+        <td>{{onedata.pos_total_sum}}</td>
+        <td>{{onedata.weixin_total_sum}}</td>
+        <td>{{onedata.alipay_total_sum}}</td>
         <td>
-          <button id="todaySet" class="btn btn-primary btn-sm">今日结算</button>
+          <span v-if="onedata.settled_at==''" id="todaySet" class="btn btn-primary btn-sm" @click="settlementModal=true">结算</span>
           <span class="btn btn-info btn-sm" v-link="{path: '/site/billing/list' }">结算历史</span>
         </td>
       </tr>
       </tbody>
     </table>
-
     <!-- 表格 -->
     <grid :data="todayDetailGridData" :columns="todayDetailGridColumns"></grid>
-
-    <!-- 翻页 -->
     <!--分页-->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
           :last-page="page.last_page" v-if="todayDetailGridData.length > 0">
     </page>
   </div>
-
   <!--模态框-今日结算-->
   <modal :show.sync="settlementModal" :modal-size="settlementModalSize">
     <div slot="header">
@@ -103,6 +99,7 @@
         var url = requestSystemUrl + '/front-system/settlement/' + this.thisId + '/detail'
         getDataFromApi(url, {}, function (response) {
           self.onedata = response.data.body
+          self.modifyGetedOneData(self.onedata)
         })
       },
 //    渲染当日结算列表
@@ -117,9 +114,10 @@
           self.todayDetailGridData = response.data.body.list
           self.modifyGetedData(self.todayDetailGridData)
           self.page = response.data.body.pagination
+          self.thisId = self.$route.params.queryId
         })
       },
-//    对获取到的数据进行处理
+//    对获取到的数据进行处理1
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
           if (value.pay_method == 'cash') {
@@ -134,18 +132,42 @@
           if (value.pay_method == 'vip') {
             this.pay_method = '会员卡支付'
           }
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+        })
+      },
+//      对获取的单条数据处理2
+      modifyGetedOneData: function (data){
+        $.each(data, function (index, value) {
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
+            value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
+          }
+          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
+            value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
+          }
+          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
+            value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
+          }
+          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
+            value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
+          }
+          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
+            value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+          }
         })
       },
 //    确定结算
-      yesSettlement: function (event) {
-        this.$http.post(requestUrl + '/front-system/settlement/create', {
-          headers: {'X-Overpowered-Token': token}
-        }, function (response) {
-          $('#todaySet').hide()
-          this.settlementModal = false
-          this.todayGridData.status = true
-        }, function (error) {
-          error(error)
+      yesSettlement: function () {
+        var self = this
+        var url = requestSystemUrl + '/front-system/settlement/' + this.thisId + '/settle'
+        putDataToApi(url, {}, function (response) {
+          self.settlementModal = false
+          self.todayGridData.status = true
+          self.todayListData()
         })
       }
     },

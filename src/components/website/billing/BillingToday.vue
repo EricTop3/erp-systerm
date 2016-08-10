@@ -18,30 +18,12 @@
       <tbody>
       <tr class="text-center">
         <td>{{onedata.settled_at}}</td>
-        <td>
-          <template v-if="onedata.total_sum != ''">￥</template>
-          {{onedata.total_sum}}
-        </td>
-        <td>
-          <template v-if="onedata.vip_total_sum != ''">￥</template>
-          {{onedata.vip_total_sum}}
-        </td>
-        <td>
-          <template v-if="onedata.cash_total_sum !=''">￥</template>
-          {{onedata.cash_total_sum}}
-        </td>
-        <td>
-          <template v-if="onedata.pos_total_sum !=''">￥</template>
-          {{onedata.pos_total_sum}}
-        </td>
-        <td>
-          <template v-if="onedata.weixin_total_sum !=''">￥</template>
-          {{onedata.weixin_total_sum}}
-        </td>
-        <td>
-          <template v-if="onedata.alipay_total_sum !=''">￥</template>
-          {{onedata.alipay_total_sum}}
-        </td>
+        <td>{{onedata.total_sum}}</td>
+        <td>{{onedata.vip_total_sum}}</td>
+        <td>{{onedata.cash_total_sum}}</td>
+        <td>{{onedata.pos_total_sum}}</td>
+        <td>{{onedata.weixin_total_sum}}</td>
+        <td>{{onedata.alipay_total_sum}}</td>
         <td>
           <span v-if="onedata.status==0" id="todaySet" class="btn btn-primary btn-sm" @click="settlementModal=true">今日结算</span>
           <span class="btn btn-info btn-sm" v-link="{path: '/site/billing/list' }">结算历史</span>
@@ -67,7 +49,7 @@
       <h4 class="modal-title">提示</h4>
     </div>
     <div slot="body">
-      <h4 class="text-center">确定结算？</h4>
+      <h4 class="text-center">结算后当日不能下单，确定结算？</h4>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-info" @click="yesSettlement()">确定</button>
@@ -75,8 +57,6 @@
     </div>
   </modal>
   <!--模态框HTML-->
-
-
 </template>
 <script>
   import $ from 'jquery'
@@ -117,6 +97,7 @@
         var data = {}
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body.today
+          self.modifyGetedOneData(self.onedata)
           self.todayDetailGridData = response.data.body.list
           self.modifyGetedData(self.todayDetailGridData)
           self.page = response.data.body.page.pagination
@@ -137,6 +118,32 @@
           }
           if (value.pay_method == 'vip') {
             this.pay_method = '会员卡支付'
+          }
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+        })
+      },
+//      对获取的单条数据处理2
+      modifyGetedOneData: function (data){
+        $.each(data, function (index, value) {
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
+            value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
+          }
+          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
+            value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
+          }
+          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
+            value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
+          }
+          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
+            value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
+          }
+          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
+            value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
         })
       },

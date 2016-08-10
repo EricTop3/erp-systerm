@@ -10,62 +10,61 @@
       <form class="form-inline">
         <div class="form-group">
           <label>会员卡号</label>
-          <input type="text" class="form-control" placeholder="" v-model="query.member_card">
+          <input type="text" class="form-control" placeholder="" v-model="search.card_number">
         </div>
         <div class="form-group ml10">
           <label>会员姓名</label>
-          <input type="text" class="form-control" placeholder="" v-model="query.name">
+          <input type="text" class="form-control" placeholder="" v-model="search.name">
         </div>
         <div class="form-group ml10">
           <label>会员手机号</label>
-          <input type="text" class="form-control" placeholder="" v-model="query.phone">
+          <input type="text" class="form-control" placeholder="" v-model="search.phone">
         </div>
         <div class="form-group ml10">
           <label>会员生日</label>
-          <date-picker :value.sync="query.birthday"></date-picker>
+          <date-picker :value.sync="search.birthday"></date-picker>
         </div>
         <div class="form-group ml10">
           <label>开卡点</label>
-          <!--TODO 开卡点会通过记录动态获取，现在先写死-->
-          <select class="form-control" v-model="query.store_id">
-            <option value="1">水星</option>
-            <option value="2">万达</option>
+          <select class="form-control" v-model="search.store_id">
+            <option value="">请选择</option>
+            <option v-for="item in warehouseList" value="{{item.id}}">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>状态搜索</label>
-          <select class="form-control" v-model="query.status">
-            <option value="start">启用</option>
-            <option value="stop">停用</option>
+          <select class="form-control" v-model="search.status">
+            <option value="">请选择</option>
+            <option value="1">启用</option>
+            <option value="0">停用</option>
           </select>
         </div>
-        <span type="submit" class="btn btn-info ml10" @click="searchProduct">搜索</span>
-        <span type="submit" class="btn btn-warning" @click="cancelSearchProduct">撤销搜索</span>
-        <span type="submit" class="btn btn-primary" @click="creatMemberModal=true">新会员办理</span>
+        <span class="btn btn-info ml10" @click="searchProduct">搜索</span>
+        <span class="btn btn-warning" @click="cancelSearchProduct">撤销搜索</span>
+        <span class="btn btn-primary" @click="modal.creatMemberModal = true">新会员办理</span>
       </form>
     </div>
     <!-- 表格 -->
     <grid :data="gridData" :columns="gridColumns" :operate="gridOperate">
       <div slot="operateList">
-        <span :value="member_card" class="btn btn-primary btn-sm" data-toggle="modal"
-              data-target="#chongzhi-member-templ"
-              @click="recharge($event)">充值</span>
-        <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#edit-member-templ" id="show-modal"
-              @click="updateMember($event)">编辑</span>
-        <a @click="checkDetail($event)"><span
-          class="btn btn-warning btn-sm">查看明细</span></a>
+        <span :value="member_card" class="btn btn-primary btn-sm" @click="recharge($event)">充值</span>
+        <span class="btn btn-info btn-sm" @click="updateMember($event)">编辑</span>
+        <span class="btn btn-warning btn-sm" @click="checkDetail($event)">查看明细</span>
       </div>
     </grid>
 
     <!-- 翻页 -->
-    <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
-          :last-page='page.last_page'></page>
+    <page
+      :total='page.total'
+      :current.sync='page.current_page'
+      :display='page.per_page'
+      :last-page='page.last_page' v-if="page.total > 0">
+    </page>
   </div>
   <!--创建会员弹窗-->
-  <modal :show.sync="creatMemberModal" :modal-size="createModalSize">
+  <modal :show.sync="modal.creatMemberModal" :modal-size="modal.createModalSize">
     <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" @click="creatMemberModal=false" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
+      <button type="button" class="close" @click="modal.creatMemberModal=false" ><span>&times;</span></button>
       <h4 class="modal-title">新会员办理</h4>
     </div>
     <div slot="body">
@@ -74,61 +73,57 @@
         <form action="" method="post" class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-4 control-label">会员卡号：</label>
-
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="member_card">
+              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="create.member_card">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">姓名：</label>
-
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="member_name">
+              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="create.name">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">手机号码：</label>
             <div class="col-sm-8">
-              <input id="new_phoneNum" type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="phone">
+              <input id="new_phoneNum" type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="create.phone">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">微商城密码：</label>
 
             <div class="col-sm-8">
-              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="password">
+              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="create.password">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <date-picker :value.sync="birthday"></date-picker>
+              <date-picker :value.sync="create.birthday"></date-picker>
               <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">-->
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">等 级：</label>
-
             <div class="col-sm-8">
-              <select class="form-control" v-model="level">
-                <!--<option selected>请选择会员等级</option>-->
-                <option v-for="value in member_level_group" value="{{value.id}}" name="{{value.name}}">{{value.name}}</option>
+              <select class="form-control" v-model="create.level">
+                <option value="">请选择</option>
+                <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
               </select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">充值金额：</label>
-
             <div class="col-sm-8">
               <div class="form-inline">
-                <input type="text" class="form-control" v-model="balance" placeholder="请输入充值金额！" style="width:104px;">
-                <select class="form-control ml10" v-model="payment">
+                <input type="text" class="form-control" v-model="create.balance" placeholder="请输入充值金额！" style="width:104px;">
+                <select class="form-control ml10" v-model="create.payment">
                   <option value="cash" selected>现金</option>
                   <option value="alipay">支付宝</option>
                   <option value="weixin">微信支付</option>
-                  <option value="vip">会员支付</option>
-                  <option value="post">POSE刷卡</option>
+                  <!--<option value="vip">会员支付</option>-->
+                  <option value="pos">POSE刷卡</option>
                 </select>
               </div>
             </div>
@@ -137,15 +132,15 @@
       </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="creatMemberModal=false">关闭</button>
+      <button type="button" class="btn btn-default" @click="modal.creatMemberModal=false">关闭</button>
       <button type="button" class="btn btn-primary" @click="creatNewMember">保存</button>
     </div>
   </modal>
 
   <!--编辑弹窗-->
-  <modal :show.sync="editModal" :modal-size="editModalSize">
+  <modal :show.sync="modal.editModal" :modal-size="modal.editModalSize">
     <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" @click="editModal=false" aria-label="Close"><span
+      <button type="button" class="close" data-dismiss="modal" @click="modal.editModal=false" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">会员编辑</h4>
     </div>
@@ -156,45 +151,45 @@
             <label class="col-sm-4 control-label">会员卡号：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" v-model="formData.member_card" disabled>
+              <input type="text" class="form-control" v-model="edit.member_card" disabled>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">姓名：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="formData.name">
+              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="edit.name">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">手机号码：</label>
 
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="formData.phone" disabled>
+              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="edit.phone" disabled>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">微商城密码：</label>
 
             <div class="col-sm-8">
-              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="formData.password">
+              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="edit.password">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">生 日：</label>
 
             <div class="col-sm-8">
-              <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="formData.birthday">-->
-              <date-picker :value.sync="formData.birthday"></date-picker>
+              <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="edit.birthday">-->
+              <date-picker :value.sync="edit.birthday"></date-picker>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">等 级：</label>
 
             <div class="col-sm-8">
-              <select class="form-control" v-model="formData.level">
-                <!--<option selected>请选择会员等级</option>-->
-                <option v-for="value in member_level_group" value="{{value.id}}" name="{{value.name}}">{{value.name}}</option>
+              <select class="form-control" v-model="edit.level">
+                <option value="">请选择</option>
+                <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
               </select>
             </div>
           </div>
@@ -202,13 +197,13 @@
       </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="editModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="formData.id" @click="saveUpdateMember($event)">保存</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" @click="modal.editModal=false">关闭</button>
+      <button type="button" class="btn btn-primary" :value="edit.id" @click="saveUpdateMember($event)">保存</button>
     </div>
   </modal>
 
   <!--充值弹窗-->
-  <modal :show.sync="rechargeModal" :modal-size="rechargeModalSize">
+  <modal :show.sync="modal.rechargeModal" :modal-size="modal.rechargeModalSize">
     <div slot="header">
       <button type="button" class="close"></button>
       <h4 class="modal-title">会员充值</h4>
@@ -217,29 +212,33 @@
       <form action="" method="post" class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">支付方式：</label>
-
           <div class="col-sm-8">
-            <select class="form-control" v-model="formData.payment">
+            <select class="form-control" v-model="edit.payment">
               <option value="cash" selected>现金</option>
               <option value="alipay">支付宝</option>
               <option value="weixin">微信支付</option>
-              <option value="vip">会员支付</option>
+              <!--<option value="vip">会员支付</option>-->
               <option value="post">POSE刷卡</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">充值金额：</label>
-
           <div class="col-sm-8">
-            <input type="text" class="form-control" v-model="formData.balance">
+            <input type="text" class="form-control" v-model="edit.balance">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">交易单号：</label>
+          <div class="col-sm-8">
+            <input type="text" :disabled="edit.payment == 'cash'" class="form-control" v-model="edit.trade_number">
           </div>
         </div>
       </form>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="rechargeModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="formData.id" @click="saveRecharge($event)">保存</button>
+      <button type="button" class="btn btn-default" @click="modal.rechargeModal=false">关闭</button>
+      <button type="button" class="btn btn-primary" :value="edit.id" @click="saveRecharge($event)">保存</button>
     </div>
   </modal>
 
@@ -251,7 +250,13 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import DatePicker from  '../../common/DatePicker'
-  import {requestUrl, token, searchRequest, error} from '../../../publicFunction/index'
+  import {
+    requestSystemUrl,
+    token,
+    getDataFromSiteApi,
+    postSiteDataToApi,
+    putDataToApi,
+    error } from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -263,91 +268,85 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.listData(currentpage)
-      }
-    },
-    ready: function () {
-      this.listData(1)
-
-    },
-    methods: {
-//    会员-列表数据渲染
-      listData: function (page) {
+        var self = this
         this.$http({
-          url: requestUrl + '/front-system/user',
-          method: 'get',
-          headers: {
-            'X-Overpowered-Token': token
-          },
+          url: requestSystemUrl + '/front-system/member/member',
           data: {
-            phone: this.query.phone || '',
-            birthday: this.query.birthday || '',
-            status: this.query.status || '',
-            store_id: this.query.store_id || '',
-            name: this.query.name || '',
-            member_card: this.query.member_card || '',
-            page: page,
-            per_page: 16
-          }
+            page: currentpage
+          },
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.gridData = response.data.body.list
-          $.each(this.gridData, function (index, value) {
+          self.gridData = response.data.body.list
+          self.page = response.data.body.pagination
+
+          $.each(self.gridData, function (index, value) {
             value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-            if (value.status == 'start') {
-              this.status = '启用'
+            if (value.status == 1) {
+              value.status = '启用'
             } else {
-              this.status = '停用'
+              value.status = '停用'
             }
           })
         }, function (err) {
-          error(err)
+          console.log(err)
+        })
+      }
+    },
+    ready: function () {
+      var self = this
+//      获取开卡点
+      var url = requestSystemUrl + '/front-system/store'
+      getDataFromSiteApi(url,{},function (response) {
+        self.warehouseList = response.data.body.list
+      })
+      this.listData({})
+    },
+    methods: {
+//    会员-列表数据渲染
+      listData: function (data) {
+        var self = this
+        var url = requestSystemUrl + '/front-system/member/member'
+        getDataFromSiteApi(url, data, function (response) {
+          self.gridData = response.data.body.list
+          self.page = response.data.body.pagination
+          $.each(self.gridData, function (index, value) {
+            value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
+            if (value.status == 1) {
+              value.status = '启用'
+            } else {
+              value.status = '停用'
+            }
+          })
         })
       },
 //    创建新会员
       creatNewMember: function () {
-
-        this.$http.post(requestUrl + '/front-system/user', {
-            member_card: this.member_card,
-            name: this.member_name,
-            phone: this.phone,
-            birthday: this.birthday,
-            balance: this.balance,
-            password: this.password,
-            level: this.level,
-            payment: this.payment
-          },
-          {
-            headers: {
-              'X-Overpowered-Token': token
-            }
-          }).then(function (response) {
-
-          this.$http({
-            url: requestUrl + '/front-system/user',
-            method: 'get',
-            headers: {
-              'X-Overpowered-Token': token
-            }
-          }).then(function (response) {
-            this.listData(1)
-          }, function (err) {
-            error(err)
-          })
-
-          this.creatMemberModal = false
-
-        }, function (err) {
+        var self = this
+        var url = requestSystemUrl + '/front-system/member/member'
+        var data = {
+          member_card: self.create.member_card,
+          name: self.create.name,
+          phone: self.create.phone,
+          birthday: self.create.birthday,
+          level: self.create.level,
+          balance: self.create.balance,
+          password: self.create.password,
+          payment: self.create.payment
+        }
+        postSiteDataToApi(url, data, function (response) {
+          self.modal.creatMemberModal = false
+          self.listData({})
+        },function (err) {
           if (err.data.message == "无效的手机号码"){
-            console.log(err.data.message)
-            this.phone = err.data.message
+            self.create.phone = err.data.message
           }
         })
       },
 //    编辑会员资料
       updateMember: function (event) {
 //      弹出模态框
-        this.editModal = true
+        this.modal.editModal = true
 //      编辑数据
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
         var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
@@ -356,60 +355,52 @@
         var birthday = $(event.currentTarget).parents('tr').find('td:nth-child(6)').text()
         var level = $(event.currentTarget).parents('tr').find('td:nth-child(7)').text()
 
-        this.formData.id = id
-        this.formData.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
-        this.formData.name = name.replace(/(^\s*)|(\s*$)/g, '')
-        this.formData.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
-        this.formData.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
-        this.formData.level = level.replace(/(^\s*)|(\s*$)/g, '')
+        this.edit.id = id
+        this.edit.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
+        this.edit.name = name.replace(/(^\s*)|(\s*$)/g, '')
+        this.edit.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
+        this.edit.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
+        this.edit.level = level.replace(/(^\s*)|(\s*$)/g, '')
       },
 //    保存修改的会员数据
       saveUpdateMember: function (event) {
-        var id = this.formData.id
-        this.$http.put(requestUrl + '/front-system/user/' + id, {
-            name: this.formData.name,
-            birthday: this.formData.birthday,
-            level: this.formData.level,
-            password: this.formData.password
-          },
-          {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-Overpowered-Token': token
-            }
-          }).then(function (response) {
-          this.listData(1)
-          this.editModal = false
-        }, function (err) {
-          error(err)
+        var id = this.edit.id
+        var self = this
+        var url = requestSystemUrl + '/front-system/member/member/' + id
+        var data = {
+          name: self.edit.name,
+          birthday: self.edit.birthday,
+          level: self.edit.level,
+          password: self.edit.password
+        }
+        putDataToApi(url, data, function (response) {
+          self.listData({})
+          self.modal.editModal = false
         })
       },
 //    充值金额
       recharge: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
         var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
-        this.formData.id = id
-        this.formData.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
+        this.edit.id = id
+        this.edit.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
 
-        this.rechargeModal = true
+        this.modal.rechargeModal = true
       },
 //    保存充值金额
       saveRecharge: function (event) {
+        var self = this
         var id = Number($(event.currentTarget).attr('value'))
-        this.$http.put(requestUrl + '/front-system/user/change-money/' + id, {
-            money: this.formData.balance,
-            payment: this.formData.payment,
-            member_card: this.formData.member_card
-          },
-          {
-            headers: {
-              'X-Overpowered-Token': token
-            }
-          }).then(function (response) {
-          this.listData(1)
-          this.rechargeModal = false
-        }, function (err) {
-          error(err)
+        var url = requestSystemUrl + '/front-system/member/member/' + id + '/recharge'
+        var data = {
+          money: self.edit.balance,
+          payment: self.edit.payment,
+          member_card: self.edit.member_card,
+          trade_number: self.edit.trade_number
+        }
+        putDataToApi(url, data, function (response) {
+          self.listData({})
+          self.modal.rechargeModal = false
         })
       },
 //    查看明细
@@ -420,84 +411,55 @@
 //    搜索
       searchProduct: function () {
         var self = this
-        searchRequest(
-          requestUrl + '/front-system/user',
-          {
-            phone: this.query.phone || '',
-            birthday: this.query.birthday || '',
-            status: this.query.status || '',
-            store_id: this.query.store_id || '',
-            name: this.query.name || '',
-            member_card: this.query.member_card || '',
-          },
-          function (response) {
-            self.gridData = response.data.body.list
-            self.page = response.data.body.pagination
-            $.each(self.gridData, function (index, value) {
-              value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-              if (value.status == 'start') {
-                this.status = '启用'
-              } else {
-                this.status = '停用'
-              }
-            })
-            self.query.phone = '',
-            self.query.birthday = '',
-            self.query.status = '',
-            self.query.store_id = '',
-            self.query.name = '',
-            self.query.member_card = ''
-          })
+        var data = {
+          card_number: self.search.card_number || '',
+          name: self.search.name || '',
+          phone: self.search.phone || '',
+          birthday: self.search.birthday || '',
+          store_id: self.search.store_id || '',
+          status: self.search.status || ''
+        }
+        self.listData(data)
       },
 //    取消搜索
       cancelSearchProduct: function () {
         var self = this
-        searchRequest(
-          requestUrl + '/front-system/user',
-          {
-            phone: '',
-            birthday: '',
-            status: '',
-            open_card_store: '',
-            name: '',
-            member_card: ''
-          },
-          function (response) {
-            self.gridData = response.data.body.list
-            self.page = response.data.body.pagination
-            $.each(self.gridData, function (index, value) {
-              value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-              if (value.status == 'start') {
-                this.status = '启用'
-              } else {
-                this.status = '停用'
-              }
-            })
-          })
+        self.search.card_number = ''
+        self.search.name = ''
+        self.search.phone = ''
+        self.search.birthday = ''
+        self.search.store_id = ''
+        self.search.status = ''
+        self.listData({})
       }
     },
     data: function () {
       return {
         detailUrl: '/#!/site/member/',
-        member_level_group: [],
-        member_card: '',
-        member_name: '',
-        phone: '',
-        birthday: '',
-        balance: '',
-        password: '',
-        level: '',
-        payment: '',
         page: [],
-        createModalSize: 'modal-sm',
-        rechargeModalSize: 'modal-sm',
-        editModalSize: 'modal-sm',
-        creatMemberModal: false,
-        editModal: false,
-        rechargeModal: false,
-        gridOperate: true,
-        gridData: [],
-        formData: {
+        warehouseList: [],
+        modal: {
+          createModalSize: 'modal-sm',
+          rechargeModalSize: 'modal-sm',
+          editModalSize: 'modal-sm',
+          creatMemberModal: false,
+          editModal: false,
+          rechargeModal: false,
+        },
+        member_level_group: [],
+//        创建新会员
+        create: {
+          member_card: '',
+          name: '',
+          phone: '',
+          birthday: '',
+          level: '',
+          balance: '',
+          password: '',
+          payment: ''
+        },
+//        编辑会员、充值金额
+        edit: {
           id: '',
           name: '',
           birthday: '',
@@ -506,44 +468,43 @@
           status: '',
           phone: '',
           member_card: '',
-          payment: ''
+          payment: '',
+          trade_number: ''
         },
+        gridOperate: true,
+        gridData: [],
         gridColumns: {
-          member_card: "会员卡号",
+          card_number: "会员卡号",
           balance: "余额",
           score: "积分",
           name: "姓名",
-          phone: "手机号码",
+          mobile_phone: "手机号码",
           birthday: "生日",
-          level: "等级",
-          store_id: "开卡点",
+          member_type: "等级",
+          register_store_name: "开卡点",
           status: "状态"
         },
-        query: {
+//        搜索
+        search: {
+          card_number: '',
+          name: '',
           phone: '',
           birthday: '',
-          status: '',
           store_id: '',
-          name: '',
-          member_card: ''
+          status: ''
         }
       }
     },
     compiled: function () {
+      var self = this
 //    新增会员获取会员等级
-      this.$http({
-        url: requestUrl + '/front-system/user/level',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token}
-      }).then(function (response) {
-        this.member_level_group = response.data.body
-      }, function (err) {
-        console.log(err)
+      var url = requestSystemUrl + '/front-system/coupon'
+      getDataFromSiteApi(url, {}, function (response) {
+        self.member_level_group = response.data.body.list
       })
     }
   }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
   .calendar{
     z-index: 1;
