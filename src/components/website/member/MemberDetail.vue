@@ -55,11 +55,12 @@
     </div>
     <div slot="body">
       <div class="modal-body">
+        <validator name="validationEditMember">
         <form class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-4 control-label">会员卡号：</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" v-model="edit.member_card" disabled>
+              <span style="display: inline-block; margin-top: 8px;">{{edit.member_card}}</span>
             </div>
           </div>
           <div class="form-group">
@@ -71,13 +72,13 @@
           <div class="form-group">
             <label class="col-sm-4 control-label">手机号码：</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="手机号码为微商城登录账号！" v-model="edit.phone" disabled>
+              <span style="display: inline-block; margin-top: 8px;">{{edit.phone}}</span>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">微商城密码：</label>
             <div class="col-sm-8">
-              <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="edit.password">
+              <input type="password" class="form-control" v-model="edit.password">
             </div>
           </div>
           <div class="form-group">
@@ -90,18 +91,22 @@
           <div class="form-group">
             <label class="col-sm-4 control-label">等 级：</label>
             <div class="col-sm-8">
-              <select class="form-control" v-model="edit.level">
+              <select class="form-control" v-model="edit.level" v-validate:level="{required: true}">
                 <option value="" selected>请选择</option>
                 <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
               </select>
+              <span v-if="$validationEditMember.level.touched">
+                <span v-if="$validationEditMember.level.required" class="errT">请选择会员等级！</span>
+              </span>
             </div>
           </div>
         </form>
+        </validator>
       </div>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" @click="modal.editModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="edit.id" @click="saveUpdateMember($event)">保存</button>
+      <button type="button" class="btn btn-primary" :value="edit.id" @click="verifyEditMember($event)">保存</button>
     </div>
   </modal>
 
@@ -112,6 +117,7 @@
       <h4 class="modal-title">会员充值</h4>
     </div>
     <div slot="body">
+      <validator name="validationRecharge">
       <form action="" method="post" class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">支付方式：</label>
@@ -128,20 +134,24 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">充值金额：</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" v-model="edit.balance">
+            <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate">
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">交易单号：</label>
           <div class="col-sm-8">
-            <input type="text" :disabled="edit.payment == 'cash'" class="form-control" v-model="edit.trade_number">
+            <input type="text" :disabled="edit.payment == 'cash'" class="form-control" v-model="edit.trade_number" v-validate:trade_number="{required: true}">
+            <span v-if="$validationRecharge.trade_number.touched">
+                <span v-if="$validationRecharge.trade_number.required" class="errT">请填写交易单号！</span>
+            </span>
           </div>
         </div>
       </form>
+      </validator>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-default" @click="modal.rechargeModal = false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="edit.id" @click="saveRecharge($event)">保存</button>
+      <button type="button" class="btn btn-primary" :value="edit.id" @click="verifyRecharge($event)">保存</button>
     </div>
   </modal>
 
@@ -220,7 +230,6 @@
           })
         })
       },
-
 //    编辑会员资料
       updateMember: function (event) {
 //      弹出模态框
@@ -238,7 +247,12 @@
         this.edit.name = name.replace(/(^\s*)|(\s*$)/g, '')
         this.edit.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
         this.edit.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
-        this.edit.level = level.replace(/(^\s*)|(\s*$)/g, '')
+        var self = this
+        $.each(self.member_level_group, function (index, val) {
+          if (level.replace(/(^\s*)|(\s*$)/g, '') == val.display_name) {
+            self.edit.level = val.id
+          }
+        })
       },
 //    保存修改的会员数据
       saveUpdateMember: function (event) {
@@ -258,6 +272,18 @@
           self.listData()
         })
       },
+//    编辑会员的验证
+      verifyEditMember: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validationEditMember.invalid) {
+            self.$validationEditMember.level.touched = true
+            e.preventDefault()
+          } else {
+            self.saveUpdateMember(e)
+          }
+        })
+      },
 //    充值金额
       recharge: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
@@ -267,6 +293,25 @@
         this.edit.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
 
         this.modal.rechargeModal = true
+      },
+//      充值金额的验证
+      verifyRecharge: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validationRecharge.invalid) {
+            self.$validationRecharge.trade_number.touched = true
+            e.preventDefault()
+          } else {
+            self.saveRecharge(e)
+          }
+        })
+      },
+//     金额正则
+      priceValidate: function () {
+        var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
+        if (!re.test(this.create.balance)) {
+          this.create.balance =  ''
+        }
       },
 //    保存充值金额
       saveRecharge: function (event) {
@@ -349,6 +394,11 @@
 <style scoped>
   h1 {
     color: #42b983;
+  }
+  .errT{
+    float: left;
+    color: red;
+    font-size: 12px;
   }
 </style>
 

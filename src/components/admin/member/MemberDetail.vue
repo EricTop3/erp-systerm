@@ -2,51 +2,84 @@
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="mt20">
-      <!-- 页头 -->
-      <div class="page-header">
-        <form class="form-inline">
-          <div class="form-group">
-            <label>会员卡号</label>
-            <input class="form-control" placeholder="请输入会员卡号" v-model="searchData.card_number">
-          </div>
-          <div class="form-group">
-            <label>会员姓名</label>
-            <input class="form-control" placeholder="请输入姓名" v-model="searchData.name">
-          </div>
-          <div class="form-group">
-            <label>会员手机</label>
-            <input class="form-control" placeholder="请输入手机" v-model="searchData.phone">
-          </div>
-          <div class="form-group">
-            <label>会员生日</label>
-            <input class="form-control" placeholder="请输入生日" v-model="searchData.birthday">
-          </div>
-          <div class="form-group ml10">
-            <label>开卡点</label>
-            <select class="form-control"  v-model="searchData.register_store_id">
-              <option value="">请选择</option>
-              <option v-for="item in storeData" track-by="$index" :value="item.id">{{item.display_name}}</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary" @click="getlistData(1)">搜索</button>
-          <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
-        </form>
-      </div>
+
       <!-- 表格 -->
-      <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
-        <div slot="operateList">
-          <span class="btn btn-info btn-sm" @click="change($event)">变更</span>
-          <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-          <span class="btn btn-warning btn-sm" @click="view($event)">查看</span>
-        </div>
-      </grid>
-      <!--分页-->
-      <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-            :last-page="page.last_page" v-if="listdata.length > 0">
-      </page>
+      <table class="table table-striped table-border table-hover">
+        <thead>
+        <tr class="text-center">
+          <td>会员卡号</td>
+          <td>余额</td>
+          <td>积分</td>
+          <td>姓名</td>
+          <td>手机号码</td>
+          <td>生日</td>
+          <td>等级</td>
+          <td>开卡点</td>
+          <td>状态</td>
+          <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center">
+          <td>164643138431315</td>
+          <td>￥2514.00</td>
+          <td>2541656</td>
+          <td>王小二</td>
+          <td>13812345678</td>
+          <td>03.01</td>
+          <td>九折会员</td>
+          <td>水星店</td>
+          <td>启用</td>
+          <td>
+            <span class="btn btn-default" data-toggle="modal" data-target="#vip-change-templ">变更</span>
+            <span class="btn btn-default" data-toggle="modal" data-target="#vip-edit-templ">编辑</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- 表格2 -->
+      <table class="table table-striped table-border table-hover">
+        <thead>
+        <tr class="text-center">
+          <td>操作类型</td>
+          <td>余额变更</td>
+          <td>积分变更</td>
+          <td>最新余额</td>
+          <td>最新积分</td>
+          <td>操作时间</td>
+          <td>操作点</td>
+          <td>备注</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center">
+          <td>164643138431315</td>
+          <td>￥2514.00</td>
+          <td>2541656</td>
+          <td>王小二</td>
+          <td>13812345678</td>
+          <td>03.01</td>
+          <td>九折会员</td>
+          <td>水星店</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- 翻页 -->
+      <nav class="text-right">
+        <ul class="pagination">
+          <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+          <li class="active"><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">5</a></li>
+          <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+        </ul>
+      </nav>
     </div>
   </div>
-
   <!--模态框-编辑-->
   <modal :show.sync="editModal" :modal-size="editModalSize">
     <div slot="header">
@@ -110,6 +143,7 @@
   </modal>
   <!--模态框HTML-->
 
+
   <!-- 模态框-变更 -->
   <modal :show.sync="changeModal" :modal-size="changeModalSize">
     <div slot="header">
@@ -150,22 +184,6 @@
     </div>
   </modal>
   <!-- 模态框-变更 -->
-
-  <!-- 模态框-ok -->
-  <modal :show.sync="noticeModal" :modal-size="noticeModalSize">
-    <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="noticeModal=false"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">提示</h4>
-    </div>
-    <div slot="body">
-      <h3 class="text-center">变更成功！</h3>
-    </div>
-    <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmNotice()">提交</button>
-    </div>
-  </modal>
-  <!-- 模态框-ok -->
 </template>
 <style>
 </style>
@@ -205,50 +223,29 @@
     ready: function () {
 //      渲染会员列表
       this.getlistData(1)
-//      门店列表
-      this.storeListData()
-//      优惠列表
-      this.couponListData()
     },
     methods: {
 //      获取列表
       getlistData: function (page) {
+        this.thisId = this.$route.params.queryId
         var self = this
-        var url = requestSystemUrl + '/backend-system/member/member'
-        var data = {
-          card_number: this.searchData.card_number || '',
-          name: this.searchData.name || '',
-          phone: this.searchData.phone || '',
-          birthday: this.searchData.birthday || '',
-          register_store_id: this.searchData.register_store_id || '',
-          page: page || ''
-        }
+        var url = requestSystemUrl + '/backend-system/member/member/' + this.thisId
+        var data = {}
         getDataFromApi(url, data, function (response) {
           self.listdata = response.data.body.list
           self.page = response.data.body.pagination
           self.modifyGetedData(self.listdata)
         })
       },
-//      门店列表数据渲染
-      storeListData: function () {
+//      获取单条数据
+      getOneData: function () {
+        this.thisId = this.$route.params.queryId
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store'
-        getDataFromApi(url, {}, function (response) {
-          self.storeData = response.data.body.list
+        var url = requestSystemUrl + '/backend-system/member/member/' + this.thisId + '/detail'
+        var data = {}
+        getDataFromApi(url, data, function (response) {
+          self.onedata = response.data.body
         })
-      },
-//      优惠类型列表获取 /backend-system/coupon/coupon
-      couponListData: function () {
-        var self = this
-        var url = requestSystemUrl + '/backend-system/coupon/coupon'
-        getDataFromApi(url, {}, function (response) {
-          self.couponData = response.data.body.list
-        })
-      },
-//      取消搜索
-      cancelSearch: function () {
-        this.searchData = {}
-        this.getlistData(1)
       },
 //      编辑会员
       edit: function (event) {
@@ -295,11 +292,6 @@
           self.getlistData(1)
         })
       },
-//      查看
-      view: function (event) {
-        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = '/#!/admin/member/detail/' + this.thisId
-      },
 //    对获取到de列表数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
@@ -341,8 +333,6 @@
     },
     data: function () {
       return {
-        couponData: [],
-        storeData: [],
         editModal: false,
         editModalSize: 'modal-sm',
         noticeModal: false,
@@ -352,6 +342,7 @@
         thisId: '',
         formData: [],
         listdata: [],
+        onedata: [],
         page: [],
         gridOperate: true,
         gridColumns: {

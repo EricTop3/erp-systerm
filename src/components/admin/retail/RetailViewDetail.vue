@@ -75,12 +75,12 @@
         </thead>
         <tbody>
         <tr v-for="item in listDetail">
-          <td>{{item.name}}</td>
-          <td>{{item.old_price | priceChange}}</td>
-          <td>{{item.new_price | priceChange}}</td>
-          <td>{{item.amount }}</td>
-          <td>{{item.return_number }}</td>
-          <td>{{item.total_sum | priceChange}}</td>
+          <td>{{item.product_name}}</td>
+          <td>{{item.original_price}}</td>
+          <td>{{item.actual_price}}</td>
+          <td>{{item.total_sell}}</td>
+          <td>{{item.total_refund}}</td>
+          <td>{{item.total_sum}}</td>
           <td>{{ item.note==="" ? '无备注' : item.note }}</td>
         </tr>
         </tbody>
@@ -199,6 +199,20 @@
           value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
         }
       },
+//      订单明细数据处理
+      modifyGetedOrderData: function (data) {
+        $.each(data,function (index, value) {
+          if(value.total_sum != '' && value.total_sum > 0 ){
+            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+          }
+          if(value.actual_price != '' && value.actual_price > 0 ){
+            value.actual_price = '￥' + (value.actual_price * 0.01).toFixed(2)
+          }
+          if(value.original_price != '' && value.original_price > 0 ){
+            value.original_price = '￥' + (value.original_price * 0.01).toFixed(2)
+          }
+        })
+      },
 //      获取订单详情
       getOrderlistData: function () {
         var self = this
@@ -206,7 +220,7 @@
         var data = {}
         getDataFromApi(url, data, function (response) {
           self.listDetail = response.data.body.list
-//          self.modifyGetedData(self.listdata)
+          self.modifyGetedOrderData(self.listDetail)
         })
       },
 //      查看订单明细

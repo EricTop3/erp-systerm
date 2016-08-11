@@ -67,6 +67,7 @@ import ProductionDelegationInstockNew from 'components/admin/product/productionD
 import ProductionDelegationInstockDetail from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockDetail'
 import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
 import AdminMember from 'components/admin/member/MemberIndex'
+import AdminMemberDetail from 'components/admin/member/MemberDetail'
 import Retail from 'components/admin/retail/Retail'
 import RetailView from 'components/admin/retail/RetailView'
 import RetailViewDetail from 'components/admin/retail/RetailViewDetail'
@@ -317,6 +318,9 @@ router.map({
   },
   '/admin/member': {
     component: AdminMember
+  },
+  '/admin/member/detail/:queryId': {
+    component: AdminMemberDetail
   },
   '/admin/instock': {
     component: AdminInstock
