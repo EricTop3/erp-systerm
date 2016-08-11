@@ -28,10 +28,11 @@
               <option v-for="item in storeData" track-by="$index" :value="item.id">{{item.display_name}}</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary" @click="getlistData(1)">搜索</button>
+          <span class="btn btn-primary" @click="getlistData(1)">搜索</span>
           <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
         </form>
       </div>
+
       <!-- 表格 -->
       <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
         <div slot="operateList">
@@ -40,13 +41,13 @@
           <span class="btn btn-warning btn-sm" @click="view($event)">查看</span>
         </div>
       </grid>
+
       <!--分页-->
       <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
             :last-page="page.last_page" v-if="listdata.length > 0">
       </page>
     </div>
   </div>
-
   <!--模态框-编辑-->
   <modal :show.sync="editModal" :modal-size="editModalSize">
     <div slot="header">
@@ -109,7 +110,6 @@
     </div>
   </modal>
   <!--模态框HTML-->
-
   <!-- 模态框-变更 -->
   <modal :show.sync="changeModal" :modal-size="changeModalSize">
     <div slot="header">
@@ -304,7 +304,7 @@
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
           if(value.balance != '' && value.balance > 0 ){
-            value.balance = '￥' + (value.balance * 0.01).toFixed(2)
+            value.balance = '￥' + (value.balance * 1).toFixed(2)
           }
           if(value.status == '0'){
             value.status = '停用'
