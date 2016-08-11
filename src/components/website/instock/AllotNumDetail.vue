@@ -59,21 +59,20 @@
         <table class="table table-striped table-bordered table-hover">
           <thead>
           <tr class="text-center">
-            <th v-for="value in  gridColumns2">
+            <th v-for="value in  gridColumns3">
               {{value}}
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+          <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td>{{entry.consumable_code}}</td>
             <td>{{entry.consumable_name}}</td>
-            <td>{{entry.recipient_amount}}</td>
-            <td>{{entry.distribution_amount}}</td>
-            <td>{{entry.current_amount}}</td>
+            <td>{{entry.item_recipient_amount}}</td>
+            <td>{{entry.item_distribution_amount}}</td>
+            <td>{{entry.item_current_amount}}</td>
             <td>{{entry.unit}}</td>
             <td>{{entry.unit_specification}}</td>
-            <td>{{entry.order_source_code}}</td>
           </tr>
           </tbody>
         </table>
@@ -150,7 +149,7 @@
           error(err)
         })
       },
-      //     切换
+//     切换
       changeActive: function (event) {
         var cur = $(event.currentTarget)
         cur.addClass('active').siblings('li').removeClass('active')
@@ -158,14 +157,43 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
+        }
+      },
+//       汇总方法
+    summary: function () {
+      var self = this
+      this.summarystockGoods = []
+      this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
+      $.each(this.summarystockGoods,function (index,val){
+        val.item_recipient_amount = val.recipient_amount
+        val.item_distribution_amount = val.distribution_amount
+        val.item_current_amount = val.current_amount
+      })
+      this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+    },
+//    汇总方法
+    summaryMethod: function  (ObjPropInArr, array){
+      var hash={};
+      var result=[];
+      for(var i=0;i<array.length;i++){
+        if(hash[array[i][ObjPropInArr]]){
+          hash[array[i][ObjPropInArr]].item_recipient_amount=Number(array[i].item_recipient_amount) + Number( hash[array[i][ObjPropInArr]].item_recipient_amount)
+          hash[array[i][ObjPropInArr]].item_distribution_amount=Number(array[i].item_distribution_amount) + Number( hash[array[i][ObjPropInArr]].item_distribution_amount)
+          hash[array[i][ObjPropInArr]].item_current_amount=Number(array[i].item_current_amount) + Number( hash[array[i][ObjPropInArr]].item_current_amount)
+        }else{
+          hash[array[i][ObjPropInArr]]=array[i];
         }
       }
+      for(var j in hash){
+        result.push(hash[j])
+      }
+      return result
+    },
     },
     data: function () {
       return {

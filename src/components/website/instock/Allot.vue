@@ -68,21 +68,20 @@
           <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr class="text-center">
-              <th v-for="value in  gridColumns">
+              <th v-for="value in  gridColumns1">
                 {{value}}
               </th>
             </tr>
             </thead>
             <tbody>
-            <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+            <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
               <td>{{entry.item_code}}</td>
               <td>{{entry.item_name}}</td>
-              <td>{{entry.purchase_amount}}</td>
-              <td>{{entry.main_reference_value}}</td>
-              <td>{{entry.realInstock_amount}}</td>
+              <td>{{entry.item_purchase_amount}}</td>
+              <td>{{entry.item_main_reference_value}}</td>
+              <td>{{entry.item_realInstock_amount}}</td>
               <td>{{entry.unit_name}}</td>
               <td>{{entry.unit_specification}}</td>
-              <td>{{entry.reference_number}}</td>
             </tr>
             </tbody>
           </table>
@@ -117,6 +116,7 @@
   import Modal from '../../common/Modal'
   import ErrorTip from '../../common/ErrorTip'
   import DatePicker from  '../../common/DatePicker'
+  import ListDelete from '../../common/ListDelete'
   import Summary from '../../common/Summary'
   import {requestUrl, token, requestSystemUrl,detailGoodsInfo,error,postSiteDataToApi} from '../../../publicFunction/index'
   var deleteId = ''
@@ -131,6 +131,7 @@
       IntroduceData: IntroduceData,
       Summary: Summary,
       ErrorTip: ErrorTip,
+      ListDelete: ListDelete,
       SiteNav: SiteNav
     },
     events: {
@@ -150,53 +151,22 @@
         console.log(self.dataArray)
         this.renderstockGoods = self.dataArray
       },
-////    入库汇总函数双循环遍历数量相加
-//      summary: function () {
-//        var goodsName = []
-//        var self = this
-//        self.summryData = self.rederStockGoods
-//        $.each(self.summryData,function(index,val){
-//           var currentName = val.goods_name
-//           for(var i= index + 1; i<self.summryData.length; i++){
-//             if(self.summryData[i]['goods_name']){
-//               if(self.summryData[i]['goods_name'] === currentName ) {
-//                 val.demanding_number = Number(val.demanding_number) + Number(self.summryData[i].demanding_number)
-//                 val.distribution_number = Number(val.distribution_number) + Number(self.summryData[i].distribution_number)
-//                 val.now_number =  Number(val.now_number) + Number(self.summryData[i].now_number)
-//                 self.summryData.splice(i, 1)
-//               }
-//             }
-//           }
-//        })
-//        self.rederStockGoods =   this.detailData
-//      },
-//      入库明细函数
-      detail: function () {
-        this.detailData = data
-      },
-//    入库明细与入库汇总切换
-      changeActive: function (event) {
-        var cur = $(event.currentTarget)
-        cur.addClass('active').siblings('li').removeClass('active')
-        switch (Number(cur.attr('id'))){
-          case 1:
-            this.detailModal = true
-            this.summaryModal = false
-            this.$dispatch('detail')
-            break
-          case 2:
-            this.detailModal = false
-            this.summaryModal = true
-            this.$dispatch('summary')
-        }
-      },
 //    绑定翻页事件
       pagechange: function (currentpage) {
 //        this.detailListData(currentpage)
         console.log(currentpage)
+      },
+//    删除商品
+      delete: function (id) {
+        var self = this
+        $.each(this.renderstockGoods, function (index, val) {
+          if (val.id === id) {
+            self.renderstockGoods.splice(index, 1)
+            val.choice = false
+            val.again =  false
+          }
+        })
       }
-    },
-    ready: function () {
     },
     methods: {
 //    删除弹出框
@@ -238,7 +208,7 @@
           this.$http.post(requestUrl + '/front-system/stock/recipient', {
             'items': goods,
             'operated_at': this.time,
-            note: this.note
+             note: this.note
           }, {
             headers: {'X-Overpowered-Token': token}
           }).then(function (response) {
@@ -254,7 +224,52 @@
             }
           })
         }
-      }
+      },
+//       入库明细与入库汇总切换
+      changeActive: function (event) {
+        var cur = $(event.currentTarget)
+        cur.addClass('active').siblings('li').removeClass('active')
+        switch (Number(cur.attr('id'))){
+          case 1:
+            this.detailModal = true
+            this.summaryModal = false
+            break
+          case 2:
+            this.detailModal = false
+            this.summaryModal = true
+            this.summary()
+        }
+      },
+//     汇总方法
+      summary: function () {
+        var self = this
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_purchase_amount = val.purchase_amount
+          val.item_main_reference_value = val.main_reference_value
+          val.item_realInstock_amount = val.realInstock_amount
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//    汇总方法
+      summaryMethod: function  (ObjPropInArr, array){
+        var hash={};
+        var result=[];
+        for(var i=0;i<array.length;i++){
+          if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_purchase_amount=Number(array[i].item_purchase_amount) + Number( hash[array[i][ObjPropInArr]].item_purchase_amount)
+            hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].item_main_reference_value)
+            hash[array[i][ObjPropInArr]].item_realInstock_amount=Number(array[i].item_realInstock_amount) + Number( hash[array[i][ObjPropInArr]].item_realInstock_amount)
+          }else{
+            hash[array[i][ObjPropInArr]]=array[i];
+          }
+        }
+        for(var j in hash){
+          result.push(hash[j])
+        }
+        return result
+      },
     },
     data: function () {
       return {
@@ -281,7 +296,7 @@
         detailData: [],
         page: [],
         origenData: {
-          title: '原始门店要货单',
+          title: '原始配送出货单',
           dataUrl: requestSystemUrl + '/front-system/reference-document/distribution',
           firstDataTitle: {
             "document_number": "配送单号",
@@ -312,6 +327,16 @@
           unit_specification: '单位规格',
           order_source_code: '来源单号'
         },
+        summarystockGoods: [],
+        gridColumns1: {
+          goods_code: '货号',
+          goods_name: '品名',
+          recipient_amount: '要货数量',
+          distribution_amount: '配送数量',
+          current_amount: '实际入库量',
+          unit: '单位',
+          unit_specification: '单位规格',
+        }
       }
     }
   }

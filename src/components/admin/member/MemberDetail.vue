@@ -21,63 +21,30 @@
         </thead>
         <tbody>
         <tr class="text-center">
-          <td>164643138431315</td>
-          <td>￥2514.00</td>
-          <td>2541656</td>
-          <td>王小二</td>
-          <td>13812345678</td>
-          <td>03.01</td>
-          <td>九折会员</td>
-          <td>水星店</td>
-          <td>启用</td>
+          <td>{{onedata.card_number}}</td>
+          <td>{{onedata.balance}}</td>
+          <td>{{onedata.score}}</td>
+          <td>{{onedata.name}}</td>
+          <td>{{onedata.mobile_phone}}</td>
+          <td>{{onedata.birthday}}</td>
+          <td>{{onedata.member_type}}</td>
+          <td>{{onedata.register_store_name}}</td>
+          <td>{{onedata.status}}</td>
           <td>
-            <span class="btn btn-default" data-toggle="modal" data-target="#vip-change-templ">变更</span>
-            <span class="btn btn-default" data-toggle="modal" data-target="#vip-edit-templ">编辑</span>
+            <span class="btn btn-info btn-sm" @click="changeModal=true">变更</span>
+            <span class="btn btn-primary btn-sm" @click="edit()">编辑</span>
           </td>
         </tr>
         </tbody>
       </table>
 
       <!-- 表格2 -->
-      <table class="table table-striped table-border table-hover">
-        <thead>
-        <tr class="text-center">
-          <td>操作类型</td>
-          <td>余额变更</td>
-          <td>积分变更</td>
-          <td>最新余额</td>
-          <td>最新积分</td>
-          <td>操作时间</td>
-          <td>操作点</td>
-          <td>备注</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="text-center">
-          <td>164643138431315</td>
-          <td>￥2514.00</td>
-          <td>2541656</td>
-          <td>王小二</td>
-          <td>13812345678</td>
-          <td>03.01</td>
-          <td>九折会员</td>
-          <td>水星店</td>
-        </tr>
-        </tbody>
-      </table>
+      <grid :data="listdata" :columns="gridColumns" :operate="gridOperate"></grid>
 
-      <!-- 翻页 -->
-      <nav class="text-right">
-        <ul class="pagination">
-          <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-        </ul>
-      </nav>
+      <!--分页-->
+      <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+            :last-page="page.last_page" v-if="listdata.length > 0">
+      </page>
     </div>
   </div>
   <!--模态框-编辑-->
@@ -223,6 +190,8 @@
     ready: function () {
 //      渲染会员列表
       this.getlistData(1)
+//      获取优惠列表
+      this.couponListData()
     },
     methods: {
 //      获取列表
@@ -232,24 +201,23 @@
         var url = requestSystemUrl + '/backend-system/member/member/' + this.thisId
         var data = {}
         getDataFromApi(url, data, function (response) {
-          self.listdata = response.data.body.list
-          self.page = response.data.body.pagination
+          self.onedata = response.data.body.data
+          self.modifyGetedOneData(self.onedata)
+          self.listdata = response.data.body.list.data
           self.modifyGetedData(self.listdata)
+          self.page = response.data.body.list.pagination
         })
       },
-//      获取单条数据
-      getOneData: function () {
-        this.thisId = this.$route.params.queryId
+//      优惠类型列表获取 /backend-system/coupon/coupon
+      couponListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/member/member/' + this.thisId + '/detail'
-        var data = {}
-        getDataFromApi(url, data, function (response) {
-          self.onedata = response.data.body
+        var url = requestSystemUrl + '/backend-system/coupon/coupon'
+        getDataFromApi(url, {}, function (response) {
+          self.couponData = response.data.body.list
         })
       },
 //      编辑会员
-      edit: function (event) {
-        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
+      edit: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/member/member/' + this.thisId
         getDataFromApi(url, {}, function (response) {
@@ -273,11 +241,6 @@
           self.getlistData(1)
         })
       },
-//      变更
-      change: function (event) {
-        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        this.changeModal = true
-      },
 //      变更后保存
       confirmChange: function () {
         var self = this
@@ -292,18 +255,27 @@
           self.getlistData(1)
         })
       },
+//    对获取到的单条数据进行处理
+      modifyGetedOneData: function (value) {
+        if(value.balance != ''){
+          value.balance = '￥' + (value.balance * 1).toFixed(2)
+        }
+        if(value.status == '1'){
+          value.status = '启用'
+        }else if(value.status == '0'){
+          value.status = '停用'
+        }else{
+          value.status =''
+        }
+      },
 //    对获取到de列表数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if(value.balance != '' && value.balance > 0 ){
-            value.balance = '￥' + (value.balance * 0.01).toFixed(2)
+          if(value.balance != ''){
+            value.balance = '￥' + (value.balance * 1).toFixed(2)
           }
-          if(value.status == '0'){
-            value.status = '停用'
-          }else if(value.status == '1'){
-            value.status = '启用'
-          }else{
-            value.status =''
+          if(value.balance_change != ''){
+            value.balance_change = '￥' + (value.balance_change * 1).toFixed(2)
           }
         })
       },
@@ -333,6 +305,7 @@
     },
     data: function () {
       return {
+        couponData: [],
         editModal: false,
         editModalSize: 'modal-sm',
         noticeModal: false,
@@ -344,17 +317,16 @@
         listdata: [],
         onedata: [],
         page: [],
-        gridOperate: true,
+        gridOperate: false,
         gridColumns: {
-          card_number: '会员卡号',
-          balance: '余额',
-          score: '积分',
-          name: '姓名',
-          mobile_phone: '手机号码',
-          birthday: '生日',
-          member_type: '等级',
-          register_store_name: '开卡点',
-          status: '状态'
+          point_type: '操作类型',
+          balance_change: '余额变更',
+          score_change: '积分变更',
+          balance: '最新余额',
+          score: '最新积分',
+          created_at: '操作时间',
+          point_name: '操作点',
+          note: '备注'
         },
         searchData: {
           card_number: '',
