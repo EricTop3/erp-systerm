@@ -68,13 +68,6 @@
           </tr>
           </tbody>
         </table>
-        <!--分页-->
-        <page
-          :total='page.len'
-          :current='page.current_page'
-          :display='page.per_page'
-          :last-page='page.last_page' v-if="page.len > 0">
-        </page>
 
         <!--本地分页-->
         <page
@@ -157,29 +150,37 @@
           }
         })
         self.rederStockGoods = self.dataArray
-        self.old = self.dataArray
+//        self.old = self.rederStockGoods
         self.localPage(self.rederStockGoods)
       },
-//     删除商品
+//      删除
       delete: function (id) {
         var self = this
-        $.each(self.rederStockGoods, function (index, val) {
+//       添加商品的状态改变
+        $.each(this.stockGoods, function (index, val) {
           if (val.id === id) {
-            self.rederStockGoods.splice(index, 1)
+            val.choice = false
+            val.again = false
           }
         })
-        if (!self.ispageLocal) {
-          self.localPage(self.rederStockGoods)
-        }
+//       从列表中删除
+        $.each(this.dataArray, function (index, val) {
+          if (val.id === id) {
+            self.dataArray.splice(index, 1)
+            return false
+          }
+        })
+        self.localPage(self.dataArray)
       },
 //      分页
       pagechange: function (currentpage) {
-        if (this.ispageLocal) {
-          this.inventoryAll(currentpage)
-        } else {
           this.pageLocal.current_page = currentpage
           this.localPage(this.dataArray)
-        }
+        $.each(this.dataArray, function (index, val) {
+          if (val.current_stock == '') {
+            val.current_stock = null
+          }
+        })
       }
     },
     methods: {
@@ -191,15 +192,15 @@
       inventoryAll: function (page) {
         var self = this
         var data = {
-          page: page || ''
+          per_page: 999
         }
+
+        self.pageLocal.current_page = 1
         getDataFromApi(self.request.productUrl, data, function (respon) {
-          self.rederStockGoods = respon.data.body.list
-          self.page.current_page = respon.data.body.pagination.current_page
-          self.page.last_page = respon.data.body.pagination.last_page
-          self.page.per_page = respon.data.body.pagination.per_page
-          self.page.len = respon.data.body.pagination.total
-          self.ispageLocal = true
+          self.dataArray = respon.data.body.list
+          self.rederStockGoods = self.dataArray
+          self.localPage(self.dataArray)
+//          self.ispageLocal = true
         })
       },
 //      提交盘点
@@ -252,13 +253,12 @@
         this.newData = data.slice(start,end)
         this.rederStockGoods = this.newData
       }
-
     },
     data: function () {
       return {
 //        是否启用本地分页
         newData: [],
-        ispageLocal: false,
+//        ispageLocal: false,
         pageLocal: {
           current_page: 1, // 当前页
           last_page: 1, // 最后一页
