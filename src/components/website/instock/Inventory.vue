@@ -17,6 +17,7 @@
         <div class="form-group ml10">
           <label>审核状态</label>
           <select class="form-control" v-model="query.check_status">
+            <option value="">请选择</option>
             <option value="1">已审核</option>
             <option value="0">未审核</option>
           </select>
@@ -24,6 +25,7 @@
         <div class="form-group ml10">
           <label>制单人</label>
           <select class="form-control" v-model="query.create_person">
+            <option value="">请选择</option>
             <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
@@ -39,8 +41,7 @@
       </form>
     </div>
     <!--列表详情-->
-    <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page"></summary>
-
+    <summary :table-header="gridColumns" :table-data="list" :check-url="checkUrl" :page="page"></summary>
   </div>
 </template>
 <script>
@@ -50,7 +51,7 @@
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
   import Summary from '../../common/Summary'
-  import {requestUrl, token,searchRequest,exchangeData,deleteRequest,checkRequest,finishRequest, error} from '../../../publicFunction/index'
+  import {requestUrl, token,searchRequest,changeStatus,deleteRequest,checkRequest,finishRequest, error,getDataFromSiteApi } from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -64,44 +65,18 @@
       pagechange: function (currentpage) {
         this.listData(currentpage)
       },
-      //      删除请求
-      deleteFromApi: function (id) {
-        var self = this
-        deleteRequest('/front-system/stock/inventory/',id,function(response){
-          console.log('deleted')
-        })
-      },
-      //     審核请求
-      checkFromApi: function (id) {
-        var self = this
-        checkRequest('/front-system/stock/check/',id,function(response){
-          console.log('finished')
-        })
-      },
-      //     完成請求
-      finishFromApi: function (id) {
-        var self = this
-        finishRequest('/front-system/stock/finish/',id,function(response){
-          console.log('finished')
-        })
-      }
     },
     ready: function () {
+      var self  = this
 //      请求列表
       this.listData(1)
 //      制单人
-      this.$http({
-        url: requestUrl + '/front-system/create/order/users',
-        method: 'get',
-        headers: {'X-Overpowered-Token': token},
-      }).then(function (response) {
-        this.creators = response.data.body
-      }, function (err) {
-        error(err)
+      getDataFromSiteApi(requestUrl + '/front-system/account', {}, function (response) {
+        self.creators = response.data.body.list
       })
     },
     methods: {
-//    生产出库-列表数据渲染
+//    盘点单-列表数据渲染
       listData: function (page) {
         this.$http({
           url: requestUrl + '/front-system/stock/inventory',
@@ -119,7 +94,7 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.list = response.data.body.list
-          exchangeData(this.list)
+          changeStatus(this.list)
         }, function (err) {
           error(err)
         })
@@ -148,7 +123,7 @@
           function (response) {
             self.list = response.data.body.list
             self.page = response.data.body.pagination
-            exchangeData(self.list)
+            changeStatus(self.list)
           }
         )
       },
@@ -162,16 +137,16 @@
       return {
         creators: [],
         page: [],
-        detailUrl: '/#!/site/instock/Inventory/',
+        checkUrl: '',
         list: [],
         gridOperate: true,
         gridColumns: {
-          order_number: '盘点单号',
+          document_number: '盘点单号',
           checked: '审核状态',
-          creator: '制单人',
-          auditor: '审核人',
+          creator_name: '制单人',
+          auditor_name: '审核人',
           created_at: '盘点日期',
-          differ_amount: '差异库存量'
+          difference: '差异库存量'
         },
         query: {
           start_time: '',
