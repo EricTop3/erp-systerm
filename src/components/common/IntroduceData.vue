@@ -11,11 +11,11 @@
         <form action="" method="post" class="form-inline">
           <div class="form-group">
             <label>配送时间段</label>
-            <input type="text" class="form-control date_picker" placeholder="开始时间">
-            <input type="text" class="form-control date_picker" placeholder="结束时间">
+            <date-picker :value.sync="startTime" :time-text="timeText"></date-picker> -
+            <date-picker :value.sync="endTime"   :time-text="timeText"></date-picker>
           </div>
-          <span class="btn btn-info">搜索</span>
-          <span class="btn btn-info">撤销搜索</span>
+          <span class="btn btn-info" @click="searchMethod">搜索</span>
+          <span class="btn btn-info" @click="cancelSearch">撤销搜索</span>
         </form>
       </div>
       <div style="height:200px; overflow: auto;">
@@ -42,13 +42,15 @@
   import $ from 'jquery'
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
+  import DatePicker from '../common/DatePicker'
   import { requestUrl,token,getDataFromApi,exchangeData} from '../../publicFunction/index'
   import _ from 'underscore'
   export default{
     name: 'introduce-data',
     components: {
       Modal: Modal,
-      Grid: Grid
+      Grid: Grid,
+      DatePicker: DatePicker
     },
     ready: function () {
       var self = this
@@ -117,7 +119,30 @@
           }
         })
       },
-//      全选上面表格加载下面数据
+//    搜索
+      searchMethod: function () {
+        var self = this
+        var url = this.url
+        var data =  {
+          start_time: self.startTime,
+          end_time: self.endTime
+        }
+        getDataFromApi(url,data,function(response){
+          self.firstData = response.data.body.list
+          exchangeData( self.firstData)
+        })
+      },
+//   取消搜索
+      cancelSearch: function () {
+        var self = this
+        var url = this.url
+        var data =  {}
+        getDataFromApi(url,data,function(response){
+          self.firstData = response.data.body.list
+          exchangeData( self.firstData)
+        })
+      },
+//    全选上面表格加载下面数据
       changeAll: function (checkAll) {
         var self = this
         self.secondData = []
@@ -172,6 +197,9 @@
       return {
         isAdd: false,
         isAddFlag: false,
+        timeText: '请输入日期',
+        startTime: '',
+        endTime: '',
         page: [],
         citeCheckAll: false,
         secondDataCheckAll: false,

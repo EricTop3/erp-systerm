@@ -415,7 +415,7 @@
             "document_number": "要货单号",
             "store_name": "要货仓库",
             "amount": "要货数量",
-            "created_at": "配送日期",
+            "created_at": "要货日期",
             "creator_name": "制单人",
             "auditor_name": "审核人"
           },

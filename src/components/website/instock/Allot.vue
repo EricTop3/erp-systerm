@@ -296,7 +296,7 @@
         detailData: [],
         page: [],
         origenData: {
-          title: '原始门店要货单',
+          title: '原始配送出货单',
           dataUrl: requestSystemUrl + '/front-system/reference-document/distribution',
           firstDataTitle: {
             "document_number": "配送单号",
