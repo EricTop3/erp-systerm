@@ -46,6 +46,7 @@
           </tbody>
         </table>
 
+        <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
         <!--详情页面列表数据-->
         <table class="table table-striped table-border table-hover">
           <thead>
@@ -113,6 +114,13 @@
       ErrorTip: ErrorTip,
       ListFinish: ListFinish,
       SummaryDetail: SummaryDetail
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/enquiry'
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
+      }
     },
     events: {
 //    绑定翻页事件

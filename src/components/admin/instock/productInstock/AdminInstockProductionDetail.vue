@@ -35,6 +35,7 @@
           :table-data="onedata"
           :grid-operate="gridOperate">
         </summary-detail>
+        <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         <!--详情页面列表数据-->
         <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
 
@@ -94,6 +95,13 @@
       this.getlistData(1)
 //      获取详情单条数据
       this.getOneData()
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/produce'
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
+      }
     },
     methods: {
 //      (获取详情)列表数据渲染

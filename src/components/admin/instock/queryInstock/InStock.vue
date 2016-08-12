@@ -33,17 +33,17 @@
             </div>
             <div class="form-group ml10">
               <label>时间段</label>
-              <date-picker :value.sync="search.startTime"></date-picker>
+              <date-picker :value.sync="search.startTime" :time-text="timetext1"></date-picker>
               -
-              <date-picker :value.sync="search.endTime"></date-picker>
+              <date-picker :value.sync="search.endTime" :time-text="timetext2"></date-picker>
             </div>
             <div class="form-group ml10">
               <label><input type="checkbox" class="checkbox" v-model="search.safeInstock">库存警戒中 </label>
             </div>
 
-            <button class="btn btn-primary" @click="searchMethod">搜索</button>
+            <span class="btn btn-primary" @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-            <span class="btn fr btn-info">导出excel</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!-- 表格 -->
@@ -147,7 +147,9 @@
           name: this.search.name,
           category_id: this.search.selectCategory,
           warehouse_id: this.search.selectedHouse,
-          safe_stock: this.search.safeInstock
+          safe_stock: this.search.safeInstock,
+          start_time: this.search.startTime,
+          end_time: this.search.endTime
         }
         this.listData(data)
       },
@@ -168,8 +170,24 @@
         })
       }
     },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/log'
+        var data =
+          'name=' + this.search.name + '&' +
+          'category_id=' + this.search.selectCategory + '&' +
+          'warehouse_id=' + this.search.selectedHouse + '&' +
+          'safe_stock=' + this.search.safeInstock + '&' +
+          'start_time=' + this.search.startTime + '&' +
+          'end_time=' + this.search.endTime
+        return this.exportUrl = url + '/export-excel?' + data
+      }
+    },
     data: function () {
       return {
+        timetext1: '开始时间',
+        timetext2: '结束时间',
         page: [],
         category: [],
         warehouseList: [],

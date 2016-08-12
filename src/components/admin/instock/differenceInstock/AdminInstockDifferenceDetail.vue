@@ -35,6 +35,7 @@
           :grid-operate="gridOperate">
         </summary-detail>
         <!--详情页面列表数据-->
+        <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr">导出</span></a>
         <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
 
 
@@ -96,6 +97,13 @@
       this.getOneData()
 //      获取仓库列表
       this.warehouseListData()
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/difference'
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
+      }
     },
     methods: {
 //      (获取详情)列表数据渲染

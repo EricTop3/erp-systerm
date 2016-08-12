@@ -26,6 +26,7 @@
                 <option value="">请选择</option>
                 <option value="1">未审核</option>
                 <option value="2">已审核</option>
+                <option value="3">已完成</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -52,13 +53,13 @@
             <br/>
             <div class="form-group ml10 mt20">
               <label>配送时间段</label>
-              <date-picker :value.sync="searchData.start_receive_time"></date-picker> -
-              <date-picker :value.sync="searchData.end_receive_time"></date-picker>
+              <date-picker :value.sync="searchData.start_receive_time" :time-text="timetext1"></date-picker> -
+              <date-picker :value.sync="searchData.end_receive_time" :time-text="timetext2"></date-picker>
             </div>
-            <button type="submit" class="btn btn-primary mt20" @click="searchMethod()">搜索</button>
+            <span class="btn btn-primary mt20" @click="searchMethod()">搜索</span>
             <span class="btn btn-warning mt20" @click="cancelSearch()">撤销搜索</span>
 
-            <span class="btn fr btn-info">导出excel</span>
+            <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span>
           </form>
         </div>
@@ -150,6 +151,21 @@
         }
       }
     },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/distribution'
+        var data =
+          'document_number=' + this.searchData.document_number + '&' +
+          'checked=' + this.searchData.checked + '&' +
+          'warehouse_id=' + this.searchData.warehouse_id + '&' +
+          'stream_origin_id=' + this.searchData.stream_origin_id + '&' +
+          'creator_id=' + this.searchData.creator_id + '&' +
+          'start_receive_time=' + this.searchData.start_receive_time + '&' +
+          'end_receive_time=' + this.searchData.end_receive_time
+        return this.exportUrl = url + '/export-excel?' + data
+      }
+    },
     ready: function () {
       var self = this
 //      获取制单人
@@ -187,11 +203,20 @@
       },
 //    撤销搜索
       cancelSearch: function () {
+        this.searchData.document_number = ''
+        this.searchData.checked = ''
+        this.searchData.warehouse_id = ''
+        this.searchData.stream_origin_id = ''
+        this.searchData.creator_id = ''
+        this.searchData.start_receive_time = ''
+        this.searchData.end_receive_time = ''
         this.listData({})
       }
     },
     data: function () {
       return {
+        timetext1: '开始时间',
+        timetext2: '结束时间',
         page: [],
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/stock/distribution/',
