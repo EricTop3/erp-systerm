@@ -41,33 +41,31 @@
               </select>
             </div>
             <div class="form-group ml10">
-              <label>领料单生成时间段</label>
-              <date-picker :value.sync="searchData.start_time" :time-text="timetext1"
-                           :timewidth="timewidth"></date-picker>
-              <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
-                           :timewidth="timewidth"></date-picker>
-            </div>
-            <div class="form-group ml10">
-              <label>领料日期</label>
-              <date-picker :value.sync="searchData.receive_start_time" :time-text="timetext1"
-                           :timewidth="timewidth"></date-picker>
-              <date-picker :value.sync="searchData.receive_end_time" :time-text="timetext2"
-                           :timewidth="timewidth"></date-picker>
-            </div>
-            <a :href=""><span class="btn btn-info spanblocks fr">导出</span></a>
-            <br>
-            <div class="form-group mt20">
               <label>领料工厂</label>
               <select class="form-control" v-model="searchData.target_id">
                 <option value="">请选择</option>
                 <option v-for="item in listProviderB" track-by="$index" :value="item.id">{{item.name}}
               </select>
             </div>
-            <span class="btn btn-primary mt20" @click="getlistData(1)">搜索</span>
-            <span class="btn btn-warning mt20" @click="cancelSearch()">撤销搜索</span>
+            <div class="form-group ml10">
+              <label>领料单生成时间段</label>
+              <date-picker :value.sync="searchData.start_time" :time-text="timetext1"
+                           :timewidth="timewidth"></date-picker>
+              <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
+                           :timewidth="timewidth"></date-picker>
+            </div><br>
+            <div class="form-group mt10">
+              <label>领料日期</label>
+              <date-picker :value.sync="searchData.receive_start_time" :time-text="timetext1"
+                           :timewidth="timewidth"></date-picker>
+              <date-picker :value.sync="searchData.receive_end_time" :time-text="timetext2"
+                           :timewidth="timewidth"></date-picker>
+            </div>
+            <span class="btn btn-primary mt10" @click="getlistData(1)">搜索</span>
+            <span class="btn btn-warning mt10" @click="cancelSearch()">撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
           </form>
         </div>
-
         <!-- 表格 -->
         <summary
           :table-data="listdata"
@@ -200,6 +198,22 @@
         getDataFromApi(url, {}, function (response) {
           self.listProviderB = response.data.body
         })
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/produce/pick'
+        var data =
+          'document_number=' + this.searchData.document_number + '&' +
+          'checked=' + this.searchData.checked + '&' +
+          'warehouse_id=' + this.searchData.warehouse_id + '&' +
+          'target_id=' + this.searchData.target_id + '&' +
+          'start_time=' + this.searchData.start_time + '&' +
+          'end_time=' + this.searchData.end_time + '&' +
+          'receive_start_time=' + this.searchData.receive_start_time + '&' +
+          'receive_end_time=' + this.searchData.receive_end_time
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {

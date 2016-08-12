@@ -54,6 +54,7 @@
             </div>
             <button type="submit" class="btn btn-primary" @click="searchMethod">搜索</button>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!--预约单列表-->
@@ -149,6 +150,7 @@
       <button type='button' class='btn btn-info' @click='modal.orderFinishModal = false'>关闭</button>
     </div>
   </modal>
+
   <!--查看订单弹窗-->
   <modal :show.sync='modal.lookDetailModal' :modal-size="modal.lookDetailModalSize" class='form-horizontal'>
     <div slot='header'>
@@ -346,6 +348,20 @@
 //      撤销搜索
       cancelSearch: function () {
         this.getOrderList({})
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/order/order'
+        var data =
+          'order_number=' + this.searchData.code + '&' +
+          'store_code=' + this.searchData.selectStore + '&' +
+          'seller_id=' + this.searchData.selectClerk + '&' +
+          'status=' + this.searchData.selectProgress + '&' +
+          'start_time=' + this.searchData.startTime + '&' +
+          'end_time=' + this.searchData.endTime
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {

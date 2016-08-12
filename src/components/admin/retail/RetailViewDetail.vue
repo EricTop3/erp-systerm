@@ -230,6 +230,13 @@
         this.getOrderlistData()
       }
     },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/statistics/' + this.$route.params.queryId + '/statistics'
+        return this.exportUrl = url + '/export-excel'
+      }
+    },
     data: function () {
       return {
         listDetail: [],
