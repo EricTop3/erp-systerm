@@ -12,7 +12,8 @@
       count: {
         required: true,
         default: 1
-      }
+      },
+      maxCount: 1
     },
     methods: {
       countValidate: function () {
@@ -20,9 +21,16 @@
         if (numberRe.test(this.count)) {
           this.count = 1
         }
+        if(Number( this.count)>= Number(this.maxCount)){
+         this.count =  this.maxCount
+        }
       },
       addCount: function () {
-        this.count++
+        if(Number( this.count)>= Number(this.maxCount)){
+          this.count =  this.maxCount
+        }else{
+          this.count++
+        }
       },
       lessCount: function () {
         if (this.count <= 1) {

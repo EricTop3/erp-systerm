@@ -190,6 +190,23 @@
     </div>
     <div slot='footer'></div>
   </modal>
+  <!--库存不足跳转的提示-->
+  <modal :show.sync='modal.skipModal' :modal-size="modal.skipModalSize" class='form-horizontal'>
+    <div slot='header'>
+      <button type='button' class='close' data-dismiss='modal'  aria-label='Close'><span
+        aria-hidden='true' @click="errModal=false">&times;</span></button>
+      <h4 class='modal-title'>友情提示</h4>
+    </div>
+    <div slot='body'>
+      <div class='form-group'>
+        <p class="modal-body">{{modal.errInfo}}</p>
+      </div>
+    </div>
+
+    <div slot='footer'>
+      <button type='button' class='btn btn-primary' @click='skip'>关闭</button>
+    </div>
+  </modal>
 </template>
 <style>
 </style>
@@ -300,7 +317,15 @@
         var self = this
         putDataToApi(requestSystemUrl + '/backend-system/order/order/produce/' +  curId,{},function (response){
           self.getOrderList({})
+        },function(err){
+           if(err.data.code==='220001'){
+             self.modal.skipModal = true
+             self.modal.errInfo = err.data.message
+           }
         })
+      },
+      skip: function () {
+        window.location.href = '#!/admin/production/getSupplies'
       },
 //    后台配送
       distribution: function  (even) {
@@ -390,7 +415,10 @@
           orderFinishModal: false,
           orderFinishModalSize: 'modal-sm',
           lookDetailModal: false,
-          lookDetailModalSize:'modal-lg'
+          lookDetailModalSize:'modal-lg',
+          skipModal: false,
+          skipModalSize: 'modal-sm',
+          errInfo: ''
         }
       }
     }

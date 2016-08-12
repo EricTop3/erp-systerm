@@ -18,7 +18,7 @@
             <td class='text-left'>{{item.goodName}}<br>￥{{item.goodPrice}}</td>
             <!--数量-->
             <td>
-              <count-container :count.sync='item.count'></count-container>
+              <count-container :count.sync='item.count' :max-count='item.stock'></count-container>
             </td>
             <td class='c-erp'>
               <b>￥{{(item.goodPrice * item.count).toFixed(2)}}</b>
@@ -91,7 +91,7 @@
                 <!--<label>会员密码</label>-->
                 <!--<input type='email' class='form-control'>-->
                 <!--</div>-->
-                <button type='submit' class='btn btn-primary ml10' @click="memberRequest">确定</button>
+                <button class='btn btn-primary ml10' @click="memberRequest">确定</button>
               </form>
             </div>
             <ul class='index-list-member'>
@@ -520,7 +520,7 @@
             this.finalPrice = this.totalPrice
           }
           else{
-            this.error = false
+            this.error = true
             this.messageTipModal =  true
             this.messageTip = response.data.message
           }
@@ -533,7 +533,11 @@
         }).then(function (response) {
           callback && callback(response)
         }, function (err) {
-          console.log(err)
+           if(err.data.code === '100000'){
+             this.error = true
+             this.messageTipModal =  true
+             this.messageTip = '你选择的商品有库存不足的'
+           }
         })
       },
 //     增加到左侧商品列表
@@ -562,7 +566,11 @@
         if (checkedGoodsList && checkedGoodsList.length > 0) {
           $.each(checkedGoodsList, function (index, val) {
             if (val.id === currentGoodId) {
-              val.count++
+              if(val.count>=val.stock){
+                val.count = val.stock
+              }else{
+                val.count++
+              }
               flag = true
             }
           })
@@ -572,6 +580,7 @@
             obj.goodName = currentGoodName
             obj.goodPrice = currentGoodPrice
             obj.saleMark = currentSaleMark
+            obj.stock = currentStock
             obj.count = this.count
             obj.note = ''
             obj.priceNote = ''
@@ -583,62 +592,9 @@
           obj1.goodName = currentGoodName
           obj1.goodPrice = currentGoodPrice
           obj1.saleMark = currentSaleMark
+          obj1.stock = currentStock
           obj1.count = this.count
           obj1.note = ''
-          obj1.priceNote = ''
-          checkedGoodsList.push(obj1)
-        }
-      },
-      addOrderToList: function (event) {
-        var flag = false
-        const currentGood = $(event.currentTarget)
-        const currentGoodId = Number(currentGood.attr('id'))
-        const currentStock = Number(currentGood.attr('stock'))
-        const currentSaleMark = Number(currentGood.attr('sell_mark'))
-        const currentGoodName = currentGood.find('h4').html()
-        const currentGoodPrice = currentGood.find('.single-price').html()
-        const checkedGoodsList = this.checkedGoodsList
-        currentGood.addClass('active').siblings().removeClass('active')
-//       判断是否是特价或不可议价
-        currentSaleMark !== 1 ? this.saleMark = true : this.saleMark = false
-        /*//       判断是否为不可议价
-         currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
-//        判断库存是否为零
-        if (currentStock <= 0) {
-          return false
-        } else {
-//          判断是否是会员余额支付
-          if (this.order_mata_data.payment !== 'vip') {
-            this.settlementFlag = true
-          }
-        }
-//       判断是否加入商品
-        if (checkedGoodsList && checkedGoodsList.length > 0) {
-          $.each(checkedGoodsList, function (index, val) {
-            if (val.id === currentGoodId) {
-              val.count++
-              flag = true
-            }
-          })
-          if (!flag) {
-            var obj = {}
-            obj.id = currentGoodId
-            obj.goodName = currentGoodName
-            obj.goodPrice = currentGoodPrice
-            obj.saleMark = currentSaleMark
-            obj.count = this.count
-            obj.note = ''
-            obj.priceNote = ''
-            checkedGoodsList.push(obj)
-          }
-        } else {
-          var obj1 = {}
-          obj1.id = currentGoodId
-          obj1.goodName = currentGoodName
-          obj1.goodPrice = currentGoodPrice
-          obj1.saleMark = currentSaleMark
-          obj1.note = ''
-          obj1.count = this.count
           obj1.priceNote = ''
           checkedGoodsList.push(obj1)
         }
@@ -748,7 +704,7 @@
 //      会员请求数据
       memberRequest: function () {
         this.$http({
-            url: requestUrl + '/front-system/user/show/' + this.member.memberCode,
+            url: requestUrl + '/front-system/member/member/c/' + this.member.memberCode,
             headers: {'X-Overpowered-Token': token}
           })
           .then(function (response) {
