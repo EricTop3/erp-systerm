@@ -34,28 +34,30 @@
               </div>
               <div class="form-group ml10">
                 <label>收货时间段</label>
-                <date-picker :value.sync="time.startTime"></date-picker> -
-                <date-picker :value.sync="time.endTime"></date-picker>
-              </div>
-              <div class="form-group ml10">
+                <date-picker :value.sync="time.startTime" :time-text="timetext1"></date-picker> -
+                <date-picker :value.sync="time.endTime" :time-text="timetext2"></date-picker>
+              </div><br>
+              <div class="form-group ml10 mt10">
                 <label>供应商</label>
                 <select class="form-control" v-model="search.selectedSuppier">
                   <option value="">请选择</option>
                   <option :value="item.code" v-for="item in search.providerList">{{item.name}}</option>
                 </select>
               </div>
-              <div class="form-group ml10">
+              <div class="form-group ml10 mt10">
                 <label>收货仓库</label>
                 <select class="form-control" v-model="search.stream_origin_id">
                   <option value="">请选择</option>
                   <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
                 </select>
               </div>
-              <span type="submit" class="btn btn-primary" @click="searchMethod">搜索</span>
-              <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-              <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr">新建收货单</a>
+              <span type="submit" class="btn btn-primary mt10" @click="searchMethod">搜索</span>
+              <span class="btn btn-warning mt10" @click="cancelSearch">撤销搜索</span>
+              <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr mt10">新建收货单</a>
+              <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
             </form>
           </div>
+
           <!--表格 -->
           <summary
             :table-header="gridColumns"
@@ -100,6 +102,21 @@
       })
       this.fetlistFormApi({})
     },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/purchase/receive'
+        var data =
+          'document_number=' + this.search.code + '&' +
+          'checked=' + this.search.selectedStatus + '&' +
+          'created_id=' + this.search.selectedMaker + '&' +
+          'start_receive_time=' + this.time.startTime + '&' +
+          'end_receive_time=' + this.time.endTime + '&' +
+          'provider_id=' + this.search.selectedSuppier + '&' +
+          'warehouse_id=' + this.search.stream_origin_id
+        return this.exportUrl = url + '/export-excel?' + data
+      }
+    },
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
@@ -133,6 +150,8 @@
     },
     data: function () {
       return {
+        timetext1: '开始时间',
+        timetext2: '结束时间',
         warehouseList: [],
         gridColumns: {
           "document_number": "收货单号",

@@ -122,7 +122,7 @@
     computed: {
 //      导出
       exports: function () {
-        var url = requestSystemUrl + '/backend-system/purchase/purchase'
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/purchase/purchase'
         var data =
           'created_id=' + this.search.selectedMaker + '&' +
           'document_number=' + this.search.code + '&' +
