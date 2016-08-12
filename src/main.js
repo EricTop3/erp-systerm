@@ -65,7 +65,7 @@ import InstockDetail from 'components/admin/product/productFactoryInstock/Instoc
 import ProductionDelegationInstock from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstock'
 import ProductionDelegationInstockNew from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockNew'
 import ProductionDelegationInstockDetail from 'components/admin/product/productionDelegationInstock/ProductionDelegationInstockDetail'
-import ProductionCreatOrder from 'components/admin/product/ProductionCreatOrder'
+import ProductionCreatOrder from 'components/admin/product/productionOrder/ProductionCreatOrder'
 import AdminMember from 'components/admin/member/MemberIndex'
 import AdminMemberDetail from 'components/admin/member/MemberDetail'
 import Retail from 'components/admin/retail/Retail'
