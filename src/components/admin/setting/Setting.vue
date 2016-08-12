@@ -264,12 +264,11 @@
         },
         productList: [],
         priceList: [],
-        /*TODO 价格波动，未有数据*/
         priceHeader:{
-          a: '修改日期',
-          b: '历史零售单价',
-          c: '历史采购单价',
-          d: '编辑人'
+          created_at: '修改日期',
+          previous_apuc: '历史零售单价',
+          previous_aruc: '历史采购单价',
+          operator_name: '编辑人'
         },
         modal: {
           priceModal: false,

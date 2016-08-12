@@ -1,6 +1,6 @@
 <template>
   <!--单条数据 -->
-  <table class="table table-striped table-bordered table-hover">
+  <table class="table table-striped table-bordered table-hover" style="margin-bottom:0px">
     <thead>
     <tr class="text-center">
       <th v-for="value in tableHeader">
@@ -20,9 +20,11 @@
           <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="tableData.checked==='未审核' && isExist">编辑</span>
           <span class="btn btn-success btn-sm" @click="save($event)" v-if="tableData.checked==='未审核' && !isExist">保存</span>
         </slot>
+      </td>
     </tr>
     </tbody>
   </table>
+  <div class="notice">备注：{{tableData.note ? tableData.note : '无'}}</div>
 </template>
 <script>
   import $ from 'jquery'
@@ -81,6 +83,12 @@
 
   table tbody tr td:first-child {
     text-align: left;
+  }
+  .notice {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 6px;
   }
 </style>
 
