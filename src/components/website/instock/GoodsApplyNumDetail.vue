@@ -9,7 +9,6 @@
     </ol>
     <!--详情页面-->
     <summary-detail
-      :detail-list="detailList"
       :table-header="gridColumns"
       :table-data="list"
       :check-url="checkUrl"
@@ -36,9 +35,13 @@
           </tr>
           </tbody>
         </table>
-        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-        <!--:last-page="page.last_page"></page>-->
+        <!-- 翻页
+        <page
+          :total="page.total"
+          :current.sync="page.current_page"
+          :display="page.per_page"
+          :last-page="page.last_page">
+        </page>-->
       </div>
 </template>
 
@@ -50,7 +53,15 @@
   import Modal from '../../common/Modal'
   import Count from '../../common/Count'
   import SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl,token,exchangeData, checkRequest, error,changeStatus} from '../../../publicFunction/index'
+  import {
+    requestSystemUrl,
+    token,
+    exchangeData,
+    checkRequest,
+    getDataFromSiteApi,
+    putDataToApi,
+    error,
+    changeStatus } from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -61,73 +72,87 @@
       Count: Count
     },
     events: {
-//    绑定翻页事件
+/*//    绑定翻页事件
       pagechange: function (currentpage) {
-        this.listData(currentpage)
+        var self = this
+        this.$http({
+          url:requestSystemUrl + '/front-system/stock/enquiry/' + self.id + '/detail',
+          data: {
+            page: currentpage
+          },
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
+        }).then(function (response) {
+          self.page = response.data.body.pagination
+          self.detailList = response.data.body.list
+        }, function (err) {
+          console.log(err)
+        })
+      },*/
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
       },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = self.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['amount'] = val.main_reference_value
+          obj['reference_type'] = val.item_type
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/front-system/stock/enquiry/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+//      单条数据渲染
+          self.thisOneData()
+//      明细列表渲染
+          self.listData({})
+        })
+      }
     },
     ready: function () {
-      console.log(this.list)
-      var str = window.location.href
-      var num = str.indexOf('GoodsApplyNum') + 14
-      var id = str.substr(num)
-      this.id = id
+      this.id = this.$route.params.queryId
 //      单条数据渲染
       this.thisOneData()
 //      明细列表渲染
-      this.listData(1)
+      this.listData({})
     },
     methods: {
 //      当前id的一条数据
       thisOneData: function () {
-        this.$http({
-          url: requestUrl + '/front-system/stock/enquiry/' + this.id,
-          method: 'get',
-          headers:{'X-Overpowered-Token':token}
-        }).then(function (response) {
-          this.list = response.data.body
-          exchangeData(this.list)
-        }, function (err) {
-          error(err)
+        var self = this
+        var url = requestSystemUrl + '/front-system/stock/enquiry/' + self.id
+        getDataFromSiteApi(url, {}, function (response) {
+          self.list = response.data.body
+          exchangeData(self.list)
         })
       },
-//      明细列表渲染 /front-system/stock/products/{id}/detail
-      listData: function (page) {
-        this.$http({
-          url: requestUrl + '/front-system/stock/enquiry/' + this.id + '/detail',
-          method: 'get',
-          headers:{ 'X-Overpowered-Token':token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          console.log(this.page.current_page)
-          this.detailList = response.data.body.list
-        }, function (err) {
-          error(err)
+//      明细列表渲染
+      listData: function (data) {
+        var self = this
+        var url = requestSystemUrl + '/front-system/stock/enquiry/' + self.id + '/detail'
+        getDataFromSiteApi(url, {}, function (response) {
+//          self.page = response.data.body.pagination
+          self.detailList = response.data.body.list
         })
       },
-      //     切换
-      changeActive: function (event) {
-        var cur = $(event.currentTarget)
-        cur.addClass('active').siblings('li').removeClass('active')
-        switch (Number(cur.attr('id'))){
-          case 1:
-            this.detailModal = true
-            this.summaryModal = false
-            this.$dispatch('detail')
-            break
-          case 2:
-            this.detailModal = false
-            this.summaryModal = true
-            this.$dispatch('summary')
-        }
-      }
     },
     data: function () {
       return {
         id: 0,
-        page: [],
+//        page: [],
         list: [],
-        checkUrl: requestUrl + '/front-system/stock/enquiry/',
+        checkUrl: requestSystemUrl + '/front-system/stock/enquiry/',
         detailList: [],
         editFlag: false,
         detailModal: true,
@@ -136,7 +161,6 @@
         gridColumns: {
           order_number: '单号',
           checked: '审核状态',
-          receipt_status: '单据状态',
           creator: '制单人',
           auditor: '审核人',
           created_at: '制单日期',
