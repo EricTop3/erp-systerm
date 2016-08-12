@@ -8,43 +8,71 @@
       <li class="active">差异明细</li>
     </ol>
 
+    <!-- 页头 -->
+    <div class="page-header">
+      <form class="form-inline">
+        <div class="form-group">
+          <label>时间段</label>
+          <date-picker :value.sync="query.start_time" :time-text="timetext1"></date-picker>
+          -
+          <date-picker :value.sync="query.end_time" :time-text="timetext2"></date-picker>
+        </div>
+        <span class="btn btn-info" @click="search">查询</span>
+        <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
+      </form>
+    </div>
     <!-- 表格 单条数据 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
-      <div slot="operateList"></div>
-    </grid>
-
+    <table class="table table-striped table-hover table-border">
+      <thead>
+      <tr class="text-center">
+        <td class="text-left">货号</td>
+        <td>品名</td>
+        <td>差异库存量</td>
+        <td>单位</td>
+        <td>单位规格</td>
+        <td>商品分类</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="text-center">
+        <td class="text-left">{{list.item_code}}</td>
+        <td>{{list.item_name}}</td>
+        <td><font color="red">无字段</font></td>
+        <td>{{list.unit_name}}</td>
+        <td>{{list.unit_specification}}</td>
+        <td>{{list.category_name.display_name}}</td>
+      </tr>
+      </tbody>
+    </table>
     <!-- 表格 详情列表 -->
     <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
-
     <!-- 翻页 -->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page"></page>
-
+          :last-page="page.last_page" v-if="detailList > 0 "></page>
   </div>
 </template>
 <script>
   import SiteNav from '../SiteNav'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
-  import {requestUrl, error} from '../../../publicFunction/index'
+  import DatePicker from '../../common/DatePicker'
+  import  SummaryDetail from '../../common/SummaryDetail'
+  import {requestUrl, token, requestSystemUrl, error} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
+      DatePicker: DatePicker,
+      SummaryDetail: SummaryDetail,
       SiteNav: SiteNav
     },
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.detailListData(currentpage)
-//        console.log(currentpage)
       }
     },
     ready: function () {
-      var str = window.location.href
-      var num = str.indexOf('Differences') + 12
-      var id = str.substr(num)
-      this.id = id
 //      单条数据渲染
       this.thisOneData()
 //      明细列表渲染
@@ -53,9 +81,11 @@
     methods: {
 //      当前id的一条数据 /front-system/stock/difference/{id}
       thisOneData: function () {
+        this.id = this.$route.params.queryId
         this.$http({
-          url: requestUrl + '/front-system/stock/difference/' + this.id,
-          method: 'get'
+          url: requestUrl + '/front-system/stock/difference/' + this.id  + '/detail',
+          method: 'get',
+          headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.list = response.data.body
         }, function (err) {
@@ -64,47 +94,53 @@
       },
 //      明细列表渲染 /front-system/stock/difference/{id}/detail
       detailListData: function (page) {
+        this.id = this.$route.params.queryId
         this.$http({
-          url: requestUrl + '/front-system/stock/difference/' + this.id + '/detail',
+          url: requestUrl + '/front-system/stock/difference/' + this.id,
           method: 'get',
+          headers: {'X-Overpowered-Token': token},
           data: {
             start_time: this.query.start_time || '',
             end_time: this.query.end_time || '',
-            operation_type: this.query.operation_type || '',
             page: page,
             per_page: 10
           }
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
+          console.log("mafeiyan" + this.detailList)
         }, function (err) {
           error(err)
         })
+      },
+//      搜索
+      search: function () {
+        this.thisOneData()
+        this.detailListData(1)
+      },
+//      取消搜索
+      cancel: function () {
+        this.query = {}
+        this.thisOneData()
+        this.detailListData(1)
       }
     },
     data: function () {
       return {
-        id: 0,
+        timetext1: "开始时间",
+        timetext2: "结束时间",
+        id: '',
         page: [],
         list: [],
         detailList: [],
-        gridOperate: false,
-        gridColumns: {
-          consumable_code: '货号',
-          consumable_name: '品名',
-          difference_amount: '差异库存量',
-          consumable_unit: '单位',
-          consumable_unit_specification: '单位规格',
-          category: '商品分类'
-        },
         gridOperate2: false,
         gridColumns2: {
           created_at: '时间',
-          consumable_name: '品名',
-          difference_amount: '差异数量',
-          consumable_unit: '单位',
+          item_name: '品名',
+          difference: '差异数量',
+          unit_name: '单位',
           creator_name: '操作人',
-          sources_number: '盘点单号'
+          document_number: '盘点单号'
         },
         query: {
           start_time: '',

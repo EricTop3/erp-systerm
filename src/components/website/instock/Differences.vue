@@ -6,21 +6,21 @@
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
       <li class="active">盘点差异汇总</li>
     </ol>
-
     <!-- 页头 -->
     <div class="page-header">
       <form class="form-inline">
         <div class="form-group ml10">
           <label>商品分类</label>
           <select class="form-control" v-model="query.category">
+            <option value="">请选择</option>
             <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>销售时间段</label>
-          <date-picker :value.sync="query.start_time"></date-picker>
+          <date-picker :value.sync="query.start_time" :time-text="timetext1"></date-picker>
           -
-          <date-picker :value.sync="query.end_time"></date-picker>
+          <date-picker :value.sync="query.end_time" :time-text="timetext2"></date-picker>
         </div>
         <div class="form-group">
           <label>品名或货号</label>
@@ -30,7 +30,6 @@
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
       </form>
     </div>
-
     <!-- 表格 -->
     <grid :data="list" :columns="gridColumns" :operate="gridOperate">
       <div slot="operateList">
@@ -131,17 +130,19 @@
     },
     data: function () {
       return {
+        timetext1: "开始时间",
+        timetext2: "结束时间",
         category: [],
         page: [],
         list: [],
         detailUrl: '/#!/site/instock/Differences/',
         gridOperate: true,
         gridColumns: {
-          consumable_code: '货号',
-          consumable_name: '品名',
-          difference_amount: '差异库存量',
-          consumable_unit: '单位',
-          consumable_unit_specification: '单位规格',
+          item_code: '货号',
+          item_name: '品名',
+          difference: '差异库存量',
+          unit_name: '单位',
+          unit_specification: '单位规格',
           category_name: '商品分类'
         },
         query: {

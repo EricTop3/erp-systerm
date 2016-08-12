@@ -150,7 +150,6 @@
           }
         })
         self.rederStockGoods = self.dataArray
-//        self.old = self.rederStockGoods
         self.localPage(self.rederStockGoods)
       },
 //      删除
@@ -207,7 +206,7 @@
       upLoadEnquiry: function () {
         var inventory = []
         var hasStock = false
-        $.each(this.rederStockGoods, function (index, val) {
+        $.each(this.dataArray, function (index, val) {
           var obj = {}
           obj['reference_id'] = val.id
           obj['current_stock'] = Number(val.current_stock)
@@ -220,7 +219,7 @@
         if (this.selectedHouse === '') {
           this.modal.errModal = true
           this.modal.errInfo = 'high,你还没有填写仓库'
-        } else if (this.rederStockGoods.length < 1) {
+        } else if (this.dataArray.length < 1) {
           this.modal.errModal = true
           this.modal.errInfo = 'high,你忘记添加商品了'
         } else if (hasStock) {
@@ -265,15 +264,8 @@
           per_page: 16, // 一页有多少个
           len: 0 // 总共的个数
         },
-        page: {
-          current_page: '',
-          last_page: '',
-          per_page: '',
-          len: ''
-        },
         showPage: [],
         selectedHouse: '',
-        old: [],
         rederStockGoods: [],
         dataArray: [],
         warehouseList: [],
