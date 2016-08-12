@@ -34,7 +34,6 @@
               </select>
             </div>
             <div class="form-group ml10">
-              <!-- TODO 制单人搜索，搜索出现无数据 -->
               <label>制单人</label>
               <select class="form-control" v-model="search.selectedMaker">
                 <option value="">请选择</option>
@@ -44,15 +43,15 @@
             <br>
             <div class="form-group ml10 mt20">
               <label>盘点时间段</label>
-              <date-picker :value.sync="search.startTime"></date-picker>
+              <date-picker :value.sync="search.startTime" :time-text="timetext1"></date-picker>
               -
-              <date-picker :value.sync="search.endTime"></date-picker>
+              <date-picker :value.sync="search.endTime" :time-text="timetext2"></date-picker>
             </div>
 
-            <button class="btn btn-primary mt20" @click="searchMethod">搜索</button>
+            <span class="btn btn-primary mt20" @click="searchMethod">搜索</span>
             <span class="btn btn-warning mt20" @click="cancelSearch">撤销搜索</span>
 
-            <span class="btn fr btn-info">导出excel</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             <span v-link="{ path:'/admin/instock/createInventory' }"
                   class="btn btn-info spanblocks fr mr10">新建盘点单</span>
           </form>
@@ -177,8 +176,24 @@
         this.listData({})
       }
     },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/inventory'
+        var data =
+          'start_time=' + this.search.start_time + '&' +
+          'end_time=' + this.search.end_time + '&' +
+          'document_number=' + this.search.code + '&' +
+          'creator_id=' + this.search.selectedMaker + '&' +
+          'warehouse_id=' + this.search.selectedHouse + '&' +
+          'checked=' + this.search.selectedStatus
+        return this.exportUrl = url + '/export-excel?' + data
+      }
+    },
     data: function () {
       return {
+        timetext1: '开始时间',
+        timetext2: '结束时间',
         page: [],
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/stock/inventory/',

@@ -38,8 +38,9 @@
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
-            <button type="submit" class="btn btn-primary" @click=getlistData()>搜索</button>
-            <button type="submit" class="btn btn-warning" @click=cancelSearch()>撤销搜索</button>
+            <span class="btn btn-primary" @click=getlistData()>搜索</span>
+            <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form><br>
           <span class="f12 c-erp">注：统计工厂产成品，委外产成品，门店产成品在生产中消耗的原材料库存量</span>
         </div>
@@ -145,6 +146,19 @@
       cancelSearch: function () {
         this.searchData = {}
         this.getlistData(1)
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/produce'
+        var data =
+          'name=' + this.searchData.name + '&' +
+          'category_id=' + this.searchData.category_id + '&' +
+          'warehouse_id=' + this.searchData.warehouse_id + '&' +
+          'start_time=' + this.searchData.start_time + '&' +
+          'end_time=' + this.searchData.end_time
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {
