@@ -6,21 +6,22 @@
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
       <li class="active">生产出库汇总</li>
     </ol>
-
+    
     <!-- 页头 -->
     <div class="page-header">
       <form class="form-inline text-center">
         <div class="form-group ml10">
           <label>商品分类</label>
           <select class="form-control" v-model="query.category">
+            <option value="">请选择</option>
             <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>销售时间段</label>
-          <date-picker :value.sync="query.start_time"></date-picker>
+          <date-picker :value.sync="query.start_time" :time-text="timetext1"></date-picker>
           -
-          <date-picker :value.sync="query.end_time"></date-picker>
+          <date-picker :value.sync="query.end_time" :time-text="timetext2"></date-picker>
         </div>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">
@@ -124,6 +125,8 @@
     },
     data: function () {
       return {
+        timetext1: "开始时间",
+        timetext2: "结束时间",
         category: '',
         page: [],
         list: [],

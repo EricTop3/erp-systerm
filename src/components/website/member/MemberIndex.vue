@@ -79,7 +79,6 @@
                   <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="create.member_card" v-validate:member_card="{required: true}">
                   <span v-if="$validationNewMember.member_card.touched">
                     <span v-if="$validationNewMember.member_card.required" class="errT">请输入会员卡号！</span>
-                    <!--<span v-if="$validationNewMember.member_card.number" style=" float: left; color: red; font-size: 12px;">会员卡号只能输入数字！</span>-->
                   </span>
                 </div>
               </div>
@@ -112,7 +111,6 @@
                 <label class="col-sm-4 control-label">生 日：</label>
                 <div class="col-sm-8">
                   <date-picker :value.sync="create.birthday"></date-picker>
-                  <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="birthday">-->
                 </div>
               </div>
               <div class="form-group">
@@ -131,19 +129,32 @@
                 <label class="col-sm-4 control-label">充值金额：</label>
                 <div class="col-sm-8">
                   <div class="form-inline">
-                    <input type="text" class="form-control" v-model="create.balance" placeholder="请输入充值金额！" style="width:104px;" @input="priceValidate">
+                    <input type="text" class="form-control" v-model="create.balance" style="width:104px;" @input="priceValidate">
                     <select class="form-control ml10" v-model="create.payment">
                       <option value="cash" selected>现金</option>
                       <option value="alipay">支付宝</option>
                       <option value="weixin">微信支付</option>
-                      <!--<option value="vip">会员支付</option>-->
                       <option value="pos">POSE刷卡</option>
                     </select>
                   </div>
                 </div>
               </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">交易单号：</label>
+                <div class="col-sm-8">
+                  <input  type="text" class="form-control" placeholder="请输入交易单号" v-model="create.trade_number">
+                  <!--<span v-if="create.payment != 'cash'">-->
+                    <!--<span v-if="$validationNewMember.trade_number.touched" class="errT">-->
+                  <span v-if="hasTN" class="errT">如果有请输入交易单号！</span>
+                    <!--</span>-->
+                  <!--</span>-->
+                  <!--<input v-if="create.payment == 'cash'" type="text" class="form-control" v-model="create.trade_number" disabled>-->
+                  <!--<input v-else type="text" class="form-control" v-model="create.trade_number" v-validate:trade_number="{required: true}">-->
+                </div>
+              </div>
             </form>
         </validator>
+        <span v-if="errData.iserr" class="errT">{{errData.date}}</span>
       </div>
     </div>
     <div slot="footer">
@@ -224,7 +235,7 @@
     </div>
     <div slot="body">
       <validator name="validationRecharge">
-      <form action="" method="post" class="form-horizontal">
+      <form class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">支付方式：</label>
           <div class="col-sm-8">
@@ -232,7 +243,6 @@
               <option value="cash" selected>现金</option>
               <option value="alipay">支付宝</option>
               <option value="weixin">微信支付</option>
-              <!--<option value="vip">会员支付</option>-->
               <option value="post">POSE刷卡</option>
             </select>
           </div>
@@ -246,10 +256,8 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">交易单号：</label>
           <div class="col-sm-8">
-            <input type="text" :disabled="edit.payment == 'cash'" class="form-control" v-model="edit.trade_number" v-validate:trade_number="{required: true}">
-            <span v-if="$validationRecharge.trade_number.touched">
-                <span v-if="$validationRecharge.trade_number.required" class="errT">请填写交易单号！</span>
-            </span>
+            <input type="text" class="form-control" placeholder="如果有请输入交易单号" v-model="edit.trade_number">
+            <span v-if="hasTN" class="errT">请输入交易单号！</span>
           </div>
         </div>
       </form>
@@ -351,18 +359,40 @@
           level: self.create.level,
           balance: self.create.balance,
           password: self.create.password,
-          payment: self.create.payment
+          payment: self.create.payment,
+          trade_number: self.create.trade_number
         }
-        postSiteDataToApi(url, data, function (response) {
-          self.modal.creatMemberModal = false
-          self.listData({})
-        },function (err) {
-          if (err.data.message == "无效的手机号码"){
-            self.create.phone = err.data.message
+//        判断交易方式
+        if (self.create.payment == 'cash') {
+          self.hasTN = false
+          postSiteDataToApi(url, data, function (response) {
+            self.modal.creatMemberModal = false
+            self.listData({})
+          },function (err) {
+            if (err.data.code == 200017){
+              self.errData.date = err.data.message
+              self.errData.iserr = true
+
+            }
+          })
+        } else {
+//          判断是否填写交易单号
+          if (!self.create.trade_number) {
+            self.hasTN = true
+          } else {
+            postSiteDataToApi(url, data, function (response) {
+              self.modal.creatMemberModal = false
+              self.listData({})
+            },function (err) {
+              if (err.data.code == 200017){
+                self.errData.date = err.data.message
+                self.errData.iserr = true
+              }
+            })
           }
-        })
+        }
       },
-//      创建新会员验证
+//    创建新会员验证
       verifyNewMember: function (e) {
         var self = this
         this.$validate(function () {
@@ -377,7 +407,7 @@
           }
         })
       },
-//     金额正则
+//    金额正则
       priceValidate: function () {
         var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
         if (!re.test(this.create.balance)) {
@@ -449,9 +479,8 @@
 //      充值金额的验证
       verifyRecharge: function (e) {
         var self = this
-        this.$validate(function () {
+        self.$validate(function () {
           if (self.$validationRecharge.invalid) {
-            self.$validationRecharge.trade_number.touched = true
             e.preventDefault()
           } else {
             self.saveRecharge(e)
@@ -469,10 +498,27 @@
           member_card: self.edit.member_card,
           trade_number: self.edit.trade_number
         }
-        putDataToApi(url, data, function (response) {
-          self.listData({})
-          self.modal.rechargeModal = false
-        })
+        if (self.edit.payment == 'cash') {
+          self.hasTN = false
+          putDataToApi(url, data, function (response) {
+            self.listData({})
+            self.modal.rechargeModal = false
+            self.edit.trade_number = ''
+            self.edit.balance = ''
+          })
+        } else {
+//          判断是否填写交易单号
+          if (!self.edit.trade_number) {
+            self.hasTN = true
+          } else {
+            putDataToApi(url, data, function (response) {
+              self.listData({})
+              self.modal.rechargeModal = false
+              self.edit.trade_number = ''
+              self.edit.balance = ''
+            })
+          }
+        }
       },
 //    查看明细
       checkDetail: function (event) {
@@ -504,8 +550,14 @@
         self.listData({})
       }
     },
+    computed: {},
     data: function () {
       return {
+        hasTN: false,
+        errData: {
+          date: '',
+          iserr: false
+        },
         detailUrl: '/#!/site/member/',
         page: [],
         warehouseList: [],
@@ -527,7 +579,8 @@
           level: '',
           balance: '',
           password: '',
-          payment: ''
+          payment: '',
+          trade_number: ''
         },
 //        编辑会员、充值金额
         edit: {

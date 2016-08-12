@@ -12,7 +12,8 @@
           <li><a v-link="{path: '/site/instock' }">库存</a></li>
           <li><a v-link="{path: '/site/billing'}">结算</a></li>
           <li><a v-link="{path: '/site/tranquery'}">交易查询</a></li>
-          <li><a v-link="{path: '/site/microshoporder'}">微商城订单</a></li>
+          <li><a href='#'>微商城订单</a></li>
+          <!--<li><a v-link="{path: '/site/microshoporder'}">微商城订单</a></li>-->
         </ul>
       </div>
       <div class="col-md-1"></div>

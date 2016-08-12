@@ -6,13 +6,12 @@
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
       <li class="active">盘点单汇总</li>
     </ol>
-
     <!-- 页头 -->
     <div class="page-header">
       <form class="form-inline">
         <div class="form-group">
           <label>单号</label>
-          <input type="text" class="form-control" placeholder="" v-model="query.order_code">
+          <input type="text" class="form-control" placeholder="请填写单号" v-model="query.order_code">
         </div>
         <div class="form-group ml10">
           <label>审核状态</label>
@@ -31,17 +30,19 @@
         </div>
         <div class="form-group ml10">
           <label>盘点时间段</label>
-          <date-picker :value.sync="query.start_time"></date-picker>
+          <date-picker :value.sync="query.start_time" :time-text="timetext1"></date-picker>
           -
-          <date-picker :value.sync="query.end_time"></date-picker>
+          <date-picker :value.sync="query.end_time" :time-text="timetext2"></date-picker>
         </div>
-        <button class="btn btn-info" @click="search">搜索</button>
+        <span class="btn btn-info" @click="search">搜索</span>
         <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
         <a v-link="{ path: '/site/instock/InventoryCreate'}"><span class="btn btn-primary" style="display: inline-block; float:right;">新建盘点单</span></a>
       </form>
     </div>
+
     <!--列表详情-->
     <summary :table-header="gridColumns" :table-data="list" :check-url="checkUrl" :page="page"></summary>
+
   </div>
 </template>
 <script>
@@ -51,7 +52,7 @@
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
   import Summary from '../../common/Summary'
-  import {requestUrl, token,searchRequest,changeStatus,deleteRequest,checkRequest,finishRequest, error,getDataFromSiteApi } from '../../../publicFunction/index'
+  import {requestUrl, requestSystemUrl, token,searchRequest,changeStatus,deleteRequest,checkRequest,finishRequest, error,getDataFromSiteApi } from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -65,6 +66,17 @@
       pagechange: function (currentpage) {
         this.listData(currentpage)
       },
+//     删除请求
+      deleteFromApi: function (id) {
+        var self = this
+        deleteRequest(requestSystemUrl + '/front-system/stock/inventory/'+ id,function(response){
+          self.listData({})
+        })
+      },
+//    查看详情
+      gotoDetail: function (id){
+        window.location.href = '#!/site/instock/Inventory/'+ id
+      }
     },
     ready: function () {
       var self  = this
@@ -135,9 +147,11 @@
     },
     data: function () {
       return {
+        timetext1: "开始时间",
+        timetext2: "结束时间",
         creators: [],
         page: [],
-        checkUrl: '',
+        checkUrl: requestUrl + '/front-system/stock/inventory/',
         list: [],
         gridOperate: true,
         gridColumns: {

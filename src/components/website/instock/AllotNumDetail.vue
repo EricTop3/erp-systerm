@@ -48,9 +48,6 @@
           </tr>
           </tbody>
         </table>
-        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-        <!--:last-page="page.last_page"></page>-->
       </div>
 
       <!-- 入库汇总 -->
@@ -76,9 +73,6 @@
           </tr>
           </tbody>
         </table>
-        <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-        <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-        <!--:last-page="page.last_page"></page>-->
       </div>
     </div>
   </div>
@@ -94,7 +88,15 @@
   import ListValidate from '../../common/ListValidate'
   import SummaryDetail from '../../common/SummaryDetail'
   import Count  from '../../common/Count'
-  import {requestUrl, token,searchRequest,exchangeData,error,changeStatus } from '../../../publicFunction/index'
+  import {
+    requestUrl,
+    token,
+    searchRequest,
+    exchangeData,
+    error,
+    getDataFromSiteApi,
+    putDataToApi,
+    changeStatus } from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -106,17 +108,45 @@
       Count: Count
     },
     events: {
-//    绑定翻页事件
-      pagechange: function (currentpage) {
-//        this.detailListData(currentpage)
-        console.log(currentpage)
+////    绑定翻页事件
+//      pagechange: function (currentpage) {
+////        this.detailListData(currentpage)
+//        console.log(currentpage)
+//      }
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = self.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['amount'] = val.current_amount
+          obj['reference_type'] = val.item_type
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+
+        var url = requestUrl + '/front-system/stock/recipient/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+//      单条数据渲染
+          this.thisOneData()
+//      明细列表渲染
+          this.listData(1)
+        })
       }
     },
     ready: function () {
-      var str = window.location.href
-      var num = str.indexOf('AllotNum') + 9
-      var id = str.substr(num)
-      this.id = id
+      this.id = this.$route.params.queryId
 //      单条数据渲染
       this.thisOneData()
 //      明细列表渲染
@@ -125,28 +155,19 @@
     methods: {
 //      当前id的一条数据
       thisOneData: function () {
-        this.$http({
-          url: requestUrl + '/front-system/stock/recipient/' + this.id,
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.list = response.data.body
-          changeStatus(this.list)
-        }, function (err) {
-          error(err)
+        var self = this
+        var url = requestUrl + '/front-system/stock/recipient/' + self.id
+        getDataFromSiteApi(url, {}, function (response) {
+          self.list = response.data.body
+          changeStatus(self.list)
         })
       },
-//      明细列表渲染 /front-system/stock/products/{id}/detail
+//      明细列表渲染
       listData: function (page) {
-        this.$http({
-          url: requestUrl + '/front-system/stock/recipient/' + this.id + '/detail',
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.detailList = response.data.body.list
-        }, function (err) {
-          error(err)
+        var self = this
+        var url = requestUrl + '/front-system/stock/recipient/' + self.id + '/detail'
+        getDataFromSiteApi(url, {}, function (response) {
+          self.detailList = response.data.body.list
         })
       },
 //     切换
@@ -202,7 +223,7 @@
         editFlag: false,
         detailModal: true,
         summaryModal: false,
-        page: [],
+//        page: [],
         checkUrl:requestUrl +  '/front-system/stock/recipient/',
         inventoryAuditModal: false,
         inventoryAuditModalSize: 'modal-sm',
@@ -230,7 +251,7 @@
           unit_specification: '单位规格',
           order_source_code: '来源单号'
         },
-        page3: [],
+//        page3: [],
         gridOperate3: false,
         gridColumns3: {
           goods_code: '货号',

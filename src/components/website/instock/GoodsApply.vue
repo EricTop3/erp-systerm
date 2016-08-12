@@ -89,7 +89,7 @@
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
   import ListDelete from '../../common/ListDelete'
-  import {requestUrl, token, deleteRequest, postDataToApi, erroe} from '../../../publicFunction/index'
+  import {requestUrl, token, deleteRequest, postDataToApi, error} from '../../../publicFunction/index'
   export default {
     components: {
       StockGoods: StockGoods,

@@ -27,10 +27,8 @@
         <td>{{memberData.member_type}}</td>
         <td>{{memberData.register_store_name}}</td>
         <td>
-          <slot name="operate">
             <span class="btn btn-primary btn-sm" @click="recharge($event)">充值</span>
             <span class="btn btn-info btn-sm" @click="updateMember($event)">编辑</span>
-          </slot>
         </td>
       </tr>
       </tbody>
@@ -56,51 +54,50 @@
     <div slot="body">
       <div class="modal-body">
         <validator name="validationEditMember">
-        <form class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-4 control-label">会员卡号：</label>
-            <div class="col-sm-8">
-              <span style="display: inline-block; margin-top: 8px;">{{edit.member_card}}</span>
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-sm-4 control-label">会员卡号：</label>
+              <div class="col-sm-8">
+                <span style="display: inline-block; margin-top: 8px;">{{edit.member_card}}</span>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">姓名：</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="edit.name">
+            <div class="form-group">
+              <label class="col-sm-4 control-label">姓名：</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="edit.name">
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">手机号码：</label>
-            <div class="col-sm-8">
-              <span style="display: inline-block; margin-top: 8px;">{{edit.phone}}</span>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">手机号码：</label>
+              <div class="col-sm-8">
+                <span style="display: inline-block; margin-top: 8px;">{{edit.phone}}</span>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">微商城密码：</label>
-            <div class="col-sm-8">
-              <input type="password" class="form-control" v-model="edit.password">
+            <div class="form-group">
+              <label class="col-sm-4 control-label">微商城密码：</label>
+              <div class="col-sm-8">
+                <input type="password" class="form-control" v-model="edit.password">
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">生 日：</label>
-            <div class="col-sm-8">
-              <date-picker :value.sync="edit.birthday"></date-picker>
-              <!--<input type="text" class="form-control" placeholder="请填写生日，如：06.01！" v-model="formData.birthday">-->
+            <div class="form-group">
+              <label class="col-sm-4 control-label">生 日：</label>
+              <div class="col-sm-8">
+                <date-picker :value.sync="edit.birthday"></date-picker>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">等 级：</label>
-            <div class="col-sm-8">
-              <select class="form-control" v-model="edit.level" v-validate:level="{required: true}">
-                <option value="" selected>请选择</option>
-                <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
-              </select>
-              <span v-if="$validationEditMember.level.touched">
-                <span v-if="$validationEditMember.level.required" class="errT">请选择会员等级！</span>
-              </span>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">等 级：</label>
+              <div class="col-sm-8">
+                <select class="form-control" v-model="edit.level" v-validate:level="{required: true}">
+                  <option value="" selected>请选择</option>
+                  <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
+                </select>
+                <span v-if="$validationEditMember.level.touched">
+                  <span v-if="$validationEditMember.level.required" class="errT">请选择会员等级！</span>
+                </span>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
         </validator>
       </div>
     </div>
@@ -118,35 +115,32 @@
     </div>
     <div slot="body">
       <validator name="validationRecharge">
-      <form action="" method="post" class="form-horizontal">
-        <div class="form-group">
-          <label class="col-sm-4 control-label">支付方式：</label>
-          <div class="col-sm-8">
-            <select class="form-control" v-model="edit.payment">
-              <option value="cash" selected>现金</option>
-              <option value="alipay">支付宝</option>
-              <option value="weixin">微信支付</option>
-              <!--<option value="vip">会员支付</option>-->
-              <option value="post">POSE刷卡</option>
-            </select>
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">支付方式：</label>
+            <div class="col-sm-8">
+              <select class="form-control" v-model="edit.payment">
+                <option value="cash" selected>现金</option>
+                <option value="alipay">支付宝</option>
+                <option value="weixin">微信支付</option>
+                <option value="post">POSE刷卡</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">充值金额：</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">充值金额：</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">交易单号：</label>
-          <div class="col-sm-8">
-            <input type="text" :disabled="edit.payment == 'cash'" class="form-control" v-model="edit.trade_number" v-validate:trade_number="{required: true}">
-            <span v-if="$validationRecharge.trade_number.touched">
-                <span v-if="$validationRecharge.trade_number.required" class="errT">请填写交易单号！</span>
-            </span>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">交易单号：</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="如果有请输入交易单号" v-model="edit.trade_number">
+              <span v-if="hasTN" class="errT">请输入交易单号！</span>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
       </validator>
     </div>
     <div slot="footer">
@@ -294,25 +288,6 @@
 
         this.modal.rechargeModal = true
       },
-//      充值金额的验证
-      verifyRecharge: function (e) {
-        var self = this
-        this.$validate(function () {
-          if (self.$validationRecharge.invalid) {
-            self.$validationRecharge.trade_number.touched = true
-            e.preventDefault()
-          } else {
-            self.saveRecharge(e)
-          }
-        })
-      },
-//     金额正则
-      priceValidate: function () {
-        var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
-        if (!re.test(this.create.balance)) {
-          this.create.balance =  ''
-        }
-      },
 //    保存充值金额
       saveRecharge: function (event) {
         var self = this
@@ -324,15 +299,48 @@
           member_card: self.edit.member_card,
           trade_number: self.edit.trade_number
         }
-        putDataToApi(url, data, function (response) {
-          self.modal.rechargeModal = false
+        if (self.edit.payment == 'cash') {
+          self.hasTN = false
+          putDataToApi(url, data, function (response) {
+            self.modal.rechargeModal = false
 //    会员详情-列表渲染
-          self.listData()
+            self.listData()
+          })
+        } else {
+//          判断是否填写交易单号
+          if (!self.edit.trade_number) {
+            self.hasTN = true
+          } else {
+            putDataToApi(url, data, function (response) {
+              self.modal.rechargeModal = false
+//    会员详情-列表渲染
+              self.listData()
+            })
+          }
+        }
+      },
+//    充值金额的验证
+      verifyRecharge: function (e) {
+        var self = this
+        self.$validate(function () {
+          if (self.$validationRecharge.invalid) {
+            e.preventDefault()
+          } else {
+            self.saveRecharge(e)
+          }
         })
+      },
+//    金额正则
+      priceValidate: function () {
+        var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
+        if (!re.test(this.edit.balance)) {
+          this.edit.balance =  ''
+        }
       }
     },
     data: function () {
       return {
+        hasTN: false,
 //        弹窗
         modal: {
           rechargeModalSize: 'modal-sm',
@@ -390,7 +398,6 @@
     }
   }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   h1 {
     color: #42b983;
