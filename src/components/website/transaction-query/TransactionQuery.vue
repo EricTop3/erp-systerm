@@ -12,15 +12,16 @@
       <form class="form-inline">
         <div class="form-group">
           <label>小票编号</label>
-          <input type="text" class="form-control" placeholder="" v-model="orderNumber">
+          <input type="text" class="form-control" placeholder="请输入小票编号" v-model="search.orderNumber">
         </div>
         <div class="form-group">
           <label>会员卡号</label>
-          <input type="text" class="form-control" placeholder="" v-model="cardNumber">
+          <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="search.cardNumber">
         </div>
         <div class="form-group ml10">
           <label>支付方式</label>
-          <select class="form-control" v-model="selected">
+          <select class="form-control" v-model="search.selectedPayway">
+            <option value="">请选择</option>
             <option value="cash" checked>现金</option>
             <option value="alipay">支付宝</option>
             <option value="post">post刷卡</option>
@@ -30,24 +31,32 @@
         </div>
         <div class="form-group ml10">
           <label>营业员</label>
-          <select class="form-control" v-model="operator">
+          <select class="form-control" v-model="search.selectedClerk">
             <option value="">请选择</option>
+            <option :value="item.id" v-for="item in search.clerk">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>进度</label>
-          <select class="form-control">
+          <select class="form-control" v-model="search.selectedProgress">
             <option value="">请选择</option>
-            <option>全部</option>
+            <option value="at00">已提交</option>
+            <option value="ip00">生产中</option>
+            <option value="sd00">门店配送中</option>
+            <option value="gs00">等待签收</option>
+            <option value="kd00">快递配送中</option>
+            <option value="rm00">客户已签收</option>
+            <option value="c000">订单取消</option>
+            <option value="hr00">已退款</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>下单时间段</label>
-          <date-picker :value.sync="startTime"></date-picker>
+          <date-picker :value.sync="time.startTime" :time-text="time.timeText"></date-picker>
           -
-          <date-picker :value.sync="endTime"></date-picker>
+          <date-picker :value.sync="time.endTime"  :time-text="time.timeText">></date-picker>
         </div>
-        <button class="btn btn-info" @click="search">搜索</button>
+        <button class="btn btn-info" @click="searchMethod">搜索</button>
         <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
       </form>
     </div>
@@ -121,7 +130,7 @@
         <!-- begin预约单 -->
 
         <div role="tabpanel" class="tab-pane active" v-if="orderShow===true">
-          <table class="table table-striped table-border table-hover">
+          <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr class="text-center">
               <td class="text-left">小票编号</td>
@@ -428,7 +437,10 @@
     ready: function () {
       var self = this
       var url = requestUrl + '/front-system/order'
-
+//    获取营业员
+      getDataFromSiteApi( requestUrl + '/front-system/account',{},function(response){
+        self.search.clerk = response.data.body.list
+      })
 //      切换订单类型
       $('.nav-tabs li').click(function () {
         self.orderType = Number($(this).attr('value'))
@@ -456,16 +468,19 @@
     },
     methods: {
 //      搜索
-      search: function () {
+      searchMethod: function () {
         var self = this
         searchRequest(
           requestUrl + '/front-system/order',
           {
-            order_number: this.orderNumber,
-            payment: this.selected,
-            card_number: this.cardNumber,
-            operator: this.operator,
-            order_type: this.orderType
+            order_number: this.search.orderNumber,
+            payment: this.search.selectedPayway,
+            card_number: this.search.cardNumber,
+            operator: this.search.selectedClerk,
+            status: this.search.selectedProgress,
+            order_type: this.orderType,
+            start_time: this.time.startTime,
+            end_time: this.time.endTime
           },
           function (response) {
             self.queryList = response.data.body.list
@@ -535,7 +550,7 @@
             case  'hr00':
               val.status = '已退款'
               break
-            case  'k000':
+            case  'kd00':
               val.status = '快递配送中'
               break
             case  'rm00':
@@ -597,7 +612,6 @@
         this.currentButton = button
         this.modal.storeReceivedModal = true
         this.receivedId = $(event.currentTarget).parents('tr').attr('id')
-        console.log(this.receivedId)
       },
 //      门店确认签收
       storeConfirmReceived: function () {
@@ -614,7 +628,6 @@
             order_type: this.orderType,
           }
           this.fetchData(url, data, function (response) {
-            console.log(response)
             $(self.currentButton).remove()
           })
         }, function (err) {
@@ -742,9 +755,6 @@
     data: function () {
       return {
         refundFlag: false,
-        startTime: '',
-        orderNumber: '',
-        endTime: '',
         modal:{
            errModal: false,
            errInfo: 'high,这是退货错误提示',
@@ -761,6 +771,19 @@
            returnMoneyModal: false,
            returnMoneyModalSize: 'modal-sm',
          },
+        search: {
+          clerk: [],
+          sorderNumber: '',
+          selectedPayway: '',
+          cardNumber: '',
+          selectedClerk: '',
+          selectedProgress: ''
+        },
+        time: {
+          startTime: '',
+          endTime: '',
+          timeText: '请输入日期'
+        },
         totalPayMent: 0,
         paymentAmount: 0,
         guazhangShow: false,
