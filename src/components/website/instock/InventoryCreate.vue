@@ -7,17 +7,14 @@
       <li class="active">盘点单汇总</li>
       <li class="active">查看盘点单</li>
     </ol>
-
     <!-- 页头 -->
     <div class="page-header">
       <form class="form-inline text-center">
         <div class="form-group">
           <label>备注</label>
-          <input type="text" class="form-control" placeholder="">
-          <label>盘点日期</label>
-          <date-picker :value.sync="start_time"></date-picker>
+          <input type="text" class="form-control" placeholder="请填写盘点备注" v-model="note">
         </div>
-        <span class="btn btn-info" @click="addGoodModal=true">选择盘点商品</span>
+        <span class="btn btn-info" @click="modal.addGoodModal=true">选择盘点商品</span>
         <span class="btn btn-primary" @click="inventoryAll()">盘点所有商品</span>
         <span class="btn btn-warning" @click="upLoadEnquiry()">提交盘点</span>
       </form>
@@ -41,197 +38,219 @@
       <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
         <td class="text-left">{{item.code}}</td>
         <td>{{item.name}}</td>
-        <td>{{item.current_stock}}</td>
+        <td><span style="color:red;">无字段</span></td>
         <td align="center">
-          <input type="text" class="form-control text-center" style="width:70px;" v-model="item.is_number">
+          <count :count.sync =item.current_stock></count>
         </td>
-        <td>
-          <div v-if="item.is_number==''|| isNaN(item.is_number)">0</div>
-          <div v-else>{{item.current_stock - item.is_number}}</div>
-        </td>
-        <td>{{item.unit}}</td>
-        <td>{{item.unit_specification}}</td>
-        <td><span class="btn btn-primary btn-sm" @click="isDelete($event)">删除</span></td>
+        <td><span style="color:red;">无字段</span></td>
+        <td>{{item.production_unit_name}}</td>
+        <td>{{item.specification_unit}}</td>
+        <td><list-delete :delete-data.sync="rederStockGoods"></list-delete></td>
       </tr>
       </tbody>
     </table>
-
-    <!--分页-->
-    <page :total='rederStockGoods.length' :current.sync='instockPage.current_page' :display='instockPage.per_page'
-          :last-page='instockPage.last_page'>
+    <!--本地分页-->
+    <page
+      :total='pageLocal.len'
+      :current='pageLocal.current_page'
+      :display='pageLocal.per_page'
+      :last-page='pageLocal.last_page' v-if="pageLocal.len > 0">
     </page>
   </div>
   <!--模态框-添加商品-->
-  <stock-goods :stock-add-good-modal.sync="addGoodModal" :stock-add-good-modal-size="addGoodModalSize"
-               :add-data.sync="stockGoods"></stock-goods>
+  <stock-goods
+    :get-render-data="rederStockGoods"
+    :stock-add-good-modal.sync="modal.addGoodModal"
+    :stock-add-good-modal-size="modal.addGoodModalSize"
+    :page.sync="showPage"
+    :add-data.sync="stockGoods"
+    :goods-list-title="goodsListTitle"
+    :product-url="request.productUrl"
+    :category-url="request.categoryUrl"
+  ></stock-goods>
   <!--模态框HTML-->
 
-  <!--模态框-删除-->
-  <modal :show.sync="deleteModal" :modal-size="deleteModalSize">
-    <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">删除</h4>
-    </div>
-    <div slot="body">
-      <h4>删除弹出框！</h4>
-    </div>
-    <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmDelelte()">确定</button>
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="deleteModal=false">取消</button>
-    </div>
-  </modal>
-  <!--模态框HTML-->
-
-  <!--错误信息弹出-->
-  <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
-    <div slot='header'>
-      <button type='button' class='close' data-dismiss='modal' @click="priceAdjectModal=false" aria-label='Close'><span
-        aria-hidden='true' @click="messageTipModal=false">&times;</span></button>
-      <h4 class='modal-title'>友情提示</h4>
-    </div>
-    <div slot='body'>
-      <div class='form-group'>
-        <p class="modal-body">{{messageTip}}</p>
-      </div>
-    </div>
-    <div slot='footer'>
-      <button type='button' class='btn btn-primary' @click='messageTipModal = false'>关闭</button>
-    </div>
-  </modal>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
+
 <script>
   import $ from 'jquery'
   import SiteNav from '../SiteNav'
   import Count from '../../common/Count'
   import StockGoods from '../../common/StockGoodsOperate'
+  import ErrorTip from '../../common/ErrorTip'
   import Grid from '../../common/Grid'
+  import ListDelete from '../../common/ListDelete'
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token, error} from '../../../publicFunction/index'
+  import {
+    requestUrl,
+    requestSystemUrl,
+    token,
+    searchRequest,
+    getDataFromApi,
+    postDataToApi,
+    exchangeData,
+    deleteRequest,
+    error,
+    detailGoodsInfo
+  } from '../../../publicFunction/index'
   var deleteId = ''
   export default {
     components: {
       StockGoods: StockGoods,
       DatePicker: DatePicker,
+      ListDelete: ListDelete,
       Grid: Grid,
+      ErrorTip: ErrorTip,
       Count: Count,
       Modal: Modal,
       Page: Page,
       SiteNav: SiteNav
     },
     events: {
-//           确认增加
+//    确认增加
       confirmAdd: function () {
         var self = this
         $.each(self.stockGoods, function (index, val) {
-          if (val.checked) {
+          val.current_stock = ''
+          if (val.choice && !val.again) {
+            val.again = true
             self.dataArray.push(val)
           }
         })
-        this.rederStockGoods = self.dataArray
-        self.dataArray = []
-        this.addGoodModal = false
+        self.rederStockGoods = self.dataArray
+        self.localPage(self.rederStockGoods)
       },
+//      删除
+      delete: function (id) {
+        var self = this
+//       添加商品的状态改变
+        $.each(this.stockGoods, function (index, val) {
+          if (val.id === id) {
+            val.choice = false
+            val.again = false
+          }
+        })
+//       从列表中删除
+        $.each(this.dataArray, function (index, val) {
+          if (val.id === id) {
+            self.dataArray.splice(index, 1)
+            return false
+          }
+        })
+        self.localPage(self.dataArray)
+      },
+//      分页
+      pagechange: function (currentpage) {
+        this.pageLocal.current_page = currentpage
+        this.localPage(this.dataArray)
+        $.each(this.dataArray, function (index, val) {
+          if (val.current_stock == '') {
+            val.current_stock = null
+          }
+        })
+      }
     },
     methods: {
 //      盘点所有商品
       inventoryAll: function () {
-        this.$http({
-          url: requestUrl + '/front-system/stock/goods',
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.rederStockGoods = response.data.body.list
-          this.page = response.data.body.pagination
-        }, function (err) {
-          error(err)
-        })
-      },
-//      明细列表渲染
-      detailListData: function (page) {
-        this.$http({
-          url: requestUrl + '/front-system/stock/inventory/' + this.id + '/detail',
-          method: 'get',
-          data: {
-            start_time: this.query.start_time || '',
-            end_time: this.query.end_time || '',
-            operation_type: this.query.operation_type || '',
-            page: page,
-            per_page: 10
-          },
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.detailList = response.data.body.list
-        }, function (err) {
-          error(err)
-        })
-      },
-//     删除弹出框
-      isDelete: function (event) {
-        var currentId = Number($(event.currentTarget).parents('tr').attr('id'))
-        deleteId = currentId
-        this.deleteModal = true
-      },
-//      确认删除
-      confirmDelelte: function () {
-        var goodList = this.rederStockGoods
-        this.deleteModal = false
-        $.each(goodList, function (index, val) {
-          if (val.id === deleteId) {
-            goodList.splice(index, 1)
-          }
+        var self = this
+        var data = {
+          per_page: 999
+        }
+        self.pageLocal.current_page = 1
+        getDataFromApi(self.request.productUrl, data, function (respon) {
+          self.dataArray = respon.data.body.list
+          self.rederStockGoods = self.dataArray
+          self.localPage(self.dataArray)
         })
       },
 //      提交盘点
       upLoadEnquiry: function () {
         var inventory = []
-        $.each(this.rederStockGoods, function (index, val) {
+        var hasStock = false
+        $.each(this.dataArray, function (index, val) {
           var obj = {}
-          obj['id'] = val.id
-          obj['amount'] = Number(val['is_number'])
+          obj['reference_id'] = val.id
+          obj['current_stock'] = Number(val['current_stock'])
+          if (val.current_stock == '') {
+            hasStock = true
+          }
           inventory.push(obj)
         })
-
-        if (this.start_time === '') {
-          this.messageTipModal = true
-          this.messageTip = 'high,你还没有填写日期哟'
-        } else if (this.rederStockGoods.length < 1) {
-          this.messageTipModal = true
-          this.messageTip = 'high,你忘记添加商品了哟'
+        if(this.dataArray.length < 1) {
+          this.modal.errModal = true
+          this.modal.errInfo = '请添加盘点商品'
+        } else if (hasStock) {
+          this.modal.errModal = true
+          this.modal.errInfo = '请完整填写实际库存量'
         } else {
 //       提交盘点请求
-          this.$http({
-            url: requestUrl + '/front-system/stock/inventory',
-            method: 'post',
-            headers: {'X-Overpowered-Token': token},
-            params: {
-              inventory: inventory
-            }
-          }).then(function (reponse) {
+          var url = requestSystemUrl + '/front-system/stock/inventory'
+          var data = {
+            items: inventory,
+            note: this.note
+          }
+          postDataToApi(url, data, function (respon) {
             window.location.href = '/#!/site/instock/Inventory'
-          }, function (err) {
-            error(err)
           })
         }
+      },
+//     本地分页
+      localPage: function (data) {
+        this.pageLocal.len = data.length
+        console.log('数组总长度：' + this.pageLocal.len)
+        if (this.pageLocal.len % this.pageLocal.per_page === 0) {
+          this.pageLocal.last_page = this.pageLocal.len / this.pageLocal.per_page
+        } else {
+          this.pageLocal.last_page = (Math.floor(this.pageLocal.len / this.pageLocal.per_page)) + 1
+        }
+
+        var start = (this.pageLocal.current_page * this.pageLocal.per_page) - this.pageLocal.per_page
+        var end = (start + this.pageLocal.per_page) > this.pageLocal.len ? this.pageLocal.len : (start + this.pageLocal.per_page)
+        this.newData = data.slice(start,end)
+        this.rederStockGoods = this.newData
       }
     },
     data: function () {
       return {
-        messageTipModal: false,
-        messageTipModalSize: 'modal-sm',
-        messageTip: '请填写正确的信息！',
-        instockPage: [],
-        start_time: '',
-        deleteModal: false,
-        deleteModalSize: 'modal-sm',
-        addGoodModal: false,
-        addGoodModalSize: 'modal-lg',
-        stockGoods: [],
+//        盘点备注
+        note: '',
+//        是否启用本地分页
+        newData: [],
+        pageLocal: {
+          current_page: 1, // 当前页
+          last_page: 1, // 最后一页
+          per_page: 6, // 一页有多少个
+          len: 0 // 总共的个数
+        },
+        showPage: [],
+        rederStockGoods: [],
         dataArray: [],
-        rederStockGoods: []
+        modal: {
+          deleteModal: false,
+          deleteModalSize: 'modal-sm',
+          addGoodModal: false,
+          addGoodModalSize: 'modal-lg',
+          errModal: false,
+          errInfo: '请填写正确的信息'
+        },
+        goodsListTitle: {
+          'code': '货号',
+          'name': '品名',
+          'sale_amount': '日均销量',
+          'current_stock': '当前库存',
+          'production_unit_name': '单位',
+          'specification_unit': '单位规格',
+          'category': '商品分类'
+        },
+        request: {
+          productUrl: requestSystemUrl +  '/front-system/product',
+          categoryUrl: requestSystemUrl + '/front-system/order/category',
+        }
       }
     }
   }

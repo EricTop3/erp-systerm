@@ -8,19 +8,53 @@
       <li class="active">查看盘点单</li>
     </ol>
     <!--列表汇总-->
-    <summary-detail :detail-list="detailList" :table-header="gridColumns" :table-data="list" :second-table-header="gridColumns2" :grid-operate="gridOperate" :page="page"></summary-detail>
+
+
+    <summary-detail
+      :table-header="gridColumns"
+      :table-data="onedata"
+      :grid-operate="gridOperate"
+      :check-url="checkUrl"
+      :edit-flag.sync ="editFlag"
+    >
+    </summary-detail>
+
+    <!-- 表格2 详情页面列表数据-->
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+      <tr class="text-center">
+        <th v-for="value in  gridColumns2">
+          {{value}}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="text-center" v-for="entry in listdata" track-by="$index" :id="[entry.id ? entry.id : '']">
+        <td>{{entry.item_code}}</td>
+        <td>{{entry.item_name}}</td>
+        <td>{{entry.system_stock}}</td>
+        <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count>{{entry.purchase_unit_name}}</td>
+        <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
+        <td>{{entry.difference}}</td>
+        <td>{{entry.unit}}</td>
+        <td>{{entry.unit_specification}}</td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 <script>
   import Grid from '../../common/Grid'
   import SiteNav from '../SiteNav'
+  import Count from '../../common/Count'
   import Page from '../../common/Page'
   import  SummaryDetail from '../../common/SummaryDetail'
-  import {requestUrl, token,exchangeData, error} from '../../../publicFunction/index'
+  import {requestUrl, requestSystemUrl, token,error ,putDataToApi ,changeStatus} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
       Page: Page,
+      Count: Count,
       SummaryDetail: SummaryDetail,
       SiteNav: SiteNav
     },
@@ -29,13 +63,35 @@
       pagechange: function (currentpage) {
 //        this.detailListData(currentpage)
         console.log(currentpage)
+      },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.listdata,function (index,val) {
+          var obj = {}
+          obj['current_stock'] = val.main_reference_value
+          obj['id'] = val.id
+          obj['reference_id'] = val.item_id
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/front-system/stock/inventory/'+ id
+        putDataToApi(url,data,function (res) {
+          self.detailListData(1)
+        })
       }
     },
     ready: function () {
-      var str = window.location.href
-      var num = str.indexOf('Inventory') + 10
-      var id = str.substr(num)
-      this.id = id
+      this.id = this.$route.params.queryId
 //      单条数据渲染
       this.thisOneData()
 //      明细列表渲染
@@ -45,12 +101,13 @@
 //      当前id的一条数据
       thisOneData: function () {
         this.$http({
-          url: requestUrl + '/front-system/stock/inventory/' + this.id,
+          url: requestUrl + '/front-system/stock/inventory/' + this.id + '/detail',
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
-          this.list = response.data.body
-          exchangeData(this.list)
+          this.onedata = response.data.body
+          changeStatus(this.onedata)
+
         }, function (err) {
           error(err)
         })
@@ -58,7 +115,7 @@
 //      明细列表渲染 /front-system/stock/inventory/{id}/detail
       detailListData: function (page) {
         this.$http({
-          url: requestUrl + '/front-system/stock/inventory/' + this.id + '/detail',
+          url: requestUrl + '/front-system/stock/inventory/' + this.id,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
           data: {
@@ -70,7 +127,7 @@
           }
         }).then(function (response) {
           this.page = response.data.body.pagination
-          this.detailList = response.data.body.list
+          this.listdata = response.data.body.list
         }, function (err) {
           error(err)
         })
@@ -79,25 +136,27 @@
     data: function () {
       return {
         id: 0,
+        editFlag: false,
+        checkUrl: requestUrl + '/front-system/stock/inventory/',
         page: [],
-        list: [],
-        detailList: [],
+        onedata: [],
+        listdata: [],
         gridOperate: true,
         gridColumns: {
-          order_number: '盘点单号',
+          document_number: '盘点单号',
           checked: '审核状态',
-          creator: '制单人',
-          auditor: '审核人',
-          date: '盘点日期',
-          differ_amount: '差异库存量'
+          creator_name: '制单人',
+          auditor_name: '审核人',
+          created_at: '盘点日期',
+          difference: '差异库存量'
         },
         gridOperate2: false,
         gridColumns2: {
-          consumable_code: '货号',
-          consumable_name: '品名',
-          stock_system: '系统库存量',
-          stock_now: '实际库存量',
-          difference_amount: '差异库存量',
+          item_code: '货号',
+          item_name: '品名',
+          system_stock: '系统库存量',
+          main_reference_value: '实际库存量',
+          difference: '差异库存量',
           unit: '单位',
           unit_specification: '单位规格'
         },
