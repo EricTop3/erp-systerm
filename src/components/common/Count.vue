@@ -1,13 +1,12 @@
 <template>
   <input type="text" class="form-control text-center count" v-model="count"
-         @input="countValidate(amount)" @blur="moveEdit">
+         @input="countValidate" @blur="moveEdit">
 </template>
 <script>
   export default{
     name: 'count',
     props: {
       count: '',
-      amount: {},
       flag: false,
     },
     methods: {

@@ -20,6 +20,7 @@
           :check-url = 'checkUrl'>
         </summary-detail>
 
+        <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         <!-- 列表表格 -->
         <table class="table table-striped table-border table-hover">
           <thead>
@@ -169,6 +170,13 @@
         getDataFromApi(listUrl,{},function(response){
           self.detailList = response.data.body.list
         })
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/inventory'
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
       }
     },
     data: function () {

@@ -231,7 +231,7 @@
     <div slot="body">
       <table class="table table-striped table-border table-hover">
         <thead>
-        <tr>
+        <tr class="text-aligen">
           <td>品名</td>
           <td>原单价</td>
           <td>零售单价</td>
@@ -242,7 +242,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in listDetail">
+        <tr v-for="item in listDetail" class="text-aligen">
           <td>{{item.name}}</td>
           <td>{{item.old_price | priceChange}}</td>
           <td>{{item.new_price | priceChange}}</td>
@@ -493,7 +493,6 @@
         searchRequest(
           requestUrl + '/front-system/order',
           {
-            order_number: '',
             order_type: this.orderType
           },
           function (response) {
@@ -596,12 +595,17 @@
       userConfirmReceived: function () {
         this.modal.userReceivedModal = false
         this.$http({
-          url: requestUrl + '/front-system/order/sign/' + this.receivedId,
+          url: requestUrl + '/front-system/order/finish/' + this.receivedId,
           method: 'put',
           headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
+        }).then(function (response){
+          var self =  this
+          var url = requestUrl + '/front-system/order'
+          var data = {
+            order_type: this.orderType,
+          }
           this.modal.userReceivedModal = false
-          $(this.currentButton).remove()
+          self.fetchData(url, data, self.finishPage)
         }, function (err) {
           error(err)
         })
@@ -627,11 +631,7 @@
           var data = {
             order_type: this.orderType,
           }
-          this.fetchData(url, data, function (response) {
-            $(self.currentButton).remove()
-          })
-        }, function (err) {
-          error(err)
+          this.fetchData(url, data, self.finishPage)
         })
       },
 //      退款
@@ -746,7 +746,11 @@
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.modal.paymentModal = false
-          $(this.currentButton).remove()
+          var url = requestUrl + '/front-system/order'
+          var data = {
+            order_type: this.orderType,
+          }
+          this.fetchData(url, data, this.finishPage)
         }, function (err) {
           error(err)
         })

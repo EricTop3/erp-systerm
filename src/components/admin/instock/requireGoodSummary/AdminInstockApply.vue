@@ -36,14 +36,14 @@
                 </option>
               </select>
             </div>
-            <br>
-            <div class="form-group ml10">
+            <div class="form-group ml10 mt10">
               <label>要货时间段</label>
               <date-picker :value.sync="searchData.requisition_start_time" :time-text="timetext1"
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.requisition_end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
+            <br>
             <div class="form-group ml10">
               <label>送货时间段</label>
               <date-picker :value.sync="searchData.distribution_start_time" :time-text="timetext1"
@@ -59,8 +59,9 @@
                 </option>
               </select>
             </div>
-            <span type="submit" class="btn btn-primary" @click="getlistData(1)">搜索</span>
+            <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
 
@@ -194,6 +195,22 @@
       cancelSearch: function () {
         this.searchData = {}
         this.getlistData(1)
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/enquiry'
+        var data =
+          'checked=' + this.searchData.checked + '&' +
+          'order_number=' + this.searchData.order_number + '&' +
+          'store_id=' + this.searchData.store_id + '&' +
+          'creator_id=' + this.searchData.creator_id + '&' +
+          'requisition_start_time=' + this.searchData.requisition_start_time + '&' +
+          'requisition_end_time=' + this.searchData.requisition_end_time + '&' +
+          'distribution_start_time=' + this.searchData.distribution_start_time + '&' +
+          'distribution_end_time=' + this.searchData.distribution_end_time
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {
