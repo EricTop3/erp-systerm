@@ -52,7 +52,7 @@
       <h4 class="text-center">结算后当日不能下单，确定结算？</h4>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-info" @click="yesSettlement()">确定</button>
+      <button type="button" class="btn btn-info" @click="confirmSettlement()">确定</button>
       <button type="button" class="btn btn-primary" @click="settlementModal=false">取消</button>
     </div>
   </modal>
@@ -147,13 +147,12 @@
           }
         })
       },
-//    确定结算
-      yesSettlement: function () {
+//      确定结算
+      confirmSettlement: function () {
         var self = this
         var url = requestSystemUrl + '/front-system/settlement/' + this.thisId + '/settle'
         putDataToApi(url, {}, function (response) {
           self.settlementModal = false
-          self.todayGridData.status = true
           self.todayListData()
         })
       }

@@ -6,7 +6,7 @@
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
       <li class="active">生产出库汇总</li>
     </ol>
-    
+
     <!-- 页头 -->
     <div class="page-header">
       <form class="form-inline text-center">
