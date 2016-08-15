@@ -12,17 +12,16 @@
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：设置首页</li>
           <li class="active">系统账号</li>
         </ol>
-
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
               <label>员工名</label>
-              <input type="text" class="form-control" placeholder="" v-model="searchData.name">
+              <input type="text" class="form-control" placeholder="请输入员工名" v-model="searchData.name">
             </div>
             <div class="form-group ml10">
               <label>登录名</label>
-              <input type="text" class="form-control" placeholder="" v-model="searchData.account">
+              <input type="text" class="form-control" placeholder="请输入用户名" v-model="searchData.account">
             </div>
             <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
@@ -101,7 +100,7 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">密码</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="" v-model="postData.password" v-validate:password="[ 'required' ]">
+            <input type="password" class="form-control" placeholder="" v-model="postData.password" v-validate:password="[ 'required' ]">
             <div v-if="$validation1.password.touched">
               <p class="error" v-if="$validation1.password.required">密码不能为空</p>
             </div>
@@ -147,23 +146,20 @@
       <div class="form-group">
         <label class="col-sm-4 control-label">登录名</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.account" v-validate:account="[ 'required' ]">
-          <div v-if="$validation2.account.touched">
-            <p class="error" v-if="$validation2.account.required">用户名不能为空</p>
-          </div>
+          <input type="text" class="form-control" v-model="formData.account" disabled>
         </div>
       </div>
       <div class="form-group">
         <label class="col-sm-4 control-label">密码</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.password">
+          <input type="password" class="form-control" v-model="formData.password">
         </div>
       </div>
       <div class="form-group">
         <label class="col-sm-4 control-label">状态</label>
         <div class="col-sm-8">
           <label class="radio-inline">
-            <input type="radio" name="status" value="1" v-model="formData.status"> 开启
+            <input type="radio" name="status" value="1" v-model="formData.status" checked> 开启
           </label>
           <label class="radio-inline">
             <input type="radio" name="status" value="0" v-model="formData.status"> 关闭
@@ -279,7 +275,6 @@
         this.$validate(function () {
           if (self.$validation2.invalid) {
             self.$validation2.name.touched = true
-            self.$validation2.account.touched = true
             e.preventDefault()
           } else {
             self.confirmEdit()
