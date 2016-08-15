@@ -24,7 +24,7 @@
               <label>登录名</label>
               <input type="text" class="form-control" placeholder="" v-model="searchData.account">
             </div>
-            <span class="btn btn-primary" @click="getlistdata()">搜索</span>
+            <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
             <span class="btn btn-info spanblocks fr" @click="createModal=true">新建账号</span>
           </form>
@@ -78,23 +78,33 @@
       <h4 class="modal-title">新建账号</h4>
     </div>
     <div slot="body">
+      <validator name="validation1">
       <form class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">员工名称</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="" v-model="postData.name">
+            <input type="text" class="form-control" placeholder="" v-model="postData.name" v-validate:name="[ 'required' ]">
+            <div v-if="$validation1.name.touched">
+              <p class="error" v-if="$validation1.name.required">员工名不能为空</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">登录名</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="用户名一经提交不可更改" v-model="postData.account">
+            <input type="text" class="form-control" placeholder="用户名一经提交不可更改" v-model="postData.account" v-validate:account="[ 'required' ]">
+            <div v-if="$validation1.account.touched">
+              <p class="error" v-if="$validation1.account.required">用户名不能为空</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">密码</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="" v-model="postData.password">
+            <input type="text" class="form-control" placeholder="" v-model="postData.password" v-validate:password="[ 'required' ]">
+            <div v-if="$validation1.password.touched">
+              <p class="error" v-if="$validation1.password.required">密码不能为空</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -109,9 +119,10 @@
           </div>
         </div>
       </form>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="createSubmit()">提交</button>
+      <button type="button" class="btn btn-primary" @click="onSubmit($event)">提交</button>
     </div>
   </modal>
   <!--模态框HTML-->
@@ -239,6 +250,20 @@
         this.searchData.name = ''
         this.searchData.account = ''
         this.getlistData(1)
+      },
+//      表单验证
+      onSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation1.invalid) {
+            self.$validation1.account.touched = true
+            self.$validation1.password.touched = true
+            e.preventDefault()
+          } else {
+            console.log(self.$validation1.invalid)
+            self.createSubmit()
+          }
+        })
       },
 //      新增账号
       createSubmit: function () {

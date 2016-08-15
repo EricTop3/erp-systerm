@@ -38,6 +38,7 @@
               <date-picker :value.sync="time.startTime" :time-text="time.timeText"></date-picker> -
               <date-picker :value.sync="time.endTime"   :time-text="time.timeText"></date-picker>
             </div>
+
             <div class="form-group">
               <label>进度</label>
               <select class="form-control" v-model="search.selectProgress">
@@ -219,7 +220,7 @@
   import Modal from '../../../common/Modal'
   import Page from '../../../common/Page'
   import DatePicker from '../../../common/DatePicker'
-  import {requestSystemUrl,getDataFromApi,putDataToApi} from '../../../../publicFunction/index'
+  import {requestSystemUrl,getDataFromApi,putDataToApi,token} from '../../../../publicFunction/index'
   var orderId = 0
   var distributionId = 0
   var finishOrderId = 0
@@ -376,16 +377,16 @@
       }
     },
     computed: {
-//      导出
+//      导出requestSystemUrl + '/backend-system/order/order
       exports: function () {
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/order/order'
         var data =
-          'order_number=' + this.searchData.code + '&' +
-          'store_code=' + this.searchData.selectStore + '&' +
-          'seller_id=' + this.searchData.selectClerk + '&' +
-          'status=' + this.searchData.selectProgress + '&' +
-          'start_time=' + this.searchData.startTime + '&' +
-          'end_time=' + this.searchData.endTime
+          'order_number=' + this.search.code + '&' +
+          'store_code=' + this.search.selectStore + '&' +
+          'seller_id=' + this.search.selectClerk + '&' +
+          'status=' + this.search.selectProgress + '&' +
+          'start_time=' + this.time.startTime + '&' +
+          'end_time=' + this.time.endTime
         return this.exportUrl = url + '/export-excel?' + data
       }
     },

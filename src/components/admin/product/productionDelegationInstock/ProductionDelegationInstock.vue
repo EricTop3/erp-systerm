@@ -10,6 +10,8 @@
           <li class="active">委外生产入库单</li>
           <li class="active">列表</li>
         </ol>
+
+
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
@@ -177,14 +179,14 @@
       exports: function () {
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/production/outsource'
         var data =
-          'document_number=' + this.searchData.code + '&' +
-          'created_id=' + this.searchData.selectedMaker + '&' +
-          'checked=' + this.searchData.selectedStatus + '&' +
-          'start_time=' + this.searchData.startTime + '&' +
-          'iprovider_id=' + this.searchData.selectedFactory + '&' +
-          'end_time=' + this.searchData.endTime + '&' +
-          'start_receive_time=' + this.searchData.startTime1 + '&' +
-          'end_receive_time=' + this.searchData.endTime1
+          'document_number=' + this.search.code + '&' +
+          'created_id=' + this.search.selectedMaker + '&' +
+          'checked=' + this.search.selectedStatus + '&' +
+          'start_time=' + this.time.startTime + '&' +
+          'iprovider_id=' + this.search.selectedFactory + '&' +
+          'end_time=' + this.time.endTime + '&' +
+          'start_receive_time=' + this.time.startTime1 + '&' +
+          'end_receive_time=' + this.time.endTime1
         return this.exportUrl = url + '/export-excel?' + data
       }
     },
