@@ -38,6 +38,7 @@
               <date-picker :value.sync="time.startTime" :time-text="time.timeText"></date-picker> -
               <date-picker :value.sync="time.endTime"   :time-text="time.timeText"></date-picker>
             </div>
+
             <div class="form-group">
               <label>进度</label>
               <select class="form-control" v-model="search.selectProgress">
@@ -54,6 +55,7 @@
             </div>
             <button type="submit" class="btn btn-primary" @click="searchMethod">搜索</button>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!--预约单列表-->
@@ -149,6 +151,7 @@
       <button type='button' class='btn btn-info' @click='modal.orderFinishModal = false'>关闭</button>
     </div>
   </modal>
+
   <!--查看订单弹窗-->
   <modal :show.sync='modal.lookDetailModal' :modal-size="modal.lookDetailModalSize" class='form-horizontal'>
     <div slot='header'>
@@ -217,7 +220,7 @@
   import Modal from '../../../common/Modal'
   import Page from '../../../common/Page'
   import DatePicker from '../../../common/DatePicker'
-  import {requestSystemUrl,getDataFromApi,putDataToApi} from '../../../../publicFunction/index'
+  import {requestSystemUrl,getDataFromApi,putDataToApi,token} from '../../../../publicFunction/index'
   var orderId = 0
   var distributionId = 0
   var finishOrderId = 0
@@ -371,6 +374,20 @@
 //      撤销搜索
       cancelSearch: function () {
         this.getOrderList({})
+      }
+    },
+    computed: {
+//      导出requestSystemUrl + '/backend-system/order/order
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/order/order'
+        var data =
+          'order_number=' + this.search.code + '&' +
+          'store_code=' + this.search.selectStore + '&' +
+          'seller_id=' + this.search.selectClerk + '&' +
+          'status=' + this.search.selectProgress + '&' +
+          'start_time=' + this.time.startTime + '&' +
+          'end_time=' + this.time.endTime
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {

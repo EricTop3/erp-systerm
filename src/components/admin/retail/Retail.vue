@@ -26,6 +26,7 @@
             </div>
             <span class="btn btn-primary" @click=search()>搜索</span>
             <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
 
@@ -77,7 +78,6 @@
             <td>{{item.store_name}}</td>
             <td>{{item.created_at}}</td>
             <td>{{item.terminated_at}}</td>
-            <td>{{item.settled_at}}</td>
             <td>{{item.total_sum}}</td>
             <td>{{item.cash_total_sum}}</td>
             <td>{{item.vip_total_sum}}</td>
@@ -245,6 +245,17 @@
         this.searchData = {}
         this.getOneData()
         this.getlistData(1)
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/statistics/statistics'
+        var data =
+          'store_id=' + this.searchData.store_id + '&' +
+          'start_time=' + this.searchData.start_time + '&' +
+          'end_time=' + this.searchData.end_time
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {

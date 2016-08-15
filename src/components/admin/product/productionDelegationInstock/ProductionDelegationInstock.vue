@@ -10,6 +10,8 @@
           <li class="active">委外生产入库单</li>
           <li class="active">列表</li>
         </ol>
+
+
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
@@ -34,9 +36,9 @@
             </div>
             <div class="form-group ml10">
               <label>收货时间段</label>
-              <date-picker :value.sync="time.startTime"></date-picker>
+              <date-picker :value.sync="time.startTime" :time-text="timetext1"></date-picker>
               -
-              <date-picker :value.sync="time.endTime"></date-picker>
+              <date-picker :value.sync="time.endTime" :time-text="timetext1"></date-picker>
             </div>
             <br>
             <div class="form-group mt20">
@@ -48,9 +50,8 @@
             </div>
             <span class="btn btn-primary mt20" @click="searchMethod">搜索</span>
             <span class="btn btn-warning mt20" @click="cancelSearch">撤销搜索</span>
-
-            <span class="btn btn-info spanblocks fr">导出excel</span>
             <a v-link="{ path: '/admin/production/delegationInstock/ProductionDelegationInstockNew' }" class="btn btn-info spanblocks fr mr10">新建委外入库单</a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!-- 表格 -->
@@ -173,8 +174,27 @@
         this.listData({})
       },
     },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/production/outsource'
+        var data =
+          'document_number=' + this.search.code + '&' +
+          'created_id=' + this.search.selectedMaker + '&' +
+          'checked=' + this.search.selectedStatus + '&' +
+          'start_time=' + this.time.startTime + '&' +
+          'iprovider_id=' + this.search.selectedFactory + '&' +
+          'end_time=' + this.time.endTime + '&' +
+          'start_receive_time=' + this.time.startTime1 + '&' +
+          'end_receive_time=' + this.time.endTime1
+        return this.exportUrl = url + '/export-excel?' + data
+      }
+    },
+
     data: function () {
       return {
+        timetext1: "开始时间",
+        timetext2: "结束时间",
         page: [],
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/production/outsource/',

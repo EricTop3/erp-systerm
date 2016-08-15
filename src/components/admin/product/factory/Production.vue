@@ -41,21 +41,20 @@
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
-            </div>
-            <div class="form-group ml10 ">
+            </div><br>
+            <div class="form-group mt10">
               <label>生产时间段</label>
               <date-picker :value.sync="searchData.start_receive_time" :time-text="timetext1"
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.end_receive_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
-            <span type="submit" class="btn btn-primary" @click="searchMethod()">搜索</span>
-            <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-              <span class="btn fr btn-info">导出excel</span>
-              <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryCreat'}">新建生产单</span>
+            <span type="submit" class="btn btn-primary mt10" @click="searchMethod()">搜索</span>
+            <span class="btn btn-warning mt10" @click="cancelSearch()">撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
+            <span class="btn btn-info spanblocks fr mr10 mt10" v-link="{ path: '/admin/production/factoryCreat'}">新建生产单</span>
           </form>
         </div>
-
         <!-- 表格 -->
         <summary
           :table-data="list"
@@ -182,8 +181,25 @@
         this.listData({})
       }
     },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/produce/factory'
+        var data =
+          'document_number=' + this.searchData.document_number + '&' +
+          'checked=' + this.searchData.checked + '&' +
+          'creator_id=' + this.searchData.creator_id + '&' +
+          'start_time=' + this.searchData.start_time + '&' +
+          'end_time=' + this.searchData.end_time + '&' +
+          'start_receive_time=' + this.searchData.start_receive_time + '&' +
+          'end_receive_time=' + this.searchData.end_receive_time
+        return this.exportUrl = url + '/export-excel?' + data
+      }
+    },
     data: function () {
       return {
+        timetext1: '开始时间',
+        timetext2: '结束时间',
         checkUrl: requestSystemUrl + '/backend-system/produce/factory/',
         page: [],
         list: [],

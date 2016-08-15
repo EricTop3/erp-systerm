@@ -48,6 +48,7 @@
           </tbody>
         </table>
         <!-- end表格1 -->
+        <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         <!-- 表格2 详情页面列表数据-->
         <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
         <!--分页-->
@@ -167,6 +168,13 @@
         putDataToApi(url,{}, function (response) {
           self.getOneData()
         })
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement'
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
       }
     },
     data: function () {

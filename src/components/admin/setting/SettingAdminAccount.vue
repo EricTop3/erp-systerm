@@ -12,19 +12,18 @@
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：设置首页</li>
           <li class="active">系统账号</li>
         </ol>
-
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
               <label>员工名</label>
-              <input type="text" class="form-control" placeholder="" v-model="searchData.name">
+              <input type="text" class="form-control" placeholder="请输入员工名" v-model="searchData.name">
             </div>
             <div class="form-group ml10">
               <label>登录名</label>
-              <input type="text" class="form-control" placeholder="" v-model="searchData.account">
+              <input type="text" class="form-control" placeholder="请输入用户名" v-model="searchData.account">
             </div>
-            <span class="btn btn-primary" @click="getlistdata()">搜索</span>
+            <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
             <span class="btn btn-info spanblocks fr" @click="createModal=true">新建账号</span>
           </form>
@@ -78,23 +77,33 @@
       <h4 class="modal-title">新建账号</h4>
     </div>
     <div slot="body">
+      <validator name="validation1">
       <form class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-4 control-label">员工名称</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="" v-model="postData.name">
+            <input type="text" class="form-control" placeholder="" v-model="postData.name" v-validate:name="[ 'required' ]">
+            <div v-if="$validation1.name.touched">
+              <p class="error" v-if="$validation1.name.required">员工名不能为空</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">登录名</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="用户名一经提交不可更改" v-model="postData.account">
+            <input type="text" class="form-control" placeholder="用户名一经提交不可更改" v-model="postData.account" v-validate:account="[ 'required' ]">
+            <div v-if="$validation1.account.touched">
+              <p class="error" v-if="$validation1.account.required">用户名不能为空</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">密码</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="" v-model="postData.password">
+            <input type="password" class="form-control" placeholder="" v-model="postData.password" v-validate:password="[ 'required' ]">
+            <div v-if="$validation1.password.touched">
+              <p class="error" v-if="$validation1.password.required">密码不能为空</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -109,13 +118,13 @@
           </div>
         </div>
       </form>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="createSubmit()">提交</button>
+      <button type="button" class="btn btn-primary" @click="onSubmit($event)">提交</button>
     </div>
   </modal>
   <!--模态框HTML-->
-
   <!--模态框-编辑账号-->
   <modal :show.sync="editModal" :modal-size="editModalSize">
     <div slot="header">
@@ -124,10 +133,14 @@
       <h4 class="modal-title">编辑账号</h4>
     </div>
     <div slot="body" class="form-horizontal">
+      <validator name="validation2">
       <div class="form-group">
         <label class="col-sm-4 control-label">员工名称</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.name">
+          <input type="text" class="form-control" v-model="formData.name" v-validate:name="[ 'required' ]">
+          <div v-if="$validation2.name.touched">
+            <p class="error" v-if="$validation2.name.required">员工名不能为空</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -139,23 +152,24 @@
       <div class="form-group">
         <label class="col-sm-4 control-label">密码</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.password">
+          <input type="password" class="form-control" v-model="formData.password">
         </div>
       </div>
       <div class="form-group">
         <label class="col-sm-4 control-label">状态</label>
         <div class="col-sm-8">
           <label class="radio-inline">
-            <input type="radio" name="status" value="1" v-model="formData.status"> 开启
+            <input type="radio" name="status" value="1" v-model="formData.status" checked> 开启
           </label>
           <label class="radio-inline">
             <input type="radio" name="status" value="0" v-model="formData.status"> 关闭
           </label>
         </div>
       </div>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmEdit">保存</button>
+      <button type="button" class="btn btn-primary" @click="onSubmitEdit($event)">保存</button>
     </div>
   </modal>
   <!--模态框HTML-->
@@ -239,6 +253,33 @@
         this.searchData.name = ''
         this.searchData.account = ''
         this.getlistData(1)
+      },
+//      表单验证1
+      onSubmit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation1.invalid) {
+            self.$validation1.name.touched = true
+            self.$validation1.account.touched = true
+            self.$validation1.password.touched = true
+            e.preventDefault()
+          } else {
+            console.log(self.$validation1.invalid)
+            self.createSubmit()
+          }
+        })
+      },
+//      表单验证2编辑
+      onSubmitEdit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            self.$validation2.name.touched = true
+            e.preventDefault()
+          } else {
+            self.confirmEdit()
+          }
+        })
       },
 //      新增账号
       createSubmit: function () {

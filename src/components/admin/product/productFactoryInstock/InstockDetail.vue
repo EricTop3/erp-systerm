@@ -24,6 +24,7 @@
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
           <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+          <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -248,6 +249,13 @@
       }
       return result
     }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/production/factory'
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
+      }
     },
     data: function () {
       return {
