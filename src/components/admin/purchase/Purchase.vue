@@ -124,7 +124,7 @@
       exports: function () {
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/purchase/purchase'
         var data =
-          'created_id=' + this.search.selectedMaker + '&' +
+          'creator_id=' + this.search.selectedMaker + '&' +
           'document_number=' + this.search.code + '&' +
           'checked=' + this.search.selectedStatus + '&' +
           'start_time=' + this.time.startTime + '&' +
@@ -159,7 +159,7 @@
       },
       searchMethod: function(){
         var data = {
-          created_id: this.search.selectedMaker,
+          creator_id: this.search.selectedMaker,
           document_number: this.search.code,
           checked: this.search.selectedStatus,
           start_time: this.time.startTime,

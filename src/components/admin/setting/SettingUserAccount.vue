@@ -83,6 +83,7 @@
         <label for="" class="col-sm-4 control-label">门店名称</label>
         <div class="col-sm-8">
           <select v-model="storeName">
+            <option value="">请选择</option>
             <option v-for="item in storeList" track-by="$index" :value="item.id">{{item.display_name}}</option>
           </select>
         </div>
@@ -90,13 +91,13 @@
       <div class="form-group">
         <label for="" class="col-sm-4 control-label">店员名称</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" placeholder="" v-model="clerk.account">
+          <input type="text" class="form-control" placeholder="" v-model="clerk.name">
         </div>
       </div>
       <div class="form-group">
         <label for="" class="col-sm-4 control-label">登录名</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" placeholder="" v-model="clerk.name">
+          <input type="text" class="form-control" placeholder="" v-model="clerk.account">
         </div>
       </div>
       <div class="form-group">
@@ -133,13 +134,13 @@
     <div class="form-group">
       <label for="" class="col-sm-4 control-label">店员名称</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" placeholder=""  value="王小二" v-model="editClerkInfo.account">
+        <input type="text" class="form-control" placeholder=""  value="王小二" v-model="editClerkInfo.name">
       </div>
     </div>
     <div class="form-group">
       <label for="" class="col-sm-4 control-label">登录名</label>
       <div class="col-sm-8">
-        <label for="" class="title">{{editClerkInfo.name}}</label>
+        <label for="" class="title">{{editClerkInfo.account}}</label>
       </div>
     </div>
     <div class="form-group">
@@ -243,7 +244,7 @@
       addClerk: function () {
         this.modal.addClerkModal = true
         this.clerk = {
-          account: '',
+            account: '',
             name: '',
             password: '',
             status: 0,
@@ -342,8 +343,8 @@
         accountHeader:{
           store_code: '门店编号',
           store_name: '门店名称',
-          account:'店员名称',
-          name: '登录名',
+          name: '店员名称',
+          account:'登录名',
           status: '账号状态'
         },
         accountList: [],
