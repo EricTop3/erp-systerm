@@ -182,8 +182,8 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount === ''
-          val.purchase_price === ''
+          val.purchase_amount = ''
+          val.purchase_price = (val.apuc*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)

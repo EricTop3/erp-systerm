@@ -123,6 +123,13 @@
         this.$http({
           url: requestUrl + '/backend-system/purchase/purchase',
           data: {
+            created_id: this.search.selectedMaker,
+            document_number: this.search.code,
+            checked: this.search.selectedStatus,
+            provider_id: this.search.selectedSuppier,
+            start_receive_time: this.time.startTime,
+            end_receive_time: this.time.endTime,
+            warehouse_id: this.search.stream_origin_id,
             page: currentpage
           },
           method: 'get',
