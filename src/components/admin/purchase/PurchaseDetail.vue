@@ -7,8 +7,8 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：采购首页</li>
-          <li class="active">采购收货</li>
-          <li class="active">查看收货单</li>
+          <li class="active">采购订单</li>
+          <li class="active">查看采购单</li>
         </ol>
         <!--详情页面-->
         <summary-detail

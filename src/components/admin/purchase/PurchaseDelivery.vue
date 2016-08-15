@@ -41,7 +41,7 @@
                 <label>供应商</label>
                 <select class="form-control" v-model="search.selectedSuppier">
                   <option value="">请选择</option>
-                  <option :value="item.code" v-for="item in search.providerList">{{item.name}}</option>
+                  <option :value="item.id" v-for="item in search.providerList">{{item.name}}</option>
                 </select>
               </div>
               <div class="form-group ml10 mt10">

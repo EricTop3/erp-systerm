@@ -188,6 +188,7 @@
             {
               'items': items,
               'date': this.startTime,
+              'note': this.remarks,
             },
             {
               headers: {'X-Overpowered-Token': token}

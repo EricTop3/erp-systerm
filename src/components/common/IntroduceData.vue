@@ -53,12 +53,9 @@
       DatePicker: DatePicker
     },
     ready: function () {
-      var self = this
-      var url = this.url
-      getDataFromApi(url,{},function(response){
-        self.firstData = response.data.body.list
-        exchangeData( self.firstData)
-      })
+//     不同的url加载不同的数据
+      this.getProductByUrl(this.url)
+      this.getProductByUrl(this.secondUrl)
     },
     props: {
       instroduceDataModal: false,
@@ -84,6 +81,7 @@
       },
       secondData: [],
       url: '',
+      secondUrl: '',
     },
     events: {
 //    绑定翻页事件
@@ -93,17 +91,17 @@
       }
     },
     methods: {
-//      单选上面表格加载下面数据
-      change: function (currentId, currentObjCheck) {
-        var self = this
-        var fetchedData = []
-//    根据当前id获取产品
-        getDataFromApi(this.url + "/" + currentId,{},function(response){
+//      根据id获取商品
+      getProductById: function (url,currentId,currentObjCheck) {
+        var  fetchedData = []
+        var  self = this
+        getDataFromApi(url + "/" + currentId,{},function(response){
           fetchedData = response.data.body.list
           var firtElem = fetchedData[0]
           var lastElem = fetchedData[fetchedData.length - 1]
           var start = 0
           var end = 0
+          var dataArray= []
           if (currentObjCheck) {
             self.secondData = self.secondData.concat(fetchedData)
           } else {
@@ -115,9 +113,42 @@
                 end = index
               }
             })
-            self.secondData.splice(start, end - start + 1)
+            dataArray = self.secondData.splice(start, end - start + 1)
+            self.secondData= self.secondData.concat(dataArray)
           }
         })
+      },
+//      根据url加载的时候获取一级商品
+      getProductByUrl: function (url) {
+        var self = this
+        getDataFromApi(url,{},function(response){
+          self.firstData =  self.firstData.concat(response.data.body.list)
+          exchangeData( self.firstData)
+        })
+      },
+//      全选选择不同的url加载二级数据
+      getProductByCheckData: function (url,checkAll) {
+        var self = this
+        self.secondData = []
+        if (checkAll) {
+          $.each(this.firstData, function (index, val) {
+            var currentId = val.id
+            getDataFromApi(url+'/'+currentId,{},function(response){
+              self.secondData = self.secondData.concat(response.data.body.list)
+            })
+          })
+          this.isAdd = this.isAddFlag
+        } else {
+          this.isAdd = false
+          this.secondData = []
+        }
+      },
+//      单选上面表格加载下面数据
+      change: function (currentId, currentObjCheck) {
+//    根据当前id获取产品
+        this.getProductById(this.url,currentId, currentObjCheck)
+        console.log(this.secondUrl)
+        this.getProductById(this.secondUrl,currentId, currentObjCheck)
       },
 //    搜索
       searchMethod: function () {
@@ -144,20 +175,8 @@
       },
 //    全选上面表格加载下面数据
       changeAll: function (checkAll) {
-        var self = this
-        self.secondData = []
-        if (checkAll) {
-          $.each(this.firstData, function (index, val) {
-            var currentId = val.id
-            getDataFromApi(self.url+'/'+currentId,{},function(response){
-              self.secondData = self.secondData.concat(response.data.body.list)
-            })
-          })
-          this.isAdd = this.isAddFlag
-        } else {
-          this.isAdd = false
-          this.secondData = []
-        }
+        this.getProductByCheckData (this.url,checkAll)
+        this.getProductByCheckData (this.secondUrl,checkAll)
       },
 //      下面表格数据添加全部商品添加
       changeAllOperate: function (checkAll) {
