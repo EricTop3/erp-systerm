@@ -126,7 +126,6 @@
     </div>
   </modal>
   <!--模态框HTML-->
-
   <!--模态框-编辑账号-->
   <modal :show.sync="editModal" :modal-size="editModalSize">
     <div slot="header">
@@ -135,16 +134,23 @@
       <h4 class="modal-title">编辑账号</h4>
     </div>
     <div slot="body" class="form-horizontal">
+      <validator name="validation2">
       <div class="form-group">
         <label class="col-sm-4 control-label">员工名称</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.name">
+          <input type="text" class="form-control" v-model="formData.name" v-validate:name="[ 'required' ]">
+          <div v-if="$validation2.name.touched">
+            <p class="error" v-if="$validation2.name.required">员工名不能为空</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
         <label class="col-sm-4 control-label">登录名</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.account" disabled>
+          <input type="text" class="form-control" v-model="formData.account" v-validate:account="[ 'required' ]">
+          <div v-if="$validation2.account.touched">
+            <p class="error" v-if="$validation2.account.required">用户名不能为空</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -164,9 +170,10 @@
           </label>
         </div>
       </div>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmEdit">保存</button>
+      <button type="button" class="btn btn-primary" @click="onSubmitEdit($event)">保存</button>
     </div>
   </modal>
   <!--模态框HTML-->
@@ -251,17 +258,31 @@
         this.searchData.account = ''
         this.getlistData(1)
       },
-//      表单验证
+//      表单验证1
       onSubmit: function (e) {
         var self = this
         this.$validate(function () {
           if (self.$validation1.invalid) {
+            self.$validation1.name.touched = true
             self.$validation1.account.touched = true
             self.$validation1.password.touched = true
             e.preventDefault()
           } else {
             console.log(self.$validation1.invalid)
             self.createSubmit()
+          }
+        })
+      },
+//      表单验证2编辑
+      onSubmitEdit: function (e) {
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            self.$validation2.name.touched = true
+            self.$validation2.account.touched = true
+            e.preventDefault()
+          } else {
+            self.confirmEdit()
           }
         })
       },
