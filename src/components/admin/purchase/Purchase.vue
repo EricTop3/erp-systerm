@@ -94,6 +94,14 @@
         this.$http({
           url: requestUrl + '/backend-system/purchase/purchase',
           data: {
+            creator_id: this.search.selectedMaker,
+            document_number: this.search.code,
+            checked: this.search.selectedStatus,
+            start_time: this.time.startTime,
+            provider_id: this.search.selectedSuppier,
+            end_time: this.time.endTime,
+            start_receive_time: this.time.startTime1,
+            end_receive_time: this.time.endTime1,
             page: currentpage
           },
           method: 'get',
