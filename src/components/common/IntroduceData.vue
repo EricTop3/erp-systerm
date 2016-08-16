@@ -95,27 +95,29 @@
       getProductById: function (url,currentId,currentObjCheck) {
         var  fetchedData = []
         var  self = this
-        getDataFromApi(url + "/" + currentId,{},function(response){
-          fetchedData = response.data.body.list
-          var firtElem = fetchedData[0]
-          var lastElem = fetchedData[fetchedData.length - 1]
-          var start = 0
-          var end = 0
-          var dataArray= []
-          if (currentObjCheck) {
-            self.secondData = self.secondData.concat(fetchedData)
-          } else {
-            $.each(self.secondData, function (index, val) {
-              if (_.isEqual(val, firtElem)) {
-                start = index
-              }
-              if (_.isEqual(val, lastElem)) {
-                end = index
-              }
-            })
-            self.secondData.splice(start, end - start + 1)
-          }
-        })
+        if( url !== ''){
+          getDataFromApi(url + "/" + currentId,{},function(response){
+            fetchedData = response.data.body.list
+            var firtElem = fetchedData[0]
+            var lastElem = fetchedData[fetchedData.length - 1]
+            var start = 0
+            var end = 0
+            var dataArray= []
+            if (currentObjCheck) {
+              self.secondData = self.secondData.concat(fetchedData)
+            } else {
+              $.each(self.secondData, function (index, val) {
+                if (_.isEqual(val, firtElem)) {
+                  start = index
+                }
+                if (_.isEqual(val, lastElem)) {
+                  end = index
+                }
+              })
+              self.secondData.splice(start, end - start + 1)
+            }
+          })
+        }
       },
 //      根据url加载的时候获取一级商品
       getProductByUrl: function (url) {
