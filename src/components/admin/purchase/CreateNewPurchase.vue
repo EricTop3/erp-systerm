@@ -55,7 +55,7 @@
                    <td>{{entry.item_name}}</td>
                    <td>{{entry.unit_specification}}</td>
                    <td>{{entry.stock}}{{entry.unit_name}}</td>
-                   <td>{{entry.required_amount}}{{entry.unit_name}}</td>
+                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                    <td><count :count.sync =entry.purchase_amount></count>{{entry.unit_name}}</td>
                    <td><price :price.sync =entry.purchase_price></price>元/{{entry.unit_name}}</td>
                    <td>{{entry.refence_number}}</td>
@@ -335,6 +335,7 @@
         note: '',
         supplierList: [],
         tabFlag: true,
+        stockGoods: [],
         gridColumns: {
           code: "货号",
           name: "品名",
