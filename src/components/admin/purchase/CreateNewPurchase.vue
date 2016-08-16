@@ -137,6 +137,9 @@
     line-height:1.4;
     font-size: 18px;
   }
+  .timewidth{
+    width: 4%;
+  }
 </style>
 <script>
   import $ from 'jquery'
@@ -238,7 +241,7 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.reference_type = val.type ? val.type : 'Requisition'
+          obj.reference_type = val.type ? val.type : 'ProductItem'
           obj.amount = val.purchase_amount
           obj.price = val.purchase_price
           if(val.purchase_amount ==='' ||val.purchase_price ===''){

@@ -10,7 +10,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']">
+    <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']">
       <td v-if="check"><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="singleCheck($event)"  v-model="entry.choice"></td>
       <td v-for="value in columns">
         {{entry[$key]}}

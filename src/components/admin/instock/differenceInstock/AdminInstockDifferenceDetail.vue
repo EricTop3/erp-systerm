@@ -47,8 +47,6 @@
     </div>
   </div>
 </template>
-<style>
-</style>
 <script>
   import $ from 'jquery'
   import AdminNav from '../../AdminNav'
