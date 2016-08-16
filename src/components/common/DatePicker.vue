@@ -1,5 +1,5 @@
 <template>
-  <input type="text" @click="showCalendar"  class="form-control date_picker" v-model="value" :placeholder=timeText :class=timewidth>
+  <input type="text" @click="showCalendar"  class="form-control date_picker" v-model="value" :placeholder="timeText" :class='timewidth'>
   <calendar :show.sync="show" :value.sync="value" :x="x" :y="y" :begin="begin" :end="end" :range="range"></calendar>
 </template>
 <script>
@@ -9,8 +9,7 @@
     props:{
       show:false,
       timeText:'请输入日期',
-      timewidth: '',
-//       date datetime
+      timewidth: 'timewidth',
       type:'date',
       value:'2015-12-11',
       begin:'2015-12-20',

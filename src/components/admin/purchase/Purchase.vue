@@ -33,8 +33,6 @@
                 <option :value="item.id" v-for="item in search.orderMaker" >{{item.name}}</option>
               </select>
             </div>
-            <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             <div class="form-group ml10">
               <label>制单时间段</label>
               <date-picker :value.sync="time.startTime"></date-picker> -
@@ -49,6 +47,8 @@
             </div>
             <span type="submit" class="btn btn-primary " @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
+            <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!-- 表格 -->

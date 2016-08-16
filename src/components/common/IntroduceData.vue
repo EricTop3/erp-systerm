@@ -54,8 +54,12 @@
     },
     ready: function () {
 //     不同的url加载不同的数据
-      this.getProductByUrl(this.url)
-      this.getProductByUrl(this.secondUrl)
+      if(this.secondUrl!==undefined){
+        this.getProductByUrl(this.url)
+        this.getProductByUrl(this.secondUrl)
+      }else{
+        this.getProductByUrl(this.url)
+      }
     },
     props: {
       instroduceDataModal: false,
@@ -95,7 +99,6 @@
       getProductById: function (url,currentId,currentObjCheck) {
         var  fetchedData = []
         var  self = this
-        if( url !== ''){
           getDataFromApi(url + "/" + currentId,{},function(response){
             fetchedData = response.data.body.list
             var firtElem = fetchedData[0]
@@ -117,7 +120,6 @@
               self.secondData.splice(start, end - start + 1)
             }
           })
-        }
       },
 //      根据url加载的时候获取一级商品
       getProductByUrl: function (url) {
@@ -130,7 +132,6 @@
 //      全选选择不同的url加载二级数据
       getProductByCheckData: function (url,checkAll) {
         var self = this
-        self.secondData = []
         if (checkAll) {
           $.each(this.firstData, function (index, val) {
             var currentId = val.id
@@ -142,14 +143,22 @@
         } else {
           this.isAdd = false
           this.secondData = []
+
         }
       },
 //      单选上面表格加载下面数据
-      change: function (currentId, currentObjCheck) {
+      change: function (currentId, currentObjCheck,event) {
+        var type= $(event.currentTarget).parents('tr').attr('type')
 //    根据当前id获取产品
-        this.getProductById(this.url,currentId, currentObjCheck)
-        console.log(this.secondUrl)
-        this.getProductById(this.secondUrl,currentId, currentObjCheck)
+        if(this.secondUrl !== undefined){
+          if(type === 'Requisition'){
+            this.getProductById(this.url,currentId, currentObjCheck)
+          }else{
+            this.getProductById(this.secondUrl,currentId, currentObjCheck)
+          }
+        }else{
+          this.getProductById(this.url,currentId, currentObjCheck)
+        }
       },
 //    搜索
       searchMethod: function () {
