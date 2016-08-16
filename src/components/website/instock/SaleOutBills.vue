@@ -30,13 +30,31 @@
         <span class="btn btn-warning" @click="cancel">撤销搜索</span>
       </form>
     </div>
-
     <!-- 表格 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
-      <div slot="operateList">
-        <span class="btn btn-info btn-sm" @click="detail($event)">销售明细</span>
-      </div>
-    </grid>
+    <table class="table table-striped table-border table-hover">
+      <thead>
+      <tr class="text-center">
+        <td class="text-left">货号</td>
+        <td>品名</td>
+        <td>零售出库量</td>
+        <td>零售单位</td>
+        <td>单位规格</td>
+        <td>商品分类</td>
+        <td>操作</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="text-center" v-for="item in list" :id="item.id">
+        <td class="text-left">{{item.item_code}}</td>
+        <td>{{item.item_name}}</td>
+        <td>{{item.amount}}</td>
+        <td>{{item.unit_name}}</td>
+        <td>{{item.unit_specification}}</td>
+        <td>{{item.category_name.display_name}}</td>
+        <td><span class="btn btn-info btn-sm" @click="detail($event)">销售明细</span></td>
+      </tr>
+      </tbody>
+    </table>
 
     <!-- 翻页 -->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
@@ -138,10 +156,10 @@
         list: [],
         gridOperate: true,
         gridColumns: {
-          consumable_code: '货号',
-          consumable_name: '品名',
-          sale_amount: '零售出库量',
-          unit: '零售单位',
+          item_code: '货号',
+          item_name: '品名',
+          amount: '零售出库量',
+          unit_name: '零售单位',
           unit_specification: '单位规格',
           category_name: '商品分类'
         },
