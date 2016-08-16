@@ -304,7 +304,7 @@
           val.item_amount = val.received_amount
           val.item_refund = val.refund_amount
           val.item_main_reference_value = val.main_reference_value
-          val.item_price = Number(val.item_main_reference_value  * val.purchase_price * 100)
+          val.item_price = Number (val.item_amount  * val.purchase_price * 100)
           self.summaryPrice += val.item_price
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
