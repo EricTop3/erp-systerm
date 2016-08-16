@@ -85,9 +85,6 @@
           url: requestUrl + '/front-system/stock/sale/' + this.id,
           method: 'get',
           data: {
-            start_time: this.query.start_time || '',
-            end_time: this.query.end_time || '',
-            operation_type: this.query.operation_type || '',
             page: page,
             per_page: 10
           },

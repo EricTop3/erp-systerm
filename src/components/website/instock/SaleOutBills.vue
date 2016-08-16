@@ -104,7 +104,7 @@
             start_time: this.query.start_time || '',
             end_time: this.query.end_time || '',
             search: this.query.search || '',
-            category: this.query.category || '',
+            category_id: this.query.category || '',
             page: page,
             per_page: 16
           },
