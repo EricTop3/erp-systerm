@@ -19,15 +19,16 @@
           :table-header="gridColumns"
           :table-data="onedata"
           :grid-operate="gridOperate"
-          :check-url = "checkUrl"
-          :edit-flag.sync = 'editFlag'
+          :check-url="checkUrl"
+          :edit-flag.sync='editFlag'
         >
         </summary-detail>
-
         <!--有列表切换的时候的情况-->
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">领料明细</a></li>
-          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">领料汇总</a></li>
+          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)"
+                                                                                         data-toggle="tab">领料明细</a></li>
+          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">领料汇总</a>
+          </li>
           <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         </ul>
         <!-- Tab panes -->
@@ -48,8 +49,8 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.material_stock}}{{entry.unit_name}}</td>
-                <td>{{consume}} {{entry.unit_name}}</td>
+                <td>{{entry.material_stock}} {{entry.unit_name}}</td>
+                <td>{{entry.consume}} {{entry.consume_unit_name}}</td>
                 <td v-if='editFlag'>
                   <count :count.sync='entry.main_reference_value'></count>
                   {{entry.unit_name}}
@@ -76,8 +77,8 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.material_stock}}{{entry.unit_name}}</td>
-                <td>{{consume}} {{entry.unit_name}}</td>
+                <td>{{entry.material_stock}} {{entry.unit_name}}</td>
+                <td>{{entry.consume}} {{entry.consume_unit_name}}</td>
                 <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
               </tr>
               </tbody>
@@ -87,6 +88,9 @@
       </div>
     </div>
   </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo">
+  </error-tip>
 </template>
 <style>
   .timewidth {
@@ -99,6 +103,7 @@
   import Page from '../../../common/Page'
   import AdminNav from '../../AdminNav'
   import Modal from '../../../common/Modal'
+  import ErrorTip from '../../../common/ErrorTip'
   import Summary from '../../../common/Summary'
   import SummaryDetail from '../../../common/SummaryDetail'
   import DatePicker from  '../../../common/DatePicker'
@@ -114,11 +119,13 @@
     deleteRequest,
     checkRequest,
     finishRequest,
+    putDataToApi,
     changeStatus
   } from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
+      ErrorTip: ErrorTip,
       Page: Page,
       Modal: Modal,
       AdminNav: AdminNav,
@@ -133,10 +140,10 @@
       pagechange: function (currentpage) {
         this.getlistData(currentpage)
       },
-      //     删除请求
+//     删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/produce/pick/'+ id,function(response){
+        deleteRequest(requestSystemUrl + '/backend-system/produce/pick/' + id, function (response) {
           self.getlistData(1)
         })
       },
@@ -147,6 +154,39 @@
           self.getlistData(1)
         })
       },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+      },
+//      保存
+      saveGoods: function (event) {
+        var self = this
+        self.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList, function (index, val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['amount'] = val.main_reference_value
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/backend-system/produce/pick/' + id
+        putDataToApi(url, data, function (res) {
+        })
+      },
+//      审核错误提示
+      checkFail: function (err) {
+        var self = this
+        if (Number(err.data.code) === 220000) {
+          console.log(err.data.message)
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
+        }
+      }
     },
     ready: function () {
       this.getlistData(1)
@@ -177,7 +217,7 @@
       changeActive: function (event) {
         var cur = $(event.currentTarget)
         cur.addClass('active').siblings('li').removeClass('active')
-        switch (Number(cur.attr('id'))){
+        switch (Number(cur.attr('id'))) {
           case 1:
             this.detailModal = true
             this.summaryModal = false
@@ -193,28 +233,28 @@
         var self = this
         self.summaryPrice = 0
         this.summarystockGoods = []
-        this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
-        $.each(this.summarystockGoods,function (index,val){
+        this.summarystockGoods = this.summarystockGoods.concat(self.detailList)
+        $.each(this.summarystockGoods, function (index, val) {
           val.item_amount = val.main_reference_value
-          val.item_price = Number(val.item_amount  *  val.purchase_unit_price * 100)
+          val.item_price = Number(val.item_amount * val.purchase_unit_price * 100)
           self.summaryPrice += val.item_price
         })
-        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+        this.summarystockGoods = this.summaryMethod("item_code", this.summarystockGoods)
       },
 //     汇总方法
-      summaryMethod: function (ObjPropInArr, array){
-        var hash={};
-        var result=[];
-        for(var i=0;i<array.length;i++){
-          if(hash[array[i][ObjPropInArr]]){
-            hash[array[i][ObjPropInArr]].material_stock=Number(array[i].material_stock) + Number( hash[array[i][ObjPropInArr]].item_amount)
-            hash[array[i][ObjPropInArr]].consume=Number(array[i].consume) + Number( hash[array[i][ObjPropInArr]].consume)
-            hash[array[i][ObjPropInArr]].main_reference_value=Number(array[i].main_reference_value) + Number( hash[array[i][ObjPropInArr]].main_reference_value)
-          }else{
-            hash[array[i][ObjPropInArr]]=array[i];
+      summaryMethod: function (ObjPropInArr, array) {
+        var hash = {};
+        var result = [];
+        for (var i = 0; i < array.length; i++) {
+          if (hash[array[i][ObjPropInArr]]) {
+            hash[array[i][ObjPropInArr]].material_stock = Number(array[i].material_stock) + Number(hash[array[i][ObjPropInArr]].item_amount)
+            hash[array[i][ObjPropInArr]].consume = Number(array[i].consume) + Number(hash[array[i][ObjPropInArr]].consume)
+            hash[array[i][ObjPropInArr]].main_reference_value = Number(array[i].main_reference_value) + Number(hash[array[i][ObjPropInArr]].main_reference_value)
+          } else {
+            hash[array[i][ObjPropInArr]] = array[i];
           }
         }
-        for(var j in hash){
+        for (var j in hash) {
           result.push(hash[j])
         }
         return result
@@ -238,6 +278,10 @@
         onedata: [],
         detailList: [],
         page: [],
+        modal: {
+          errModal: false,
+          errInfo: '库存不足,审核失败!'
+        },
         gridColumns: {
           document_number: '领料单号',
           checked: '审核状态',
@@ -252,8 +296,8 @@
           item_name: '品名',
           unit_specification: '单位规格',
           material_stock: '生产车间库存',
-          a: '耗料量',
-          b: '领料量',
+          consume: '耗料量',
+          main_reference_value: '领料量',
           reference_number: '来源生产单号'
         },
         gridColumns3: {
@@ -261,8 +305,8 @@
           item_name: '品名',
           unit_specification: '单位规格',
           material_stock: '生产车间库存',
-          a: '耗料量',
-          b: '领料量'
+          consume: '耗料量',
+          main_reference_value: '领料量'
         },
         searchData: {
           document_number: '',

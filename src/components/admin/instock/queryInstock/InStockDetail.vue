@@ -16,8 +16,18 @@
           <form class="form-inline">
             <div class="form-group ml10">
               <label>操作类型</label>
-              <select class="form-control">
-                <option>暂时没有接口</option>
+              <select class="form-control" v-model="search.type">
+                <option value="">请选择</option>
+                <option value="">零售出库</option>
+                <option value="ProduceDocument">生产出库</option>
+                <option value="DistributionDocument">配送出库</option>
+                <option value="ReceivingDocument">采购收货</option>
+                <option value="StoreReceivingDocument">采购门店收货</option>
+                <option value="ProductionPutInDocument">生产入库</option>
+                <option value="">预约单出货</option>
+                <option value="">预约单收货</option>
+                <option value="">调拨出库</option>
+                <option value="">差异处理</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -121,14 +131,12 @@
     },
     ready: function () {
       var self = this
-
 //       获取单条详情
       var currentId = this.$route.params.queryId
       var urlOne  = requestSystemUrl + '/backend-system/stock/log/' + currentId + '/detail'
       getDataFromApi(urlOne,{},function(response){
         self.productList1 = response.data.body
       })
-
 //      获取列表数据
       this.getOneData({})
     },
@@ -136,7 +144,6 @@
       getOneData: function (data) {
         var currentId = this.$route.params.queryId
         var self = this
-
 //        获取列表详情
         var url = requestSystemUrl + '/backend-system/stock/log/' + currentId
         getDataFromApi(url,data,function(response){
@@ -152,6 +159,24 @@
               val.in_stock = '无'
               val.out_stock = val.amount*(-1)
             }
+
+            switch(val.operated_type){
+              case 'ProduceDocument':
+                val.operated_type = '生产出库'
+                break;
+              case 'DistributionDocument':
+                val.operated_type = '配送出库'
+                break;
+              case 'ReceivingDocument':
+                val.operated_type = '采购收货'
+                break;
+              case 'StoreReceivingDocument':
+                val.operated_type = '采购门店收货'
+                break;
+              case 'ProductionPutInDocument':
+                val.operated_type = '生产入库'
+                break;
+            }
           })
           console.log(self.productList2.in_stock)
         })
@@ -160,7 +185,8 @@
       searchMethod: function () {
         var data = {
           start_time: this.search.start_time,
-          ned_time: this.search.ned_time
+          ned_time: this.search.ned_time,
+          type: this.search.type
         }
         this.getOneData(data)
       },
@@ -184,6 +210,7 @@
         search: {
           start_time: '',
           ned_time: '',
+          type:''
         }
       }
     }
