@@ -113,8 +113,7 @@
                 end = index
               }
             })
-            dataArray = self.secondData.splice(start, end - start + 1)
-            self.secondData= self.secondData.concat(dataArray)
+            self.secondData.splice(start, end - start + 1)
           }
         })
       },

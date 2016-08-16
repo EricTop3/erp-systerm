@@ -70,7 +70,7 @@
       pagechange: function(currentpage){
         var self = this
         this.allChecked = false
-        this.requestApi({page: currentpage},function(){
+        this.requestApi({page: currentpage, search: self.query.search},function(){
           $.each(self.getRenderData,function(index,val){
             $.each(self.addData,function(index1,val1){
                if(val.id ===val1.id){
