@@ -49,8 +49,8 @@
       },
 //    确定审核
       confirmValidate: function () {
-        self.validateModal = false
         var self = this
+        self.validateModal = false
         checkRequest(this.checkUrl +currentId+ '/checked' ,function (){
           if(!(self.list instanceof Array)){
             if (self.list.id === currentId) {
