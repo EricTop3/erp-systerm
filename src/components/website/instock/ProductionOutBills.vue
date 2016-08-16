@@ -132,10 +132,10 @@
         list: [],
         gridOperate: true,
         gridColumns: {
-          consumable_code: '货号',
-          consumable_name: '品名',
+          goods_code: '货号',
+          goods_name: '品名',
           amount: '生产出库量',
-          unit: '单位',
+          unit_name: '单位',
           unit_specification: '单位规格',
           category_name: '商品分类'
         },
