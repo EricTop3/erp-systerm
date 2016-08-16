@@ -38,7 +38,7 @@
       </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmClick()" :class="{'btn-warning':!isAdd}" :disabled="!isAdd">确定添加</button>
+      <span class="btn btn-primary" @click="confirmClick()" :class="{'btn-warning':!isAdd}" :disabled="!isAdd">确定添加</span>
     </div>
   </modal>
 </template>
