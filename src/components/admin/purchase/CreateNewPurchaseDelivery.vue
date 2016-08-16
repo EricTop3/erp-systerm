@@ -195,10 +195,10 @@
         detailGoodsInfo(this.origenData.secondData,'Purchase')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.refund_amount ===''
-          val.received_amount ===''
-          val.additional_amount===""
-          val.price === ''
+          val.refund_amount = 0
+          val.received_amount =val.main_reference_value
+          val.additional_amount= 0
+          val.purchase_price = (val.unit_price * 0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)

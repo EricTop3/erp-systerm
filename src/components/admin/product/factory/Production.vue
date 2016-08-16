@@ -65,6 +65,8 @@
           :finish-flag="true"
         >
         </summary>
+        <!--错误信息-->
+        <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
       </div>
     </div>
   </div>
@@ -83,6 +85,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import LeftProduction from '../../common/LeftProduction'
+  import ErrorTip from '../../../common/ErrorTip'
   import {
     requestUrl,
     requestSystemUrl,
@@ -102,6 +105,7 @@
       AdminNav: AdminNav,
       Summary: Summary,
       DatePicker: DatePicker,
+      ErrorTip: ErrorTip,
       LeftProduction: LeftProduction
     },
     events: {
@@ -143,6 +147,14 @@
 //    查看详情
       gotoDetail: function (id){
         window.location.href = '#!/admin/production/factory/'+ id
+      },
+      //    审核失败
+      checkFail: function (err){
+        var self = this
+        if(Number(err.data.code) === 220000){
+          self.modal.errModal = true
+          self.modal.errInfo =  err.data.message
+        }
       }
     },
     ready: function () {
@@ -204,6 +216,10 @@
         page: [],
         list: [],
         warehouseList: [],
+        modal:{
+          errModal: false,
+          errInfo: 'high,这是错误提示'
+        },
         time:{
           startTime:'',
           startTime1:'',
