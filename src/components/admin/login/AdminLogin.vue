@@ -15,7 +15,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">密码</label>
               <div class="col-sm-9">
-                <input type="password" class="form-control" placeholder="密码" v-model="password"  v-validate:password="['password',required]">
+                <input type="password" class="form-control" placeholder="密码" v-model="password">
               </div>
             </div>
             <!--<div class="form-group">-->
@@ -53,10 +53,10 @@
       // 获取数据的方法
       loginUpload: function () {
         var self = this
-        if(this.userName ===""){
+        if(this.userName === ""){
           this.modal.errModal = true,
           this.modal.errInfo = '请输入您的登录名'
-        } else if(this.password ===""){
+        } else if (this.password === ""){
           this.modal.errModal = true,
           this.modal.errInfo = '请输入您的密码'
         }else{

@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-2 text-center">
         <h2>{{store.info}}</h2>
-        <h3>{{store.account}}</h3>
+        <h3>{{store.name}}</h3>
         <span @click="exit" class="exit">[退出]</span></div>
       <div class="col-md-9">
         <ul class="nav nav-pills navbar-right">

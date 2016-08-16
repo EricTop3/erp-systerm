@@ -107,6 +107,7 @@
   <introduce-data
     :title="origenData.title"
     :url="origenData.dataUrl"
+    :second-url="origenData.secondUrl"
     :instroduce-data-modal.sync='modal.parentIntroModal'
     :instroduce-data-modal-size="modal.parentIntroModalSize"
     :first-data-title="origenData.firstDataTitle"
@@ -182,8 +183,8 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount === ''
-          val.purchase_price === ''
+          val.purchase_amount = ''
+          val.purchase_price = (val.apuc*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -373,7 +374,8 @@
         },
         origenData: {
           title: '原始门店要货单',
-          dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
+          dataUrl:  requestSystemUrl + '/backend-system/reference-document/requisition',
+          secondUrl: requestSystemUrl + '/backend-system/reference-document/pick',
           firstDataTitle: {
             "document_number": "货单号",
             "store_name": "要货仓库",

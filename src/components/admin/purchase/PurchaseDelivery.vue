@@ -41,7 +41,7 @@
                 <label>供应商</label>
                 <select class="form-control" v-model="search.selectedSuppier">
                   <option value="">请选择</option>
-                  <option :value="item.code" v-for="item in search.providerList">{{item.name}}</option>
+                  <option :value="item.id" v-for="item in search.providerList">{{item.name}}</option>
                 </select>
               </div>
               <div class="form-group ml10 mt10">
@@ -123,6 +123,13 @@
         this.$http({
           url: requestUrl + '/backend-system/purchase/purchase',
           data: {
+            created_id: this.search.selectedMaker,
+            document_number: this.search.code,
+            checked: this.search.selectedStatus,
+            provider_id: this.search.selectedSuppier,
+            start_receive_time: this.time.startTime,
+            end_receive_time: this.time.endTime,
+            warehouse_id: this.search.stream_origin_id,
             page: currentpage
           },
           method: 'get',

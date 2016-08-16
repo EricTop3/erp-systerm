@@ -1,45 +1,55 @@
 <template>
   <!--审核按钮-->
   <span class="btn btn-danger btn-sm" data-toggle="modal" data-target="#inventory-audit-templ" @click="validate($event)">审核</span>
-  <!--&lt;!&ndash;审核模态框&ndash;&gt;-->
-  <!--<modal :show.sync="validateModal" :modal-size="validateModalSize">-->
-    <!--<div slot="header">-->
-      <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
-        <!--aria-hidden="true">&times;</span></button>-->
-      <!--<h4 class="modal-title">审核</h4>-->
-    <!--</div>-->
-    <!--<div slot="body">-->
-      <!--<h4>是否通过审核</h4>-->
-    <!--</div>-->
-    <!--<div slot="footer">-->
-      <!--<button type="button" class="btn btn-primary" data-dismiss="modal" @click="confirmValidate()">是</button>-->
-      <!--<button type="button" class="btn btn-default" data-dismiss="modal" @click="validateModal=false">否</button>-->
-    <!--</div>-->
-  <!--</modal>-->
+  <!--审核模态框-->
+  <modal :show.sync="validateModal" :modal-size="validateModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+        aria-hidden="true"  @click="validateModal=false">&times;</span></button>
+      <h4 class="modal-title">审核</h4>
+    </div>
+    <div slot="body">
+      <h4>是否通过审核</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-primary" data-dismiss="modal" @click="confirmValidate()">是</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" @click="validateModal=false">否</button>
+    </div>
+  </modal>
 </template>
 <script>
   import $ from 'jquery'
   import {checkRequest,token} from '../../publicFunction/index'
-//  import Modal from '../common/Modal'
+  import Modal from '../common/Modal'
   var currentId = 0
   export default{
     name: 'list-validate',
-//    components: {
-//      Modal: Modal
-//    },
+    components: {
+      Modal: Modal
+    },
     props: {
       list: {
         required: true,
       },
       checkUrl: '',
-      flag: false
-//      validateModal: false
+      flag: false,
+    },
+    data: function () {
+      return {
+        validateModal: false,
+        validateModalSize: 'modal-sm'
+      }
     },
     methods: {
 //    审核
       validate: function (event) {
         var self = this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
+        self.validateModal = true
+      },
+//    确定审核
+      confirmValidate: function () {
+        var self = this
         checkRequest(this.checkUrl +currentId+ '/checked' ,function (){
           if(!(self.list instanceof Array)){
             if (self.list.id === currentId) {
