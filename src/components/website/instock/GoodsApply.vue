@@ -47,7 +47,7 @@
         <td align="center">
           <count :count.sync="item.sale_refund"></count>
         </td>
-        <td>{{item.sell_unit_name}}</td>
+        <td>{{item.production_unit_name}}</td>
         <td>{{item.specification_unit}}</td>
         <td>
           <list-delete :delete-data.sync="rederStockGoods"></list-delete>
