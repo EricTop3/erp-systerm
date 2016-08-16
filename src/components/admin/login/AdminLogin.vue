@@ -53,7 +53,7 @@
       // 获取数据的方法
       loginUpload: function () {
         var self = this
-        if(this.userName === ""){
+        if(this.username === ""){
           this.modal.errModal = true,
           this.modal.errInfo = '请输入您的登录名'
         } else if (this.password === ""){

@@ -238,7 +238,7 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.reference_type = val.reference_type
+          obj.reference_type = val.type
           obj.amount = val.purchase_amount
           obj.price = val.purchase_price
           if(val.purchase_amount ==='' ||val.purchase_price ===''){
