@@ -367,6 +367,7 @@
         },
         renderstockGoods: [],
         summarystockGoods: [],
+        stockGoods: [],
         currentUrl: '',
         purchaseTabelHead: {
           code: "货号",
