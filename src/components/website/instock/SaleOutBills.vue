@@ -26,7 +26,7 @@
         <div class="form-group">
           <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">
         </div>
-        <button class="btn btn-info" @click="search">搜索</button>
+        <span class="btn btn-info" @click="listData()">搜索</span>
         <span class="btn btn-warning" @click="cancel">撤销搜索</span>
       </form>
     </div>
@@ -115,24 +115,6 @@
         }, function (err) {
           error(err)
         })
-      },
-//      搜索页面
-      search: function () {
-        var self = this
-        searchRequest(
-          requestUrl + '/front-system/stock/products',
-          {
-            start_time: this.query.start_time,
-            end_time: this.query.end_time,
-            category_id: this.query.category,
-            search: this.query.search,
-            per_page: 16
-          },
-          function (response) {
-            self.list = response.data.body.list
-            self.page = response.data.body.pagination
-          }
-        )
       },
       cancel: function () {
         this.query.start_time = ''

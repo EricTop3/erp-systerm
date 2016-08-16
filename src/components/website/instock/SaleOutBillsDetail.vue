@@ -8,18 +8,35 @@
       <li class="active">销售出库明细</li>
     </ol>
 
-    <!-- 表格 单条数据 -->
-    <grid :data="list" :columns="gridColumns" :operate="gridOperate">
-      <div slot="operateList"></div>
-    </grid>
-
+    <!-- 表格 单条数据-->
+    <table class="table table-striped table-border table-hover">
+      <thead>
+      <tr class="text-center">
+        <td class="text-left">货号</td>
+        <td>品名</td>
+        <td>零售出库量</td>
+        <td>零售单位</td>
+        <td>单位规格</td>
+        <td>商品分类</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="text-center">
+        <td class="text-left">{{list.item_code}}</td>
+        <td>{{list.item_name}}</td>
+        <td>{{list.amount}}</td>
+        <td>{{list.unit_name}}</td>
+        <td>{{list.unit_specification}}</td>
+        <td>{{list.category_name}}</td>
+      </tr>
+      </tbody>
+    </table>
     <!-- 表格 详情列表 -->
     <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
 
     <!-- 翻页 -->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page"></page>
-
+          :last-page="page.last_page" v-if="detailList.length > 0"></page>
   </div>
 </template>
 <script>
@@ -41,10 +58,7 @@
       }
     },
     ready: function () {
-      var str = window.location.href
-      var num = str.indexOf('SaleOutBills') + 13
-      var id = str.substr(num)
-      this.id = id
+      this.id = this.$route.params.queryId
 //      单条数据渲染
       this.thisOneData()
 //      明细列表渲染
@@ -53,8 +67,10 @@
     methods: {
 //      当前id的一条数据
       thisOneData: function () {
+        this.id = this.$route.params.queryId
         this.$http({
-          url: requestUrl + '/front-system/stock/sale/' + this.id,
+          url: requestUrl + '/front-system/stock/sale/' + this.id + '/detail',
+          headers: {'X-Overpowered-Token': token},
           method: 'get'
         }).then(function (response) {
           this.list = response.data.body
@@ -64,8 +80,9 @@
       },
 //      明细列表渲染 /front-system/stock/sale/{id}/detail
       detailListData: function (page) {
+        this.id = this.$route.params.queryId
         this.$http({
-          url: requestUrl + '/front-system/stock/sale/' + this.id + '/detail',
+          url: requestUrl + '/front-system/stock/sale/' + this.id,
           method: 'get',
           data: {
             start_time: this.query.start_time || '',
@@ -91,21 +108,21 @@
         detailList: [],
         gridOperate: false,
         gridColumns: {
-          consumable_code: '货号',
-          consumable_name: '品名',
-          sale_amount: '零售出库量',
-          unit: '零售单位',
+          item_code: '货号',
+          item_name: '品名',
+          amount: '零售出库量',
+          unit_name: '零售单位',
           unit_specification: '单位规格',
           category_name: '商品分类'
         },
         gridOperate2: false,
         gridColumns2: {
           created_at: '时间',
-          consumable_name: '品名',
-          sale_amount: '零售出库量',
-          unit: '零售单位',
+          item_name: '品名',
+          amount: '零售出库量',
+          unit_name: '零售单位',
           creator_name: '操作人',
-          consumable_code: '盘点单号'
+          document_number: '盘点单号'
         },
         query: {
           start_time: '',
