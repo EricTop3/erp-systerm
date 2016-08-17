@@ -9,6 +9,13 @@
       <!-- 页头 -->
       <div class="page-header text-center">
         <form action="" method="post" class="form-inline">
+          <div class="form-group mr50" v-if="isPurchase">
+            <label>要货门店</label>
+            <select class="form-control" v-model="selectedStore">
+              <option value="">请选择</option>
+              <option :value="item.id" v-for="item in storeList" >{{item.display_name}}</option>
+            </select>
+          </div>
           <div class="form-group">
             <label>配送时间段</label>
             <date-picker :value.sync="startTime" :time-text="timeText"></date-picker> -
@@ -53,12 +60,19 @@
       DatePicker: DatePicker
     },
     ready: function () {
-//     不同的url加载不同的数据
+//    不同的url加载不同的数据
       if(this.secondUrl!==undefined){
         this.getProductByUrl(this.url)
         this.getProductByUrl(this.secondUrl)
       }else{
         this.getProductByUrl(this.url)
+      }
+//    获取门店列表
+      if(this.isPurchase){
+        var self = this
+        getDataFromApi(requestUrl + '/backend-system/store/store',{},function (response){
+          self.storeList = response.data.body.list
+        })
       }
     },
     props: {
@@ -66,6 +80,7 @@
       instroduceDataModalSize: 'modal-sm',
       secondData: [],
       title:'',
+      isPurchase: false,
       firstDataTitle: {
         code: '配送出库单号',
         store_name: '调出仓库',
@@ -164,14 +179,24 @@
       searchMethod: function () {
         var self = this
         var url = this.url
-        var data =  {
-          start_time: self.startTime,
-          end_time: self.endTime
+        var data = {}
+//     判断是否是采购引用数据
+        if(self.isPurchase){
+          data =  {
+            start_time: self.startTime,
+            end_time: self.endTime,
+            store_id: self.selectedStore
+          }
+        }else {
+          data =  {
+            start_time: self.startTime,
+            end_time: self.endTime
+          }
         }
         getDataFromApi(url,data,function(response){
-          self.firstData = response.data.body.list
-          exchangeData( self.firstData)
-        })
+        self.firstData = response.data.body.list
+        exchangeData( self.firstData)
+      })
       },
 //   取消搜索
       cancelSearch: function () {
@@ -229,6 +254,8 @@
         timeText: '请输入日期',
         startTime: '',
         endTime: '',
+        storeList: [],
+        selectedStore: '',
         page: [],
         citeCheckAll: false,
         secondDataCheckAll: false,
