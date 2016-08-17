@@ -139,6 +139,23 @@
               val.in_stock = '无'
               val.out_stock = val.amount*(-1)
             }
+            switch(val.operated_type){
+              case 'ProduceDocument':
+                val.operated_type = '生产出库'
+                break;
+              case 'DistributionDocument':
+                val.operated_type = '配送出库'
+                break;
+              case 'ReceivingDocument':
+                val.operated_type = '采购收货'
+                break;
+              case 'StoreReceivingDocument':
+                val.operated_type = '采购门店收货'
+                break;
+              case 'ProductionPutInDocument':
+                val.operated_type = '生产入库'
+                break;
+            }
           })
         })
 

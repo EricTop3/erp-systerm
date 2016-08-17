@@ -105,7 +105,7 @@
       </form>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmEdit()">提交</button>
+      <span class="btn btn-primary" @click="confirmEdit()">提交</span>
     </div>
   </modal>
   <!--模态框HTML-->
