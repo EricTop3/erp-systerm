@@ -46,7 +46,7 @@
         <a v-link="{ path: '/site/instock/AllotOut'}"><span class="btn btn-primary">新建出库</span></a>
       </form>
     </div>
-    <summary :table-header="gridColumns" :table-data="list" :detail-url="detailUrl" :page="page" :check-url="checkUrl"></summary>
+    <summary :table-header="gridColumns" :table-data="list"  :page="page" :check-url="checkUrl"></summary>
   </div>
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
@@ -59,7 +59,6 @@
   import Summary from '../../common/Summary'
   import DatePicker from '../../common/DatePicker'
   import ErrorTip from '../../common/ErrorTip'
-  import {getDataFromSiteApi} from '../../../publicFunction/index'
   import {
     requestUrl,
     token,
@@ -68,6 +67,8 @@
     deleteRequest,
     finishRequest,
     checkRequest,
+    getDataFromSiteApi,
+    requestSystemUrl,
     error
   } from '../../../publicFunction/index'
   export default {
@@ -91,6 +92,10 @@
          self.listData(1)
         })
       },
+//          查看详情
+    gotoDetail: function (id){
+      window.location.href = '#!/site/instock/AllotOutBills/'+ id
+    },
 //         审核失败
       checkFail: function (err){
         var self = this
