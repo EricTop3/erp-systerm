@@ -109,7 +109,6 @@
       fetchStockGood: function (event) {
         var currentObj = $(event.currentTarget)
         var currenHtml = $(event.currentTarget).find('a').text()
-        console.log(currenHtml)
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.query.category = Number(currentObj.attr('id'))
         var data = {
