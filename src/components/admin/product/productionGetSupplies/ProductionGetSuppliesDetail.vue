@@ -49,7 +49,7 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.material_stock}} {{entry.unit_name}}</td>
+                <td>{{entry.material_stock}} {{entry.consume_unit_name}}</td>
                 <td>{{entry.consume}} {{entry.consume_unit_name}}</td>
                 <td v-if='editFlag'>
                   <count :count.sync='entry.main_reference_value'></count>

@@ -24,10 +24,11 @@
                 <option value="ReceivingDocument">采购收货</option>
                 <option value="StoreReceivingDocument">采购门店收货</option>
                 <option value="ProductionPutInDocument">生产入库</option>
-                <option value="">预约单出货</option>
+                <option value="AppointmentDistribute">预约单出货</option>
                 <option value="">预约单收货</option>
                 <option value="">调拨出库</option>
                 <option value="">差异处理</option>
+                <option value="PickDocument">领料</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -154,12 +155,11 @@
             val.out_stock = ''
             if (val.amount > 0) {
               val.in_stock = val.amount
-              val.out_stock = '无'
+              val.out_stock = 0
             } else {
-              val.in_stock = '无'
+              val.in_stock = 0
               val.out_stock = val.amount*(-1)
             }
-
             switch(val.operated_type){
               case 'ProduceDocument':
                 val.operated_type = '生产出库'
@@ -175,6 +175,12 @@
                 break;
               case 'ProductionPutInDocument':
                 val.operated_type = '生产入库'
+                break;
+              case 'PickDocument':
+                val.operated_type = '领料'
+                break;
+              case 'AppointmentDistribute':
+                val.operated_type = '预约单出货'
                 break;
             }
           })

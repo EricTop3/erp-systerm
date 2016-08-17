@@ -142,6 +142,9 @@
 //           确认增加
       confirmAdd: function () {
         var self = this
+        if (!self.flag) {
+          self.dataArray = []
+        }
         $.each(self.stockGoods, function (index, val) {
           val.current_stock = ''
           if (val.choice && !val.again) {
@@ -151,6 +154,7 @@
         })
         self.rederStockGoods = self.dataArray
         self.localPage(self.rederStockGoods)
+        self.flag = true
       },
 //      删除
       delete: function (id) {
@@ -186,10 +190,14 @@
 //      添加商品
       addStockGoods: function () {
         this.modal.addGoodModal=true
+        if (!this.flag) {
+          $(".table-bordered").find(":checkbox").prop("checked", false)
+        }
       },
 //      盘点所有商品
       inventoryAll: function (page) {
         var self = this
+        self.flag = false
         var data = {
           per_page: 999
         }
@@ -199,7 +207,9 @@
           self.dataArray = respon.data.body.list
           self.rederStockGoods = self.dataArray
           self.localPage(self.dataArray)
-//          self.ispageLocal = true
+        })
+        $.each(self.stockGoods,function(index,val){
+          val.again = false
         })
       },
 //      提交盘点
@@ -246,7 +256,6 @@
         } else {
           this.pageLocal.last_page = (Math.floor(this.pageLocal.len / this.pageLocal.per_page)) + 1
         }
-
         var start = (this.pageLocal.current_page * this.pageLocal.per_page) - this.pageLocal.per_page
         var end = (start + this.pageLocal.per_page) > this.pageLocal.len ? this.pageLocal.len : (start + this.pageLocal.per_page)
         this.newData = data.slice(start,end)
@@ -255,7 +264,8 @@
     },
     data: function () {
       return {
-//        是否启用本地分页
+//        盘点所有商品按钮点击后改变flag状态为false
+        flag: true,
         newData: [],
 //        ispageLocal: false,
         pageLocal: {
@@ -266,6 +276,7 @@
         },
         showPage: [],
         selectedHouse: '',
+        stockGoods: [],
         rederStockGoods: [],
         dataArray: [],
         warehouseList: [],
