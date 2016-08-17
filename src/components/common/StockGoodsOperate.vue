@@ -23,7 +23,10 @@
           <div class="col-sm-2" role="navigation" style="padding:0;">
             <ul class="nav nav-stacked dialog-sidebar">
               <li class="header">商品分类</li>
-              <li v-for="item in category" track-by="$index" :class="{'active':$index===0}" @click="fetchStockGood($event)" :id="item.id">
+              <li class="active"  @click="fetchStockGood($event)">
+                <a href="javascript:void(0)">全部分类<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </li>
+              <li v-for="item in category" track-by="$index"  @click="fetchStockGood($event)" :id="item.id">
                 <a href="javascript:void(0)">{{item.display_name}}<span
                   class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
@@ -105,14 +108,20 @@
 //    根据分类进行产品请求
       fetchStockGood: function (event) {
         var currentObj = $(event.currentTarget)
+        var currenHtml = $(event.currentTarget).find('a').text()
+        console.log(currenHtml)
+        currentObj.addClass('active').siblings('li').removeClass('active')
         this.query.category = Number(currentObj.attr('id'))
         var data = {
           category: this.query.category
         }
-        currentObj.addClass('active').siblings('li').removeClass('active')
+        if(currenHtml === '全部分类'){
+          this.requestApi({})
+        }else{
+//         获取产品
+          this.requestApi(data)
+        }
         this.$dispatch('fetchProduct')
-//       获取产品
-        this.requestApi(data)
       },
 //      根据搜索进行产品请求
       searchMethod: function () {

@@ -164,7 +164,7 @@
             <div class='form-group'>
               <input type='text' class='form-control' placeholder='请输入商品名或商品编号' v-model="search">
             </div>
-            <button type='submit' class='btn btn-primary' @click="searchProduct">搜索</button>
+            <span type='submit' class='btn btn-primary' @click="searchProduct">搜索</span>
             <span class='btn btn-warning' @click="cancelSearchProduct">撤销搜索</span>
           </form>
         </div>
@@ -910,44 +910,7 @@
         count: 1,
         category: [],
         page: [],
-        productFromCategory: [
-          {
-            'name': '28-测试普通商品',
-            'code': 'P101N100028',
-            'sell_unit_stock': 10,
-            'original_price': 2050,
-            'sell_mark': 1,
-            'category_id': 2,
-            'id': 28
-          },
-          {
-            'name': '29-测试普通商品',
-            'code': 'P101N100029',
-            'sell_unit_stock': 0,
-            'original_price': 2400,
-            'sell_mark': 1,
-            'category_id': 2,
-            'id': 29
-          },
-          {
-            'name': '30-测试普通商品',
-            'code': 'P101N100030',
-            'sell_unit_stock': 0,
-            'original_price': 2050,
-            'sell_mark': 2,
-            'category_id': 2,
-            'id': 30
-          },
-          {
-            'name': '31-测试普通商品',
-            'code': 'P101N100031',
-            'sell_unit_stock': 10,
-            'original_price': 2000,
-            'sell_mark': 2,
-            'category_id': 2,
-            'id': 31
-          }
-        ],
+        productFromCategory: [],
         checkedGoodsList: [],
         gridOperate: true
       }

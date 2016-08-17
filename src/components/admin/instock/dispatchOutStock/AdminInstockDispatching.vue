@@ -135,7 +135,7 @@
       deleteFromApi: function (id) {
         var self = this
         deleteRequest(requestSystemUrl + '/backend-system/stock/distribution/'+ id,function(response){
-          console.log('deleted')
+          self.listData({})
         })
       },
 //    查看详情

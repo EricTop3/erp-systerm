@@ -106,7 +106,7 @@
   import SummaryDetail from '../../common/SummaryDetail'
   import Count from '../../common/Count'
   import Price from  '../../common/Price'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus,putDataToApi} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -161,9 +161,33 @@
         })
       },
 
-//           编辑
+//      编辑
       editGoods: function () {
         this.editFlag = true
+      },
+//    保存
+      saveGoods: function (event) {
+        var self = this
+        this.editFlag = false
+        var id = this.$route.params.queryId
+        var item = []
+        $.each(self.detailList,function (index,val) {
+          var obj = {}
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
+          obj['additional_amount'] = val.additional_amount
+          obj['refund_amount'] = val.refund_amount
+          obj['received_amount'] = val.received_amount
+          obj['price'] = val.unit_price
+          item.push(obj)
+        })
+        var data = {
+          items: item
+        }
+        var url = requestSystemUrl + '/backend-system/purchase/receive/'+ id
+        putDataToApi(url,data,function (res) {
+          console.log('yes')
+        })
       }
     },
     ready: function () {
@@ -258,7 +282,7 @@
           warehouse: '收货仓库',
           provider_name: '供应商',
           operated_at: '收货日期',
-          demand_amount: '采购数量',
+          purchase_amount: '采购数量',
           actual_amount: '实际入库量',
           refund_amount: '退货数量'
         },

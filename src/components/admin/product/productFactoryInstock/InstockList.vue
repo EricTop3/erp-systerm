@@ -206,7 +206,7 @@
           checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
-          stream_origin: '调入仓库',
+          stream_target: '调入仓库',
           operated_at: '收货日期',
           stock_amount: '入库数量',
           defective_amount: '次品数量',

@@ -58,7 +58,7 @@
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                   <td><count :count.sync =entry.product_amount></count>{{entry.unit_name}}</td>
-                  <td>{{entry.refence_number}}</td>
+                  <td>{{entry.reference_number}}</td>
                   <td>
                     <slot name="operate">
                       <list-delete :delete-data.sync="renderstockGoods" ></list-delete>
@@ -90,7 +90,6 @@
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
-                  <td>{{entry.refence_number}}</td>
                 </tr>
                 </tbody>
               </table>

@@ -90,7 +90,7 @@
                 {{entry[$key]}}
               </td>
               <td  :id="[entry.id ? entry.id : '']">
-                <span class="btn btn-primary btn-sm" data-target="#inventory-returnGoods-templ" @click="returnGoods($event)">退货</span>
+                <span class="btn btn-primary btn-sm" data-target="#inventory-returnGoods-templ" @click="returnGoods($event)" v-if="entry.status === '已提交'">退货</span>
                 <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkRetailGoods-templ"
                     @click="lookDetail($event)">查看</span>
               </td>
@@ -511,23 +511,25 @@
       },
 //      对获取到的数据进行处理
       modifyGetedData: function (data) {
+        var self = this
         $.each(data, function (index, val) {
           val.total_sum = Number((val.total_sum) * 0.01).toFixed(2)
-          switch (val.pay_method) {
+          val.coupon_name = val.coupon_name!=='' ? val.coupon_name : '无优惠'
+          switch (val.payment) {
             case  'cash':
-              val.pay_method = '现金'
+              val.payment = '现金'
               break
             case 'alipay':
-              val.pay_method = '支付宝'
+              val.payment = '支付宝'
               break
             case  'weixin':
-              val.pay_method = '微信'
+              val.payment = '微信'
               break
             case 'post':
-              val.pay_method = 'post机刷卡'
+              val.payment= 'post机刷卡'
               break
             case  'vip':
-              val.pay_method = '会员卡余额'
+              val.payment = '会员卡余额'
               break
           }
           switch (val.status) {
@@ -547,7 +549,15 @@
               val.status = '订单已取消'
               break
             case  'hr00':
-              val.status = '已退款'
+              if(self.orderType === 1){
+                val.status = '已退货'
+              }
+              if(self.orderType === 2){
+                val.status = '已退货'
+              }
+              if(self.orderType === 3){
+                val.status = '已退款'
+              }
               break
             case  'kd00':
               val.status = '快递配送中'
@@ -555,6 +565,15 @@
             case  'rm00':
               val.status = '客户已签收'
               break
+          }
+          if(self.orderType === 1){
+            val.after_sale = val.status !== '已退货' ? '无': val.status
+          }
+          if(self.orderType === 2){
+            val.after_sale = val.status !== '已退货' ? '无': val.status
+          }
+          if(self.orderType === 3){
+            val.after_sale = val.status !== '已退款' ? '无': val.status
           }
         })
       },
@@ -644,15 +663,14 @@
 //      确认退款
       confirmReturnMoney: function () {
         this.modal.returnMoneyModal = false
-        this.$http({
-          url: requestUrl + '/front-system/order/refund-money/' + this.receivedId,
-          method: 'put',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
+        var self = this
+        var url = requestUrl + '/front-system/order'
+        var data = {
+          order_type: self.orderType
+        }
+        putDataToApi(requestUrl + '/front-system/order/refund-goods/' + this.receivedId,{},function(response){
           this.modal.returnMoneyModal = false
-          $(this.currentButton).remove()
-        }, function (err) {
-          error(err)
+          self.fetchData(url, data, self.finishPage)
         })
       },
 //      退货
@@ -673,6 +691,10 @@
       confirmRefoundGoods: function () {
         var items = []
         var self = this
+        var url = requestUrl + '/front-system/order'
+        var data = {
+          order_type: self.orderType
+        }
         $.each(self.returnGoodsList,function(index,val){
           var obj = {}
           obj.amount = val.return_number
@@ -684,7 +706,7 @@
         } else {
           putDataToApi(requestUrl + '/front-system/order/refund-goods/'+refundId,items,function (response) {
             self.modal.refundModal = false
-            self.currentButton.remove()
+            self.fetchData(url, data, self.finishPage)
           },function (err) {
             if(err.data.code ==="200002") {
               self.modal.refundModal = false
@@ -814,18 +836,18 @@
           member_card_number: '会员卡号',
           coupon_name: '优惠方式',
           payment: '支付方式',
-          after_sales: '售后',
+          after_sale: '售后',
           operator: '营业员'
         },
         hangingGridColumns: {
           order_number: '小票编号',
           created_at: '下单时间',
           total_sum: '合计金额',
-          total_amount: '合计数量',
+          total_sell: '合计数量',
           member_card_number: '会员卡号',
           coupon_name: '优惠方式',
-          pay_method: '支付方式',
-          after_sales: '售后',
+          payment: '支付方式',
+          after_sale: '售后',
           operator: '营业员'
         },
         subscribeGridColumns: {
@@ -835,7 +857,7 @@
           total_amount: '合计数量',
           member_card_number: '会员卡号',
           coupon_name: '优惠方式',
-          pay_method: '支付方式',
+          payment: '支付方式',
           status: '进度',
           operator: '营业员'
         }

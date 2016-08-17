@@ -204,7 +204,7 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.purchase_amount ===''
+          val.purchase_amount = val.main_reference_value
           val.purchase_price = (val.unit_price*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
@@ -382,7 +382,7 @@
           dataUrl:  requestSystemUrl + '/backend-system/reference-document/requisition',
           secondUrl: requestSystemUrl + '/backend-system/reference-document/pick',
           firstDataTitle: {
-            "document_number": "货单号",
+            "document_number": "要货单号",
             "store_name": "要货仓库",
             "amount": "要货数量",
             "created_at": "配送日期",

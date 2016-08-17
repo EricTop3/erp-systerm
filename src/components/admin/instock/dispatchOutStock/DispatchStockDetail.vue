@@ -43,7 +43,7 @@
                 <td>{{entry.goods_code}}</td>
                 <td>{{entry.goods_name}}</td>
                 <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.origin_stock_amount}}</td>
+                <td>{{entry.target_stock_amount}}</td>
                 <td>{{entry.purchase_amount}}</td>
                 <td v-if="!editFlag">{{entry.number}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.number :flag.sync="editFlag"></count></td>
@@ -71,7 +71,7 @@
                 <td>{{entry.goods_code}}</td>
                 <td>{{entry.goods_name}}</td>
                 <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.origin_stock_amount}}</td>
+                <td>{{entry.target_stock_amount}}</td>
                 <td>{{entry.purchase_amount}}</td>
                 <td>{{entry.item_amount}}</td>
                 <td>{{entry.unit_name}}</td>
