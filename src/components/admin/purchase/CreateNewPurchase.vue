@@ -108,6 +108,7 @@
     :title="origenData.title"
     :url="origenData.dataUrl"
     :second-url="origenData.secondUrl"
+    :is-purchase="true"
     :instroduce-data-modal.sync='modal.parentIntroModal'
     :instroduce-data-modal-size="modal.parentIntroModalSize"
     :first-data-title="origenData.firstDataTitle"
