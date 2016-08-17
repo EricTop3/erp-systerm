@@ -14,12 +14,11 @@
           <label>备注</label>
           <input type="text" class="form-control" placeholder="请填写盘点备注" v-model="note">
         </div>
-        <span class="btn btn-info" @click="modal.addGoodModal=true">选择盘点商品</span>
+        <span class="btn btn-info" @click="chooseAddGoods()">选择盘点商品</span>
         <span class="btn btn-primary" @click="inventoryAll()">盘点所有商品</span>
-        <span class="btn btn-warning" @click="upLoadEnquiry()">提交盘点</span>
+        <span class="btn btn-default" @click="upLoadEnquiry()">提交盘点</span>
       </form>
     </div>
-
     <!-- 表格 -->
     <table class="table table-striped table-border table-hover">
       <thead>
@@ -40,12 +39,14 @@
         <td>{{item.name}}</td>
         <td><span style="color:red;">无字段</span></td>
         <td align="center">
-          <count :count.sync =item.current_stock></count>
+          <count :count.sync=item.current_stock></count>
         </td>
         <td><span style="color:red;">无字段</span></td>
         <td>{{item.production_unit_name}}</td>
         <td>{{item.specification_unit}}</td>
-        <td><list-delete :delete-data.sync="rederStockGoods"></list-delete></td>
+        <td>
+          <list-delete :delete-data.sync="rederStockGoods"></list-delete>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -114,6 +115,9 @@
 //    确认增加
       confirmAdd: function () {
         var self = this
+        if (!self.flag) {
+          self.dataArray = []
+        }
         $.each(self.stockGoods, function (index, val) {
           val.current_stock = ''
           if (val.choice && !val.again) {
@@ -123,6 +127,7 @@
         })
         self.rederStockGoods = self.dataArray
         self.localPage(self.rederStockGoods)
+        self.flag = true
       },
 //      删除
       delete: function (id) {
@@ -155,9 +160,17 @@
       }
     },
     methods: {
+//      选择添加商品
+      chooseAddGoods: function () {
+        this.modal.addGoodModal = true
+        if (!this.flag) {
+          $(".table-bordered").find(":checkbox").prop("checked", false)
+        }
+      },
 //      盘点所有商品
       inventoryAll: function () {
         var self = this
+        self.flag = false
         var data = {
           per_page: 999
         }
@@ -166,6 +179,9 @@
           self.dataArray = respon.data.body.list
           self.rederStockGoods = self.dataArray
           self.localPage(self.dataArray)
+        })
+        $.each(self.stockGoods,function(index,val){
+          val.again = false
         })
       },
 //      提交盘点
@@ -181,7 +197,7 @@
           }
           inventory.push(obj)
         })
-        if(this.dataArray.length < 1) {
+        if (this.dataArray.length < 1) {
           this.modal.errModal = true
           this.modal.errInfo = '请添加盘点商品'
         } else if (hasStock) {
@@ -208,10 +224,9 @@
         } else {
           this.pageLocal.last_page = (Math.floor(this.pageLocal.len / this.pageLocal.per_page)) + 1
         }
-
         var start = (this.pageLocal.current_page * this.pageLocal.per_page) - this.pageLocal.per_page
         var end = (start + this.pageLocal.per_page) > this.pageLocal.len ? this.pageLocal.len : (start + this.pageLocal.per_page)
-        this.newData = data.slice(start,end)
+        this.newData = data.slice(start, end)
         this.rederStockGoods = this.newData
       }
     },
@@ -219,7 +234,8 @@
       return {
 //        盘点备注
         note: '',
-//        是否启用本地分页
+//        盘点所有商品按钮点击后改变flag状态为false
+        flag: true,
         newData: [],
         pageLocal: {
           current_page: 1, // 当前页
@@ -228,6 +244,7 @@
           len: 0 // 总共的个数
         },
         showPage: [],
+        stockGoods: [],
         rederStockGoods: [],
         dataArray: [],
         modal: {
@@ -248,7 +265,7 @@
           'category': '商品分类'
         },
         request: {
-          productUrl: requestSystemUrl +  '/front-system/product',
+          productUrl: requestSystemUrl + '/front-system/product',
           categoryUrl: requestSystemUrl + '/front-system/order/category',
         }
       }

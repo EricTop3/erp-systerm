@@ -137,15 +137,22 @@
             </div>
             <div class="form-group ml10">
               <label>采购加工单位</label>
-              <select v-if="createList.product_type != 2" class="form-control" v-model="createList.production_unit">
-                <option value="">请选择</option>
-                <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
+              <!--<select v-if="createList.product_type != 2" class="form-control" v-model="createList.production_unit">-->
+                <!--<option value="">请选择</option>-->
+                <!--<option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>-->
+              <!--</select>-->
+              <!--<select v-else class="form-control" v-model="createList.production_unit" v-validate:productionunit="['required']">-->
+                <!--<option value="">请选择</option>-->
+                <!--<option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>-->
+              <!--</select>-->
+              <!--<div v-if="createList.product_type == 2" style="float: right;">-->
+                <!--<p v-if="$validationSet.productionunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>-->
+              <!--</div>-->
+              <select class="form-control" v-model="createList.production_unit" v-validate:productionunit="['required']">
+              <option value="">请选择</option>
+              <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
               </select>
-              <select v-else class="form-control" v-model="createList.production_unit" v-validate:productionunit="['required']">
-                <option value="">请选择</option>
-                <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
-              </select>
-              <div v-if="createList.product_type == 2" style="float: right;">
+              <div style="float: right;">
                 <p v-if="$validationSet.productionunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
