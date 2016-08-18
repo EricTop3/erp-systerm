@@ -63,8 +63,9 @@
     events:{
       pagechange: function(currentpage){
         var self = this
+        var data = $.extend({page: currentpage, search: self.query.search},this.requestData)
         this.allChecked = false
-        this.requestApi({page: currentpage, search: self.query.search},function(){
+        this.requestApi(data,function(){
           $.each(self.getRenderData,function(index,val){
             $.each(self.addData,function(index1,val1){
                if(val.id ===val1.id){

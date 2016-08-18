@@ -68,7 +68,8 @@
           :page="page"
           :check-url = "checkUrl"
         ></summary>
-
+        <!--错误信息-->
+        <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
       </div>
     </div>
   </div>
@@ -84,6 +85,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import LeftProduction from '../../common/LeftProduction'
+  import ErrorTip from '../../../common/ErrorTip'
   import {
     requestUrl,
     requestSystemUrl,
@@ -104,7 +106,8 @@
       AdminNav: AdminNav,
       Summary: Summary,
       DatePicker: DatePicker,
-      LeftProduction: LeftProduction
+      LeftProduction: LeftProduction,
+      ErrorTip: ErrorTip
     },
     events: {
 //    绑定翻页事件

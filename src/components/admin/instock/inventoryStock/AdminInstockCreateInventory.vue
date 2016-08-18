@@ -292,8 +292,8 @@
         purchaseTabelHead: {
           code: "货号",
           name: "品名",
-          a: "日均销量",
-          current_stock: "当前库存",
+          dms: "日均销量",
+          stock: "当前库存",
           production_unit_name: "单位",
           specification_unit: "单位规格",
           category: "商品分类"
