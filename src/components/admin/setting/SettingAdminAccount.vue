@@ -264,7 +264,6 @@
             self.$validation1.password.touched = true
             e.preventDefault()
           } else {
-            console.log(self.$validation1.invalid)
             self.createSubmit()
           }
         })
@@ -299,6 +298,9 @@
         ).then(function (response) {
           this.createModal = false
           this.getlistData(1)
+          this.postData.account = ''
+          this.postData.name = ''
+          this.postData.password = ''
         }, function (err) {
           if (err.data.code == '100000') {
             this.createModal = false

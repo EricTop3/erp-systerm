@@ -257,8 +257,10 @@
         }
         var self = this
         this.$validate(function () {
-          self.$validation1.storecode = false
-          self.$validation1.storename = false
+          if (self.$validation1.invalid) {
+            self.$validation1.storecode.touched = false
+            self.$validation1.storename.touched = false
+          }
         })
       },
 //   新增门店验证

@@ -304,7 +304,7 @@
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
           if(value.balance != '' && value.balance > 0 ){
-            value.balance = '￥' + (value.balance * 1).toFixed(2)
+            value.balance = '￥' + (value.balance * 0.01).toFixed(2)
           }
           if(value.status == '0'){
             value.status = '停用'
