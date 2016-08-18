@@ -238,6 +238,10 @@
         self.modal.priceModal = true
         getDataFromApi(requestSystemUrl + '/backend-system/product/' + currtId + '/price-wave',{},function (response) {
           self.priceList = response.data.body.list
+          $.each(self.priceList, function (index,val) {
+            val.previous_apuc  = (val.previous_apuc * 0.01).toFixed(2)
+            val.previous_aruc  = (val.previous_aruc * 0.01).toFixed(2)
+          })
         })
       }
     },
@@ -266,8 +270,8 @@
         priceList: [],
         priceHeader:{
           created_at: '修改日期',
-          previous_apuc: '历史零售单价',
-          previous_aruc: '历史采购单价',
+          previous_aruc: '历史零售单价',
+          previous_apuc: '历史采购单价',
           operator_name: '编辑人'
         },
         modal: {

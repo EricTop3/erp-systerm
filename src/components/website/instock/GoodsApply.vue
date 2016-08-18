@@ -47,7 +47,7 @@
         <td align="center">
           <count :count.sync="item.sale_refund"></count>
         </td>
-        <td>{{item.production_unit_name}}</td>
+        <td>{{item.product_type === 2 ? item.unit_name = item.production_unit_name :item.unit_name = item.sell_unit_name }}</td>
         <td>{{item.specification_unit}}</td>
         <td>
           <list-delete :delete-data.sync="rederStockGoods"></list-delete>
@@ -147,16 +147,6 @@
       })
     },
     methods: {
-//     前端本地分页函数
-      localPage: function (data) {
-        this.len = data.length
-        if (this.len % this.per_page === 0) {
-          this.totalPage = this.len / this.per_page
-        } else {
-          this.totalPage = (Math.floor(this.len / this.per_page)) + 1
-        }
-        data.splice(this.current_page * this.per_page, this.len - this.current_page * this.per_page)
-      },
 //      提交要货
       upLoadEnquiry: function () {
         var items = []
