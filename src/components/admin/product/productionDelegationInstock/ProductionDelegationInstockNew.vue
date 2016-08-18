@@ -264,6 +264,7 @@
 //     引入数据
       inclucdePurchaseData: function () {
         this.modal.parentIntroModal = true
+        this.$broadcast('getGoodsWhenClick')
       },
       //      入库明细与入库汇总切换
       changeActive: function (event) {
@@ -339,7 +340,7 @@
         currentUrl: '',
         origenData: {
           title: '原始要货配料单',
-          dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
+          dataUrl: requestSystemUrl + '/backend-system/reference-document/production-out',
           firstDataTitle: {
             "document_number": "生产货单号",
             "created_at": "生产日期",

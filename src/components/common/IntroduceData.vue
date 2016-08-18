@@ -60,20 +60,6 @@
       DatePicker: DatePicker
     },
     ready: function () {
-//    不同的url加载不同的数据
-      if(this.secondUrl!==undefined){
-        this.getProductByUrl(this.url)
-        this.getProductByUrl(this.secondUrl)
-      }else{
-        this.getProductByUrl(this.url)
-      }
-//    获取门店列表
-      if(this.isPurchase){
-        var self = this
-        getDataFromApi(requestUrl + '/backend-system/store/store',{},function (response){
-          self.storeList = response.data.body.list
-        })
-      }
     },
     props: {
       instroduceDataModal: false,
@@ -101,12 +87,29 @@
       secondData: [],
       url: '',
       secondUrl: '',
+      requestData: {}
     },
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
 //        this.detailListData(currentpage)
         console.log(currentpage)
+      },
+      getGoodsWhenClick: function () {
+//       不同的url加载不同的数据
+        if(this.secondUrl!==undefined){
+          this.getProductByUrl(this.url)
+          this.getProductByUrl(this.secondUrl)
+        }else{
+          this.getProductByUrl(this.url)
+        }
+//      获取门店列表
+        if(this.isPurchase){
+          var self = this
+          getDataFromApi(requestUrl + '/backend-system/store/store',{},function (response){
+            self.storeList = response.data.body.list
+          })
+        }
       }
     },
     methods: {
@@ -114,7 +117,8 @@
       getProductById: function (url,currentId,currentObjCheck) {
         var  fetchedData = []
         var  self = this
-          getDataFromApi(url + "/" + currentId,{},function(response){
+        var  data = this.requestData
+          getDataFromApi(url + "/" + currentId,data,function(response){
             fetchedData = response.data.body.list
             var firtElem = fetchedData[0]
             var lastElem = fetchedData[fetchedData.length - 1]
@@ -139,7 +143,8 @@
 //      根据url加载的时候获取一级商品
       getProductByUrl: function (url) {
         var self = this
-        getDataFromApi(url,{},function(response){
+        var data = this.requestData
+        getDataFromApi(url,data,function(response){
           self.firstData =  self.firstData.concat(response.data.body.list)
           exchangeData( self.firstData)
         })

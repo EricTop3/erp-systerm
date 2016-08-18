@@ -275,6 +275,7 @@
 //     引入数据
       inclucdePurchaseData: function () {
         this.modal.parentIntroModal = true
+        this.$broadcast('getGoodsWhenClick')
       },
 //      入库明细与入库汇总切换
       changeActive: function (event) {

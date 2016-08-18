@@ -172,7 +172,7 @@
         }
         var url = requestSystemUrl + '/backend-system/stock/distribution/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.listData()
         })
       }
     },

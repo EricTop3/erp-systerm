@@ -147,6 +147,14 @@
 //    查看详情
       gotoDetail: function (id) {
         window.location.href = '#!/admin/production/delegationCreatDetail/' + id
+      },
+//     审核失败
+      checkFail: function (err){
+        var self = this
+        if(Number(err.data.code) === 220000){
+          self.modal.errModal = true
+          self.modal.errInfo =  err.data.message
+        }
       }
     },
     ready: function () {
@@ -221,6 +229,10 @@
         page: [],
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/produce/outsource/',
+        modal: {
+          errModal: false,
+          errInfo: ''
+        },
         time: {
           startTime: '',
           startTime1: '',

@@ -19,11 +19,10 @@
           <label>备注</label>
           <input type="text" class="form-control" placeholder="" v-model="remarks">
         </div>
-        <span class="btn btn-info" data-toggle="modal" data-target="#inventory-add-templ" @click="addGoodModal=true">添加商品</span>
+        <span class="btn btn-info" data-toggle="modal" data-target="#inventory-add-templ" @click="addStockGoods">添加商品</span>
         <span class="btn btn-info" @click="upLoadEnquiry()">提交要货</span>
       </form>
     </div>
-
     <!-- 表格 -->
     <table class="table table-striped table-border table-hover">
       <thead>
@@ -193,7 +192,12 @@
             }
           })
         }
-      }
+      },
+//      添加商品
+      addStockGoods: function ( ){
+        this.addGoodModal = true
+        this.$broadcast('getGoodsWhenClick')
+      },
     },
     data: function () {
       return {
