@@ -280,6 +280,7 @@
 //     引入数据
       inclucdePurchaseData: function () {
          this.modal.parentIntroModal = true
+         this.$broadcast('getGoodsWhenClick')
       },
 //      汇总方法
       summary: function () {

@@ -27,7 +27,7 @@
           <input type="text" class="form-control" placeholder="" v-model="remarks">
         </div>
 
-        <span class="btn btn-info" @click="addGoodModal=true">添加商品</span>
+        <span class="btn btn-info" @click=" addStockGoods">添加商品</span>
         <span class="btn btn-primary" @click="upLoadEnquiry()">提交出货</span>
       </form>
     </div>
@@ -208,7 +208,12 @@
             self.messageTipModal = true
           })
         }
-      }
+      },
+//        添加商品
+    addStockGoods: function ( ){
+      this.addGoodModal = true
+      this.$broadcast('getGoodsWhenClick')
+    },
     },
     data: function () {
       return {

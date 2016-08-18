@@ -61,10 +61,10 @@
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
-                  <td>{{entry.required_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                   <td><count :count.sync =entry.purchase_amount></count>{{entry.unit_name}}</td>
                   <td><price :price.sync =entry.purchase_price></price>元/{{entry.unit_name}}</td>
-                  <td>{{entry.refence_number}}</td>
+                  <td>{{entry.reference_number}}</td>
                   <td>
                     <slot name="operate">
                       <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -90,8 +90,8 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.stock}}{{entry.unit_name}}</td>
-                  <td>{{entry.required_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.item_stock}}{{entry.unit_name}}</td>
+                  <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                   <td>￥{{entry.item_price|priceChange}}</td>
                 </tr>
@@ -207,8 +207,8 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount = ''
-          val.purchase_price = ''
+          val.purchase_amount = val.main_reference_value
+          val.purchase_price = (val.unit_price*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -224,8 +224,8 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.purchase_amount = ''
-          val.purchase_price = ''
+          val.purchase_amount = val.main_reference_value
+          val.purchase_price = (val.unit_price*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -315,6 +315,7 @@
 //     引入数据
       inclucdePurchaseData: function () {
         this.modal.parentIntroModal = true
+        this.$broadcast('getGoodsWhenClick')
       },
 //      入库明细与入库汇总切换
       changeActive: function (event) {
@@ -340,6 +341,8 @@
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.purchase_amount
           val.item_price = Number(val.item_amount  * val.purchase_price * 100)
+          val.item_stock = val.item_stock
+          val.item_main_reference_value = val.main_reference_value
           self.summaryPrice += val.item_price
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
@@ -352,6 +355,8 @@
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
             hash[array[i][ObjPropInArr]].item_price=Number(array[i].item_price) + Number( hash[array[i][ObjPropInArr]].item_price)
+            hash[array[i][ObjPropInArr]].item_stock=Number(array[i].item_stock) + Number( hash[array[i][ObjPropInArr]].item_stock)
+            hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].item_main_reference_value)
           }else{
             hash[array[i][ObjPropInArr]]=array[i]
           }
@@ -369,6 +374,7 @@
 //        入库汇总
         summaryModal: false,
         summaryPrice: [],
+        stockGoods: [],
         startTime: '',
         showPage: [],
         selectedSupplier: '',
@@ -383,7 +389,7 @@
           order_quantity:"门店要货量",
           purchase_quantity:"生产数量",
           purchase_price:"加工单价",
-          source_number: "来源要货单号"
+          reference_number: "来源要货单号"
         },
         gridColumns1: {
           code: "货号",

@@ -188,6 +188,7 @@
 //     引入数据
       inclucdeData: function () {
         this.parentIntroModal = true
+        this.$broadcast('getGoodsWhenClick')
       },
 //     提交入货
       goodsUpload: function () {

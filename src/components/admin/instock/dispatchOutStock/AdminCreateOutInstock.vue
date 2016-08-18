@@ -69,8 +69,8 @@
                 <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.stock}}</td>
-                  <td>{{entry.stock}}</td>
+                  <td>{{entry.origin_stock}}</td>
+                  <td>{{entry.target_stock}}</td>
                   <td>{{entry.main_reference_value}}</td>
                   <td><count :count.sync =entry.distribution_amount></count></td>
                   <td>{{entry.unit_name}}</td>
@@ -124,7 +124,9 @@
     :first-data-title="origenData.firstDataTitle"
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
-    :second-data.sync="origenData.secondData">
+    :second-data.sync="origenData.secondData"
+    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse}"
+  >
   </introduce-data>
   <!--模态框-添加商品-->
   <stock-goods
@@ -136,8 +138,8 @@
     :goods-list-title="purchaseTabelHead"
     :product-url="request.productUrl"
     :category-url='request.categoryUrl'
-    :request-data="request.productData">
-
+    :request-data="request.productData"
+  >
   </stock-goods>
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
@@ -210,7 +212,7 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.distribution_amount = ''
+          val.distribution_amount = val.main_reference_value
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -295,6 +297,7 @@
 //     引入数据
       inclucdePurchaseData: function () {
         this.modal.parentIntroModal = true
+        this.$broadcast('getGoodsWhenClick')
       },
       //      入库明细与入库汇总切换
       changeActive: function (event) {
@@ -377,6 +380,7 @@
           unit_specification: "单位规格"
         },
         renderstockGoods: [],
+        stockGoods: [],
         currentUrl: '',
         purchaseTabelHead: {
           code: "货号",
