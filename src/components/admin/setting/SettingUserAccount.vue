@@ -31,7 +31,7 @@
             <label>店员名称</label>
             <input type="text" class="form-control" placeholder="请输入店员名称" v-model="clerkName">
           </div>
-          <button type="submit" class="btn btn-primary" @click="search">搜索</button>
+          <span class="btn btn-primary" @click="search">搜索</span>
           <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
           <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#person-add-templ" @click="addClerk">新增店员</span>
           <span class="btn btn-info spanblocks fr mr10"  data-toggle="modal" data-target="#account-add-templ" @click="addStore">新增门店</span>
@@ -49,6 +49,7 @@
     </div>
     </div>
   </div>
+
   <!--新增门店-->
   <modal :show.sync="modal.addStoreModal" :modal-size="modal.addStoreModalSize"  class="form-horizontal">
     <div slot="header">
@@ -56,22 +57,33 @@
       <h4 class="modal-title">新增门店</h4>
     </div>
     <div slot="body">
+      <validator name="validation1">
       <div class="form-group">
-        <label for="" class="col-sm-4 control-label">门店编号</label>
-        <div class="col-sm-8"><input type="text" class="form-control" v-model="store.storeCode" @blur="checkStoreCode"></div>
-      </div>
-      <div class="form-group">
-        <label for="" class="col-sm-4 control-label">门店名：</label>
+        <label class="col-sm-4 control-label">门店编号</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" placeholder="用户名一经设置不可修改和删除" v-model="store.storeName">
+          <input type="text" class="form-control" v-model="store.storeCode" v-validate:storecode="[ 'required' ]">
+          <div v-if="$validation1.storecode.touched">
+            <p class="error" v-if="$validation1.storecode.required">门店编号不能为空</p>
+          </div>
         </div>
       </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">门店名：</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" placeholder="门店名一经设置不可修改和删除" v-model="store.storeName" v-validate:storename="[ 'required' ]">
+          <div v-if="$validation1.storename.touched">
+            <p class="error" v-if="$validation1.storename.required">门店名不能为空</p>
+          </div>
+        </div>
+      </div>
+      </validator>
     </div>
     <div slot="footer">
+      <button type="button" class="btn btn-primary" @click="addStoreSubmit($event)">提交</button>
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="modal.addStoreModal=false">取消</button>
-      <button type="button" class="btn btn-primary" @click="addStoreConfirm">提交</button>
     </div>
   </modal>
+
   <!--新增店员-->
   <modal :show.sync="modal.addClerkModal" :modal-size="modal.addClerkModalSize"  class="form-horizontal">
     <div slot="header">
@@ -79,45 +91,60 @@
       <h4 class="modal-title">新增店员</h4>
     </div>
     <div slot="body">
+      <validator name="validation2">
       <div class="form-group">
-        <label for="" class="col-sm-4 control-label">门店名称</label>
+        <label  class="col-sm-4 control-label">门店名称</label>
         <div class="col-sm-8">
-          <select v-model="storeName">
+          <select class="form-control" v-model="storeName" v-validate:storename="[ 'required' ]">
             <option value="">请选择</option>
             <option v-for="item in storeList" track-by="$index" :value="item.id">{{item.display_name}}</option>
           </select>
+          <div v-if="$validation2.storename.touched">
+            <p class="error" v-if="$validation2.storename.required">请选择门店</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
-        <label for="" class="col-sm-4 control-label">店员名称</label>
+        <label class="col-sm-4 control-label">店员名称</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" placeholder="" v-model="clerk.name">
+          <input type="text" class="form-control" placeholder="" v-model="clerk.name" v-validate:name="[ 'required' ]">
+          <div v-if="$validation2.name.touched">
+            <p class="error" v-if="$validation2.name.required">店员名称不能为空</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
-        <label for="" class="col-sm-4 control-label">登录名</label>
+        <label class="col-sm-4 control-label">登录名</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" placeholder="" v-model="clerk.account">
+          <input type="text" class="form-control" placeholder="" v-model="clerk.account" v-validate:account="[ 'required' ]">
+          <div v-if="$validation2.account.touched">
+            <p class="error" v-if="$validation2.account.required">登录名不能为空</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
-        <label for="" class="col-sm-4 control-label">密码</label>
+        <label class="col-sm-4 control-label">密码</label>
         <div class="col-sm-8">
-          <input type="password" class="form-control" placeholder="" v-model="clerk.password">
+          <input type="password" class="form-control" placeholder="" v-model="clerk.password" v-validate:password="[ 'required' ]">
+          <div v-if="$validation2.password.touched">
+            <p class="error" v-if="$validation2.password.required">密码不能为空</p>
+          </div>
         </div>
       </div>
       <div class="form-group">
-        <label for="" class="col-sm-4 control-label">状态</label>
+        <label class="col-sm-4 control-label">状态</label>
         <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
-          <label style="margin-right: 20px;"><input type="radio" placeholder="" name="status" value="0" checked v-model="clerk.status">关闭</label>
-          <label><input type="radio" placeholder="" name="status" value="1"  v-model="clerk.status">开启</label>
+          <label style="margin-right: 20px;"><input type="radio" name="status" value="0" v-model="clerk.status">关闭</label>
+          <label><input type="radio" name="status" value="1" checked v-model="clerk.status">开启</label>
         </div>
       </div>
+      </validator>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="addClerkConfirm">确定</button>
+      <button type="button" class="btn btn-primary" @click="addClerkSubmit($event)">确定</button>
     </div>
   </modal>
+
   <!--编辑-->
   <modal :show.sync="modal.editModal" :modal-size="modal.editModalSize"  class="form-horizontal">
     <div slot="header">
@@ -125,40 +152,45 @@
       <h4 class="modal-title">编辑店员</h4>
     </div>
     <div slot="body">
+      <validator name="validation3">
       <div class="form-group">
-        <label for="" class="col-sm-4 control-label">门店名称</label>
+        <label class="col-sm-4 control-label">门店名称</label>
         <div class="col-sm-8">
-          <label for="" class="title">{{editClerkInfo.storeName}}</label>
+          <label class="title">{{editClerkInfo.storeName}}</label>
         </div>
       </div>
-    <div class="form-group">
-      <label for="" class="col-sm-4 control-label">店员名称</label>
+      <div class="form-group">
+      <label class="col-sm-4 control-label">店员名称</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" placeholder=""  value="王小二" v-model="editClerkInfo.name">
+        <input type="text" class="form-control"  v-model="editClerkInfo.name" v-validate:name="[ 'required' ]">
+        <div v-if="$validation3.name.touched">
+          <p class="error" v-if="$validation3.name.required">店员名称不能为空</p>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label for="" class="col-sm-4 control-label">登录名</label>
+      <div class="form-group">
+      <label class="col-sm-4 control-label">登录名</label>
       <div class="col-sm-8">
-        <label for="" class="title">{{editClerkInfo.account}}</label>
+        <label class="title">{{editClerkInfo.account}}</label>
       </div>
     </div>
-    <div class="form-group">
-      <label for="" class="col-sm-4 control-label">密码</label>
+      <div class="form-group">
+      <label class="col-sm-4 control-label">密码</label>
       <div class="col-sm-8">
         <input type="password" class="form-control" placeholder="请填写密码"  v-model="editClerkInfo.password">
       </div>
     </div>
-    <div class="form-group">
-      <label for="" class="col-sm-4 control-label">状态</label>
+      <div class="form-group">
+      <label class="col-sm-4 control-label">状态</label>
       <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
-        <label style="margin-right: 20px;"><input type="radio" placeholder="" name="editstatus" value="0" checked v-model="editClerkInfo.status">关闭</label>
-        <label><input type="radio" placeholder="" name="editstatus" value="1"  v-model="editClerkInfo.status">开启</label>
+        <label style="margin-right: 20px;"><input type="radio" placeholder="" name="editstatus" value="0" v-model="editClerkInfo.status">关闭</label>
+        <label><input type="radio" placeholder="" name="editstatus" checked value="1"  v-model="editClerkInfo.status">开启</label>
       </div>
     </div>
+      </validator>
       </div>
     <div slot="footer">
-      <button type="button" class="btn" @click="editClerkConfirm" :class=" btn-waring ? canEdit : btn-primary">确定</button>
+      <button type="button" class="btn" @click="editClerkSubmit($event)" :class=" btn-waring ? canEdit : btn-primary">确定</button>
     </div>
     <!--错误信息-->
     <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
@@ -216,15 +248,33 @@
           exchangeData(self.accountList)
         })
       },
-//   新增门店
+//   新增门店-模态框弹出，清空数据
       addStore: function () {
         this.modal.addStoreModal = true
         this.store = {
           storeCode: '',
           storeName: ''
         }
+        var self = this
+        this.$validate(function () {
+          self.$validation1.storecode = false
+          self.$validation1.storename = false
+        })
       },
-//     新增门店
+//   新增门店验证
+      addStoreSubmit: function(e){
+        var self = this
+        this.$validate(function () {
+          if (self.$validation1.invalid) {
+            self.$validation1.storecode.touched = true
+            self.$validation1.storename.touched = true
+            e.preventDefault()
+          } else {
+            self.addStoreConfirm()
+          }
+        })
+      },
+//     新增门店确认
       addStoreConfirm: function () {
         var self = this
         var addStoreUrl=requestSystemUrl + '/backend-system/store/store'
@@ -237,18 +287,40 @@
           self.modal.addStoreModal  = false
         })
       },
-//     检查门店编号
-      checkStoreCode: function () {
-      },
 //      新增店员
       addClerk: function () {
         this.modal.addClerkModal = true
         this.clerk = {
+            storeName: '',
             account: '',
             name: '',
             password: '',
-            status: 0,
+            status: 1
         }
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            self.$validation2.storename.touched = false
+            self.$validation2.name.touched = false
+            self.$validation2.account.touched = false
+            self.$validation2.password.touched = false
+          }
+        })
+      },
+//      新增店员验证
+      addClerkSubmit: function(e){
+        var self = this
+        this.$validate(function () {
+          if (self.$validation2.invalid) {
+            self.$validation2.storename.touched = true
+            self.$validation2.name.touched = true
+            self.$validation2.account.touched = true
+            self.$validation2.password.touched = true
+            e.preventDefault()
+          } else {
+            self.addClerkConfirm()
+          }
+        })
       },
 //      确定新增店员
       addClerkConfirm: function () {
@@ -273,7 +345,7 @@
             account: '',
             name: '',
             password: '',
-            status: 0,
+            status: 1,
         }
         var self = this
         accountId = Number($(event.currentTarget).parents('tr').attr('id'))
@@ -292,6 +364,18 @@
           }
         })
         this.modal.editModal = true
+      },
+//      编辑店员验证
+      editClerkSubmit: function(e){
+        var self = this
+        this.$validate(function () {
+          if (self.$validation3.invalid) {
+            self.$validation3.name.touched = true
+            e.preventDefault()
+          } else {
+            self.editClerkConfirm()
+          }
+        })
       },
 //      确认编辑
       editClerkConfirm: function () {
@@ -386,6 +470,7 @@
     line-height: 34px;
     border:1px solid red;
   }
+
   .title{
     height: 34px;
     line-height: 34px;
