@@ -76,8 +76,8 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.current_stock}}{{entry.purchase_unit_name}}</td>
-                  <td>{{entry.demand_amount}}{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.item_current_stock}}{{entry.purchase_unit_name}}</td>
+                  <td>{{entry.item_demand_amount}}{{entry.purchase_unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.purchase_unit_name}}</td>
                   <td>￥{{entry.item_price|priceChange}}</td>
                 </tr>
@@ -165,7 +165,7 @@
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}
-          obj['reference_id'] = val.item_id
+          obj['reference_id'] = val.reference_id
           obj['id'] = val.id
           obj['amount'] = val.main_reference_value
           obj['price'] = val.purchase_unit_price
@@ -213,7 +213,6 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.summaryDetail()
             break
           case 2:
             this.detailModal = false
@@ -229,6 +228,8 @@
         this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.main_reference_value
+          val.item_current_stock = val.current_stock
+          val.item_demand_amount = val.demand_amount
           val.item_price = Number(val.item_amount  *  val.purchase_unit_price * 100)
           self.summaryPrice += val.item_price
         })
@@ -241,7 +242,9 @@
             for(var i=0;i<array.length;i++){
               if(hash[array[i][ObjPropInArr]]){
                 hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
-                hash[array[i][ObjPropInArr]].item_price+=array[i].item_price;
+                hash[array[i][ObjPropInArr]].item_price+=array[i].item_price
+                hash[array[i][ObjPropInArr]].item_current_stock+=array[i].item_current_stock
+                hash[array[i][ObjPropInArr]].item_demand_amount+=array[i].item_demand_amount
               }else{
                 hash[array[i][ObjPropInArr]]=array[i];
               }
@@ -272,7 +275,6 @@
           auditor_name: '审核人',
           provider_name: '供应商',
           created_at: '制单日期',
-          terminated_at: '到货日期',
           total_sum: '采购金额'
         },
         gridColumns1: {

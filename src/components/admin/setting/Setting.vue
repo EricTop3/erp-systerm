@@ -278,8 +278,8 @@
         priceList: [],
         priceHeader:{
           created_at: '修改日期',
-          previous_apuc: '历史零售单价',
-          previous_aruc: '历史采购单价',
+          previous_aruc: '历史零售单价',
+          previous_apuc: '历史采购单价',
           operator_name: '编辑人'
         },
         modal: {

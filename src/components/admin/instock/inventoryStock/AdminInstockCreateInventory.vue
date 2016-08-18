@@ -90,6 +90,7 @@
     :goods-list-title="purchaseTabelHead"
     :product-url="request.productUrl"
     :category-url='request.categoryUrl'
+    :request-data='{id: selectedHouse}'
   ></stock-goods>
 
   <!--错误信息-->
@@ -190,6 +191,7 @@
 //      添加商品
       addStockGoods: function () {
         this.modal.addGoodModal=true
+        this.$broadcast('getGoodsWhenClick')
         if (!this.flag) {
           $(".table-bordered").find(":checkbox").prop("checked", false)
         }
@@ -263,6 +265,7 @@
       }
     },
     data: function () {
+      var self = this
       return {
 //        盘点所有商品按钮点击后改变flag状态为false
         flag: true,
@@ -290,14 +293,14 @@
           code: "货号",
           name: "品名",
           a: "日均销量",
-          c: "当前库存",
+          current_stock: "当前库存",
           production_unit_name: "单位",
           specification_unit: "单位规格",
           category: "商品分类"
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
-          categoryUrl: requestSystemUrl + '/backend-system/product/category',
+          categoryUrl: requestSystemUrl + '/backend-system/product/category'
         }
       }
     }

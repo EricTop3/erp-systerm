@@ -60,15 +60,6 @@
       Page: Page,
       Modal: Modal
     },
-    compiled: function () {
-//      分类
-      var self = this
-      getDataFromApi(self.categoryUrl,{},function(response){
-        self.category = response.data.body.list
-      })
-//       获取产品
-      this.requestApi(this.requestData)
-    },
     events:{
       pagechange: function(currentpage){
         var self = this
@@ -83,7 +74,16 @@
             })
           })
         })
-      }
+      },
+     getGoodsWhenClick: function () {
+       //      分类
+       var self = this
+       getDataFromApi(self.categoryUrl,{},function(response){
+         self.category = response.data.body.list
+       })
+//       获取产品
+       this.requestApi(this.requestData)
+     }
     },
     props: {
       page: [],

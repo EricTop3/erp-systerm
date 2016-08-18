@@ -58,7 +58,7 @@
                    <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                    <td><count :count.sync =entry.purchase_amount></count>{{entry.unit_name}}</td>
                    <td><price :price.sync =entry.purchase_price></price>元/{{entry.unit_name}}</td>
-                   <td>{{entry.refence_number}}</td>
+                   <td>{{entry.reference_number}}</td>
                   <td>
                     <slot name="operate">
                       <list-delete :delete-data.sync="tableData" ></list-delete>
@@ -87,8 +87,8 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.stock}}{{entry.unit_name}}</td>
-                  <td>{{entry.required_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.item_stock}}{{entry.unit_name}}</td>
+                  <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                   <td>￥{{entry.item_price | priceChange}}</td>
                 </tr>
@@ -275,6 +275,7 @@
 //      添加商品
       addStockGoods: function ( ){
         this.modal.addGoodModal = true
+        this.$broadcast('getGoodsWhenClick')
       },
 //     引入数据
       inclucdePurchaseData: function () {
@@ -288,6 +289,8 @@
         this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.purchase_amount
+          val.item_stock = val.stock
+          val.item_main_reference_value = val.main_reference_value
           val.item_price = Number(val.item_amount  * val.purchase_price * 100)
           self.summaryPrice += val.item_price
         })
@@ -300,7 +303,9 @@
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].purchase_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
-            hash[array[i][ObjPropInArr]].item_price+=array[i].item_price;
+            hash[array[i][ObjPropInArr]].item_price+=array[i].item_price
+            hash[array[i][ObjPropInArr]].item_stock+=array[i].item_stock
+            hash[array[i][ObjPropInArr]].item_main_reference_value+=array[i].item_main_reference_value
           }else{
             hash[array[i][ObjPropInArr]]=array[i];
           }

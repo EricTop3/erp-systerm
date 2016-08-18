@@ -173,7 +173,7 @@
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}
-          obj['reference_id'] = val.item_id
+          obj['reference_id'] = val.reference_id
           obj['id'] = val.id
           obj['additional_amount'] = val.additional_amount
           obj['refund_amount'] = val.refund_amount
@@ -214,22 +214,22 @@
           changeStatus(self.list)
         })
       },
-//      切换
+//    切换
       changeActive: function (event) {
-    var cur = $(event.currentTarget)
-    cur.addClass('active').siblings('li').removeClass('active')
-    switch (Number(cur.attr('id'))){
-      case 1:
-        this.detailModal = true
-        this.summaryModal = false
-        break
-      case 2:
-        this.detailModal = false
-        this.summaryModal = true
-        this.summary()
-    }
-  },
-//          汇总方法
+        var cur = $(event.currentTarget)
+        cur.addClass('active').siblings('li').removeClass('active')
+        switch (Number(cur.attr('id'))){
+          case 1:
+            this.detailModal = true
+            this.summaryModal = false
+            break
+          case 2:
+            this.detailModal = false
+            this.summaryModal = true
+            this.summary()
+        }
+     },
+//    汇总方法
       summary: function () {
         var self = this
         self.summaryPrice = 0
