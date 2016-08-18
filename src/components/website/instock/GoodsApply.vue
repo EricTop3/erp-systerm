@@ -42,7 +42,7 @@
       <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
         <td>{{item.code}}</td>
         <td>{{item.name}}</td>
-        <td>{{item.sale_amount}}</td>
+        <td>{{item.dms}}</td>
         <td>{{item.current_stock}}</td>
         <td align="center">
           <count :count.sync="item.sale_refund"></count>
