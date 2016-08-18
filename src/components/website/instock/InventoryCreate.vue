@@ -37,11 +37,14 @@
       <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
         <td class="text-left">{{item.code}}</td>
         <td>{{item.name}}</td>
-        <td><span style="color:red;">无字段</span></td>
+        <td><span style="color:red;">{{item.system_stock}}</span></td>
         <td align="center">
           <count :count.sync=item.current_stock></count>
         </td>
-        <td><span style="color:red;">无字段</span></td>
+        <td>
+          <template v-if="item.current_stock == ''">{{item.system_stock}}</template>
+          <template v-else>{{item.system_stock - item.current_stock}}</template>
+        </td>
         <td>{{item.production_unit_name}}</td>
         <td>{{item.specification_unit}}</td>
         <td>
@@ -163,6 +166,7 @@
 //      选择添加商品
       chooseAddGoods: function () {
         this.modal.addGoodModal = true
+        this.$broadcast('getGoodsWhenClick')
         if (!this.flag) {
           $(".table-bordered").find(":checkbox").prop("checked", false)
         }
@@ -259,11 +263,13 @@
           'code': '货号',
           'name': '品名',
           'sale_amount': '日均销量',
-          'current_stock': '当前库存',
+          'system_stock': '系统库存',
           'production_unit_name': '单位',
           'specification_unit': '单位规格',
           'category': '商品分类'
         },
+
+
         request: {
           productUrl: requestSystemUrl + '/front-system/product',
           categoryUrl: requestSystemUrl + '/front-system/order/category',
