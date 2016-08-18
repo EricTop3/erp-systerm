@@ -49,14 +49,16 @@
           <tr class="text-center" v-for="entry in rederStockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td class="text-left">{{entry.code}}</td>
             <td>{{entry.name}}</td>
+            <!--system_stock是实际库存，stock是系统库存-->
             <td>
-              <span style="color:red;">后台还没</span>
+              <span style="color:red;">{{entry.stock}}</span>
             </td>
             <td align="center">
-              <count :count.sync =entry.current_stock></count>
+              <count :count.sync =entry.system_stock></count>
             </td>
             <td>
-              <span style="color:red;">反数据给我</span>
+              <template v-if="entry.system_stock == ''">{{entry.stock}}</template>
+              <template v-else>{{entry.stock - entry.system_stock}}</template>
             </td>
             <td>{{entry.production_unit_name}}</td>
             <td>{{entry.specification_unit}}</td>
@@ -147,7 +149,7 @@
           self.dataArray = []
         }
         $.each(self.stockGoods, function (index, val) {
-          val.current_stock = ''
+          val.system_stock = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -178,11 +180,11 @@
       },
 //      分页
       pagechange: function (currentpage) {
-          this.pageLocal.current_page = currentpage
-          this.localPage(this.dataArray)
+        this.pageLocal.current_page = currentpage
+        this.localPage(this.dataArray)
         $.each(this.dataArray, function (index, val) {
-          if (val.current_stock == '') {
-            val.current_stock = null
+          if (val.system_stock == '') {
+            val.system_stock = null
           }
         })
       }
@@ -190,29 +192,45 @@
     methods: {
 //      添加商品
       addStockGoods: function () {
-        this.modal.addGoodModal=true
-        this.$broadcast('getGoodsWhenClick')
-        if (!this.flag) {
-          $(".table-bordered").find(":checkbox").prop("checked", false)
+        if(this.selectedHouse){
+          this.modal.addGoodModal=true
+          this.$broadcast('getGoodsWhenClick')
+          if (!this.flag) {
+            $(".table-bordered").find(":checkbox").prop("checked", false)
+          }
+        }else{
+          this.modal.errModal = true
+          this.modal.errInfo = '请先选择盘点仓库！'
         }
       },
 //      盘点所有商品
       inventoryAll: function (page) {
-        var self = this
-        self.flag = false
-        var data = {
-          per_page: 999
+        if(this.selectedHouse){
+          var self = this
+          var id = self.selectedHouse
+          self.flag = false
+          var data = {
+            id: id,
+            per_page: 999
+          }
+          self.pageLocal.current_page = 1
+          getDataFromApi(self.request.productUrl, data, function (respon) {
+            self.dataArray = respon.data.body.list
+            $.each(self.dataArray,function(index,val){
+              if(val.system_stock == '0'){
+                val.system_stock = null
+              }
+            })
+            self.rederStockGoods = self.dataArray
+            self.localPage(self.dataArray)
+          })
+          $.each(self.stockGoods,function(index,val){
+            val.again = false
+          })
+        }else{
+          this.modal.errModal = true
+          this.modal.errInfo = '请先选择盘点仓库！'
         }
-
-        self.pageLocal.current_page = 1
-        getDataFromApi(self.request.productUrl, data, function (respon) {
-          self.dataArray = respon.data.body.list
-          self.rederStockGoods = self.dataArray
-          self.localPage(self.dataArray)
-        })
-        $.each(self.stockGoods,function(index,val){
-          val.again = false
-        })
       },
 //      提交盘点
       upLoadEnquiry: function () {
@@ -221,13 +239,12 @@
         $.each(this.dataArray, function (index, val) {
           var obj = {}
           obj['reference_id'] = val.id
-          obj['current_stock'] = Number(val.current_stock)
-          if (val.current_stock == '') {
+          obj['current_stock'] = Number(val.system_stock)
+          if (val.system_stock == '') {
             hasStock = true
           }
           inventory.push(obj)
         })
-
         if (this.selectedHouse === '') {
           this.modal.errModal = true
           this.modal.errInfo = 'high,你还没有填写仓库'
@@ -265,7 +282,6 @@
       }
     },
     data: function () {
-      var self = this
       return {
 //        盘点所有商品按钮点击后改变flag状态为false
         flag: true,
@@ -300,7 +316,7 @@
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
-          categoryUrl: requestSystemUrl + '/backend-system/product/category'
+          categoryUrl: requestSystemUrl + '/backend-system/product/category',
         }
       }
     }
