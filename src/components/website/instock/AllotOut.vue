@@ -55,8 +55,8 @@
         <td align="center">
           <count :count.sync='item.sale_refund'></count>
         </td>
-        <td>{{item.unit}}</td>
-        <td>{{item.unit_specification}}</td>
+        <td>{{item.production_unit_name}}</td>
+        <td>{{item.specification_unit}}</td>
         <td>
           <list-delete :delete-data.sync="renderStockGoods"></list-delete>
         </td>
@@ -222,7 +222,7 @@
         totalPage: 1,
         date: '',
         remarks: '',
-        receipts_store: '金星门店',
+        receipts_store: '',
         instockPage: [],
         deleteModal: false,
         deleteModalSize: 'modal-sm',

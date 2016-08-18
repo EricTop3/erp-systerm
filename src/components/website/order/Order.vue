@@ -134,7 +134,10 @@
       <div class='index-nav-left' @click='slidePre()'><span class='glyphicon glyphicon-menu-left'></span></div>
       <div class='index-nav'>
         <ul class='index-list-category'>
-          <li class='btn' :class="{'btn-primary':$index===0,'btn-warning':$index!==0}" track-by="$index" :id='item.id'
+          <li class="btn btn-primary"  @click="fetchProduct($event)">
+            全部分类
+          </li>
+          <li class='btn btn-warning' track-by="$index" :id='item.id'
               v-for='item in category' @click='fetchProduct($event)'>
             {{item.display_name }}
           </li>
@@ -149,7 +152,7 @@
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
             :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<=0}"
             :stock='item.sell_unit_stock'
-            :sell_mark='item.sell_mark'>
+            :sell_mark='item.sell_mark' >
           <h4>{{item.name}}</h4>
           <span>{{item.code}}</span>
 
@@ -603,15 +606,24 @@
       fetchProduct: function (event) {
         var self = this
         const categoryId = Number($(event.currentTarget).attr('id'))
+        const currenHtml = $(event.currentTarget).html()
         var data = {
           category_id: categoryId,
           per_page: 16
         }
         $(event.currentTarget).addClass('btn-primary').removeClass('btn-warning').siblings().removeClass('btn-primary').addClass('btn-warning')
-        getDataFromSiteApi(requestUrl + '/front-system/order/product',data,function(response){
-          self.productFromCategory = response.data.body.list
-          self.page = response.data.body.pagination
-        })
+        if(currenHtml.indexOf( '全部分类') > -1){
+          console.log('wanggfas')
+          getDataFromSiteApi(requestUrl + '/front-system/order/product',{},function(response){
+            self.productFromCategory = response.data.body.list
+            self.page = response.data.body.pagination
+          })
+        }else{
+          getDataFromSiteApi(requestUrl + '/front-system/order/product',data,function(response){
+            self.productFromCategory = response.data.body.list
+            self.page = response.data.body.pagination
+          })
+        }
       },
 //      点击删除当前列表商品
       deleteListgood: function (event) {

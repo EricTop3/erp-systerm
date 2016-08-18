@@ -150,10 +150,10 @@
               <td class="text-left">{{item.order_number}}</td>
               <td>{{item.created_at}}</td>
               <td>{{item.total_sum}}</td>
-              <td>{{item.total_amount}}</td>
+              <td>{{item.total_sell}}</td>
               <td>{{item.member_card_number}}</td>
-              <td>{{item.coupon_note}}</td>
-              <td>{{item.pay_method}}</td>
+              <td>{{item.coupon_name}}</td>
+              <td>{{item.payment}}</td>
               <td>{{item.status}}</td>
               <td>{{item.operator}}</td>
               <td>
@@ -854,7 +854,7 @@
           order_number: '小票编号',
           created_at: '下单时间',
           total_sum: '合计金额',
-          total_amount: '合计数量',
+          total_sell: '合计数量',
           member_card_number: '会员卡号',
           coupon_name: '优惠方式',
           payment: '支付方式',

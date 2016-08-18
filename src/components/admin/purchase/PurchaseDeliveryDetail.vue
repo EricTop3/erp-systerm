@@ -43,7 +43,7 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.demand_amount}}</td>
+                <td>{{entry.main_reference_value}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.received_amount></count></td>
                 <td v-if="!editFlag">{{entry.received_amount}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.additional_amount></count></td>
@@ -186,7 +186,7 @@
         }
         var url = requestSystemUrl + '/backend-system/purchase/receive/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.listData()
         })
       }
     },
@@ -236,7 +236,7 @@
         this.summarystockGoods = []
         this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
         $.each(this.summarystockGoods,function (index,val){
-          val.item_demand_amount= val.demand_amount
+          val.item_demand_amount= val.main_reference_value
           val.item_amount = val.received_amount
           val.item_refund = val.refund_amount
           val.item_price = Number(val.item_demand_amount  * val.unit_price * 100)
