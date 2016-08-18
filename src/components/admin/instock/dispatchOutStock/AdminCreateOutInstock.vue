@@ -290,6 +290,7 @@
 //      添加商品
       addStockGoods: function ( ){
         this.modal.addGoodModal=true
+        this.$broadcast('getGoodsWhenClick')
       },
 //     引入数据
       inclucdePurchaseData: function () {
