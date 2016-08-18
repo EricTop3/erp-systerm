@@ -86,7 +86,7 @@
           method: 'get',
           data: {
             page: page,
-            per_page: 10
+            per_page: 16
           },
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
@@ -119,7 +119,7 @@
           amount: '零售出库量',
           unit_name: '零售单位',
           creator_name: '操作人',
-          document_number: '盘点单号'
+          document_number: '零售单号'
         },
         query: {
           start_time: '',

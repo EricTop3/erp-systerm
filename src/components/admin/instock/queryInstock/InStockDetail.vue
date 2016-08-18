@@ -22,18 +22,21 @@
                 <option value="ProduceDocument">生产出库</option>
                 <option value="DistributionDocument">配送出库</option>
                 <option value="ReceivingDocument">采购收货</option>
-                <option value="StoreReceivingDocument">采购门店收货</option>
+                <option value="StoreReceivingDocument">门店收货</option>
                 <option value="ProductionPutInDocument">生产入库</option>
                 <option value="AppointmentDistribute">预约单出货</option>
                 <option value="">预约单收货</option>
                 <option value="">调拨出库</option>
+                <option value="">调拨入库</option>
                 <option value="">差异处理</option>
-                <option value="PickDocument">领料</option>
+                <option value="PickDocument-1">领料入库</option>
+                <option value="PickDocument-2">领料出库</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>盘点时间段</label>
-              <date-picker :value.sync="search.start_time"></date-picker>-
+              <date-picker :value.sync="search.start_time"></date-picker>
+              -
               <date-picker :value.sync="search.ned_time"></date-picker>
             </div>
             <button type="submit" class="btn btn-primary" @click="searchMethod">查询</button>
@@ -134,20 +137,27 @@
       var self = this
 //       获取单条详情
       var currentId = this.$route.params.queryId
-      var urlOne  = requestSystemUrl + '/backend-system/stock/log/' + currentId + '/detail'
-      getDataFromApi(urlOne,{},function(response){
+      var urlOne = requestSystemUrl + '/backend-system/stock/log/' + currentId + '/detail'
+      getDataFromApi(urlOne, {}, function (response) {
         self.productList1 = response.data.body
+        self.modifyGetedData(self.productList1)
       })
 //      获取列表数据
       this.getOneData({})
     },
     methods: {
+//    对获取到de列表数据进行处理
+      modifyGetedData: function (value) {
+        if(value.out_stock < 0 ){
+          value.out_stock = value.out_stock * (-1)
+        }
+      },
       getOneData: function (data) {
         var currentId = this.$route.params.queryId
         var self = this
 //        获取列表详情
         var url = requestSystemUrl + '/backend-system/stock/log/' + currentId
-        getDataFromApi(url,data,function(response){
+        getDataFromApi(url, data, function (response) {
           self.productList2 = response.data.body.list
           self.page = response.data.body.pagination
           $.each(self.productList2, function (index, val) {
@@ -156,11 +166,17 @@
             if (val.amount > 0) {
               val.in_stock = val.amount
               val.out_stock = 0
+              if(val.operated_type == 'PickDocument'){
+                val.operated_type = '领料入库'
+              }
             } else {
               val.in_stock = 0
-              val.out_stock = val.amount*(-1)
+              val.out_stock = val.amount * (-1)
+              if(val.operated_type == 'PickDocument'){
+                val.operated_type = '领料出库'
+              }
             }
-            switch(val.operated_type){
+            switch (val.operated_type) {
               case 'ProduceDocument':
                 val.operated_type = '生产出库'
                 break;
@@ -171,16 +187,16 @@
                 val.operated_type = '采购收货'
                 break;
               case 'StoreReceivingDocument':
-                val.operated_type = '采购门店收货'
+                val.operated_type = '门店收货'
                 break;
               case 'ProductionPutInDocument':
                 val.operated_type = '生产入库'
                 break;
-              case 'PickDocument':
-                val.operated_type = '领料'
-                break;
               case 'AppointmentDistribute':
                 val.operated_type = '预约单出货'
+                break;
+              case 'Sale':
+                val.operated_type = '零售出库'
                 break;
             }
           })
@@ -216,7 +232,7 @@
         search: {
           start_time: '',
           ned_time: '',
-          type:''
+          type: ''
         }
       }
     }

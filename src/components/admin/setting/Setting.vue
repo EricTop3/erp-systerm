@@ -238,6 +238,18 @@
         self.modal.priceModal = true
         getDataFromApi(requestSystemUrl + '/backend-system/product/' + currtId + '/price-wave',{},function (response) {
           self.priceList = response.data.body.list
+          self.modifyGetedData(self.priceList)
+        })
+      },
+//    对获取到de列表数据进行处理
+      modifyGetedData: function (data) {
+        $.each(data, function (index, value) {
+          if (value.previous_aruc != '') {
+            value.previous_aruc = '￥' + (value.previous_aruc * 0.01).toFixed(2)
+          }
+          if (value.previous_apuc != '') {
+            value.previous_apuc = '￥' + (value.previous_apuc * 0.01).toFixed(2)
+          }
         })
       }
     },
