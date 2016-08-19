@@ -37,7 +37,7 @@
         <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count>{{entry.purchase_unit_name}}</td>
         <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
         <td>{{entry.main_reference_value - entry.system_stock}}</td>
-        <td>{{entry.unit}}</td>
+        <td>{{entry.unit_name}}</td>
         <td>{{entry.unit_specification}}</td>
       </tr>
       </tbody>
@@ -90,6 +90,7 @@
           self.editFlag = false
           self.isExist =  false
           self.detailListData(1)
+          self.thisOneData()
         },function (err){
           self.editFlag = true
           self.isExist = true
