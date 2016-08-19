@@ -211,6 +211,11 @@
         getDataFromApi(url,data,function(response){
           self.firstData = response.data.body.list
           exchangeData( self.firstData)
+          self.startTime = ''
+          self.endTime = ''
+          if(self.isPurchase){
+            self.selectedStore = ''
+          }
         })
       },
 //    全选上面表格加载下面数据
