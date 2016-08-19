@@ -17,7 +17,9 @@
           :table-data="list"
           :grid-operate="gridOperate"
           :edit-flag.sync="editFlag"
-          :check-url = 'checkUrl'>
+          :check-url = 'checkUrl'
+          :is-exist = 'isExist'
+          >
         </summary-detail>
 
         <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
@@ -41,7 +43,8 @@
             <td>{{entry.system_stock}}</td>
             <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
             <td v-if='editFlag'><count :count.sync =entry.main_reference_value :flag.sync="editFlag"></count></td>
-            <td>{{entry.difference}}</td>
+            <td v-if='!editFlag'>{{entry.difference}}</td>
+            <td v-if='editFlag'>{{entry.difference = entry.main_reference_value - entry.system_stock }}</td>
             <td>{{entry.unit_name}}</td>
             <td>{{entry.unit_specification}}</td>
           </tr>
@@ -51,6 +54,8 @@
       </div>
     </div>
   </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -127,17 +132,16 @@
 //      编辑
       editGoods: function (event) {
         this.editFlag = true
+        this.isExist =  true
       },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = self.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}
-
-          obj['reference_id'] = val.item_id
+          obj['reference_id'] = val.id
           obj['id'] = val.id
           obj['current_stock'] = val.main_reference_value
           obj['reference_type'] = val.item_type
@@ -148,7 +152,13 @@
         }
         var url = requestSystemUrl + '/backend-system/stock/inventory/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.editFlag = false
+          self.isExist =  false
+        },function (err){
+          self.editFlag = true
+          self.isExist = true
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
         })
       }
     },
@@ -184,6 +194,7 @@
         page: [],
         list: {},
         detailList: [],
+        isExist: false,
         checkUrl: requestSystemUrl  + '/backend-system/stock/inventory/',
         editFlag: false,
         gridColumns: {
@@ -194,6 +205,10 @@
           auditor_name: '审核人',
           created_at: '盘点日期',
           difference: '差异库存量'
+        },
+        modal: {
+          errModal: false,
+          errInfo: ''
         }
       }
     }

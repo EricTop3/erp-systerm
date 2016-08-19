@@ -17,8 +17,8 @@
       <td  v-if="operate">
         <slot name="operate">
           <list-validate :list.sync="tableData" :flag.sync="validateFlag" :check-url="checkUrl" v-if="tableData.checked==='未审核'"></list-validate>
-          <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="tableData.checked==='未审核' && isExist">编辑</span>
-          <span class="btn btn-success btn-sm" @click="save($event)" v-if="tableData.checked==='未审核' && !isExist">保存</span>
+          <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="tableData.checked==='未审核' && !isExist">编辑</span>
+          <span class="btn btn-success btn-sm" @click="save($event)" v-if="tableData.checked==='未审核' && isExist">保存</span>
         </slot>
       </td>
     </tr>
@@ -32,6 +32,7 @@
   import Page from  '../common/Page'
   import ListValidate from '../common/ListValidate'
   import Count from  '../common/Count'
+  import ErrorTip from '../common/ErrorTip'
   export default{
     name:'summary-detail',
     props: {
@@ -39,6 +40,7 @@
       tableHeader: [],
       tableData: [],
       editFlag: false,
+      isExist: false,
       checkUrl: '',
     },
     components: {
@@ -46,6 +48,7 @@
       Grid:  Grid,
       Count:  Count,
       ListValidate: ListValidate,
+      ErrorTip: ErrorTip
     },
     events: {
       finishEdit: function () {
@@ -60,13 +63,11 @@
       },
 //      保存
       save: function (event) {
-        this.isExist = true
         this.$dispatch('saveGoods',event)
       }
     },
     data: function () {
       return {
-        isExist: true,
         operate: true
       }
     }

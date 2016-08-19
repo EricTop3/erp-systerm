@@ -255,10 +255,12 @@
           self.getlistData(1)
         })
       },
+
+
 //    对获取到的单条数据进行处理
       modifyGetedOneData: function (value) {
         if(value.balance != ''){
-          value.balance = '￥' + (value.balance * 1).toFixed(2)
+          value.balance = '￥' + (value.balance * 0.01).toFixed(2)
         }
         if(value.status == '1'){
           value.status = '启用'
@@ -272,10 +274,10 @@
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
           if(value.balance != ''){
-            value.balance = '￥' + (value.balance * 1).toFixed(2)
+            value.balance = '￥' + (value.balance * 0.01).toFixed(2)
           }
           if(value.balance_change != ''){
-            value.balance_change = '￥' + (value.balance_change * 1).toFixed(2)
+            value.balance_change = '￥' + (value.balance_change * 0.01).toFixed(2)
           }
         })
       },
