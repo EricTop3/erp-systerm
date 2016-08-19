@@ -96,6 +96,8 @@
         console.log(currentpage)
       },
       getGoodsWhenClick: function () {
+        this.firstData = []
+        this.secondData = []
 //       不同的url加载不同的数据
         if(this.secondUrl!==undefined){
           this.getProductByUrl(this.url)
@@ -144,10 +146,17 @@
       getProductByUrl: function (url) {
         var self = this
         var data = this.requestData
-        getDataFromApi(url,data,function(response){
-          self.firstData =  self.firstData.concat(response.data.body.list)
-          exchangeData( self.firstData)
-        })
+        if(this.secondUrl!==undefined){
+          getDataFromApi(url,data,function(response){
+            self.firstData =  self.firstData.concat(response.data.body.list)
+            exchangeData( self.firstData)
+          })
+        }else{
+          getDataFromApi(url,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData( self.firstData)
+          })
+        }
       },
 //      全选选择不同的url加载二级数据
       getProductByCheckData: function (url,checkAll) {

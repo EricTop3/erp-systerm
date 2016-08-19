@@ -126,18 +126,6 @@
     :second-data.sync="origenData.secondData"
     :request-data="{id: selectedWarehouse }">
   </introduce-data>
-  <!--模态框-添加商品-->
-  <stock-goods
-    :get-render-data="rederSetGoods"
-    :stock-add-good-modal.sync="modal.addGoodModal"
-    :stock-add-good-modal-size="modal.addGoodModalSize"
-    :page.sync="showPage"
-    :add-data.sync="stockGoods"
-    :goods-list-title="purchaseTabelHead"
-    :product-url="request.productUrl"
-    :category-url='request.categoryUrl'
-    :request-data="request.productData">
-  </stock-goods>
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>

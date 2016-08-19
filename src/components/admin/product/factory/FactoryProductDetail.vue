@@ -17,6 +17,7 @@
           :grid-operate="gridOperate"
           :check-url = "checkUrl"
           :edit-flag.sync = "editFlag"
+          :is-exist="isExist"
            >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -81,6 +82,8 @@
       </div>
     </div>
   </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -95,6 +98,7 @@
   import LeftProduction from '../../common/LeftProduction'
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
+  import ErrorTip from '../../../common/ErrorTip'
   import {requestUrl,putDataToApi,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
   export default{
     components: {
@@ -106,7 +110,8 @@
       DatePicker: DatePicker,
       LeftProduction:LeftProduction,
       SummaryDetail: SummaryDetail,
-      Count: Count
+      Count: Count,
+      ErrorTip: ErrorTip
     },
     events: {
 //    绑定翻页事件
@@ -141,14 +146,9 @@
           console.log('finished')
         })
       },
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-      },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = this.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -164,7 +164,14 @@
         }
         var url = requestSystemUrl + '/backend-system/produce/factory/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.isExist = false
+          self.editFlag = false
+          self.listData()
+        },function(err){
+          self.isExist = true
+          self.editFlag = true
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
         })
       }
     },
@@ -249,9 +256,14 @@
         checkUrl:requestSystemUrl+ '/backend-system/produce/factory/',
         detailList: [],
         editFlag: false,
+        isExist: false,
         detailModal: true,
         summaryModal: false,
         gridOperate: true,
+        modal:{
+          errModal: false,
+          errInfo: ''
+        },
         gridColumns: {
           document_number: '生产单号',
           checked: '审核状态',

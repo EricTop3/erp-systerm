@@ -67,8 +67,8 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.main_reference_value}}</td>
-                  <td><count :count.sync =entry.defective_amount></count></td>
                   <td><count :count.sync =entry.stock_amount></count></td>
+                  <td><count :count.sync =entry.defective_amount></count></td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>
@@ -194,8 +194,8 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.defective_amount = ''
-          val.stock_amount = ''
+          val.defective_amount = 0
+          val.stock_amount = val.main_reference_value
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -230,9 +230,9 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.amount = val.defective_amount
-          obj.defective_amount = val.stock_amount
-          obj.stock_amount = val.main_reference_value
+          obj.amount = val.stock_amount
+          obj.defective_amount = val.defective_amount
+          obj.stock_amount = val.stock_amount
           if(val.defective_amount ==='' ||val.stock_amount ==='' ){
             uploadFlag = false
           }
@@ -250,6 +250,12 @@
         if(this.sendTime===''){
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没填写配送时间'
+        }else if(this.selectedOutHouse===''){
+          this.modal.errModal = true
+          this.modal.errInfo = 'high，你还没填写生产工厂哟'
+        }else if(this.selectedInHouse===''){
+          this.modal.errModal = true
+          this.modal.errInfo = 'high，你还没填写调入仓库哟'
         }else if(items.length<1){
           this.modal.errModal = true
           this.modal.errInfo = 'high,你还没有添加商品哟'
@@ -266,6 +272,7 @@
             }
           })
         }
+
       },
 //      添加商品
       addStockGoods: function ( ){
