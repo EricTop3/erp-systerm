@@ -133,6 +133,7 @@
 //      撤销搜索
       cancel: function () {
         var data = {}
+        this.query.search = ''
         this.requestApi(data)
       },
 //      点击确定添加按钮
