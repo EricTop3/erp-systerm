@@ -85,6 +85,22 @@
       </div>
     </div>
   </div>
+  <!--模态框-今日结算-->
+  <modal :show.sync="settlementModal" :modal-size="settlementModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" @click="settlementModal=false" aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">提示</h4>
+    </div>
+    <div slot="body">
+      <h4 class="text-center">确定结算？</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-info" @click="confirmSettlement()">确定</button>
+      <button type="button" class="btn btn-primary" @click="settlementModal=false">取消</button>
+    </div>
+  </modal>
+  <!--模态框HTML-->
 </template>
 <style>
 </style>
@@ -184,6 +200,15 @@
 //      结账
       settlement: function (evnet) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
+        this.settlementModal = true
+
+        var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
+        putDataToApi(url,{}, function (response) {
+          self.getlistData(1)
+        })
+      },
+//      确定结账
+      confirmSettlement: function(){
         var self = this
         var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
         putDataToApi(url,{}, function (response) {
@@ -248,7 +273,9 @@
           status: '',
           start_time: '',
           end_time: ''
-        }
+        },
+        settlementModal: false,
+        settlementModalSize: 'modal-sm'
       }
     }
   }
