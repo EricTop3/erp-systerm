@@ -17,6 +17,7 @@
           :grid-operate="gridOperate"
           :edit-flag.sync="editFlag"
           :check-url = 'checkUrl'
+          :is-exist = 'isExist'
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -152,11 +153,11 @@
 //      编辑
       editGoods: function (event) {
         this.editFlag = true
+        this.isExist =  true
       },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = self.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -172,7 +173,14 @@
         }
         var url = requestSystemUrl + '/backend-system/stock/distribution/'+ id
         putDataToApi(url,data,function (res) {
+          self.editFlag = false
+          self.isExist =  false
           self.listData()
+        },function (err){
+          self.editFlag = true
+          self.isExist = true
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
         })
       }
     },
@@ -246,6 +254,7 @@
         list: {},
         detailList: [],
         summarystockGoods: [],
+        isExist: false,
         editFlag: false,
         detailModal: true,
         summaryModal: false,

@@ -141,7 +141,7 @@
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}
-          obj['reference_id'] = val.id
+          obj['reference_id'] = val.item_id
           obj['id'] = val.id
           obj['current_stock'] = val.main_reference_value
           obj['reference_type'] = val.item_type

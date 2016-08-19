@@ -56,7 +56,6 @@
                   class="btn btn-info spanblocks fr mr10">新建盘点单</span>
           </form>
         </div>
-
         <!-- 表格 -->
         <summary
           :table-data="list"
@@ -105,11 +104,10 @@
         self.search.warehouseList = response.data.body.list
       })
 //    获取制单人
-      var makUrl = requestSystemUrl + '/backend-system/store/store-account'
+      var makUrl = requestSystemUrl + '/backend-system/store/account'
       getDataFromApi(makUrl, {}, function (response) {
         self.search.orderMaker = response.data.body.list
       })
-
       this.listData({})
     },
     events: {
