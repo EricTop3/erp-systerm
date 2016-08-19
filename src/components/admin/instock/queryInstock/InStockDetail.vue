@@ -20,11 +20,12 @@
                 <option value="">请选择</option>
                 <option value="">零售出库</option>
                 <option value="ProduceDocument">生产出库</option>
+                <option value="ProductionPutInDocument">生产入库</option>
                 <option value="DistributionDocument">配送出库</option>
                 <option value="ReceivingDocument">采购收货</option>
                 <option value="StoreReceivingDocument">门店收货</option>
-                <option value="ProductionPutInDocument">生产入库</option>
                 <option value="AppointmentDistribute">预约单出货</option>
+                <option value="AppointmentProduce">预约单生产</option>
                 <option value="">预约单收货</option>
                 <option value="">调拨出库</option>
                 <option value="">调拨入库</option>
@@ -197,6 +198,9 @@
                 break;
               case 'Sale':
                 val.operated_type = '零售出库'
+                break;
+              case 'AppointmentProduce':
+                val.operated_type = '预约单生产'
                 break;
             }
           })
