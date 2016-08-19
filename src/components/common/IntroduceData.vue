@@ -96,6 +96,8 @@
         console.log(currentpage)
       },
       getGoodsWhenClick: function () {
+        this.firstData = []
+        this.secondData = []
 //       不同的url加载不同的数据
         if(this.secondUrl!==undefined){
           this.getProductByUrl(this.url)

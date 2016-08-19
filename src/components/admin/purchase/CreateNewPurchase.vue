@@ -115,6 +115,7 @@
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
+    :request-data="{product_type: 2}"
     >
   </introduce-data>
   <!--模态框-添加商品-->
