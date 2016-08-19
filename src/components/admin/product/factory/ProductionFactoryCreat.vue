@@ -198,7 +198,7 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.product_amount ===''
+          val.product_amount = val.main_reference_value
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -214,7 +214,7 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.product_amount ===''
+          val.product_amount = val.main_reference_value
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -360,7 +360,7 @@
           code: "货号",
           name: "品名",
           specification_unit:"单位规格",
-          aruc: "总部库存",
+          system_stock: "总部库存",
           order_quantity:"要货数量",
           purchase_quantity:"生产数量",
           origen_number: "来源要货单号"
@@ -369,7 +369,7 @@
           code: "货号",
           name: "品名",
           specification_unit:"单位规格",
-          aruc: "总部库存",
+          system_stock: "总部库存",
           order_quantity:"要货数量",
           purchase_quantity:"生产数量",
           origen_number: "来源要货单号"
@@ -379,7 +379,7 @@
         purchaseTabelHead: {
           code: "货号",
           name: "品名",
-          null: "库存数量",
+          system_stock: "库存数量",
           category: "分类",
           production_unit_name: "单位",
           specification_unit: "单位规格"

@@ -16,7 +16,8 @@
           :table-data="list"
           :grid-operate="gridOperate"
           :check-url = "checkUrl"
-          :edit-flag = "editFlag"
+          :edit-flag.sync= "editFlag"
+          :is-exist.sync = "isExist"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -91,6 +92,8 @@
       </div>
     </div>
   </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -106,6 +109,7 @@
   import SummaryDetail from '../../common/SummaryDetail'
   import Count from '../../common/Count'
   import Price from  '../../common/Price'
+  import ErrorTip from '../../common/ErrorTip'
   import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus,putDataToApi} from '../../../publicFunction/index'
   export default{
     components: {
@@ -118,7 +122,8 @@
       LeftPurchase: LeftPurchase,
       SummaryDetail: SummaryDetail,
       Count: Count,
-      Price: Price
+      Price: Price,
+      ErrorTip: ErrorTip
     },
     computed: {
 //      导出
@@ -160,15 +165,9 @@
           console.log('finished')
         })
       },
-
-//      编辑
-      editGoods: function () {
-        this.editFlag = true
-      },
 //    保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = this.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -190,7 +189,16 @@
         }
         var url = requestSystemUrl + '/backend-system/purchase/receive/'+ id
         putDataToApi(url,data,function (res) {
+          self.isExist = false
+          self.editFlag = false
+
           self.listData()
+        },function(err){
+          console.log('wanna')
+          self.isExist = true
+          self.editFlag = true
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
         })
       }
     },
@@ -274,10 +282,15 @@
         list: {},
         checkUrl: requestSystemUrl+ '/backend-system/purchase/receive/',
         editFlag: false,
+        isExist: false,
         detailModal: true,
         summaryModal: false,
         summaryPrice: 0,
         detailList: [],
+        modal: {
+          errModal: false,
+          errInfo: ''
+        },
         gridColumns: {
           document_number: '收货单号',
           checked: '审核状态',

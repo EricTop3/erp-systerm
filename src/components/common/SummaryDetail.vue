@@ -58,7 +58,8 @@
     methods: {
 //      编辑
       edit: function (event) {
-        this.isExist = false
+        this.isExist = true
+        this.editFlag = true
         this.$dispatch('editGoods',event)
       },
 //      保存

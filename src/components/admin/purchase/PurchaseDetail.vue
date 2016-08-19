@@ -17,6 +17,7 @@
           :grid-operate="gridOperate"
           :check-url="checkUrl"
           :edit-flag.sync ="editFlag"
+          :is-exist = "isExist"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -91,6 +92,8 @@
         </div>
     </div>
   </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -106,6 +109,7 @@
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
   import SummaryDetail from '../../common/SummaryDetail'
+  import ErrorTip  from '../../common/ErrorTip'
   import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi} from '../../../publicFunction/index'
   export default{
     components: {
@@ -118,7 +122,8 @@
       LeftPurchase: LeftPurchase,
       SummaryDetail: SummaryDetail,
       Count: Count,
-      Price: Price
+      Price: Price,
+      ErrorTip: ErrorTip
     },
     computed: {
 //      导出
@@ -153,14 +158,9 @@
        console.log('deleted')
        })
        },
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-      },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = this.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -187,7 +187,14 @@
         var url = requestSystemUrl + '/backend-system/purchase/purchase/'+ id
         putDataToApi(url,data,function (res) {
           self.listData()
-        })
+          self.editFlag = false
+          self.isExist = false
+        },function (err){
+          self.editFlag = true
+          self.isExist = true
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
+      })
       }
     },
     ready: function () {
@@ -270,8 +277,13 @@
         page: [],
         list: {},
         editFlag: false,
+        isExist: false,
         detailModal: true,
         summaryModal: false,
+        modal:{
+          errModal: false,
+          errInfo: ''
+        },
         summaryPrice: 0,
         summarystockGoods: [],
         detailList: [],
