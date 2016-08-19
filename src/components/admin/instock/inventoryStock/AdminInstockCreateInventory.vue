@@ -49,16 +49,15 @@
           <tr class="text-center" v-for="entry in rederStockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
             <td class="text-left">{{entry.code}}</td>
             <td>{{entry.name}}</td>
-            <!--system_stock是实际库存，stock是系统库存-->
             <td>
-              <span style="color:red;">{{entry.stock}}</span>
+              <span style="color:red;">{{entry.system_stock}}</span>
             </td>
             <td align="center">
-              <count :count.sync =entry.system_stock></count>
+              <count :count.sync =entry.current_stock></count>
             </td>
             <td>
-              <template v-if="entry.system_stock == ''">{{entry.stock}}</template>
-              <template v-else>{{entry.stock - entry.system_stock}}</template>
+              <template v-if="entry.current_stock == ''">{{entry.system_stock}}</template>
+              <template v-else>{{entry.system_stock - entry.current_stock}}</template>
             </td>
             <td>{{entry.production_unit_name}}</td>
             <td>{{entry.specification_unit}}</td>
@@ -149,7 +148,7 @@
           self.dataArray = []
         }
         $.each(self.stockGoods, function (index, val) {
-          val.system_stock = ''
+          val.current_stock = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -183,8 +182,8 @@
         this.pageLocal.current_page = currentpage
         this.localPage(this.dataArray)
         $.each(this.dataArray, function (index, val) {
-          if (val.system_stock == '') {
-            val.system_stock = null
+          if (val.current_stock == '') {
+            val.current_stock = null
           }
         })
       }
@@ -217,8 +216,8 @@
           getDataFromApi(self.request.productUrl, data, function (respon) {
             self.dataArray = respon.data.body.list
             $.each(self.dataArray,function(index,val){
-              if(val.system_stock == '0'){
-                val.system_stock = null
+              if(val.current_stock == '0'){
+                val.current_stock = null
               }
             })
             self.rederStockGoods = self.dataArray
@@ -239,8 +238,8 @@
         $.each(this.dataArray, function (index, val) {
           var obj = {}
           obj['reference_id'] = val.id
-          obj['current_stock'] = Number(val.system_stock)
-          if (val.system_stock == '') {
+          obj['current_stock'] = Number(val.current_stock)
+          if (val.current_stock == '') {
             hasStock = true
           }
           inventory.push(obj)
@@ -309,7 +308,7 @@
           code: "货号",
           name: "品名",
           dms: "日均销量",
-          stock: "当前库存",
+          system_stock: "当前库存",
           production_unit_name: "单位",
           specification_unit: "单位规格",
           category: "商品分类"

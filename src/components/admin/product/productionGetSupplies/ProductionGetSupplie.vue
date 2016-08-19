@@ -19,7 +19,7 @@
           <form class="form-inline">
             <div class="form-group">
               <label>单号</label>
-              <input type="text" class="form-control" placeholder="" style="width: 130px;"
+              <input type="text" class="form-control" placeholder="请输入单号" style="width: 130px;"
                      v-model="searchData.document_number">
             </div>
             <div class="form-group ml10">
@@ -36,8 +36,7 @@
               <label>生产车间库</label>
               <select class="form-control" v-model="searchData.warehouse_id">
                 <option value="">请选择</option>
-                <option v-for="item in listProviderA" track-by="$index" :value="item.id">{{item.warehouses_name}}
-                <option v-for="item in listProviderB" track-by="$index" :value="item.id">{{item.name}}
+                <option v-for="item in listProviderB" track-by="$index" value="{{item.id}}">{{item.name}}
               </select>
             </div>
             <div class="form-group ml10">
@@ -153,7 +152,6 @@
       }
     },
     ready: function () {
-      this.getlistProviderA()
       this.getlistProviderB()
       this.getlistData(1)
     },
@@ -162,6 +160,7 @@
       getlistData: function (page) {
         var self = this
         var url = requestSystemUrl + '/backend-system/produce/pick'
+
         var data = {
           document_number: self.searchData.document_number,
           checked: self.searchData.checked,
@@ -185,13 +184,6 @@
         this.getlistData(1)
       },
 //      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
-      getlistProviderA: function () {
-        var self = this
-        var url = requestSystemUrl + '/backend-system/provider/provider-minimal-list'
-        getDataFromApi(url, {}, function (response) {
-          self.listProviderA = response.data.body.list
-        })
-      },
       getlistProviderB: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/store/store/warehouses-list'
@@ -221,7 +213,6 @@
         timewidth: "timewidth",
         timetext1: "开始时间",
         timetext2: "结束时间",
-        listProviderA: [],
         listProviderB: [],
         listdata: [],
         page: [],
