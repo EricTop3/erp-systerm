@@ -148,12 +148,14 @@
           item.push(obj)
         })
         var data = {
-          items: item
+          items: item,
+          warehouse_id: self.list.warehouse_id
         }
         var url = requestSystemUrl + '/backend-system/stock/inventory/'+ id
         putDataToApi(url,data,function (res) {
           self.editFlag = false
           self.isExist =  false
+          self.listData()
         },function (err){
           self.editFlag = true
           self.isExist = true
@@ -200,7 +202,7 @@
         gridColumns: {
           document_number: '盘点单号',
           checked: '审核状态',
-          c: '仓库',
+          warehouse_name: '仓库',
           creator_name: '制单人',
           auditor_name: '审核人',
           created_at: '盘点日期',
