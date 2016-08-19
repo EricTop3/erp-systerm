@@ -42,8 +42,8 @@
           <count :count.sync=item.current_stock></count>
         </td>
         <td>
-          <template v-if="item.current_stock == ''">{{item.system_stock}}</template>
-          <template v-else>{{item.system_stock - item.current_stock}}</template>
+          <template v-if="item.current_stock == ''">{{ - item.system_stock}}</template>
+          <template v-else>{{item.current_stock - item.system_stock }}</template>
         </td>
         <td>{{item.production_unit_name}}</td>
         <td>{{item.specification_unit}}</td>
