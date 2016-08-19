@@ -165,11 +165,20 @@
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}
-          obj['reference_id'] = val.reference_id
+          if(val.item_type === 'item_type'){
+            obj['reference_id'] = val.item_id
+          }else{
+            obj['reference_id'] = val.reference_id
+          }
           obj['id'] = val.id
           obj['amount'] = val.main_reference_value
           obj['price'] = val.purchase_unit_price
-          obj['reference_type'] = val.item_type
+          if(val.reference_type ===  'ProductItem'){
+            obj['reference_type'] = val.reference_type
+          }else{
+            var type = val.reference_type
+            obj['reference_type'] =type.slice(0,type.indexOf(type.slice(-13)))
+          }
           item.push(obj)
         })
         var data = {
@@ -177,7 +186,7 @@
         }
         var url = requestSystemUrl + '/backend-system/purchase/purchase/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.listData()
         })
       }
     },

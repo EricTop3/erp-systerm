@@ -114,7 +114,8 @@
     :first-data-title="origenData.firstDataTitle"
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
-    :second-data.sync="origenData.secondData">
+    :second-data.sync="origenData.secondData"
+    >
   </introduce-data>
   <!--模态框-添加商品-->
   <stock-goods

@@ -173,7 +173,11 @@
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}
-          obj['reference_id'] = val.reference_id
+          if(val.item_type === 'item_type'){
+            obj['reference_id'] = val.item_id
+          }else{
+            obj['reference_id'] = val.reference_id
+          }
           obj['id'] = val.id
           obj['additional_amount'] = val.additional_amount
           obj['refund_amount'] = val.refund_amount
