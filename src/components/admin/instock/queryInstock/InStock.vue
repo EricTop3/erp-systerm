@@ -159,6 +159,8 @@
         this.search.selectCategory = ''
         this.search.selectedHouse = ''
         this.search.safeInstock = ''
+        this.search.startTime = ''
+        this.search.endTime = ''
         this.listData({})
       },
 //      负数变为正数

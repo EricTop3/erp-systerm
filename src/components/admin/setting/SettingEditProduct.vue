@@ -511,6 +511,7 @@
          }
        })
        this.createList.sell_unit = this.retailUnit[0].id
+       this.createList.production_unit = this.retailUnit[0].id
      },
 //    二级单位
       twoUnit: function () {
@@ -522,6 +523,7 @@
           }
         })
         this.createList.sell_unit = this.retailUnit[1].id
+        this.createList.production_unit = this.retailUnit[1].id
       },
 //     三级单位
       threeUnit: function () {
@@ -533,6 +535,7 @@
           }
         })
         this.createList.sell_unit = this.retailUnit[2].id
+        this.createList.production_unit = this.retailUnit[2].id
       },
 //     前端本地分页函数
       localPage: function (data) {
