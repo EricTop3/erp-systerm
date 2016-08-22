@@ -66,13 +66,15 @@
             password: this.password
           }
           adminLogin(loginUrl,data,function (err) {
-             if(err.data.code ==='100000'){
-               self.modal.errModal = true,
-               self.modal.errInfo = '你的账号不存在'
-             }
-            if(err.data.code ==='110004'){
-                self.modal.errModal = true,
-                self.modal.errInfo = '你的密码错误'
+            if (err.data.code === '100000') {
+              self.modal.errModal = true
+              self.modal.errInfo = '账户不存在'
+            } else if (err.data.code === '110004') {
+              self.modal.errModal = true
+              self.modal.errInfo = '你的密码错误'
+            } else if (err.data.code === '110007') {
+              self.modal.errModal = true
+              self.modal.errInfo = '账户不可用'
             }
           })
         }

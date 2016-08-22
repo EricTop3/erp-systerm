@@ -16,6 +16,7 @@
       :grid-operate="gridOperate"
       :check-url="checkUrl"
       :edit-flag.sync ="editFlag"
+      :is-exist = 'isExist'
     >
     </summary-detail>
 
@@ -35,8 +36,8 @@
         <td>{{entry.system_stock}}</td>
         <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count>{{entry.purchase_unit_name}}</td>
         <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
-        <td>{{entry.difference}}</td>
-        <td>{{entry.unit}}</td>
+        <td>{{entry.main_reference_value - entry.system_stock}}</td>
+        <td>{{entry.unit_name}}</td>
         <td>{{entry.unit_specification}}</td>
       </tr>
       </tbody>
@@ -67,11 +68,11 @@
 //      编辑
       editGoods: function (event) {
         this.editFlag = true
+        this.isExist =  true
       },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = this.$route.params.queryId
         var item = []
         $.each(self.listdata,function (index,val) {
@@ -86,7 +87,15 @@
         }
         var url = requestSystemUrl + '/front-system/stock/inventory/'+ id
         putDataToApi(url,data,function (res) {
+          self.editFlag = false
+          self.isExist =  false
           self.detailListData(1)
+          self.thisOneData()
+        },function (err){
+          self.editFlag = true
+          self.isExist = true
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
         })
       }
     },
@@ -136,6 +145,7 @@
     data: function () {
       return {
         id: 0,
+        isExist: false,
         editFlag: false,
         checkUrl: requestUrl + '/front-system/stock/inventory/',
         page: [],

@@ -138,8 +138,7 @@
         })
       },
 //      对获取的单条数据处理2
-      modifyGetedOneData: function (data){
-        $.each(data, function (index, value) {
+      modifyGetedOneData: function (value){
           if(value.total_sum != '' && value.total_sum > 0 ){
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
@@ -158,7 +157,6 @@
           if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
-        })
       },
 //    确定结算
       yesSettlement: function () {

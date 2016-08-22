@@ -129,6 +129,7 @@
         }).then(function (response) {
           self.page = response.data.body.pagination
           self.productList2 = response.data.body.list
+          self.dataProcessing(self.productList2)
         }, function (err) {
           console.log(err)
         })
@@ -147,6 +148,52 @@
       this.getOneData({})
     },
     methods: {
+//      对获取到数据进行处理productList2的数据
+      dataProcessing: function(data){
+        $.each(data, function (index, val) {
+          val.in_stock = ''
+          val.out_stock = ''
+          if (val.amount > 0) {
+            val.in_stock = val.amount
+            val.out_stock = 0
+            if(val.operated_type == 'PickDocument'){
+              val.operated_type = '领料入库'
+            }
+          } else {
+            val.in_stock = 0
+            val.out_stock = val.amount * (-1)
+            if(val.operated_type == 'PickDocument'){
+              val.operated_type = '领料出库'
+            }
+          }
+          switch (val.operated_type) {
+            case 'ProduceDocument':
+              val.operated_type = '生产出库'
+              break;
+            case 'DistributionDocument':
+              val.operated_type = '配送出库'
+              break;
+            case 'ReceivingDocument':
+              val.operated_type = '采购收货'
+              break;
+            case 'StoreReceivingDocument':
+              val.operated_type = '门店收货'
+              break;
+            case 'ProductionPutInDocument':
+              val.operated_type = '生产入库'
+              break;
+            case 'AppointmentDistribute':
+              val.operated_type = '预约单出货'
+              break;
+            case 'Sale':
+              val.operated_type = '零售出库'
+              break;
+            case 'AppointmentProduce':
+              val.operated_type = '预约单生产'
+              break;
+          }
+        })
+      },
 //    对获取到de列表数据进行处理
       modifyGetedData: function (value) {
         if(value.out_stock < 0 ){
@@ -161,49 +208,7 @@
         getDataFromApi(url, data, function (response) {
           self.productList2 = response.data.body.list
           self.page = response.data.body.pagination
-          $.each(self.productList2, function (index, val) {
-            val.in_stock = ''
-            val.out_stock = ''
-            if (val.amount > 0) {
-              val.in_stock = val.amount
-              val.out_stock = 0
-              if(val.operated_type == 'PickDocument'){
-                val.operated_type = '领料入库'
-              }
-            } else {
-              val.in_stock = 0
-              val.out_stock = val.amount * (-1)
-              if(val.operated_type == 'PickDocument'){
-                val.operated_type = '领料出库'
-              }
-            }
-            switch (val.operated_type) {
-              case 'ProduceDocument':
-                val.operated_type = '生产出库'
-                break;
-              case 'DistributionDocument':
-                val.operated_type = '配送出库'
-                break;
-              case 'ReceivingDocument':
-                val.operated_type = '采购收货'
-                break;
-              case 'StoreReceivingDocument':
-                val.operated_type = '门店收货'
-                break;
-              case 'ProductionPutInDocument':
-                val.operated_type = '生产入库'
-                break;
-              case 'AppointmentDistribute':
-                val.operated_type = '预约单出货'
-                break;
-              case 'Sale':
-                val.operated_type = '零售出库'
-                break;
-              case 'AppointmentProduce':
-                val.operated_type = '预约单生产'
-                break;
-            }
-          })
+          self.dataProcessing(self.productList2)
           console.log(self.productList2.in_stock)
         })
       },
