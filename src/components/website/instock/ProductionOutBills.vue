@@ -26,7 +26,7 @@
         <div class="form-group">
           <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">
         </div>
-        <button class="btn btn-info" @click="search">搜索</button>
+        <button class="btn btn-info" @click="listData(1)">搜索</button>
         <span class="btn btn-warning" @click="cancel">撤销搜索</span>
       </form>
     </div>
@@ -83,7 +83,7 @@
         getDataFromSiteApi(requestUrl + '/front-system/stock/produce-put', {
           start_time: this.query.start_time || '',
           end_time: this.query.end_time || '',
-          search: this.query.search || '',
+          name: this.query.search || '',
           category_id: this.query.category || '',
           page: page,
           per_page: 16
@@ -92,28 +92,10 @@
           self.list = response.data.body.list
         })
       },
-//      搜索页面
-      search: function () {
-        var self = this
-        searchRequest(
-          requestUrl + '/front-system/stock/products',
-          {
-            start_time: this.query.start_time,
-            end_time: this.query.end_time,
-            category_id: this.query.category,
-            search: this.query.search,
-            per_page: 16
-          },
-          function (response) {
-            self.list = response.data.body.list
-            self.page = response.data.body.pagination
-          }
-        )
-      },
       cancel: function () {
         this.query.start_time = ''
         this.query.end_time = ''
-        this.query.search = ''
+        this.query.name = ''
         this.query.category = ''
         this.listData(1)
       },

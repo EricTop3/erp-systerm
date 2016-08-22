@@ -139,7 +139,7 @@
 //      查看明细
       checkDetail: function (event) {
         var Id = Number($(event.currentTarget).parents("tr").attr('id'))
-        window.location.href = '?#!/admin/instock/inStockDetail/' + Id
+        window.location.href = '/#!/admin/instock/inStockDetail/' + Id + '?start_time=' + this.search.startTime + '&end_time=' + this.search.endTime
       },
 //    搜索
       searchMethod: function () {

@@ -101,8 +101,9 @@
         var self = this
         var url = requestSystemUrl + '/backend-system/stock/sale/log/' + this.thisId
         var data = {
-          start_time: this.searchData.start_time,
-          end_time: this.searchData.end_time,
+//          浏览器地址栏传过来的参数 this.$route.query.start_time
+          start_time: this.searchData.start_time || this.$route.query.start_time,
+          end_time: this.searchData.end_time || this.$route.query.end_time,
           page: page || ''
         }
         getDataFromApi(url, data, function (response) {
@@ -115,8 +116,8 @@
         this.thisId = this.$route.params.queryId
         var self = this
         var data = {
-          start_time: this.searchData.start_time,
-          end_time: this.searchData.end_time
+          start_time: this.searchData.start_time || this.$route.query.start_time,
+          end_time: this.searchData.end_time || this.$route.query.end_time
         }
         var url = requestSystemUrl + '/backend-system/stock/sale/log/' + this.thisId + '/detail'
         getDataFromApi(url, data, function (response) {
@@ -128,9 +129,13 @@
         this.getlistData(1)
         this.getOneData()
       },
+
+
 //      取消搜索
       cancelSearch: function () {
         this.searchData = {}
+        this.$route.query.start_time = ''
+        this.$route.query.end_time = ''
         this.getlistData(1)
         this.getOneData()
       }
@@ -152,7 +157,7 @@
           amount: '零售出库量',
           unit_name: '零售单位',
           unit_specification: '单位规格',
-          category_name: '商品分类'
+          category_id: '商品分类'
         },
         gridOperate2: false,
         gridcolumns2: {

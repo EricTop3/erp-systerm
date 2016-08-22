@@ -38,9 +38,9 @@
               <label>盘点时间段</label>
               <date-picker :value.sync="search.start_time"></date-picker>
               -
-              <date-picker :value.sync="search.ned_time"></date-picker>
+              <date-picker :value.sync="search.end_time"></date-picker>
             </div>
-            <button type="submit" class="btn btn-primary" @click="searchMethod">查询</button>
+            <span class="btn btn-primary" @click="searchData()">查询</span>
           </form>
         </div>
 
@@ -117,35 +117,14 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        var self = this
-        var currentId = this.$route.params.queryId
-        this.$http({
-          url: requestSystemUrl + '/backend-system/stock/log/' + currentId,
-          data: {
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          self.page = response.data.body.pagination
-          self.productList2 = response.data.body.list
-          self.dataProcessing(self.productList2)
-        }, function (err) {
-          console.log(err)
-        })
+        this.getListData(currentpage)
       }
     },
     ready: function () {
-      var self = this
-//       获取单条详情
-      var currentId = this.$route.params.queryId
-      var urlOne = requestSystemUrl + '/backend-system/stock/log/' + currentId + '/detail'
-      getDataFromApi(urlOne, {}, function (response) {
-        self.productList1 = response.data.body
-        self.modifyGetedData(self.productList1)
-      })
+//      获取单条数据
+      this.getOneData()
 //      获取列表数据
-      this.getOneData({})
+      this.getListData(1)
     },
     methods: {
 //      对获取到数据进行处理productList2的数据
@@ -191,6 +170,9 @@
             case 'AppointmentProduce':
               val.operated_type = '预约单生产'
               break;
+            case 'AllocateDocument':
+              val.operated_type = '调拨出库'
+              break;
           }
         })
       },
@@ -200,8 +182,30 @@
           value.out_stock = value.out_stock * (-1)
         }
       },
-      getOneData: function (data) {
+//      获取上面的单条数据
+      getOneData: function(){
+        var self = this
         var currentId = this.$route.params.queryId
+        var urlOne = requestSystemUrl + '/backend-system/stock/log/' + currentId + '/detail'
+        var data = {
+          start_time: this.search.start_time || this.$route.query.start_time,
+          end_time: this.search.end_time || this.$route.query.end_time,
+          type: this.search.type || ''
+        }
+        getDataFromApi(urlOne, data, function (response) {
+          self.productList1 = response.data.body
+          self.modifyGetedData(self.productList1)
+        })
+      },
+//      获取数据列表
+      getListData: function (page) {
+        var currentId = this.$route.params.queryId
+        var data = {
+          start_time: this.search.start_time || this.$route.query.start_time,
+          end_time: this.search.end_time || this.$route.query.end_time,
+          type: this.search.type || '',
+          page: page
+        }
         var self = this
 //        获取列表详情
         var url = requestSystemUrl + '/backend-system/stock/log/' + currentId
@@ -209,18 +213,13 @@
           self.productList2 = response.data.body.list
           self.page = response.data.body.pagination
           self.dataProcessing(self.productList2)
-          console.log(self.productList2.in_stock)
         })
       },
-//    查询
-      searchMethod: function () {
-        var data = {
-          start_time: this.search.start_time,
-          ned_time: this.search.ned_time,
-          type: this.search.type
-        }
-        this.getOneData(data)
-      },
+      searchData: function(){
+
+        this.getOneData()
+        this.getListData(1)
+      }
     },
     data: function () {
       return {

@@ -41,7 +41,6 @@
             <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
           </form>
         </div>
-
         <!--表格-->
         <summary
           :table-header="gridColumns"
@@ -96,7 +95,7 @@
       },
       //    查看详情
       gotoDetail: function (id) {
-        window.location.href = '/#!/admin/instock/sale/Detail/' + id
+        window.location.href = '/#!/admin/instock/sale/Detail/' + id + '?start_time=' + this.searchData.start_time +'&end_time=' + this.searchData.end_time
       }
     },
     ready: function () {
