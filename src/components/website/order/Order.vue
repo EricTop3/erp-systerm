@@ -71,7 +71,6 @@
               </form>
             </div>
           </div>
-
           <div role='tabpanel' class='tab-pane panel panel-default' id='orderType'>
             <ul class='index-list ordertype-list'>
               <li class='active'>零售订单</li>
@@ -295,7 +294,7 @@
       <div class='form-group'>
         <p class="modal-body">会员余额 <span>{{memberCount|priceChange}}</span></p>
 
-        <p class="modal-body color">订单金额 <span>{{finalPrice}}</span></p>
+        <p class="modal-body color">订单金额 <span>{{totalPrice}}</span></p>
       </div>
     </div>
     <div slot='footer'>
@@ -721,9 +720,10 @@
           })
           .then(function (response) {
             if (response.data.body) {
-              this.member.memberId = response.data.body.id
-              this.memberCount = response.data.body.balance
+              this.member.memberId = response.data.body.data.id
+              this.memberCount = response.data.body.data.balance
               this.settlementFlag = true
+              this.memberModal = true
 //            是否点击会员的确定
               this.memberFlag = true
             }else{
@@ -789,7 +789,7 @@
                 this.retailBill = true
                 break
               case 2:
-                if (response.data.code === "200008") {
+                if (response.data.code ===  200008) {
                   this.messageTipModal = true
                   this.error = true
                   this.messageTip = response.data.message

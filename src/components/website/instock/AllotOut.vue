@@ -50,8 +50,8 @@
       <tr class="text-center" v-for="item in renderStockGoods" track-by="$index" :id="item.id">
         <td class="text-left">{{item.code}}</td>
         <td>{{item.name}}</td>
-        <td>{{item.sale_amount}}</td>
-        <td>{{item.current_stock}}</td>
+        <td>{{item.dms}}</td>
+        <td>{{item.system_stock}}</td>
         <td align="center">
           <count :count.sync='item.sale_refund'></count>
         </td>
@@ -82,22 +82,6 @@
   </stock-goods>
   <!--模态框HTML-->
 
-  <!--模态框-删除-->
-  <modal :show.sync="deleteModal" :modal-size="deleteModalSize">
-    <div slot="header">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">删除</h4>
-    </div>
-    <div slot="body">
-      <h4>删除弹出框！</h4>
-    </div>
-    <div slot="footer">
-      <button type="button" class="btn btn-primary" @click="confirmDelelte()">保存</button>
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="deleteModal=false">关闭</button>
-    </div>
-  </modal>
-  <!--模态框HTML-->
 
   <!--错误信息弹出-->
   <modal :show.sync='messageTipModal' :modal-size="messageTipModalSize" class='form-horizontal'>
@@ -157,25 +141,19 @@
           }
         })
         this.renderStockGoods = self.dataArray
+      },
+      delete: function (id) {
+        var self = this
+        $.each(this.renderStockGoods, function (index, val) {
+          if (val.id === id) {
+            self.renderStockGoods.splice(index, 1)
+            val.choice = false
+            val.again =  false
+          }
+        })
       }
     },
     methods: {
-//     删除弹出框
-      isDelete: function (event) {
-        var currentId = Number($(event.currentTarget).parents('tr').attr('id'))
-        deleteId = currentId
-        this.deleteModal = true
-      },
-//      确认删除
-      confirmDelelte: function () {
-        var goodList = this.renderStockGoods
-        this.deleteModal = false
-        $.each(goodList, function (index, val) {
-          if (val.id === deleteId) {
-            goodList.splice(index, 1)
-          }
-        })
-      },
 //      提交出货
       upLoadEnquiry: function () {
         var goods = []
@@ -239,8 +217,8 @@
         goodsListTitle: {
           'code': '货号',
           'name': '品名',
-          'sale_amount': '日均销量',
-          'current_stock': '当前库存',
+          'dms': '日均销量',
+          'system_stock': '当前库存',
           'production_unit_name': '单位',
           'specification_unit': '单位规格',
           'category': '商品分类'
