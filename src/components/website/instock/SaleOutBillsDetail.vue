@@ -33,7 +33,6 @@
     </table>
     <!-- 表格 详情列表 -->
     <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
-
     <!-- 翻页 -->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
           :last-page="page.last_page" v-if="detailList.length > 0"></page>
@@ -70,6 +69,10 @@
         this.id = this.$route.params.queryId
         this.$http({
           url: requestUrl + '/front-system/stock/sale/' + this.id + '/detail',
+          data: {
+            start_time: this.$route.query.start_time,
+            end_time: this.$route.query.end_time
+          },
           headers: {'X-Overpowered-Token': token},
           method: 'get'
         }).then(function (response) {
@@ -85,6 +88,8 @@
           url: requestUrl + '/front-system/stock/sale/' + this.id,
           method: 'get',
           data: {
+            start_time: this.$route.query.start_time,
+            end_time: this.$route.query.end_time,
             page: page,
             per_page: 16
           },

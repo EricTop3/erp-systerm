@@ -37,7 +37,7 @@
       <tr class="text-center">
         <td class="text-left">{{list.item_code}}</td>
         <td>{{list.item_name}}</td>
-        <td><font color="red">无字段</font></td>
+        <td>{{list.difference}}</td>
         <td>{{list.unit_name}}</td>
         <td>{{list.unit_specification}}</td>
         <td>{{list.category_name.display_name}}</td>
@@ -48,7 +48,7 @@
     <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
     <!-- 翻页 -->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-          :last-page="page.last_page" v-if="detailList > 0 "></page>
+          :last-page="page.last_page"></page>
   </div>
 </template>
 <script>
@@ -84,6 +84,10 @@
         this.id = this.$route.params.queryId
         this.$http({
           url: requestUrl + '/front-system/stock/difference/' + this.id  + '/detail',
+          data: {
+            start_time: this.query.start_time || '',
+            end_time: this.query.end_time || ''
+          },
           method: 'get',
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
@@ -108,7 +112,6 @@
         }).then(function (response) {
           this.page = response.data.body.pagination
           this.detailList = response.data.body.list
-          console.log("mafeiyan" + this.detailList)
         }, function (err) {
           error(err)
         })

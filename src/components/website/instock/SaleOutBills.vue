@@ -126,7 +126,7 @@
 //    生产明细点击>跳转页面，把id追加到浏览器地址栏后
       detail: function (event) {
         var detailId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = '/#!/site/instock/SaleOutBills/' + detailId
+        window.location.href = '/#!/site/instock/SaleOutBills/' + detailId + '?start_time=' + this.query.start_time +'&end_time=' + this.query.end_time
       }
     },
     data: function () {

@@ -191,6 +191,9 @@
             case 'AppointmentProduce':
               val.operated_type = '预约单生产'
               break;
+            case 'AllocateDocument':
+              val.operated_type = '调拨出库'
+              break;
           }
         })
       },

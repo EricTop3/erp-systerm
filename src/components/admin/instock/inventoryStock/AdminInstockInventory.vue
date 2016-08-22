@@ -38,6 +38,7 @@
               <select class="form-control" v-model="search.selectedMaker">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in search.orderMaker">{{item.name}}</option>
+                <option :value="item.id" v-for="item in storeAccountData">{{item.name}}</option>
               </select>
             </div>
             <br>
@@ -63,7 +64,6 @@
           :page="page"
           :check-url="checkUrl">
         </summary>
-
       </div>
     </div>
   </div>
@@ -103,10 +103,15 @@
       getDataFromApi(url, {}, function (response) {
         self.search.warehouseList = response.data.body.list
       })
-//    获取制单人
+//    获取制单人(后台管理员)
       var makUrl = requestSystemUrl + '/backend-system/store/account'
       getDataFromApi(makUrl, {}, function (response) {
         self.search.orderMaker = response.data.body.list
+      })
+//    获取制单人（前台用户名）
+      var storeAccountUrl = requestSystemUrl + '/backend-system/store/store-account'
+      getDataFromApi(storeAccountUrl, {}, function (response) {
+        self.storeAccountData = response.data.body.list
       })
       this.listData({})
     },
@@ -154,8 +159,8 @@
 //      搜索
       searchMethod: function () {
         var data = {
-          start_time: this.search.start_time,
-          end_time: this.search.end_time,
+          start_time: this.search.startTime,
+          end_time: this.search.endTime,
           document_number: this.search.code,
           creator_id: this.search.selectedMaker,
           warehouse_id: this.search.selectedHouse,
@@ -165,8 +170,8 @@
       },
 //      撤销搜索
       cancelSearch: function () {
-        this.search.start_time = ''
-        this.search.end_time = ''
+        this.search.startTime = ''
+        this.search.endTime = ''
         this.search.code = ''
         this.search.selectedMaker = ''
         this.search.selectedHouse = ''
@@ -179,8 +184,8 @@
       exports: function () {
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/inventory'
         var data =
-          'start_time=' + this.search.start_time + '&' +
-          'end_time=' + this.search.end_time + '&' +
+          'start_time=' + this.search.startTime + '&' +
+          'end_time=' + this.search.endTime + '&' +
           'document_number=' + this.search.code + '&' +
           'creator_id=' + this.search.selectedMaker + '&' +
           'warehouse_id=' + this.search.selectedHouse + '&' +
@@ -194,6 +199,7 @@
         timetext2: '结束时间',
         page: [],
         list: [],
+        storeAccountData: [],
         checkUrl: requestSystemUrl + '/backend-system/stock/inventory/',
         gridColumns: {
           document_number: '盘点单号',
