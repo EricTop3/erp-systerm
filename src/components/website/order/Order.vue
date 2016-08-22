@@ -59,7 +59,7 @@
             <div class='index-list'>
               <form class='form-inline m30'>
                 <div class='form-group'>
-                  <select class='form-control' style='width: 150px;' v-model="order_mata_data.strategy_id"
+                  <select class='form-control couponFlag' style='width: 150px;' v-model="order_mata_data.strategy_id"
                           @change="select($event)">
                     <option selected="selected" value="0">无优惠</option>
                     <option :value="item.id" v-for="item in couponName" :name="item.display_name">{{item.display_name}}</option>
@@ -81,7 +81,7 @@
           </div>
           <div role='tabpanel' class='tab-pane panel panel-default' id='members'>
             <div class='index-list'>
-              <form class='form-inline m20'>
+              <form class='form-inline m20' v-if="member.memberCodeModal">
                 <div class='form-group'>
                   <label>会员卡号</label>
                   <input type='text' class='form-control' placeholder='请填写会员卡号' v-model="member.memberCode">
@@ -92,17 +92,19 @@
                 <!--</div>-->
                 <button class='btn btn-primary ml10' @click="memberRequest">确定</button>
               </form>
+              <div v-if="member.memberInfoModal">
+                <ul class="fl memberInfoList">
+                  <li>卡号：{{member.memberInfoList.card_number}}</li>
+                  <li>等级：{{member.memberInfoList.member_type}}</li>
+                  <li>余额：￥{{member.memberInfoList.balance|priceChange}}</li>
+                  <li>姓名：{{member.memberInfoList.name}}</li>
+                  <li>生日：{{member.memberInfoList.birthday}}</li>
+                  <li>积分：{{member.memberInfoList.score}}</li>
+                  <li>手机：{{member.memberInfoList.mobile_phone}}</li>
+                </ul>
+                <div class="fr memberChange" @click="changeMemberCode"><span class="btn btn-info">更换卡号</span></div>
+              </div>
             </div>
-            <ul class='index-list-member'>
-              <li>卡号：123456789</li>
-              <li>等级：vip七折</li>
-              <li>余额：100.00</li>
-              <li>姓名：王二小</li>
-              <li>生日：02.04</li>
-              <li>积分：1200</li>
-              <li>手机：13568656989</li>
-              <li><span class='btn btn-info'>更换卡号</span></li>
-            </ul>
           </div>
           <div role='tabpanel' class='tab-pane panel panel-default' id='remark'>
             <div class='index-list'>
@@ -292,9 +294,8 @@
     </div>
     <div slot='body'>
       <div class='form-group'>
-        <p class="modal-body">会员余额 <span>{{memberCount|priceChange}}</span></p>
-
-        <p class="modal-body color">订单金额 <span>{{totalPrice}}</span></p>
+        <p class="modal-body">会员余额 <span>￥{{member.memberCount|priceChange}}</span></p>
+        <p class="modal-body color">订单金额 <span>￥{{finalPrice}}</span></p>
       </div>
     </div>
     <div slot='footer'>
@@ -315,7 +316,7 @@
     </div>
     <div slot='footer'>
       <button type='button' class='btn btn-primary' @click='messageTipModal = false' v-if="error">关闭</button>
-      <button type='button' class='btn btn-primary' @click="settlementUpload($event)" v-if="!error">确定</button>
+      <button type='button' class='btn btn-primary' @click="memberPayConfirm($event)" v-if="!error">确定</button>
     </div>
   </modal>
 </template>
@@ -429,7 +430,6 @@
           }
         })
       }
-
       changeActive(orderType, 'li')
       changeActive(payment, 'li')
     },
@@ -466,28 +466,36 @@
       isRightMoney: function () {
         return Number(this.finalPrice) <= Number(this.paymentAmount) ? false : true
       },
-//       选择商品
+//      选择优惠
       select: function (event) {
         var cur = Number($(event.currentTarget).val())
-        switch (cur) {
-          case  0:
-            this.order_mata_data.coupon_name = "无优惠"
-            break
-          case  1:
-            this.order_mata_data.coupon_name = "会员日七折"
-            break
-          case  2:
-            this.order_mata_data.coupon_name = "会员日九折"
-            break
-          case  3:
-            this.order_mata_data.coupon_name = "满299元减50元"
-            break
-          case  4:
-            this.order_mata_data.coupon_name = "满199元八折"
-            break
-        }
         var settlementData = {}
+//      判断是选择了优惠还是已经选择过优惠了
         this.order_mata_data.strategy_id = $(event.currentTarget).val()
+        this.order_mata_data.user_id = this.member.memberId
+        orderItems = []
+        window.localStorage.setItem('orderType', this.order_mata_data.order_type)
+        orderType = Number(window.localStorage.getItem('orderType'))
+        $.each(this.checkedGoodsList, function (index, val) {
+          var obj = {}
+          obj['goods_id'] = val.id
+          obj['amount'] = val.count
+          obj['price'] = val.goodPrice
+          obj['note'] = val.priceNote
+          orderItems.push(obj)
+        })
+        settlementData = {
+          'items': orderItems,
+          'order_meta_data': this.order_mata_data,
+          'get_order_price': 1
+        }
+        this.settlementRequest(settlementData, this.select_money)
+      },
+//     执行优惠函数
+      globalCoupon: function () {
+        var settlementData = {}
+//      判断是选择了优惠还是已经选择过优惠了
+        this.order_mata_data.strategy_id = this.order_mata_data.strategy_id
         this.order_mata_data.user_id = this.member.memberId
         orderItems = []
         window.localStorage.setItem('orderType', this.order_mata_data.order_type)
@@ -529,22 +537,18 @@
         }
       },
 //     结算请求
-      settlementRequest: function (data, callback) {
-        this.$http.post(requestUrl + '/front-system/order/order', data, {
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
+      settlementRequest: function (data, callback,errback) {
+        var self = this
+        postSiteDataToApi(requestUrl + '/front-system/order/order',data,function(response){
           callback && callback(response)
-        }, function (err) {
-           if(err.data.code === '100000'){
-             this.error = true
-             this.messageTipModal =  true
-             this.messageTip = '你选择的商品有库存不足的'
-           }
+        },function(err){
+          errback && errback(err)
         })
       },
 //     增加到左侧商品列表
       addOrderToList: function (event) {
         var flag = false
+        var self = this
         const currentGood = $(event.currentTarget)
         const currentGoodId = Number(currentGood.attr('id'))
         const currentStock = Number(currentGood.attr('stock'))
@@ -574,6 +578,7 @@
                 val.count++
               }
               flag = true
+              self.globalCoupon()
             }
           })
           if (!flag) {
@@ -587,6 +592,7 @@
             obj.note = ''
             obj.priceNote = ''
             checkedGoodsList.push(obj)
+            self.globalCoupon()
           }
         } else {
           var obj1 = {}
@@ -599,6 +605,7 @@
           obj1.note = ''
           obj1.priceNote = ''
           checkedGoodsList.push(obj1)
+          self.globalCoupon()
         }
       },
 //      点击分类请求数据
@@ -714,32 +721,37 @@
       },
 //      会员请求数据
       memberRequest: function () {
-        this.$http({
-            url: requestUrl + '/front-system/member/member/c/' + this.member.memberCode,
-            headers: {'X-Overpowered-Token': token}
-          })
-          .then(function (response) {
-            if (response.data.body) {
-              this.member.memberId = response.data.body.data.id
-              this.memberCount = response.data.body.data.balance
-              this.settlementFlag = true
-              this.memberModal = true
-//            是否点击会员的确定
-              this.memberFlag = true
-            }else{
+        var self = this
+        if(this.member.memberCode === ''){
+          this.messageTipModal = true
+          this.messageTip = "请先填写会员卡号"
+          this.error = true
+        }else {
+          getDataFromSiteApi(requestUrl + '/front-system/member/member/c/' + this.member.memberCode,{},function(response){
+            self.member.memberCount = response.data.body.data.balance
+            self.member.memberId = response.data.body.data.id
+            self.member.memberCodeModal = false
+            self.member.memberInfoModal = true
+            self.member.memberInfoList  = response.data.body.data
+//          是否点击会员的确定
+            self.memberFlag = true
+            self.settlementFlag = true
+          },function(err){
 //            会员不存在的情况下
-              if (response.data.code = '200009') {
-                this.error = true
-                this.messageTipModal = true
-                this.messageTip = response.data.message
-              } else {
-                this.error = false
-                this.messageTipModal = false
-              }
+            if(err.data.code = '120000') {
+              self.error = true
+              self.messageTipModal = true
+              self.messageTip = '你的会员卡号不存在'
+              self.member.memberCode = ''
             }
-          }, function (err) {
-            console.log(err)
           })
+        }
+      },
+//     更换会员
+      changeMemberCode: function () {
+        this.member.memberCodeModal = true
+        this.member.memberInfoModal = false
+        this.member.memberCode = ''
       },
 //      会员结算
       memberUpload: function () {
@@ -760,53 +772,10 @@
       },
 //     结算请求成功后的函数
       setFinish: function (response) {
-        if (response.data.body) {
+          this.retailBill = true
           this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
           Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
           orderMount = response.data.body.total_sum
-        }else{
-          if(response.data.code ==='200007'){
-            this.error = true
-            this.messageTipModal = true
-            this.messageTip = response.data.message
-          }
-          else{
-            this.error = true
-            this.messageTipModal = true
-          }
-        }
-        if (this.settlementFlag) {
-//          判断支付方式是不是会员余额支付
-          if (this.order_mata_data.payment === 'vip') {
-            if (this.member.memberCode === '') {
-              this.messageTip = '您需要填写您的会员信息'
-              this.messageTipModal = true
-              this.error = true
-            }
-          } else {
-            switch (orderType) {
-              case 1:
-                this.retailBill = true
-                break
-              case 2:
-                if (response.data.code ===  200008) {
-                  this.messageTipModal = true
-                  this.error = true
-                  this.messageTip = response.data.message
-                } else {
-                  this.messageTipModal = false
-                  this.error = false
-                  this.creditlBill = true
-                }
-                break
-              case 3:
-                this.retailBill = true
-                break
-            }
-          }
-        } else {
-          return false
-        }
       },
 //    结算
       settlement: function () {
@@ -829,9 +798,40 @@
         settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,
-          'get_order_price': 1
+          'all_total': this.paymentAmount * 1000
         }
-        this.settlementRequest(settlementData, this.setFinish)
+        if(orderType === 2) {
+          this.settlementRequest(settlementData, this.billLoadFinsh,this.memberBill)
+        }else if(this.order_mata_data.payment==='vip'){
+           this.settlementRequest(settlementData, this.memberpayFinish, this.memberPayFail)
+        }else{
+          settlementData = {
+            'items': orderItems,
+            'order_meta_data': this.order_mata_data,
+            'get_order_price': 1
+          }
+          this.settlementRequest(settlementData, this.setFinish)
+        }
+      },
+//    会员支付成功函数
+      memberpayFinish: function() {
+        this.memberModal = true
+      },
+//    会员余额不足
+      memberPayFail: function (err){
+        if(err.data.code = '200007'){
+          this.messageTipModal = true
+          this.error = true
+          this.messageTip = '会员卡余额不足,请充值'
+        }
+      },
+//    会员挂账失败
+      memberBill: function (err) {
+        if (err.data.code ===  '200008') {
+          this.messageTipModal = true
+          this.error = true
+          this.messageTip = '请先登录会员'
+        }
       },
 //      零售账单结算提交成功回调函数
       setuploadFinish: function () {
@@ -842,6 +842,10 @@
         this.checkedGoodsList = []
         window.location.href = '/?#!/site/tranquery'
       },
+//      挂账账单结算提交成功回调函数
+       billLoadFinsh: function () {
+         this.creditlBill = true
+       },
 //      订单抹零请求后的函数
       truncateFinish: function (response) {
         this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
@@ -870,15 +874,27 @@
         }
         this.settlementRequest(settlementData, this.setuploadFinish)
       },
+//     会员结算成功函数
+      memberPayConfirm: function () {
+        orderType = Number(window.localStorage.getItem('orderType'))
+        this.order_mata_data.paymentAmount = ""
+        this.settlementFlag = false
+        this.memberModal = false
+        this.checkedGoodsList = []
+        window.location.href = '/?#!/site/tranquery'
+      },
 //      挂账订单结算提交
       billUpload: function () {
-//        类似零售账单
-        this.settlementUpload()
+        orderType = Number(window.localStorage.getItem('orderType'))
+        this.order_mata_data.paymentAmount = ""
+        this.settlementFlag = false
+        this.creditlBill = false
+        this.checkedGoodsList = []
+        window.location.href = '/?#!/site/tranquery'
       }
     },
     data: function () {
       return {
-        memberCount: 0,
         goodsNote: '',
         paymentAmount: '',
         couponSelected: 0,
@@ -901,7 +917,11 @@
         memberFlag: false,
         member: {
           memberCode: '',
-          memberId: ''
+          memberId: '',
+          memberCodeModal: true,
+          memberInfoModal: false,
+          memberCount: 0,
+          memberInfoList: {}
         },
         search: '',
         originalPrice: 0,
@@ -913,6 +933,7 @@
           payment: 'cash',
           strategy_id: '',
           order_note: '',
+          member_card_number: '',
           coupon_note: ''
         },
         settlementFlag: false,
@@ -944,18 +965,33 @@
   .index-list-porducts {
     height: 442px;
   }
-
   .modal-body {
     text-align: center;
     height: 15px;
   }
-
   .modal-body span {
     margin-left: 20px;
   }
-
   .color {
     color: red
+  }
+  .memberInfoList{
+    width: 80%;
+  }
+  .memberInfoList  li{
+    width:30%;
+    margin: 6px 10px;
+    list-style: none;
+    float: left;
+    font-size: 16px;
+    border: none;
+    text-align: left;
+    line-height: 1.4;
+  }
+  .memberChange{
+    width: 20%;
+    margin-top:40px;
+
   }
 </style>
 
