@@ -41,6 +41,8 @@
               <span v-if="onedata.checked=='已审核' && onedata.operated_at!=''" class="btn btn-success btn-sm" @click="finish()">完成</span>
               <span v-if="onedata.checked=='已审核' && onedata.operated_at==''" class="btn btn-info btn-sm" @click="picking()">领料</span>
               <span v-if="onedata.checked=='未审核'" class="btn btn-danger btn-sm" @click="audit()">审核</span>
+              <span v-if="onedata.checked=='未审核' && !isExist" class="btn btn-danger btn-sm" @click="editMethod()">编辑</span>
+              <span v-if="onedata.checked=='未审核' && isExist" class="btn btn-success btn-sm" @click="saveGoods()">保存</span>
             </td>
           </tr>
           </tbody>
@@ -211,29 +213,21 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.getlistData(currentpage)
-      },
-//     删除请求
-      deleteFromApi: function (id) {
-        var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/produce/pick/' + id, function (response) {
-          self.getlistData(1)
-        })
-      },
-//     完成請求
-      finishFromApi: function (id) {
-        var self = this
-        finishRequest(requestSystemUrl + '/backend-system/produce/pick/' + id + '/finished', function (response) {
-          self.getlistData(1)
-        })
-      },
+      }
+    },
+    ready: function () {
+      this.getlistData(1)
+      this.getOneData()
+    },
+    methods: {
 //      编辑
-      editGoods: function (event) {
+      editMethod: function(){
+        this.isExist = true
         this.editFlag = true
       },
 //      保存
       saveGoods: function (event) {
         var self = this
-        self.editFlag = false
         var id = this.$route.params.queryId
         var item = []
         $.each(self.detailList, function (index, val) {
@@ -248,23 +242,17 @@
         }
         var url = requestSystemUrl + '/backend-system/produce/pick/' + id
         putDataToApi(url, data, function (res) {
+          self.isExist = false
+          self.editFlag = false
+          self.getOneData()
+        },function(err){
+          if (Number(err.data.code) === 220000) {
+            console.log(err.data.message)
+            self.modal.errModal = true
+            self.modal.errInfo = err.data.message
+          }
         })
       },
-//      审核错误提示
-      checkFail: function (err) {
-        var self = this
-        if (Number(err.data.code) === 220000) {
-          console.log(err.data.message)
-          self.modal.errModal = true
-          self.modal.errInfo = err.data.message
-        }
-      }
-    },
-    ready: function () {
-      this.getlistData(1)
-      this.getOneData()
-    },
-    methods: {
 //      审核
       audit: function () {
         this.modal.auditModal = true
@@ -389,6 +377,7 @@
     data: function () {
       return {
         editFlag: false,
+        isExist: false,
         thisId: '',
         checkUrl: requestSystemUrl + '/backend-system/produce/pick/',
         detailModal: true,
