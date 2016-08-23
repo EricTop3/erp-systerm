@@ -124,7 +124,7 @@
               <td  :id="[entry.id ? entry.id : '']">
                 <span class="btn btn-primary btn-sm" @click="payment($event)">回款</span>
                 <span class="btn btn-info btn-sm" @click="lookDetail($event)">查看</span>
-                <span class="btn btn-warning btn-sm" @click="returnGoods($event)">退货</span>
+                <span class="btn btn-warning btn-sm" @click="returnGoods($event)" v-model="entry.after_sale!='已退货'">退货</span>
               </td>
             </tr>
             </tbody>
