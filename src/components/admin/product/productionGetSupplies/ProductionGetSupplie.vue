@@ -92,7 +92,7 @@
             <td>
               <span v-if="item.checked=='已审核' && item.operated_at!=''" class="btn btn-success btn-sm" @click="finish($event)">完成</span>
               <span v-if="item.checked=='已审核' && item.operated_at==''" class="btn btn-info btn-sm" @click="picking($event)">领料</span>
-              <span v-if="item.auditor==''" class="btn btn-danger btn-sm" @click="audit($event)">审核</span>
+              <span v-if="item.checked=='未审核'" class="btn btn-danger btn-sm" @click="audit($event)">审核</span>
               <span class="btn btn-primary btn-sm" @click="view($event)">查看</span>
               <span v-if="item.checked=='未审核'" class="btn btn-default btn-sm" @click="deleteData($event)">删除</span>
             </td>
