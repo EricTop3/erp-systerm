@@ -104,6 +104,8 @@
           this.getProductByUrl(this.secondUrl)
         }else{
           this.getProductByUrl(this.url)
+//         生产数据筛选
+          this.$dispatch("searchProduct")
         }
 //      获取门店列表
         if(this.isPurchase){
@@ -129,6 +131,7 @@
             var dataArray= []
             if (currentObjCheck) {
               self.secondData = self.secondData.concat(fetchedData)
+              self.$dispatch("productionreference",response)
             } else {
               $.each(self.secondData, function (index, val) {
                 if (_.isEqual(val, firtElem)) {

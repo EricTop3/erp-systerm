@@ -111,7 +111,8 @@
     :first-data-title="origenData.firstDataTitle"
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
-    :second-data.sync="origenData.secondData">
+    :second-data.sync="origenData.secondData"
+  >
   </introduce-data>
   <!--模态框-添加商品-->
   <stock-goods
@@ -238,6 +239,15 @@
         this.current_page = currentpage
         this.localPage(this.old)
         this.rederSetGoods = this.old
+      },
+//    生产引用筛选非原材料
+      productionreference: function (response) {
+        var  productList = response.data.body.list
+        $.each(productList,function(index,val){
+          if(val.product_type === 2){
+             console.log('wang')
+          }
+        })
       }
     },
     methods: {
@@ -295,6 +305,7 @@
       },
 //     引入数据
       inclucdePurchaseData: function () {
+        var self = this
         this.modal.parentIntroModal = true
         this.$broadcast('getGoodsWhenClick')
       },

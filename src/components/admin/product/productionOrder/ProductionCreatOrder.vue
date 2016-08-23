@@ -30,7 +30,7 @@
               <label>营业员</label>
               <select class="form-control" v-model="search.selectClerk">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in search.clerk">{{item.account}}</option>
+                <option :value="item.id" v-for="item in search.clerk">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -53,7 +53,7 @@
                 <option value="hr00">已退款</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary" @click="searchMethod">搜索</button>
+            <span type="submit" class="btn btn-primary" @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
@@ -259,6 +259,23 @@
           self.page =  response.data.body.pagination
           $.each(self.orderList,function (index,val) {
             val.total_sum = (val.total_sum * 0.01).toFixed(2)
+            switch (val.payment) {
+              case  'cash':
+                val.payment = '现金'
+                break
+              case 'alipay':
+                val.payment = '支付宝'
+                break
+              case  'weixin':
+                val.payment = '微信'
+                break
+              case 'post':
+                val.payment= 'post机刷卡'
+                break
+              case  'vip':
+                val.payment = '会员卡余额'
+                break
+            }
             switch (val.status) {
               case  'at00':
                 val.status = '已提交'
@@ -374,6 +391,19 @@
 //      撤销搜索
       cancelSearch: function () {
         this.getOrderList({})
+        this.search = {
+           clerk:[],
+            store: [],
+            code: '',
+            selectClerk:  '',
+            selectStore: '',
+            selectProgress: ''
+        }
+        this.time = {
+          startTime: '',
+          endTime: '',
+          timeText: '请输入下单日期'
+        }
       }
     },
     computed: {
