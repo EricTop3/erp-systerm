@@ -49,11 +49,8 @@
         <!--入库明细入库汇总-->
         <div>
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)"
-                                                                                           data-toggle="tab">出库明细</a>
-            </li>
-            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">出库汇总</a>
-            </li>
+            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">出库明细</a></li>
+            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">出库汇总</a></li>
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
@@ -107,8 +104,8 @@
                     :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.stock}}</td>
-                  <td>{{entry.stock}}</td>
+                  <td>{{entry.origin_stock}}</td>
+                  <td>{{entry.target_stock}}</td>
                   <td>{{entry.item_main_reference_value}}</td>
                   <td>{{entry.item_amount}}</td>
                   <td>{{entry.unit_name}}</td>
@@ -377,6 +374,7 @@
         detailModal: true,
 //        入库汇总
         summaryModal: false,
+        summarystockGoods: [],
         showPage: [],
         reference_type: 'Receiving',
         sendTime: '',
