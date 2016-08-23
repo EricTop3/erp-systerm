@@ -24,10 +24,10 @@
           <date-picker :value.sync="query.end_time" :time-text="timetext2"></date-picker>
         </div>
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.search">
+          <input type="text" class="form-control" placeholder="请输入品名或货号" v-model="query.name">
         </div>
-        <button class="btn btn-info" @click="listData(1)">搜索</button>
-        <span class="btn btn-warning" @click="cancel">撤销搜索</span>
+        <span class="btn btn-info" @click="listData(1)">搜索</span>
+        <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
       </form>
     </div>
 
@@ -83,7 +83,7 @@
         getDataFromSiteApi(requestUrl + '/front-system/stock/produce-put', {
           start_time: this.query.start_time || '',
           end_time: this.query.end_time || '',
-          name: this.query.search || '',
+          name: this.query.name || '',
           category_id: this.query.category || '',
           page: page,
           per_page: 16
@@ -92,6 +92,7 @@
           self.list = response.data.body.list
         })
       },
+//      取消搜索
       cancel: function () {
         this.query.start_time = ''
         this.query.end_time = ''
@@ -124,7 +125,7 @@
         query: {
           start_time: '',
           end_time: '',
-          search: '',
+          name: '',
           category: ''
         }
       }

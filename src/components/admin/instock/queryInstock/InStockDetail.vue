@@ -18,7 +18,7 @@
               <label>操作类型</label>
               <select class="form-control" v-model="search.type">
                 <option value="">请选择</option>
-                <option value="">零售出库</option>
+                <option value="Sale">零售出库</option>
                 <option value="ProduceDocument">生产出库</option>
                 <option value="ProductionPutInDocument">生产入库</option>
                 <option value="DistributionDocument">配送出库</option>
