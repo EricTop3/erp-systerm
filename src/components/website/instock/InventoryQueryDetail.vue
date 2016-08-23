@@ -22,7 +22,7 @@
           <date-picker :value.sync="search.start_time"></date-picker>-
           <date-picker :value.sync="search.ned_time"></date-picker>
         </div>
-        <button class="btn btn-primary" @click="searchMethod">查询</button>
+        <span class="btn btn-primary" @click="searchMethod">查询</span>
       </form>
     </div>
 
@@ -134,14 +134,23 @@
             val.out_stock = ''
             if (val.amount > 0) {
               val.in_stock = val.amount
-              val.out_stock = '无'
+              val.out_stock = 0
+              if(val.operated_type == 'PickDocument'){
+                val.operated_type = '领料入库'
+              }
             } else {
-              val.in_stock = '无'
+              val.in_stock = 0
               val.out_stock = val.amount*(-1)
+              if(val.operated_type == 'PickDocument'){
+                val.operated_type = '领料出库'
+              }
             }
             switch(val.operated_type){
               case 'ProduceDocument':
                 val.operated_type = '生产出库'
+                break;
+              case 'ProductionPutInDocument':
+                val.operated_type = '生产入库'
                 break;
               case 'DistributionDocument':
                 val.operated_type = '配送出库'
@@ -150,15 +159,23 @@
                 val.operated_type = '采购收货'
                 break;
               case 'StoreReceivingDocument':
-                val.operated_type = '采购门店收货'
+                val.operated_type = '门店收货'
                 break;
-              case 'ProductionPutInDocument':
-                val.operated_type = '生产入库'
+              case 'AppointmentDistribute':
+              val.operated_type = '预约单出货'
+              break;
+              case 'AppointmentProduce':
+                val.operated_type = '预约单生产'
+                break;
+              case 'Sale':
+                val.operated_type = '零售出库'
+                break;
+              case 'AllocateDocument':
+                val.operated_type = '调拨出库'
                 break;
             }
           })
         })
-
       },
 //    查询
       searchMethod: function () {

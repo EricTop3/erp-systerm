@@ -28,8 +28,8 @@
         <div class="form-group ml10">
           <label><input type="checkbox" v-model="search.safe_stock">库存警戒中</label>
         </div>
-        <button class="btn btn-primary" @click="searchMethod()">搜索</button>
-        <button class="btn btn-default" @click="cancelSearch()">撤销搜索</button>
+        <span class="btn btn-primary" @click="searchMethod()">搜索</span>
+        <span class="btn btn-default" @click="cancelSearch()">撤销搜索</span>
       </form>
     </div>
 
