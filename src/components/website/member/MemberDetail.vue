@@ -217,10 +217,27 @@
 //          列表
           self.page = response.data.body.pagination
           self.gridData = response.data.body.list
-
           $.each(self.gridData, function (index, value) {
-            value.balance_change = Number(Number(value.balance_change) * 0.01).toFixed(2)
-            value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
+            if(value.balance != ''){
+              value.balance = '￥' + (value.balance * 0.01).toFixed(2)
+            }
+            if(value.balance_change < 0){
+              if(value.point_type == 'Store'){
+                value.point_type ='会员余额支付'
+              }
+            }else if(value.balance_change > 0){
+              if(value.point_type == 'Store'){
+                value.point_type ='会员卡充值'
+              }
+            }
+            if(value.balance_change != ''){
+              value.balance_change = '￥' + (value.balance_change * 0.01).toFixed(2)
+            }
+            switch (value.point_type) {
+              case 'Management':
+                value.point_type = 'erp管理系统变更'
+                break;
+            }
           })
         })
       },
