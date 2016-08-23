@@ -77,7 +77,7 @@
             <span class="btn btn-primary btn-sm"  @click="cancelOrder($event)" v-if="entry.status==='已提交'">取消订单</span>
             <span class="btn btn-info btn-sm"  @click="startProduct($event)" v-if="entry.status==='已提交'">开始生产</span>
             <span class="btn btn-primary btn-sm"  @click="distribution($event)" v-if="entry.status==='生产中'">配送</span>
-            <span class="btn btn-primary btn-sm"  @click="finishOrder($event)" v-if="entry.status==='快递配送中'">客服签收</span>
+            <span class="btn btn-primary btn-sm"  @click="finishOrder($event)" v-if="entry.status==='快递配送中'">客户签收</span>
             <span class="btn btn-info btn-sm"  @click="lookDetail($event)">查看</span>
           </td>
         </tr>
@@ -143,7 +143,7 @@
     </div>
     <div slot='body'>
       <div class='form-group'>
-        <p class="modal-body text-center">客服确定已收货？</p>
+        <p class="modal-body text-center">客户确定已收货？</p>
       </div>
     </div>
     <div slot='footer'>
@@ -363,7 +363,7 @@
             self.getOrderList({})
           })
         },
-//      客服签收
+//      客户签收
         finishOrder: function (even) {
           finishOrderId = Number($(even.currentTarget).parents("tr").attr("id"))
           this.modal.orderFinishModal = true
@@ -391,19 +391,12 @@
 //      撤销搜索
       cancelSearch: function () {
         this.getOrderList({})
-        this.search = {
-           clerk:[],
-            store: [],
-            code: '',
-            selectClerk:  '',
-            selectStore: '',
-            selectProgress: ''
-        }
-        this.time = {
-          startTime: '',
-          endTime: '',
-          timeText: '请输入下单日期'
-        }
+        this.search.selectClerk = ""
+        this.search.selectStore = ""
+        this.search.selectProgress = ''
+        this.time.startTime = ""
+        this.time.endTime = ""
+        this.time.timeText = "请输入下单日期"
       }
     },
     computed: {
