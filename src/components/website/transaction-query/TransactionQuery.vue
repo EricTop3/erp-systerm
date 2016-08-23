@@ -108,6 +108,7 @@
           <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr class="text-center">
+              <th ><label><input type="checkbox" @change="checkAllMethod()" v-model="checkAll" :disabled="data  && data.length<0">全选</label></th>
               <th v-for="value in hangingGridColumns">
                 {{value}}
               </th>
@@ -116,6 +117,7 @@
             </thead>
             <tbody>
             <tr class="text-center" v-for="entry in queryList" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <td><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="singleCheck($event)"  v-model="entry.choice"></td>
               <td v-for="value in  retailGridColumns">
                 {{entry[$key]}}
               </td>
@@ -125,12 +127,12 @@
                 <span class="btn btn-warning btn-sm" @click="returnGoods($event)">退货</span>
               </td>
             </tr>
-            <tr>
-              <td><span class="btn btn-sm btn-info" style="margin-right:15px;" @click="paymentAll()">全部回款</span></td>
-              <td>合计回款额：<span>￥{{totalPayMent|priceChange}}</span></td>
-            </tr>
             </tbody>
           </table>
+          <div>
+            <span class="btn btn-sm btn-info" style="margin-right:15px;" @click="paymentAll()">全部回款</span>
+              <span></span>合计回款额：<span>￥{{totalPayMent|priceChange}}</span>
+          </div>
           <!-- 翻页 -->
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
@@ -889,6 +891,13 @@
 <style scoped>
   .text-aligen {
     text-align: center;
+  }
+  table thead tr th:first-child {
+    text-align: left;
+  }
+
+  table tbody tr td:first-child {
+    text-align: left;
   }
 </style>
 

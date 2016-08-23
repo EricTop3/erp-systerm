@@ -54,8 +54,8 @@
                    <td>{{entry.item_code}}</td>
                    <td>{{entry.item_name}}</td>
                    <td>{{entry.unit_specification}}</td>
-                   <td>{{entry.stock}}{{entry.unit_name}}</td>
-                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                   <td>{{entry.stock ===undefind ? entry.stock =0 : entry.stock=entry.stock}}{{entry.unit_name}}</td>
+                   <td>{{entry.main_reference_value ===undefind ? entry.main_reference_value =0 : entry.main_reference_value=entry.main_reference_value}}{{entry.unit_name}}</td>
                    <td><count :count.sync =entry.purchase_amount></count>{{entry.unit_name}}</td>
                    <td><price :price.sync =entry.purchase_price></price>元/{{entry.unit_name}}</td>
                    <td>{{entry.reference_number}}</td>
@@ -189,7 +189,7 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount = ''
+          val.purchase_amount = val.main_reference_value || 0
           val.purchase_price = (val.apuc*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
