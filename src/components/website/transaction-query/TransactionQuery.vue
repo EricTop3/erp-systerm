@@ -117,14 +117,14 @@
             </thead>
             <tbody>
             <tr class="text-center" v-for="entry in queryList" track-by="$index" :id="[entry.id ? entry.id : '']">
-              <td><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="singleCheck($event)"  v-model="entry.choice"></td>
+              <td><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="changeOperate($event)"  v-model="entry.choice"></td>
               <td v-for="value in  retailGridColumns">
                 {{entry[$key]}}
               </td>
               <td  :id="[entry.id ? entry.id : '']">
                 <span class="btn btn-primary btn-sm" @click="payment($event)">回款</span>
                 <span class="btn btn-info btn-sm" @click="lookDetail($event)">查看</span>
-                <span class="btn btn-warning btn-sm" @click="returnGoods($event)" v-model="entry.after_sale!='已退货'">退货</span>
+                <span class="btn btn-warning btn-sm" @click="returnGoods($event)" v-if="entry.status!='已退货'">退货</span>
               </td>
             </tr>
             </tbody>
@@ -742,14 +742,18 @@
         })
       },
 //      选择回款
-      changeOperate: function (currentId, currentObjCheck) {
+      changeOperate: function (event) {
         var self = this
+        var currentId = Number($(event.currentTarget).attr('id'))
+        console.log(currentId)
+        var currentObjCheck = $(event.currentTarget).prop('checked')
+        console.log(currentObjCheck)
         $.each(this.queryList, function (index, val) {
-          if (Number(Number(currentId) === val.id)) {
+          if (currentId === val.id) {
             if (currentObjCheck) {
               self.totalPayMent = self.totalPayMent + val.total_sum * 100
             } else {
-              self.totalPayMent = self.totalPayMent + val.total_sum * 100
+              self.totalPayMent = self.totalPayMent - val.total_sum * 100
             }
           }
         })
