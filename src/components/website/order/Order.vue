@@ -90,7 +90,7 @@
                 <!--<label>会员密码</label>-->
                 <!--<input type='email' class='form-control'>-->
                 <!--</div>-->
-                <button class='btn btn-primary ml10' @click="memberRequest">确定</button>
+                <button  class='btn btn-primary ml10' @click="memberRequest">确定</button>
               </form>
               <div v-if="member.memberInfoModal">
                 <ul class="fl memberInfoList">
@@ -120,7 +120,7 @@
           <div class='col-xs-9'>
             <p class='f18'>原订单金额：<span><strong>￥{{totalPrice}}</strong></span></p>
 
-            <p class='c-erp f18'>实际订单额：<span><strong>￥{{finalPrice || totalPrice}}</strong></span></p>
+            <p class='c-erp f18'>实际订单额：<span><strong>￥{{ finalPrice }}</strong></span></p>
 
           </div>
           <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal'
@@ -436,6 +436,15 @@
     events: {
       pagechange: function (currentpage) {
         this.pageRequest(currentpage)
+      },
+      countIncrease: function() {
+        this.globalCoupon()
+      },
+      countDuce: function() {
+        this.globalCoupon()
+      },
+      inputCount: function() {
+        this.globalCoupon()
       }
     },
     methods: {
@@ -517,24 +526,9 @@
       },
 //     选择优惠计算金额
       select_money: function (response) {
-        if (response.data.body) {
           this.finalPrice = Number((response.data.body.total_sum * 0.01)).toFixed(2)
           Number(this.finalPrice) == 0 ? this.finalPrice = this.totalPrice : this.finalPrice
           orderMount = response.data.body.total_sum
-        }else{
-          if(response.data.code ==='200005'){
-            this.error = true
-            this.messageTipModal =  true
-            this.messageTip = response.data.message
-            this.order_mata_data.strategy_id = 0
-            this.finalPrice = this.totalPrice
-          }
-          else{
-            this.error = true
-            this.messageTipModal =  true
-            this.messageTip = response.data.message
-          }
-        }
       },
 //     结算请求
       settlementRequest: function (data, callback,errback) {
@@ -640,9 +634,11 @@
       confimDelete: function () {
         this.isDelete = false
         var checkedGoodsList = this.checkedGoodsList
+        var self = this
         $.each(checkedGoodsList, function (index, value) {
           if (value.id === deleteCheckedGoodId) {
             checkedGoodsList.splice(index, 1)
+            self.globalCoupon()
           }
         })
         if (this.checkedGoodsList.length < 1) {
@@ -795,12 +791,14 @@
           obj['note'] = val.priceNote
           orderItems.push(obj)
         })
+        console.log(settlementData)
         settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,
           'all_total': this.paymentAmount * 1000
         }
         if(orderType === 2) {
+          this.order_mata_data = ""
           this.settlementRequest(settlementData, this.billLoadFinsh,this.memberBill)
         }else if(this.order_mata_data.payment==='vip'){
            this.settlementRequest(settlementData, this.memberpayFinish, this.memberPayFail)
@@ -886,7 +884,7 @@
 //      挂账订单结算提交
       billUpload: function () {
         orderType = Number(window.localStorage.getItem('orderType'))
-        this.order_mata_data.paymentAmount = ""
+//        this.order_mata_data.paymentAmount = ""
         this.settlementFlag = false
         this.creditlBill = false
         this.checkedGoodsList = []
@@ -956,7 +954,7 @@
           initValue += Number(value.count) * Number(value.goodPrice)
         })
         return initValue.toFixed(2)
-      }
+      },
     }
   }
 </script>

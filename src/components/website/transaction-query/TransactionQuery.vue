@@ -105,22 +105,32 @@
 
         <!-- begin挂账单 -->
         <div role="tabpanel" class="tab-pane active" v-if="guazhangShow === true">
-          <!-- 表格 -->
-          <grid :data="queryList" :columns="hangingGridColumns" :operate="gridOperate" :check="gridCheck"
-                v-on:change-operate="changeOperate" v-on:change-all-operate="changeAllOperate">
-            <div slot="operateList">
-              <span class="btn btn-primary btn-sm" @click="payment($event)">回款</span>
-              <span class="btn btn-info btn-sm" @click="lookDetail($event)">查看</span>
-              <span class="btn btn-warning btn-sm" @click="returnGoods($event)">退货</span>
-            </div>
-          </grid>
-          <table>
+          <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr class="text-center">
+              <th v-for="value in hangingGridColumns">
+                {{value}}
+              </th>
+              <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" v-for="entry in queryList" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <td v-for="value in  retailGridColumns">
+                {{entry[$key]}}
+              </td>
+              <td  :id="[entry.id ? entry.id : '']">
+                <span class="btn btn-primary btn-sm" @click="payment($event)">回款</span>
+                <span class="btn btn-info btn-sm" @click="lookDetail($event)">查看</span>
+                <span class="btn btn-warning btn-sm" @click="returnGoods($event)">退货</span>
+              </td>
+            </tr>
             <tr>
               <td><span class="btn btn-sm btn-info" style="margin-right:15px;" @click="paymentAll()">全部回款</span></td>
               <td>合计回款额：<span>￥{{totalPayMent|priceChange}}</span></td>
             </tr>
+            </tbody>
           </table>
-
           <!-- 翻页 -->
           <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
                 :last-page="page.last_page"></page>
@@ -698,13 +708,13 @@
         $.each(self.returnGoodsList,function(index,val){
           var obj = {}
           obj.amount = val.return_number
-          obj.id = val.id
+          obj.consumable_id  = val.id
           items.push(obj)
         })
         if (self.refundFlag === true) {
           return false
         } else {
-          putDataToApi(requestUrl + '/front-system/order/refund-goods/'+refundId,items,function (response) {
+          putDataToApi(requestUrl + '/front-system/order/refund-goods/'+ refundId, {'items':items}, function (response) {
             self.modal.refundModal = false
             self.fetchData(url, data, self.finishPage)
           },function (err) {

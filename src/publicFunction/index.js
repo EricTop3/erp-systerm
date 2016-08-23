@@ -271,8 +271,8 @@ export function  putDataToApi (url, data, callback, callbackErr) {
   cur.$http({
     url: url,
     method: 'put',
-    data: data,
-    headers: {'X-Overpowered-Token': token}
+    headers: {'X-Overpowered-Token': token},
+    data: data
   })
     .then(function (response) {
       callback && callback(response)

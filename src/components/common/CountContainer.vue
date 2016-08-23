@@ -24,12 +24,14 @@
         if(Number( this.count)>= Number(this.maxCount)){
          this.count =  this.maxCount
         }
+        this.$dispatch('inputCount')
       },
       addCount: function () {
         if(Number( this.count)>= Number(this.maxCount)){
           this.count =  this.maxCount
         }else{
           this.count++
+          this.$dispatch('countIncrease')
         }
       },
       lessCount: function () {
@@ -37,6 +39,7 @@
           this.count = 1
         } else {
           this.count--
+          this.$dispatch('countDuce')
         }
       }
     }
