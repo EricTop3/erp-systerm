@@ -221,17 +221,17 @@
             if(value.balance != ''){
               value.balance = '￥' + (value.balance * 0.01).toFixed(2)
             }
-            if(value.balance_change != ''){
-              value.balance_change = '￥' + (value.balance_change * 0.01).toFixed(2)
-            }
             if(value.balance_change < 0){
-              if(value.point_type == 'Store'){
-                value.point_type ='会员卡充值'
-              }
-            }else{
               if(value.point_type == 'Store'){
                 value.point_type ='会员余额支付'
               }
+            }else if(value.balance_change > 0){
+              if(value.point_type == 'Store'){
+                value.point_type ='会员卡充值'
+              }
+            }
+            if(value.balance_change != ''){
+              value.balance_change = '￥' + (value.balance_change * 0.01).toFixed(2)
             }
             switch (value.point_type) {
               case 'Management':
