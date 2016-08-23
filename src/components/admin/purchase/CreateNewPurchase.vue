@@ -352,7 +352,7 @@
           code: "货号",
           name: "品名",
           specification_unit:"单位规格",
-          aruc: "总部库存",
+          systerm_stock: "总部库存",
           order_quantity:"门店要货量",
           purchase_quantity:"采购数量",
           purchase_price:"采购单价",
@@ -362,7 +362,7 @@
           code: "货号",
           name: "品名",
           specification_unit:"单位规格",
-          aruc: "总部库存",
+          systerm_stock: "总部库存",
           order_quantity:"门店要货量",
           purchase_quantity:"采购数量",
           source_number: "小计"
@@ -373,7 +373,7 @@
         purchaseTabelHead: {
           code: "货号",
           name: "品名",
-          null: "库存数量",
+          systerm_stock: "库存数量",
           category: "分类",
           production_unit_name: "单位",
           specification_unit: "单位规格"

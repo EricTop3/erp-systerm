@@ -240,15 +240,6 @@
         this.localPage(this.old)
         this.rederSetGoods = this.old
       },
-//    生产引用筛选非原材料
-      productionreference: function (response) {
-        var  productList = response.data.body.list
-        $.each(productList,function(index,val){
-          if(val.product_type === 2){
-             console.log('wang')
-          }
-        })
-      }
     },
     methods: {
 //     提交配送出库

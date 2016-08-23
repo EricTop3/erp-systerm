@@ -87,7 +87,8 @@
       secondData: [],
       url: '',
       secondUrl: '',
-      requestData: {}
+      requestData: {},
+      productFlag: true
     },
     events: {
 //    绑定翻页事件
@@ -104,8 +105,6 @@
           this.getProductByUrl(this.secondUrl)
         }else{
           this.getProductByUrl(this.url)
-//         生产数据筛选
-          this.$dispatch("searchProduct")
         }
 //      获取门店列表
         if(this.isPurchase){
@@ -123,7 +122,17 @@
         var  self = this
         var  data = this.requestData
           getDataFromApi(url + "/" + currentId,data,function(response){
-            fetchedData = response.data.body.list
+            if(self.productFlag){
+              console.log('wangg')
+              $.each(response.data.body.list,function(index,val){
+                if(val.product_type ===2){
+                  response.data.body.list.splice(index,1)
+                }
+              })
+              fetchedData = response.data.body.list
+            }else{
+              fetchedData = response.data.body.list
+            }
             var firtElem = fetchedData[0]
             var lastElem = fetchedData[fetchedData.length - 1]
             var start = 0
@@ -131,7 +140,6 @@
             var dataArray= []
             if (currentObjCheck) {
               self.secondData = self.secondData.concat(fetchedData)
-              self.$dispatch("productionreference",response)
             } else {
               $.each(self.secondData, function (index, val) {
                 if (_.isEqual(val, firtElem)) {
