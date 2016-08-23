@@ -129,7 +129,7 @@
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
-    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse}"
+    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse,type:2}"
   >
   </introduce-data>
   <!--模态框-添加商品-->
