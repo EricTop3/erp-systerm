@@ -60,7 +60,7 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.stock}}{{entry.unit_name}}</td>
+                  <td>{{entry.stock!=undefind ? entry.stock=entry.stock: 0}}{{entry.unit_name}}</td>
                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                   <td><count :count.sync =entry.purchase_amount></count>{{entry.unit_name}}</td>
                   <td><price :price.sync =entry.purchase_price></price>元/{{entry.unit_name}}</td>
@@ -112,7 +112,8 @@
     :first-data-title="origenData.firstDataTitle"
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
-    :second-data.sync="origenData.secondData">
+    :second-data.sync="origenData.secondData"
+  >
   </introduce-data>
   <!--模态框-添加商品-->
   <stock-goods

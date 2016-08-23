@@ -112,6 +112,7 @@
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
+    :product-flag = 'true'
   >
   </introduce-data>
   <!--模态框-添加商品-->

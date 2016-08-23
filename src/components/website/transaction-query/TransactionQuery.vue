@@ -676,11 +676,22 @@
       confirmReturnMoney: function () {
         this.modal.returnMoneyModal = false
         var self = this
+        var items = []
         var url = requestUrl + '/front-system/order'
         var data = {
           order_type: self.orderType
         }
-        putDataToApi(requestUrl + '/front-system/order/refund-goods/' + this.receivedId,{},function(response){
+        var items={
+          'a':'wang',
+          'b':'wwww'
+        }
+//        $.each(self.returnGoodsList,function(index,val){
+//              var obj = {}
+//              obj.amount = val.return_number
+//              obj.consumable_id  = val.id
+//              items.push(obj)
+//        })
+        putDataToApi(requestUrl + '/front-system/order/refund-goods/' + this.receivedId,items,function(response){
           this.modal.returnMoneyModal = false
           self.fetchData(url, data, self.finishPage)
         })

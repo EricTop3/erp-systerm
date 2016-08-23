@@ -116,7 +116,9 @@
     :first-data-title="origenData.firstDataTitle"
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
-    :second-data.sync="origenData.secondData">
+    :second-data.sync="origenData.secondData"
+    :request-data="{stream_origin_id:selectedFactory,stream_target_id:selectedInHouse}"
+  >
   </introduce-data>
 
   <!--错误信息-->
@@ -340,7 +342,7 @@
         currentUrl: '',
         origenData: {
           title: '原始要货配料单',
-          dataUrl: requestSystemUrl + '/backend-system/reference-document/production-out',
+          dataUrl: requestSystemUrl + '/backend-system/reference-document/produce-out',
           firstDataTitle: {
             "document_number": "生产货单号",
             "created_at": "生产日期",
