@@ -10,8 +10,8 @@
         <!-- 路径导航 -->
         <ol class="breadcrumb">
           <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：生产</li>
-          <li class="active">工厂生产</li>
-          <li class="active">新建生产单</li>
+          <li class="active">工厂生产入库单</li>
+          <li class="active">新建入库单</li>
         </ol>
 
         <!-- 页头 -->
@@ -374,7 +374,7 @@
           title: '原始生产单',
           dataUrl: requestSystemUrl + '/backend-system/reference-document/produce',
           firstDataTitle: {
-            "document_number": "采购单号",
+            "document_number": "生产单号",
             "created_at": "生产日期",
             "amount": "生产数量",
             "store_name": "生产工厂",
