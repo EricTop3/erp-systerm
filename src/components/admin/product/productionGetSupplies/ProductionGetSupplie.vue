@@ -33,17 +33,19 @@
             </div>
 
             <div class="form-group ml10">
-              <label>生产车间库</label>
+              <label>总部仓库</label>
               <select class="form-control" v-model="searchData.warehouse_id">
                 <option value="">请选择</option>
-                <option v-for="item in listProviderB" track-by="$index" value="{{item.id}}">{{item.name}}
+                <option value="1">默认工厂[仓库]</option>
+                <!--<option v-for="item in listProviderB" track-by="$index" value="{{item.id}}">{{item.name}}-->
               </select>
             </div>
             <div class="form-group ml10">
               <label>领料工厂</label>
               <select class="form-control" v-model="searchData.target_id">
                 <option value="">请选择</option>
-                <option v-for="item in listProviderB" track-by="$index" :value="item.id">{{item.name}}
+                <option value="2">默认工厂[仓库配料间]</option>
+                <!--<option v-for="item in listProviderB" track-by="$index" :value="item.id">{{item.name}}-->
               </select>
             </div>
             <div class="form-group ml10">
@@ -72,7 +74,7 @@
           <tr class="text-center">
             <th>领料单号</th>
             <th>审核状态</th>
-            <th>生产车间库</th>
+            <th>总部仓库</th>
             <th>领料工厂</th>
             <th>审核人</th>
             <th>领料单生成日期</th>
@@ -241,7 +243,7 @@
           if (Number(err.data.code) === 220000) {
             self.modal.auditModal = false
             self.modal.errModal = true
-            self.modal.errInfo = '审核失败'
+            self.modal.errInfo = '库存不足，审核失败'
           }
         })
       },
@@ -314,7 +316,13 @@
       },
 //      取消搜索
       cancelSearch: function () {
-        this.searchData = {}
+        this.searchData.checked = ''
+        this.searchData.warehouse_id = ''
+        this.searchData.target_id = ''
+        this.searchData.start_time = ''
+        this.searchData.end_time = ''
+        this.searchData.receive_start_time = ''
+        this.searchData.receive_end_time = ''
         this.getlistData(1)
       },
 //      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'

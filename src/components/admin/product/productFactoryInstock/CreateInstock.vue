@@ -25,14 +25,16 @@
               <label>生产工厂</label>
               <select class="form-control" v-model="selectedOutHouse">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
+                <option value="2">默认工厂[仓库配料间]</option>
+                <!--<option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>-->
               </select>
             </div>
             <div class="form-group">
               <label>调入仓库</label>
               <select class="form-control" v-model="selectedInHouse">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
+                <option value="1">默认工厂[仓库]</option>
+                <!--<option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>-->
               </select>
             </div>
             <div class="form-group ml10">
@@ -181,9 +183,9 @@
     ready: function () {
       var self = this
 //    获取仓库列表
-      getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',{},function(response){
-        self.warehouseList = response.data.body.list
-      })
+//      getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',{},function(response){
+//        self.warehouseList = response.data.body.list
+//      })
     },
     events: {
 //      引入原始数据添加商品
@@ -400,6 +402,7 @@
         category: '',
         baseUnit: '',
         setGoods: [],
+        stockGoods: [],
         setGoodsPage: [],
         dataArray: [],
       }

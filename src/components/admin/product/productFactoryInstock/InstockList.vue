@@ -167,7 +167,14 @@
       },
 //    撤销搜索
       cancelSearch: function () {
-        this.listData({})
+        this.searchData.document_number = ''
+        this.searchData.checked = ''
+        this.searchData.creator_id = ''
+        this.searchData.start_time = ''
+        this.searchData.end_time = ''
+        this.searchData.start_receive_time = ''
+        this.searchData.end_receive_time = ''
+        this.listData()
       }
     },
     computed: {
