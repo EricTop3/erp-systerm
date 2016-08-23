@@ -137,7 +137,7 @@
     ready: function () {
       var self = this
 //      获取制单人
-      getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
+      getDataFromApi( requestUrl + '/backend-system/store/account',{},function(response){
         self.orderMaker = response.data.body.list
       })
       this.listData({})
@@ -162,6 +162,7 @@
           end_time: this.searchData.end_time,
           start_receive_time: this.searchData.start_receive_time || '',
           end_receive_time: this.searchData.end_receive_time || '',
+          type: 'ManageAccount'
         }
         this.listData(data)
       },
