@@ -43,7 +43,7 @@
         </td>
         <td>
           <template v-if="item.current_stock == ''">{{ - item.system_stock}}</template>
-          <template v-else>{{item.current_stock - item.system_stock }}</template>
+          <template v-else>{{(item.current_stock - item.system_stock).toFixed(3) }}</template>
         </td>
         <td>{{item.production_unit_name}}</td>
         <td>{{item.specification_unit}}</td>
