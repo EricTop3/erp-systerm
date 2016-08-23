@@ -94,7 +94,7 @@
               <span v-if="item.checked=='已审核' && item.operated_at==''" class="btn btn-info btn-sm" @click="picking($event)">领料</span>
               <span v-if="item.auditor==''" class="btn btn-danger btn-sm" @click="audit($event)">审核</span>
               <span class="btn btn-primary btn-sm" @click="view($event)">查看</span>
-              <span class="btn btn-default btn-sm" @click="deleteData($event)">删除</span>
+              <span v-if="item.checked=='未审核'" class="btn btn-default btn-sm" @click="deleteData($event)">删除</span>
             </td>
           </tr>
           </tbody>
@@ -213,10 +213,6 @@
 //    绑定翻页事件
       pagechange: function (currentpage) {
         this.getlistData(currentpage)
-      },
-//    查看详情
-      gotoDetail: function (id) {
-        window.location.href = '/#!/admin/production/getSupplies/' + id
       }
     },
     ready: function () {
@@ -224,6 +220,11 @@
       this.getlistData(1)
     },
     methods: {
+//      查看详情
+      view: function(event){
+        this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
+        window.location.href = '/#!/admin/production/getSupplies/' + this.thisId
+      },
 //      审核
       audit: function (evnet) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
@@ -282,7 +283,7 @@
 //      确定完成
       confirmFinish: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/produce/pick/' + this.thisId
+        var url = requestSystemUrl + '/backend-system/produce/pick/' + this.thisId + '/finished'
         finishRequest(url, function (response) {
           self.modal.finishModal = false
           self.getlistData(1)
