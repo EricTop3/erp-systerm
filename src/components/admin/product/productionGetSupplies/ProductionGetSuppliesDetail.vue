@@ -15,14 +15,37 @@
         </ol>
 
         <!--详情页面 表格-->
-        <summary-detail
-          :table-header="gridColumns"
-          :table-data="onedata"
-          :grid-operate="gridOperate"
-          :check-url="checkUrl"
-          :edit-flag.sync='editFlag'
-        >
-        </summary-detail>
+        <table class="table table-striped table-border table-hover">
+          <thead>
+          <tr class="text-center">
+            <th>领料单号</th>
+            <th>审核状态</th>
+            <th>总部仓库</th>
+            <th>领料工厂</th>
+            <th>审核人</th>
+            <th>领料单生成日期</th>
+            <th>领料日期</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center">
+            <td>{{onedata.document_number}}</td>
+            <td>{{onedata.checked}}</td>
+            <td>{{onedata.stream_origin}}</td>
+            <td>{{onedata.stream_target}}</td>
+            <td>{{onedata.auditor}}</td>
+            <td>{{onedata.created_at}}</td>
+            <td>{{onedata.operated_at}}</td>
+            <td>
+              <span v-if="onedata.checked=='已审核' && onedata.operated_at!=''" class="btn btn-success btn-sm" @click="finish()">完成</span>
+              <span v-if="onedata.checked=='已审核' && onedata.operated_at==''" class="btn btn-info btn-sm" @click="picking()">领料</span>
+              <span v-if="onedata.checked=='未审核'" class="btn btn-danger btn-sm" @click="audit()">审核</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
         <!--有列表切换的时候的情况-->
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)"
@@ -91,6 +114,55 @@
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo">
   </error-tip>
+  <!--模态框-审核-->
+  <modal :show.sync="modal.auditModal" :modal-size="modal.auditModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" @click="modal.auditModal=false" aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">审核</h4>
+    </div>
+    <div slot="body">
+      <h4 class="text-center">是否通过审核</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-info" @click="confirmAudit()">是</button>
+      <button type="button" class="btn btn-primary" @click="modal.auditModal=false">否</button>
+    </div>
+  </modal>
+  <!--模态框-审核-->
+  <!--模态框-领料-->
+  <modal :show.sync="modal.pickingModal" :modal-size="modal.pickingModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" @click="modal.pickingModal=false"
+              aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">领料</h4>
+    </div>
+    <div slot="body">
+      <h4 class="text-center">确定是否领料</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-info" @click="confirmPicking()">确定</button>
+      <button type="button" class="btn btn-primary" @click="modal.pickingModal=false">取消</button>
+    </div>
+  </modal>
+  <!--模态框-领料-->
+  <!--模态框-完成-->
+  <modal :show.sync="modal.finishModal" :modal-size="modal.finishModalSize">
+    <div slot="header">
+      <button type="button" class="close" data-dismiss="modal" @click="modal.finishModal=false" aria-label="Close"><span
+        aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">完成</h4>
+    </div>
+    <div slot="body">
+      <h4 class="text-center">确定是否完成</h4>
+    </div>
+    <div slot="footer">
+      <button type="button" class="btn btn-info" @click="confirmFinish()">确定</button>
+      <button type="button" class="btn btn-primary" @click="modal.finishModal=false">取消</button>
+    </div>
+  </modal>
+  <!--模态框-完成-->
 </template>
 <style>
   .timewidth {
@@ -193,6 +265,53 @@
       this.getOneData()
     },
     methods: {
+//      审核
+      audit: function () {
+        this.modal.auditModal = true
+      },
+//      确定审核
+      confirmAudit: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/produce/pick/' + this.$route.params.queryId + '/checked'
+        putDataToApi(url, {}, function (response) {
+          self.modal.auditModal = false
+          self.getOneData(1)
+        }, function (err) {
+          if (Number(err.data.code) === 220000) {
+            self.modal.auditModal = false
+            self.modal.errModal = true
+            self.modal.errInfo = '库存不足，审核失败'
+          }
+        })
+      },
+//      领料
+      picking: function () {
+        this.modal.pickingModal = true
+      },
+//      确定领料/backend-system/produce/pick/{id}/pick
+      confirmPicking: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/produce/pick/' + this.$route.params.queryId + '/pick'
+        putDataToApi(url, {}, function (response) {
+          self.modal.pickingModal = false
+          self.getOneData(1)
+        }, function (err) {
+        })
+      },
+//      完成
+      finish: function () {
+        this.modal.finishModal = true
+      },
+//      确定完成
+      confirmFinish: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/produce/pick/' + this.$route.params.queryId + '/finished'
+        finishRequest(url, function (response) {
+          self.modal.finishModal = false
+          self.getOneData(1)
+        }, function (err) {
+        })
+      },
 //      列表数据渲染
       getlistData: function (page) {
         this.thisId = this.$route.params.queryId
@@ -280,7 +399,13 @@
         page: [],
         modal: {
           errModal: false,
-          errInfo: '库存不足,审核失败!'
+          errInfo: '库存不足,审核失败!',
+          auditModal: false,
+          auditModalSize: 'modal-sm',
+          pickingModal: false,
+          pickingModalSize: 'modal-sm',
+          finishModal: false,
+          finishModalSize: 'modal-sm'
         },
         gridColumns: {
           document_number: '领料单号',

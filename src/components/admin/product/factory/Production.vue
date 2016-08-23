@@ -160,7 +160,7 @@
     ready: function () {
       var self = this
 //      获取制单人
-      getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
+      getDataFromApi( requestUrl + '/backend-system/store/account',{},function(response){
         self.orderMaker = response.data.body.list
       })
       this.listData({})
@@ -185,12 +185,20 @@
           end_time: this.searchData.end_time,
           start_receive_time: this.searchData.start_receive_time || '',
           end_receive_time: this.searchData.end_receive_time || '',
+          type: 'ManageAccount'
         }
         this.listData(data)
       },
 //    撤销搜索
       cancelSearch: function () {
-        this.listData({})
+        this.searchData.document_number = ''
+        this.searchData.start_time = ''
+        this.searchData.end_time = ''
+        this.searchData.start_receive_time = ''
+        this.searchData.end_receive_time = ''
+        this.searchData.checked = ''
+        this.searchData.creator_id = ''
+        this.listData()
       }
     },
     computed: {
@@ -238,12 +246,13 @@
         timewidth: "timewidth",
         searchData: {
           document_number: '',
-          checked: 0,
+          checked: '',
           start_time: '',
           end_time: '',
           start_receive_time: '',
           end_receive_time: '',
           stream_origin_id: '',
+          creator_id: ''
         }
       }
     }
