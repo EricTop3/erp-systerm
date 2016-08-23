@@ -129,7 +129,7 @@
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
-    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse,type:2}"
+    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse}"
   >
   </introduce-data>
   <!--模态框-添加商品-->
@@ -142,7 +142,7 @@
     :goods-list-title="purchaseTabelHead"
     :product-url="request.productUrl"
     :category-url='request.categoryUrl'
-    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse}"
+    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse,product_type:1}"
   >
   </stock-goods>
   <!--错误信息-->
