@@ -30,7 +30,7 @@
               <input type="text" class="form-control" placeholder="" style="width: 450px;" v-model="note">
             </div>
             <span class="btn btn-primary" data-toggle="modal" data-target="#data-cite-templ" @click="inclucdePurchaseData">引用原始单据</span>
-            <span class="btn btn-default"  @click="modal.addGoodModal=true">添加商品</span>
+            <span class="btn btn-default"  @click="addStockGoods">添加商品</span>
             <span class="btn btn-default"  data-toggle="modal" data-target="#procurement-submit-templ" @click="uploadPurchase">提交生产</span>
           </form>
         </div>
@@ -270,7 +270,7 @@
           obj.reference_type = val.reference_type
           obj.amount = val.purchase_amount
           obj.price = val.purchase_price
-          if(val.purchase_amount == '' || val.purchase_price == ''){
+          if(val.purchase_amount === '' || val.purchase_price === ''){
             uploadFlag = false
           }
           items.push(obj)
