@@ -226,7 +226,7 @@
           obj.amount = val.distribution_amount //	实际入库量
           obj.stock_amount = val.main_reference_value //	生产数量
           obj.defective_amount = val.defective_amount //次品数量
-          obj.price = Number(val.stock * val.distribution_amount) //加工费用
+          obj.price = val.unit_price //加工费用
           if(val.distribution_amount === ''){
             uploadFlag = false
           }
