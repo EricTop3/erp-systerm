@@ -410,7 +410,7 @@
         purchaseTabelHead: {
           code: "货号",
           name: "品名",
-          null: "库存数量",
+          system_stock: "库存数量",
           category: "分类",
           production_unit_name: "单位",
           specification_unit: "单位规格"

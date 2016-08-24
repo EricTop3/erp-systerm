@@ -37,7 +37,7 @@
               </select>
             </div>
             <div class="form-group ml10 mt10">
-              <label>要货时间段</label>
+              <label>制单时间段</label>
               <date-picker :value.sync="searchData.requisition_start_time" :time-text="timetext1"
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.requisition_end_time" :time-text="timetext2"
