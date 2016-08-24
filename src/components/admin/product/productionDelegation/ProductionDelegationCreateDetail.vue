@@ -208,6 +208,7 @@
 //        获取列表详情
         getDataFromApi(purchaseUrl,{},function(response){
           self.list = response.data.body
+          self.list.amount = (self.list.amount*0.01).toFixed(2)
           exchangeData(self.list)
         })
       },
