@@ -25,7 +25,7 @@
         <td>{{entry.item_name}}</td>
         <td v-if='editFlag'> <count :count.sync='entry.main_reference_value'></count></td>
         <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
-        <td>{{entry.unit}}</td>
+        <td>{{entry.unit_name}}</td>
         <td>{{entry.unit_specification}}</td>
       </tr>
       </tbody>
@@ -144,7 +144,7 @@
           item_code: '货号',
           item_name: '品名',
           number: '出货数量',
-          unit: '单位',
+          unit_name: '单位',
           unit_specification: '单位规格'
         }
       }

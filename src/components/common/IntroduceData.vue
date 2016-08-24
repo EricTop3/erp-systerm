@@ -201,7 +201,7 @@
         var type= $(event.currentTarget).parents('tr').attr('type')
 //    根据当前id获取产品
         if(this.secondUrl !== undefined){
-          if(type === 'Requisition'){
+          if(type === 'Requisition' || type === 'Distribution'){
             this.getProductById(this.url,currentId, currentObjCheck)
           }else{
             this.getProductById(this.secondUrl,currentId, currentObjCheck)
