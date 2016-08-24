@@ -39,7 +39,7 @@
         <td>{{item.name}}</td>
         <td><span style="color:red;">{{item.system_stock}}</span></td>
         <td align="center">
-          <count :count.sync=item.current_stock></count>
+          <count :count.sync=item.current_stock  :is-float="true"></count>
         </td>
         <td>
           <template v-if="item.current_stock == ''">{{ - item.system_stock}}</template>
