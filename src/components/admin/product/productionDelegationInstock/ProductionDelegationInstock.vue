@@ -136,7 +136,7 @@
     ready: function () {
       var self = this
 //    获取制单人
-      getDataFromApi(requestUrl + '/backend-system/store/store-account', {}, function (response) {
+      getDataFromApi(requestUrl + '/backend-system/store/account', {}, function (response) {
         self.search.orderMaker = response.data.body.list
       })
 //      获取合作工厂cooperativeFactory
@@ -159,10 +159,10 @@
       searchMethod: function () {
         var data = {
           document_number: this.search.code,
-          created_id: this.search.selectedMaker,
+          creator_id: this.search.selectedMaker,
           checked: this.search.selectedStatus,
           start_time: this.time.startTime,
-          iprovider_id: this.search.selectedFactory,
+          provider_id: this.search.selectedFactory,
           end_time: this.time.endTime,
           start_receive_time: this.time.startTime1,
           end_receive_time: this.time.endTime1,

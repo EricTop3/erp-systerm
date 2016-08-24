@@ -88,9 +88,8 @@
     ready: function (){
       var self = this
 //         获取制单人
-      getDataFromApi( requestUrl + '/backend-system/store/store-account',{},function(response){
+      getDataFromApi( requestUrl + '/backend-system/store/account',{},function(response){
         self.search.orderMaker = response.data.body.list
-        console.log( self.search.orderMaker)
       })
 //    获取供应商
       getDataFromApi(requestUrl + '/backend-system/provider/provider',{},function(response){
@@ -203,7 +202,7 @@
       },
       searchMethod: function () {
         var data = {
-          created_id: this.search.selectedMaker,
+          creator_id: this.search.selectedMaker,
           document_number: this.search.code,
           checked: this.search.selectedStatus,
           provider_id: this.search.selectedSuppier,
@@ -215,6 +214,12 @@
       },
       cancelSearch: function () {
         this.fetlistFormApi({})
+        this.search.selectedMaker  = ''
+        this.search.code = ''
+        this.search.selectedStatus = ''
+        this.search.selectedSuppier = ''
+        this.time.startTime = ''
+        this.search.stream_origin_id = ''
       }
     }
   }
