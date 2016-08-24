@@ -17,7 +17,7 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>生产时间段</label>
+              <label>时间段</label>
               <date-picker :value.sync="searchData.start_time" :time-text="timetext1"
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"

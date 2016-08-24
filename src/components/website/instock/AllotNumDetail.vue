@@ -14,6 +14,7 @@
       :grid-operate="gridOperate"
       :check-url = "checkUrl"
       :edit-flag.sync = "editFlag"
+      :is-exist.sync = 'isExist'
     >
     </summary-detail>
     <!--有列表切换的时候的情况-->
@@ -77,6 +78,9 @@
     </div>
   </div>
   <!--模态框HTML-->
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo">
+  </error-tip>
 </template>
 
 <script>
@@ -87,6 +91,7 @@
   import Modal from '../../common/Modal'
   import ListValidate from '../../common/ListValidate'
   import SummaryDetail from '../../common/SummaryDetail'
+  import ErrorTip from '../../common/ErrorTip'
   import Count  from '../../common/Count'
   import {
     requestUrl,
@@ -102,6 +107,7 @@
       Grid: Grid,
       Page: Page,
       Modal: Modal,
+      ErrorTip: ErrorTip,
       ListValidate: ListValidate,
       SummaryDetail: SummaryDetail,
       SiteNav: SiteNav,
@@ -113,14 +119,9 @@
 ////        this.detailListData(currentpage)
 //        console.log(currentpage)
 //      }
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-      },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = self.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -134,14 +135,21 @@
         var data = {
           items: item
         }
-
         var url = requestUrl + '/front-system/stock/recipient/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.editFlag = false
+          self.isExist = false
 //      单条数据渲染
-          this.thisOneData()
+          self.thisOneData()
 //      明细列表渲染
-          this.listData(1)
+          self.listData(1)
+        },function(err){
+          self.editFlag = true
+          self.isExist = true
+          if(err.data.code ==="220001" ){
+            self.modal.skipModal = true
+            self.modal.errInfo = err.data.message
+          }
         })
       }
     },
@@ -221,6 +229,7 @@
         id: 0,
         tabFlag: true,
         editFlag: false,
+        isExist: false,
         detailModal: true,
         summaryModal: false,
 //        page: [],
