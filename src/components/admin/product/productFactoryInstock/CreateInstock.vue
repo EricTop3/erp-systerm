@@ -3,7 +3,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2"  role="navigation">
+      <div class="col-lg-2" role="navigation">
         <left-production></left-production>
       </div>
       <div class="col-lg-10">
@@ -48,8 +48,11 @@
         <!--入库明细入库汇总-->
         <div>
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
-            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+            <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)"
+                                                                                           data-toggle="tab">入库明细</a>
+            </li>
+            <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a>
+            </li>
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
@@ -65,17 +68,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <tr class="text-center" v-for="entry in renderstockGoods" track-by="$index"
+                    :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.main_reference_value}}</td>
-                  <td><count :count.sync =entry.stock_amount></count></td>
-                  <td><count :count.sync =entry.defective_amount></count></td>
+                  <td>
+                    <count :count.sync=entry.stock_amount></count>
+                  </td>
+                  <td>
+                    <count :count.sync=entry.defective_amount></count>
+                  </td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>
                     <slot name="operate">
-                      <list-delete :delete-data.sync="renderstockGoods" ></list-delete>
+                      <list-delete :delete-data.sync="renderstockGoods"></list-delete>
                     </slot>
                   </td>
                 </tr>
@@ -87,7 +95,7 @@
             </div>
 
             <!-- 入库汇总 -->
-            <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+            <div role="tabpanel" class="tab-pane active" v-if="summaryModal">
               <table class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr class="text-center">
@@ -97,7 +105,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+                <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index"
+                    :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.main_reference_value}}</td>
@@ -126,7 +135,8 @@
     :first-data-title="origenData.firstDataTitle"
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
-    :second-data.sync="origenData.secondData">
+    :second-data.sync="origenData.secondData"
+    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse}">
   </introduce-data>
   <!--模态框-添加商品-->
   <stock-goods
@@ -171,7 +181,7 @@
       AdminNav: AdminNav,
       Grid: Grid,
       Page: Page,
-      StockGoods:StockGoods,
+      StockGoods: StockGoods,
       DatePicker: DatePicker,
       Summary: Summary,
       IntroduceData: IntroduceData,
@@ -193,7 +203,7 @@
         var self = this
         var saveDataArray = []
         var detailArrayFromApi = []
-        detailGoodsInfo(this.origenData.secondData,'Requisition')
+        detailGoodsInfo(this.origenData.secondData, 'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
           val.defective_amount = 0
@@ -235,7 +245,7 @@
           obj.amount = val.stock_amount
           obj.defective_amount = val.defective_amount
           obj.stock_amount = val.stock_amount
-          if(val.defective_amount ==='' ||val.stock_amount ==='' ){
+          if (val.defective_amount === '' || val.stock_amount === '') {
             uploadFlag = false
           }
           items.push(obj)
@@ -249,48 +259,55 @@
           provider_id: this.selectedOutHouse
         }
 //       提交之前的判断
-        if(this.sendTime===''){
+        if (this.sendTime === '') {
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没填写配送时间'
-        }else if(this.selectedOutHouse===''){
+        } else if (this.selectedOutHouse === '') {
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没填写生产工厂哟'
-        }else if(this.selectedInHouse===''){
+        } else if (this.selectedInHouse === '') {
           this.modal.errModal = true
           this.modal.errInfo = 'high，你还没填写调入仓库哟'
-        }else if(items.length<1){
+        } else if (items.length < 1) {
           this.modal.errModal = true
           this.modal.errInfo = 'high,你还没有添加商品哟'
-        }else if(!uploadFlag){
+        } else if (!uploadFlag) {
           this.modal.errModal = true
           this.modal.errInfo = 'high,你的次品数量和入库量不能为空哟'
-        }else{
-          postDataToApi(url,data,function (response) {
+        } else {
+          postDataToApi(url, data, function (response) {
             window.location.href = "#!/admin/production/factoryInstock"
-          },function(err){
-            if(err.data.code ==="220001"){
+          }, function (err) {
+            if (err.data.code === "220001") {
               self.modal.errModal = true
               self.modal.errInfo = err.data.message
             }
           })
         }
-
       },
 //      添加商品
-      addStockGoods: function ( ){
-        this.modal.addGoodModal=true
+      addStockGoods: function () {
+        this.modal.addGoodModal = true
         this.$broadcast('getGoodsWhenClick')
       },
 //     引入数据
       inclucdePurchaseData: function () {
-        this.modal.parentIntroModal = true
-        this.$broadcast('getGoodsWhenClick')
+        if(!this.selectedOutHouse){
+          this.modal.errModal = true
+          this.modal.errInfo = '请选择生产工厂！'
+        }else if(!this.selectedInHouse){
+          this.modal.errModal = true
+          this.modal.errInfo = '请选择调入仓库！'
+        }else{
+          this.modal.parentIntroModal = true
+          this.$broadcast('getGoodsWhenClick')
+        }
       },
 //      入库明细与入库汇总切换
       changeActive: function (event) {
         var cur = $(event.currentTarget)
         cur.addClass('active').siblings('li').removeClass('active')
-        switch (Number(cur.attr('id'))){
+        switch (Number(cur.attr('id'))) {
           case 1:
             this.detailModal = true
             this.summaryModal = false
@@ -302,35 +319,35 @@
         }
       },
 //        汇总方法
-    summary: function () {
-      var self = this
-      this.summarystockGoods = []
-      this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
-      $.each(this.summarystockGoods,function (index,val){
-        val.item_defective_amount = val.defective_amount
-        val.item_stock_amount = val.stock_amount
-      })
-      this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
-    },
+      summary: function () {
+        var self = this
+        this.summarystockGoods = []
+        this.summarystockGoods = this.summarystockGoods.concat(self.renderstockGoods)
+        $.each(this.summarystockGoods, function (index, val) {
+          val.item_defective_amount = val.defective_amount
+          val.item_stock_amount = val.stock_amount
+        })
+        this.summarystockGoods = this.summaryMethod("item_code", this.summarystockGoods)
+      },
 //       汇总方法
-    summaryMethod: function  (ObjPropInArr, array){
-      var hash={};
-      var result=[];
-      for(var i=0;i<array.length;i++){
-        if(hash[array[i][ObjPropInArr]]){
-          hash[array[i][ObjPropInArr]].item_defective_amount=Number(array[i].item_defective_amount) + Number( hash[array[i][ObjPropInArr]].item_defective_amount)
-          hash[array[i][ObjPropInArr]].item_stock_amount=Number(array[i].item_stock_amount) + Number( hash[array[i][ObjPropInArr]].item_stock_amount)
-          hash[array[i][ObjPropInArr]].main_reference_value=Number(array[i].main_reference_value) + Number( hash[array[i][ObjPropInArr]].main_reference_value)
-        }else{
-          hash[array[i][ObjPropInArr]]=array[i];
+      summaryMethod: function (ObjPropInArr, array) {
+        var hash = {};
+        var result = [];
+        for (var i = 0; i < array.length; i++) {
+          if (hash[array[i][ObjPropInArr]]) {
+            hash[array[i][ObjPropInArr]].item_defective_amount = Number(array[i].item_defective_amount) + Number(hash[array[i][ObjPropInArr]].item_defective_amount)
+            hash[array[i][ObjPropInArr]].item_stock_amount = Number(array[i].item_stock_amount) + Number(hash[array[i][ObjPropInArr]].item_stock_amount)
+            hash[array[i][ObjPropInArr]].main_reference_value = Number(array[i].main_reference_value) + Number(hash[array[i][ObjPropInArr]].main_reference_value)
+          } else {
+            hash[array[i][ObjPropInArr]] = array[i];
+          }
         }
+        for (var j in hash) {
+          result.push(hash[j])
+        }
+        return result
       }
-      for(var j in hash){
-        result.push(hash[j])
-      }
-      return result
-    }
-  },
+    },
     data: function () {
       return {
 //        入库明细
@@ -347,9 +364,9 @@
         gridColumns: {
           code: "货号",
           name: "品名",
-          specification_unit:"生产数量",
+          specification_unit: "生产数量",
           aruc: "入库数量",
-          purchase_quantity:"次品数量",
+          purchase_quantity: "次品数量",
           origen_number: "单位",
           unit_spection: "单位规格"
         },
@@ -364,7 +381,7 @@
           specification_unit: "单位规格"
         },
         request: {
-          productUrl: requestSystemUrl +  '/backend-system/product/product',
+          productUrl: requestSystemUrl + '/backend-system/product/product',
           categoryUrl: requestSystemUrl + '/backend-system/product/category',
           productData: {
             product_type: 1
@@ -385,13 +402,13 @@
           secondDataTitle: {
             "item_code": "货号",
             "item_name": "品名",
-            "main_reference_value":"要货数量",
+            "main_reference_value": "要货数量",
             "unit_name": "单位",
             "unit_specification": "单位规格"
           },
           secondData: []
         },
-        modal:{
+        modal: {
           addGoodModal: false,
           addGoodModalSize: 'modal-lg',
           parentIntroModal: false,

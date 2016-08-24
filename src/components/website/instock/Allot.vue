@@ -46,8 +46,7 @@
               <td>{{entry.item_name}}</td>
               <td>{{entry.purchase_amount}}</td>
               <td>{{entry.main_reference_value}}</td>
-              <td v-if="entry.realInstock_amount!=''"><count :count.sync = 'entry.realInstock_amount'></count></td>
-              <td v-else><count :count.sync = 'entry.main_reference_value'></count></td>
+              <td><count :count.sync = 'entry.realInstock_amount'></count></td>
               <td>{{entry.unit_name}}</td>
               <td>{{entry.unit_specification}}</td>
               <td>{{entry.reference_number}}</td>
@@ -139,6 +138,9 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
+          val.realInstock_amount = val.main_reference_value
+
+          
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
