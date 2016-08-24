@@ -43,7 +43,7 @@
             <td>{{onedata.pos_total_sum}}</td>
             <td>{{onedata.weixin_total_sum}}</td>
             <td>{{onedata.alipay_total_sum}}</td>
-            <td><span v-if="onedata.status=='已结算'" class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
+            <td><span v-if="onedata.status=='未结账'" class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
           </tr>
           </tbody>
         </table>
@@ -131,6 +131,26 @@
           if(value.total_sum != '' && value.total_sum > 0 ){
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
+          if(!value.document_number){
+            value.document_number = '会员卡充值'
+          }
+          switch(value.pay_method){
+            case 'cash':
+              value.pay_method = '现金支付'
+              break;
+            case 'vip':
+              value.pay_method = '会员卡支付'
+              break;
+            case 'weixin':
+              value.pay_method = '微信支付'
+              break;
+            case 'alipay':
+              value.pay_method = '支付宝支付'
+              break;
+            case 'pos':
+              value.pay_method = 'POS支付'
+              break;
+          }
         })
       },
 //    对获取到的单条数据进行处理
@@ -154,7 +174,7 @@
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
           if(value.status == '1' ){
-            value.status = "已结算"
+            value.status = "未结账"
           }
           if(value.status == '2'){
             value.status = "已结账"
