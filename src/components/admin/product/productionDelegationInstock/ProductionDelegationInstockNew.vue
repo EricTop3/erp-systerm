@@ -264,10 +264,17 @@
         }
       },
 //     引入数据
-      inclucdePurchaseData: function () {
-        this.modal.parentIntroModal = true
-        this.$broadcast('getGoodsWhenClick')
-      },
+      inclucdePurchaseData: function (){
+        if(this.selectedFactory===''){
+           this.modal.errModal = true
+           this.modal.errInfo = 'high，你还没填写合作工厂'
+        } else if(this.selectedInHouse===''){
+          this.modal.errModal = true
+          this.modal.errInfo = 'high，你还没填写调入厂库'
+        }else{
+          this.modal.parentIntroModal = true
+          this.$broadcast('getGoodsWhenClick')  }
+       },
       //      入库明细与入库汇总切换
       changeActive: function (event) {
         var cur = $(event.currentTarget)
