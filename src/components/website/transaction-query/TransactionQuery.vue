@@ -117,7 +117,7 @@
             </thead>
             <tbody>
             <tr class="text-center" v-for="entry in queryList" track-by="$index" :id="[entry.id ? entry.id : '']">
-              <td><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="changeOperate($event)"  v-model="entry.choice"></td>
+              <td><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="changeOperate($event)"  v-model="entry.choice" class="singleChecked"></td>
               <td v-for="value in  retailGridColumns">
                 {{entry[$key]}}
               </td>
@@ -754,8 +754,13 @@
       changeOperate: function (event) {
         var self = this
         var currentId = Number($(event.currentTarget).attr('id'))
-        console.log(currentId)
         var currentObjCheck = $(event.currentTarget).prop('checked')
+        var len = this.queryList.length
+        if(!currentObjCheck){
+          self.checkAll = false
+        }else{
+          self.checkAll = false
+        }
         console.log(currentObjCheck)
         $.each(this.queryList, function (index, val) {
           if (currentId === val.id) {
@@ -769,8 +774,8 @@
       },
       checkAllMethod: function () {
         var self = this
+        $('.singleChecked').prop('checked',self.checkAll)
         $.each(this.queryList, function (index, val) {
-          val.choice = self.checkAll
           if(self.checkAll){
             self.totalPayMent = self.totalPayMent + val.total_sum * 100
           }else{

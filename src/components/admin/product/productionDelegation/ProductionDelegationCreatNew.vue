@@ -91,8 +91,8 @@
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.item_stock}}{{entry.unit_name}}</td>
-                  <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
                   <td>￥{{entry.item_price|priceChange}}</td>
                 </tr>
                 </tbody>
@@ -208,8 +208,10 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount = val.main_reference_value
-          val.purchase_price = (val.unit_price*0.01).toFixed(2)
+          val.purchase_amount =  0
+          val.stock = val.system_stock
+          val.main_reference_value = 0
+          val.purchase_price = (val.apuc*0.01).toFixed(2) || 0
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -226,6 +228,7 @@
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
           val.purchase_amount = val.main_reference_value
+          val.stock = (val.stock*1000*0.001).toFixed(3)
           val.purchase_price = (val.unit_price*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
@@ -341,8 +344,9 @@
         this.summarystockGoods =this.summarystockGoods.concat(self. renderstockGoods)
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.purchase_amount
+          console.log(val.item_amount)
           val.item_price = Number(val.item_amount  * val.purchase_price * 100)
-          val.item_stock = val.item_stock
+          val.item_stock = val.stock
           val.item_main_reference_value = val.main_reference_value
           self.summaryPrice += val.item_price
         })
@@ -356,7 +360,7 @@
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
             hash[array[i][ObjPropInArr]].item_price=Number(array[i].item_price) + Number( hash[array[i][ObjPropInArr]].item_price)
-            hash[array[i][ObjPropInArr]].item_stock=Number(array[i].item_stock) + Number( hash[array[i][ObjPropInArr]].item_stock)
+            hash[array[i][ObjPropInArr]].item_stock=((array[i].item_stock*1000 +  hash[array[i][ObjPropInArr]].item_stock*1000)*0.001).toFixed(3)
             hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].item_main_reference_value)
           }else{
             hash[array[i][ObjPropInArr]]=array[i]
