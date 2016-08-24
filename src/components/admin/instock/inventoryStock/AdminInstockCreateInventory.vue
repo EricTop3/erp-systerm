@@ -53,11 +53,11 @@
               <span style="color:red;">{{entry.system_stock}}</span>
             </td>
             <td align="center">
-              <count :count.sync =entry.current_stock></count>
+              <count :count.sync ="entry.current_stock" :is-float="true"></count>
             </td>
             <td>
-              <template v-if="entry.current_stock == ''">{{ - entry.system_stock}}</template>
-              <template v-else>{{entry.current_stock - entry.system_stock}}</template>
+              <template v-if="entry.current_stock == ''">{{ - entry.system_stock.toFixed(3)}}</template>
+              <template v-else>{{(entry.current_stock - entry.system_stock).toFixed(3)}}</template>
             </td>
             <td>{{entry.production_unit_name}}</td>
             <td>{{entry.specification_unit}}</td>
@@ -148,7 +148,7 @@
           self.dataArray = []
         }
         $.each(self.stockGoods, function (index, val) {
-          val.current_stock = ''
+          val.current_stock = val.system_stock
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
