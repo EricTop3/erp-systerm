@@ -219,6 +219,7 @@
         this.search.selectedStatus = ''
         this.search.selectedSuppier = ''
         this.time.startTime = ''
+        this.search.stream_origin_id = ''
       }
     }
   }
