@@ -46,7 +46,8 @@
               <td>{{entry.item_name}}</td>
               <td>{{entry.purchase_amount}}</td>
               <td>{{entry.main_reference_value}}</td>
-              <td><count :count.sync = 'entry.realInstock_amount'></count></td>
+              <td v-if="entry.realInstock_amount!=''"><count :count.sync = 'entry.realInstock_amount'></count></td>
+              <td v-else><count :count.sync = 'entry.main_reference_value'></count></td>
               <td>{{entry.unit_name}}</td>
               <td>{{entry.unit_specification}}</td>
               <td>{{entry.reference_number}}</td>
@@ -58,9 +59,6 @@
             </tr>
             </tbody>
           </table>
-          <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-          <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-          <!--:last-page="page.last_page"></page>-->
         </div>
 
         <!-- 入库汇总 -->
@@ -85,9 +83,6 @@
             </tr>
             </tbody>
           </table>
-          <!--&lt;!&ndash; 翻页 &ndash;&gt;-->
-          <!--<page :total="page.total" :current.sync="page.current_page" :display="page.per_page"-->
-          <!--:last-page="page.last_page"></page>-->
         </div>
       </div>
     </div>
@@ -298,9 +293,9 @@
         detailData: [],
         page: [],
         origenData: {
-          title: '原始配送出货单',
+          title: '原始配送单',
           dataUrl: requestSystemUrl + '/front-system/reference-document/distribution',
-          secondUrl: requestSystemUrl + '/front-system/reference-document/requisition',
+          secondUrl: requestSystemUrl + '/front-system/reference-document/allocate',
           firstDataTitle: {
             "document_number": "配送单号",
             "store_name": "调出仓库",
