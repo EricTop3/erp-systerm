@@ -43,7 +43,7 @@
         <td>{{item.code}}</td>
         <td>{{item.name}}</td>
         <td>{{item.dms}}</td>
-        <td>{{item.current_stock}}</td>
+        <td>{{item.system_stock}}</td>
         <td align="center">
           <count :count.sync="item.sale_refund"></count>
         </td>

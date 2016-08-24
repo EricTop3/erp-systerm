@@ -55,7 +55,7 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
-                  <td>{{entry.system_stock}}{{entry.unit_name}}</td>
+                  <td>{{entry.stock}}{{entry.system_stock}}{{entry.unit_name}}</td>
                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                   <td><count :count.sync =entry.product_amount></count>{{entry.unit_name}}</td>
                   <td>{{entry.reference_number}}</td>
