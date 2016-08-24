@@ -56,8 +56,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-//        this.detailListData(currentpage)
-        console.log(currentpage)
+        this.detailListData(currentpage)
       }
     },
     ready: function () {
