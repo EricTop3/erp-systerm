@@ -12,11 +12,11 @@
       <form class="form-inline">
         <div class="form-group">
           <label>单号</label>
-          <input type="text" class="form-control" placeholder="请输入单号" v-model="orderNumber">
+          <input type="text" class="form-control" placeholder="请输入单号" v-model="query.order_number">
         </div>
         <div class="form-group ml10">
           <label>状态</label>
-          <select class="form-control" v-model="selectedCheck">
+          <select class="form-control" v-model="query.checked">
             <option value="">请选择</option>
             <option value="0">未审核</option>
             <option value="1">已审核</option>
@@ -24,36 +24,25 @@
         </div>
         <div class="form-group ml10">
           <label>制单人</label>
-          <select class="form-control" v-model="createPersonId">
+          <select class="form-control" v-model="query.creator_id">
             <option value="">请选择</option>
             <option v-for="item in creators" :value="item.id">{{item.name}}</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>制单时间段</label>
-          <date-picker
-            :value.sync=query.start_time1"
-          >
-          </date-picker>
+          <date-picker :value.sync="query.start_time" :time-text="timetext1"></date-picker>
           -
-          <date-picker
-            :value.sync="query.end_time1"
-          >
-          </date-picker>
+          <date-picker :value.sync="query.end_time" :time-text="timetext2"></date-picker>
         </div>
         <div class="form-group ml10">
           <label>送货时间段</label>
-          <date-picker
-            :value.sync="query.end_time1"
-          >
-          </date-picker>
+          <date-picker :value.sync="query.start_receive_time" :time-text="timetext1"></date-picker>
           -
-          <date-picker
-            :value.sync="query.end_time2"
-          >
-          </date-picker>
+          <date-picker :value.sync="query.end_receive_time" :time-text="timetext2"></date-picker>
         </div>
-        <span  class="btn btn-info" @click="search()" >搜索</span>
+        <span class="btn btn-info" @click="search()" >搜索</span>
+        <span class="btn btn-warning" @click="cancel()" >取消搜索</span>
         <a v-link="{ path: '/site/instock/GoodsApply'}"><span class="btn btn-primary">申请要货</span></a>
       </form>
     </div>
@@ -136,8 +125,11 @@
       cancel: function () {
         this.query.start_time = ''
         this.query.end_time = ''
-        this.query.search = ''
-        this.query.category = ''
+        this.query.start_receive_time = ''
+        this.query.end_receive_time = ''
+        this.query.order_number = ''
+        this.query.checked = ''
+        this.query.creator_id = ''
         this.listData(1)
       },
 //      搜索页面
@@ -146,9 +138,13 @@
         searchRequest(
           requestUrl + '/front-system/stock/enquiry',
           {
-            order_number: this.orderNumber,
-            checked: this.selectedCheck,
-            creator_id: this.createPersonId,
+            start_time: this.query.start_time,
+            end_time: this.query.end_time,
+            start_receive_time: this.query.start_receive_time,
+            end_receive_time: this.query.end_receive_time,
+            order_number: this.query.order_number,
+            checked: this.query.checked,
+            creator_id: this.query.creator_id,
             per_page: 16
           },
           function (response) {
@@ -161,12 +157,12 @@
     },
     data: function () {
       return {
+        timetext1: "开始时间",
+        timetext2: "结束时间",
         page: {},
         checkUrl: requestUrl + '/front-system/stock/enquiry/',
         showRight: false,
         creators: [],
-        orderNumber: '',
-        selectedCheck: '',
         createPersonId: '',
         orderStartTime: '',
         orderEndTime: '',
@@ -184,10 +180,13 @@
           amount: '要货数量'
         },
         query: {
-          start_time1: '',
-          start_time2: '',
-          end_time1: '',
-          end_time2: '',
+          start_time: '',
+          start_receive_time: '',
+          end_time: '',
+          end_receive_time: '',
+          order_number: '',
+          checked: '',
+          creator_id: '',
           order_code: '',
           create_person: '',
           check: ''
