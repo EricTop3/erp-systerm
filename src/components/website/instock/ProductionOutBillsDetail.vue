@@ -74,6 +74,10 @@
         this.$http({
           url: requestUrl + '/front-system/stock/produce-put/' + this.id + '/detail',
           method: 'get',
+          data: {
+            start_time: this.$route.query.start_time,
+            end_time: this.$route.query.end_time
+          },
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {
           this.list = response.data.body
@@ -88,8 +92,10 @@
           url: requestUrl + '/front-system/stock/produce-put/' + this.id,
           method: 'get',
           data: {
+            start_time: this.$route.query.start_time,
+            end_time: this.$route.query.end_time,
             page: page,
-            per_page: 10
+            per_page: 16
           },
           headers: {'X-Overpowered-Token': token}
         }).then(function (response) {

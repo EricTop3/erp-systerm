@@ -96,6 +96,7 @@
   <introduce-data
     :title="origenData.title"
     :url="origenData.dataUrl"
+    :second-url="origenData.secondUrl"
     :instroduce-data-modal.sync='parentIntroModal'
     :instroduce-data-modal-size="parentIntroModalSize"
     :first-data-title="origenData.firstDataTitle"
@@ -299,6 +300,7 @@
         origenData: {
           title: '原始配送出货单',
           dataUrl: requestSystemUrl + '/front-system/reference-document/distribution',
+          secondUrl: requestSystemUrl + '/front-system/reference-document/requisition',
           firstDataTitle: {
             "document_number": "配送单号",
             "store_name": "调出仓库",
