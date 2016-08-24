@@ -24,6 +24,7 @@
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
           <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
+          <li class="summaryCount" v-if="summaryModal"><a href="javascript:void(0)">合计：￥{{summaryPrice|priceChange}}</a></li>
           <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         </ul>
         <!-- Tab panes -->
@@ -45,11 +46,11 @@
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
                 <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.demand_amount}}</td>
+                <td>{{entry.demand_amount=entry.demand_amount||0}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.main_reference_value></count>{{entry.unit_name}}</td>
-                <td v-if="!editFlag">{{entry.main_reference_value}}/{{entry.unit_name}}</td>
+                <td v-if="!editFlag">{{entry.main_reference_value}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元/{{entry.unit_name}}</td>
-                <td v-if="!editFlag">{{entry.unit_price}}元/{{entry.unit_name}}</td>
+                <td v-if="!editFlag">￥{{entry.unit_price | priceChange}}元/{{entry.unit_name}}</td>
                 <td >{{entry.reference_number}}</td>
               </tr>
               </tbody>
@@ -62,21 +63,20 @@
             <table class="table table-striped table-bordered table-hover">
               <thead>
               <tr class="text-center">
-                <th v-for="value in  gridColumns2">
+                <th v-for="value in  gridColumns3">
                   {{value}}
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
-                <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.demand_amount}}</td>
-                <td>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
-                <td>{{entry.unit_price}}/{{entry.unit_name}}</td>
-                <td>{{entry.reference_number}}</td>
+                <td>{{entry.item_origin_stock_amount}}{{entry.unit_name}}</td>
+                <td>{{entry.item_demand_amount}}{{entry.unit_name}}</td>
+                <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
+                <td>￥{{entry.item_price | priceChange}}</td>
               </tr>
               </tbody>
             </table>
@@ -201,6 +201,9 @@
 //       获取列表
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
+          $.each(self.detailList,function(index,val){
+            val.origin_stock_amount = (val.origin_stock_amount*1000*0.001).toFixed(3)
+          })
         })
 //        获取列表详情
         getDataFromApi(purchaseUrl,{},function(response){
@@ -216,13 +219,46 @@
           case 1:
             this.detailModal = true
             this.summaryModal = false
-            this.$dispatch('detail')
             break
           case 2:
             this.detailModal = false
             this.summaryModal = true
-            this.$dispatch('summary')
+            this.summary()
         }
+      },
+//      汇总方法
+      summary: function () {
+        var self = this
+        self.summaryPrice = 0
+        this.summarystockGoods = []
+        this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_origin_stock_amount = val.origin_stock_amount
+          val.item_demand_amount = val.demand_amount
+          val.item_price = val.item_demand_amount  * val.unit_price
+          val.item_main_reference_value = val.main_reference_value
+          self.summaryPrice += val.item_price
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+      },
+//     汇总方法
+      summaryMethod: function (ObjPropInArr, array){
+        var hash={};
+        var result=[];
+        for(var i=0;i<array.length;i++){
+          if(hash[array[i][ObjPropInArr]]){
+            hash[array[i][ObjPropInArr]].item_demand_amount=Number(array[i].item_demand_amount) + Number( hash[array[i][ObjPropInArr]].item_demand_amount)
+            hash[array[i][ObjPropInArr]].item_price=((array[i].item_price +hash[array[i][ObjPropInArr]].item_price)*100*0.01).toFixed(2)
+            hash[array[i][ObjPropInArr]].item_origin_stock_amount=((array[i].item_origin_stock_amount*1000 +  hash[array[i][ObjPropInArr]].item_origin_stock_amount*1000)*0.001).toFixed(3)
+            hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].item_main_reference_value)
+          }else{
+            hash[array[i][ObjPropInArr]]=array[i]
+          }
+        }
+        for(var j in hash){
+          result.push(hash[j])
+        }
+        return result
       }
     },
     computed: {
@@ -261,6 +297,15 @@
           main_reference_value:'生产数量',
           unit_price:"加工单价",
           reference_number:"来源要货单号"
+        },
+        gridColumns3: {
+          item_code: "货号",
+          item_name: "品名",
+          unit_specification: '单位规格',
+          origin_stock_amount: '总部库存',
+          demand_amount: "门店要货数量",
+          main_reference_value:'生产数量',
+          unit_price:"小计"
         }
       }
     }
