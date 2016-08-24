@@ -123,13 +123,12 @@
         var  data = this.requestData
           getDataFromApi(url + "/" + currentId,data,function(response){
             if(self.productFlag){
-              var len = response.data.body.list.length
-              console.log(len)
-              var cur = 0
+//              var len = response.data.body.list.length
+//              var cur = 0
               $.each(response.data.body.list,function(index,val){
                   if(val.product_type ===2){
                     response.data.body.list.splice(index,1)
-                    cur++
+//                    cur++
                   }
               })
               fetchedData = response.data.body.list

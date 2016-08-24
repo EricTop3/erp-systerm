@@ -173,7 +173,7 @@
                       @click="storeReceived($event)">门店收货</span>
                 <span v-if="item.status=='等待签收'" class="btn btn-sm btn-primary"
                       @click="userReceived($event)">客户签收</span>
-                <span v-if="item.status=='订单已取消'" class="btn btn-sm btn-primary" @click="returnMondy($event)">退款</span>
+                <span v-if="item.status=='订单已取消' && item.status!=='已退款'" class="btn btn-sm btn-primary" @click="returnMondy($event)">退款</span>
                 <span class="btn btn-sm btn-info" @click="lookDetail($event)">查看</span>
               </td>
             </tr>
@@ -597,7 +597,6 @@
       },
 //     查看详情获取数据完成后的函数
       finishLookDetail: function (response) {
-        console.log(response)
         this.listDetail = response.body.list
         var self = this
         $.each(this.queryList, function (index, val) {
@@ -606,7 +605,6 @@
             self.order_note = val.order_note
           }
         })
-        console.log(response.body.list)
       },
 //     查看详情
       lookDetail: function (event) {
@@ -666,11 +664,15 @@
         })
       },
 //      退款
-      returnMondy: function (event) {
+      returnMondy: function (event){
+        var self = this
         var button = $(event.currentTarget)
         this.currentButton = button
-        this.modal.returnMoneyModal = true
         this.receivedId = $(event.currentTarget).parents('tr').attr('id')
+        getDataFromSiteApi(requestUrl + '/front-system/order/'+ this.receivedId+ '/detail',{},function (response) {
+          self.receivedGoodsList = response.data.body.list
+          self.modal.returnMoneyModal = true
+        })
       },
 //      确认退款
       confirmReturnMoney: function () {
@@ -681,18 +683,14 @@
         var data = {
           order_type: self.orderType
         }
-        var items={
-          'a':'wang',
-          'b':'wwww'
-        }
-//        $.each(self.returnGoodsList,function(index,val){
-//              var obj = {}
-//              obj.amount = val.return_number
-//              obj.consumable_id  = val.id
-//              items.push(obj)
-//        })
-        putDataToApi(requestUrl + '/front-system/order/refund-goods/' + this.receivedId,items,function(response){
-          this.modal.returnMoneyModal = false
+        $.each(self.receivedGoodsList,function(index,val){
+              var obj = {}
+              obj.amount = val.return_number
+              obj.consumable_id  = val.id
+              items.push(obj)
+        })
+        putDataToApi(requestUrl + '/front-system/order/refund-goods/' + this.receivedId,{'items':items},function(response){
+          self.modal.returnMoneyModal = false
           self.fetchData(url, data, self.finishPage)
         })
       },
@@ -854,6 +852,7 @@
         gridCheck: true,
         gridOperate: true,
         receivedId: '',
+        receivedGoodsList: [],
         isRedfundGoos: false,
         retailGridColumns: {
           order_number: '小票编号',

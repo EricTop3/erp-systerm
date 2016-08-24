@@ -67,7 +67,8 @@
                   <td>{{entry.main_reference_value}}</td>
                   <td><count :count.sync =entry.distribution_amount></count>{{entry.unit_name}}</td>
                   <td><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
-                  <td>后台没返值</td>
+                  <td>￥{{entry.unit_price|priceChange}}</td>
+
                   <td>{{entry.unit_specification}}</td>
                   <td>
                     <slot name="operate">
@@ -183,7 +184,8 @@
         detailGoodsInfo(this.origenData.secondData,'pick')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.distribution_amount = ''
+          val.distribution_amount = val.main_reference_value || 0
+          val.defective_amount  = 0
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
