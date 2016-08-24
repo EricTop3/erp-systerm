@@ -19,7 +19,8 @@
           <label>备注</label>
           <input type="text" class="form-control" placeholder="" v-model="remarks">
         </div>
-        <span class="btn btn-info" data-toggle="modal" data-target="#inventory-add-templ" @click="addStockGoods">添加商品</span>
+        <span class="btn btn-info" data-toggle="modal" data-target="#inventory-add-templ"
+              @click="addStockGoods">添加商品</span>
         <span class="btn btn-info" @click="upLoadEnquiry()">提交要货</span>
       </form>
     </div>
@@ -46,7 +47,9 @@
         <td align="center">
           <count :count.sync="item.sale_refund"></count>
         </td>
-        <td>{{item.product_type === 2 ? item.unit_name = item.production_unit_name :item.unit_name = item.sell_unit_name }}</td>
+        <td>{{item.product_type === 2 ? item.unit_name = item.production_unit_name :item.unit_name = item.sell_unit_name
+          }}
+        </td>
         <td>{{item.specification_unit}}</td>
         <td>
           <list-delete :delete-data.sync="rederStockGoods"></list-delete>
@@ -194,7 +197,7 @@
         }
       },
 //      添加商品
-      addStockGoods: function ( ){
+      addStockGoods: function () {
         this.addGoodModal = true
         this.$broadcast('getGoodsWhenClick')
       },
@@ -225,8 +228,8 @@
         goodsListTitle: {
           'code': '货号',
           'name': '品名',
-          'sale_amount': '日均销量',
-          'current_stock': '当前库存',
+          'dms': '日均销量',
+          'system_stock': '当前库存',
           'production_unit_name': '单位',
           'specification_unit': '单位规格',
           'category': '商品分类'
