@@ -46,7 +46,7 @@
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
                 <td>{{entry.origin_stock_amount}}</td>
-                <td>{{entry.demand_amount}}</td>
+                <td>{{entry.demand_amount=entry.demand_amount||0}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.main_reference_value></count>{{entry.unit_name}}</td>
                 <td v-if="!editFlag">{{entry.main_reference_value}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元/{{entry.unit_name}}</td>
@@ -201,6 +201,9 @@
 //       获取列表
         getDataFromApi(url,{},function(response){
           self.detailList = response.data.body.list
+          $.each(self.detailList,function(index,val){
+            val.origin_stock_amount = (val.origin_stock_amount*1000*0.001).toFixed(3)
+          })
         })
 //        获取列表详情
         getDataFromApi(purchaseUrl,{},function(response){
