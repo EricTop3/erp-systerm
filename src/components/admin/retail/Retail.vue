@@ -225,7 +225,7 @@
 //      查看
       view: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = '/#!/admin/retail/statistics/view/' + this.thisId
+        window.location.href = '/#!/admin/retail/statistics/view/' + this.thisId + '?start_time=' + this.searchData.start_time + '&end_time=' + this.searchData.end_time
       },
 //      门店列表数据渲染
       storeListData: function () {
