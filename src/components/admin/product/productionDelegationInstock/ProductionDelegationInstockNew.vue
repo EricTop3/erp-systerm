@@ -67,7 +67,8 @@
                   <td>{{entry.main_reference_value}}</td>
                   <td><count :count.sync =entry.distribution_amount></count>{{entry.unit_name}}</td>
                   <td><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
-                  <td>后台没返值</td>
+                  <td>￥{{entry.unit_price|priceChange}}</td>
+
                   <td>{{entry.unit_specification}}</td>
                   <td>
                     <slot name="operate">
@@ -93,10 +94,10 @@
                 <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.item_stock}}</td>
                   <td>{{entry.item_main_reference_value}}</td>
                   <td>{{entry.item_distribution_amount}}</td>
-                  <td>{{entry.unit_name}}</td>
+                  <td>{{entry.item_defective_amount}}</td>
+                  <td>￥{{entry.unit_price|priceChange}}</td>
                   <td>{{entry.unit_specification}}</td>
                 </tr>
                 </tbody>
@@ -183,7 +184,8 @@
         detailGoodsInfo(this.origenData.secondData,'pick')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.distribution_amount = ''
+          val.distribution_amount = val.main_reference_value || 0
+          val.defective_amount  = 0
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -299,6 +301,7 @@
           val.item_stock = val.stock
           val.item_main_reference_value = val.main_reference_value
           val.item_distribution_amount = val.distribution_amount
+          val.item_defective_amount = val.defective_amount
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
       },
@@ -311,6 +314,7 @@
             hash[array[i][ObjPropInArr]].item_stock = Number(array[i].item_stock) + Number(hash[array[i][ObjPropInArr]].item_stock)
             hash[array[i][ObjPropInArr]].item_main_reference_value = Number(array[i].item_main_reference_value) + Number(hash[array[i][ObjPropInArr]].item_main_reference_value)
             hash[array[i][ObjPropInArr]].item_distribution_amount = Number(array[i].item_distribution_amount) + Number(hash[array[i][ObjPropInArr]].item_distribution_amount)
+            hash[array[i][ObjPropInArr]].item_defective_amount = Number(array[i].item_defective_amount) + Number(hash[array[i][ObjPropInArr]].item_defective_amount)
           } else {
             hash[array[i][ObjPropInArr]] = array[i]
           }
