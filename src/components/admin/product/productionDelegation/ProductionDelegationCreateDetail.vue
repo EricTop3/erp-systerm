@@ -18,6 +18,7 @@
           :grid-operate="gridOperate"
           :check-url = "checkUrl"
           :edit-flag.sync = "editFlag"
+          :is-exist.sync = "isExist"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -49,7 +50,7 @@
                 <td>{{entry.demand_amount=entry.demand_amount||0}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.main_reference_value></count>{{entry.unit_name}}</td>
                 <td v-if="!editFlag">{{entry.main_reference_value}}{{entry.unit_name}}</td>
-                <td v-if="editFlag"><price :price.sync =entry.unit_price></price>元/{{entry.unit_name}}</td>
+                <td v-if="editFlag"><price :price.sync ="entry.unit_price | priceChange"}></price>元/{{entry.unit_name}}</td>
                 <td v-if="!editFlag">￥{{entry.unit_price | priceChange}}元/{{entry.unit_name}}</td>
                 <td >{{entry.reference_number}}</td>
               </tr>
@@ -159,14 +160,9 @@
           console.log('finished')
         })
       },
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-      },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = this.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -183,7 +179,11 @@
         }
         var url = requestSystemUrl + '/backend-system/produce/outsource/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.editFlag = false
+          self.isExist = false
+        },function(err){
+          self.editFlag = true
+          self.isExist = true
         })
       }
     },
@@ -275,6 +275,7 @@
         list: {},
         checkUrl: requestSystemUrl+ '/backend-system/produce/outsource/',
         editFlag: false,
+        isExist: false,
         detailModal: true,
         summaryModal: false,
         detailList: [],
