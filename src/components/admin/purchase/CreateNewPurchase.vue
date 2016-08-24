@@ -115,7 +115,7 @@
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
-    :request-data="{product_type: 2}"
+    :purchase-flag = 'true'
     >
   </introduce-data>
   <!--模态框-添加商品-->
@@ -373,7 +373,7 @@
         purchaseTabelHead: {
           code: "货号",
           name: "品名",
-          systerm_stock: "库存数量",
+          system_stock: "库存数量",
           category: "分类",
           production_unit_name: "单位",
           specification_unit: "单位规格"

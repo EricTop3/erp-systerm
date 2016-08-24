@@ -88,7 +88,8 @@
       url: '',
       secondUrl: '',
       requestData: {},
-      productFlag: false
+      productFlag: false,
+      purchaseFlag: false
     },
     events: {
 //    绑定翻页事件
@@ -130,6 +131,13 @@
                     response.data.body.list.splice(index,1)
 //                    cur++
                   }
+              })
+              fetchedData = response.data.body.list
+            }if(self.purchaseFlag){
+              $.each(response.data.body.list,function(index,val){
+                if(val.product_type !==2){
+                  response.data.body.list.splice(index,1)
+                }
               })
               fetchedData = response.data.body.list
             }else{
