@@ -176,6 +176,23 @@
           if(value.total_sum != '' && value.total_sum > 0 ){
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
+          switch(value.pay_method){
+            case 'cash':
+              value.pay_method = '现金支付'
+              break;
+            case 'vip':
+              value.pay_method = '会员卡支付'
+              break;
+            case 'weixin':
+              value.pay_method = '微信支付'
+              break;
+            case 'alipay':
+              value.pay_method = '支付宝支付'
+              break;
+            case 'pos':
+              value.pay_method = 'POS支付'
+              break;
+          }
         })
       },
 //    对获取到的单条数据进行处理

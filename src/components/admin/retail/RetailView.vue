@@ -94,9 +94,8 @@
         var self = this
         var url = requestSystemUrl + '/backend-system/settlement/statistics/statistics/' + this.thisId
         var data = {
-          store_id: this.searchData.store_id || '',
-          start_time: this.searchData.start_time || '',
-          end_time: this.searchData.end_time || '',
+          start_time: this.searchData.start_time || this.$route.query.start_time,
+          end_time: this.searchData.end_time || this.$route.query.end_time,
           page: page || ''
         }
         getDataFromApi(url, data, function (response) {
@@ -144,6 +143,8 @@
 //      取消搜索
       cancelSearch: function () {
         this.searchData = {}
+        this.$route.query.start_time = ''
+        this.$route.query.end_time = ''
         this.getlistData(1)
       }
     },

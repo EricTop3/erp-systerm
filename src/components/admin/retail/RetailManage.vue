@@ -71,7 +71,7 @@
             <td>{{item.weixin_total_sum}}</td>
             <td>{{item.alipay_total_sum}}</td>
             <td>
-              <span v-if="item.status=='已结算'" class="btn btn-primary btn-sm" @click="settlement($event)">结账</span>
+              <span v-if="item.status=='未结账'" class="btn btn-primary btn-sm" @click="settlement($event)">结账</span>
               <span class="btn btn-default btn-sm" @click="view($event)">查看</span>
             </td>
           </tr>
@@ -190,7 +190,7 @@
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
           if(value.status == '1' ){
-            value.status = "已结算"
+            value.status = "未结账"
           }
           if(value.status == '2'){
             value.status = "已结账"
@@ -201,17 +201,13 @@
       settlement: function (evnet) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.settlementModal = true
-
-        var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
-        putDataToApi(url,{}, function (response) {
-          self.getlistData(1)
-        })
       },
 //      确定结账
       confirmSettlement: function(){
         var self = this
         var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
         putDataToApi(url,{}, function (response) {
+          self.settlementModal = false
           self.getlistData(1)
         })
       },
