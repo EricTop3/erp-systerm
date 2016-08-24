@@ -296,6 +296,8 @@
           val.item_main_reference_value = val.main_reference_value
           val.item_additional_amount  = val.additional_amount
           console.log( val.item_additional_amount)
+          console.log( val.received_amount)
+          console.log( val.item_main_reference_value)
           val.item_price = Number (val.item_amount  * val.purchase_price * 100)
           self.summaryPrice += val.item_price
         })
@@ -307,11 +309,8 @@
         var result=[];
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
-            console.log( Number(array[i].item_additional_amount))
-            var amount = (Number(array[i].item_amount) + Number(array[i].item_additional_amount) - Number(array[i].item_refund))
-            console.log(amount)
             hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].  item_main_reference_value)
-            hash[array[i][ObjPropInArr]].item_amount=Number( hash[array[i][ObjPropInArr]].item_amount)+amount
+            hash[array[i][ObjPropInArr]].item_amount=Number( hash[array[i][ObjPropInArr]].item_amount)+(Number(array[i].item_amount) + Number(array[i].item_additional_amount) - Number(array[i].item_refund))
             hash[array[i][ObjPropInArr]].item_refund=Number(array[i].item_refund) + Number( hash[array[i][ObjPropInArr]].item_refund)
             hash[array[i][ObjPropInArr]].item_price+=array[i].item_price
           }else{
