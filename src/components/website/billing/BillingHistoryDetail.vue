@@ -135,6 +135,9 @@
           if(value.total_sum != '' && value.total_sum > 0 ){
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
+          if(!value.document_number){
+            value.document_number = '会员卡充值'
+          }
         })
       },
 //      对获取的单条数据处理2
