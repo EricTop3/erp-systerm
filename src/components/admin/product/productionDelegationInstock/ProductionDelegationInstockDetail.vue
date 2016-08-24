@@ -143,6 +143,11 @@
           console.log(err)
         })
       },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+        this.isExist = true
+      },
 //      删除请求
       deleteFromApi: function (id) {
         var self = this
@@ -157,23 +162,19 @@
           console.log('finished')
         })
       },
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-      },
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = this.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
           var obj = {}
-          obj['reference_id'] = val.id
-          obj['id'] = val.item_id
+          obj['reference_id'] = val.item_id
+          obj['id'] = val.id
           obj['amount'] = val.main_reference_value
           obj['defective_amount'] = val.defective_amount
           obj['reference_type'] = val.item_type
+          obj['price'] = val.unit_price
           item.push(obj)
         })
         var data = {
@@ -181,7 +182,14 @@
         }
         var url = requestSystemUrl + '/backend-system/production/outsource/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
+          self.editFlag = false
+          self.isExist = false
+          self.listData()
+        },function(err){
+          self.isExist = true
+          self.editFlag = true
+          self.modal.errModal = true
+          self.modal.errInfo = err.data.message
         })
       }
     },
@@ -235,6 +243,7 @@
         page: [],
         list: {},
         editFlag: false,
+        isExist: false,
         detailModal: true,
         summaryModal: false,
         checkUrl: requestSystemUrl+ '/backend-system/production/outsource/',

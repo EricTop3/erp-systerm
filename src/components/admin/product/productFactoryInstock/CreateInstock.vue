@@ -110,8 +110,8 @@
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.main_reference_value}}</td>
-                  <td>{{entry.item_defective_amount}}</td>
                   <td>{{entry.item_stock_amount}}</td>
+                  <td>{{entry.item_defective_amount}}</td>
                   <td>{{entry.unit_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                 </tr>
