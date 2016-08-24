@@ -190,6 +190,7 @@
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
           val.purchase_amount = val.main_reference_value || 0
+          val.stock = val.system_stock
           val.purchase_price = (val.apuc*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
@@ -307,7 +308,7 @@
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].purchase_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
             hash[array[i][ObjPropInArr]].item_price+=array[i].item_price
-            hash[array[i][ObjPropInArr]].item_stock+=array[i].item_stock
+            hash[array[i][ObjPropInArr]].item_stock=((hash[array[i][ObjPropInArr]].item_stock * 1000 + array[i].item_stock* 1000)*0.001).toFixed(3)
             hash[array[i][ObjPropInArr]].item_main_reference_value+=array[i].item_main_reference_value
           }else{
             hash[array[i][ObjPropInArr]]=array[i];
