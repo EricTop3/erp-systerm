@@ -17,7 +17,7 @@
           :grid-operate="gridOperate"
           :check-url="checkUrl"
           :edit-flag.sync ="editFlag"
-          :is-exist = "isExist"
+          :is-exist.sync= "isExist"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->

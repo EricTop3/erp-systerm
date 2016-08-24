@@ -115,7 +115,7 @@
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
-    :request-data="{product_type: 2}"
+    :purchase-flag = 'true'
     >
   </introduce-data>
   <!--模态框-添加商品-->
@@ -190,6 +190,7 @@
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
           val.purchase_amount = val.main_reference_value || 0
+          val.stock = val.system_stock
           val.purchase_price = (val.apuc*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
@@ -208,6 +209,7 @@
         $.each(saveDataArray, function (index, val) {
           val.purchase_amount = val.main_reference_value
           val.purchase_price = (val.unit_price*0.01).toFixed(2)
+          val.stock = ( (val.stock* 1000)*0.001).toFixed(3)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -307,7 +309,7 @@
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_amount=Number(array[i].purchase_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
             hash[array[i][ObjPropInArr]].item_price+=array[i].item_price
-            hash[array[i][ObjPropInArr]].item_stock+=array[i].item_stock
+            hash[array[i][ObjPropInArr]].item_stock=((hash[array[i][ObjPropInArr]].item_stock * 1000 + array[i].item_stock* 1000)*0.001).toFixed(3)
             hash[array[i][ObjPropInArr]].item_main_reference_value+=array[i].item_main_reference_value
           }else{
             hash[array[i][ObjPropInArr]]=array[i];
@@ -373,7 +375,7 @@
         purchaseTabelHead: {
           code: "货号",
           name: "品名",
-          systerm_stock: "库存数量",
+          system_stock: "库存数量",
           category: "分类",
           production_unit_name: "单位",
           specification_unit: "单位规格"

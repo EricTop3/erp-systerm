@@ -173,7 +173,7 @@
                       @click="storeReceived($event)">门店收货</span>
                 <span v-if="item.status=='等待签收'" class="btn btn-sm btn-primary"
                       @click="userReceived($event)">客户签收</span>
-                <span v-if="item.status=='订单已取消' && item.status!=='已退款'" class="btn btn-sm btn-primary" @click="returnMondy($event)">退款</span>
+                <span v-if="item.status=='订单已取消' && item.status=='已退款'" class="btn btn-sm btn-primary" @click="returnMondy($event)">退款</span>
                 <span class="btn btn-sm btn-info" @click="lookDetail($event)">查看</span>
               </td>
             </tr>
@@ -767,6 +767,17 @@
           }
         })
       },
+      checkAllMethod: function () {
+        var self = this
+        $.each(this.queryList, function (index, val) {
+          val.choice = self.checkAll
+          if(self.checkAll){
+            self.totalPayMent = self.totalPayMent + val.total_sum * 100
+          }else{
+            self.totalPayMent = self.totalPayMent - val.total_sum * 100
+          }
+        })
+      },
 //      全部选择回款
       changeAllOperate: function (checkall) {
         var self = this
@@ -806,6 +817,7 @@
     data: function () {
       return {
         refundFlag: false,
+        checkAll: false,
         modal:{
            errModal: false,
            errInfo: 'high,这是退货错误提示',

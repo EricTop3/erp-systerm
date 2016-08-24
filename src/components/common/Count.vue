@@ -8,12 +8,16 @@
     props: {
       count: '',
       flag: false,
+      isFloat: false,
     },
     methods: {
 //      验证规则
       countValidate: function () {
-        var numberRe = /\D/
-        if (numberRe.test(this.count)) {
+        var re = /^\d/
+        if(this.isFloat){
+          re = /^\d{0,8}\.{0,1}(\d{1,3})?$/
+        }
+        if(!re.test(this.count)){
           this.count = ""
         }
         this.$dispatch('countEmmit',this.count)
