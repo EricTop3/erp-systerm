@@ -133,7 +133,7 @@
     </div>
   </modal>
   <!--模态框HTML-->
-  <error-tip :err-info="messageTip" :err-modal.sync="messageTipModal"></error-tip>
+  <error-tip :err-modal.sync="errModal" :err-info="errInfo">
 </template>
 
 <script>
@@ -233,6 +233,14 @@
       },
 //      添加商品分类
       createSubmit: function () {
+        var self = this
+        $.each(this.listdata,function(index,val){
+          if(val.display_name === self.display_name.trim()){
+            self.isflag = false
+            return false
+          }
+        })
+        if(self.isflag){
           this.$http.post(
             requestUrl + '/backend-system/product/category',
             {
@@ -250,6 +258,11 @@
           }, function (err) {
             error(err)
           })
+        }else{
+          this.createModal = false
+          this.errModal = true
+          this.errInfo = '分类名已存在，请勿重复添加'
+        }
       },
 //      表单验证
       onSubmit: function (e) {
@@ -261,7 +274,6 @@
             self.$validation1.sort.touched = true
             e.preventDefault()
           } else {
-            console.log(self.$validation1.invalid)
             self.createSubmit()
           }
         })
@@ -284,12 +296,15 @@
     },
     data: function () {
       return {
+        isflag: true,
         createModal: false,
         createModalSize: 'modal-sm',
         editModal: false,
         editModalSize: 'modal-sm',
         deleteModal: false,
         deleteModalSize: 'modal-sm',
+        errModal: false,
+        errInfo:'',
         categoryId: '',
         display_name: '',
         sort: '',

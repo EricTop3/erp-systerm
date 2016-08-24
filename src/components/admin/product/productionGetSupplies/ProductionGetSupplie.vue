@@ -316,6 +316,7 @@
       },
 //      取消搜索
       cancelSearch: function () {
+        this.searchData.document_number = ''
         this.searchData.checked = ''
         this.searchData.warehouse_id = ''
         this.searchData.target_id = ''

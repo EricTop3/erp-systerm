@@ -31,7 +31,7 @@
         </div>
 
         <!-- 表格1 -->
-        <table class="table table-striped table-border table-hover">
+        <table class="table table-striped table-border table-hover" v-if="isflag">
           <thead>
           <tr class="text-center">
             <td>门店</td>
@@ -237,11 +237,17 @@
       },
 //    搜索
       search: function () {
+        if(this.searchData.store_id){
+          this.isflag = false
+        }else{
+          this.isflag = true
+        }
         this.getOneData()
         this.getlistData(1)
       },
 //      取消搜索
       cancelSearch: function () {
+        this.isflag = true
         this.searchData = {}
         this.getOneData()
         this.getlistData(1)
@@ -260,6 +266,7 @@
     },
     data: function () {
       return {
+        isflag: true,
         storeData: [],
         timewidth: "timewidth",
         timetext1: "开始时间",
