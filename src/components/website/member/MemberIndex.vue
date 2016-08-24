@@ -222,8 +222,8 @@
       </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="modal.editModal=false">关闭</button>
-      <button type="button" class="btn btn-primary" :value="edit.id" @click="verifyEditMember($event)">保存</button>
+      <span class="btn btn-default" data-dismiss="modal" @click="modal.editModal=false">关闭</span>
+      <span class="btn btn-primary" :value="edit.id" @click="verifyEditMember($event)">保存</span>
     </div>
   </modal>
 

@@ -19,7 +19,7 @@
           </div>
           <div class="form-group">
             <label>会员生日</label>
-            <input class="form-control" placeholder="请输入生日" v-model="searchData.birthday">
+            <date-picker :value.sync="searchData.birthday" :time-text="timetext1"></date-picker>
           </div>
           <div class="form-group ml10">
             <label>开卡点</label>
@@ -341,6 +341,7 @@
     },
     data: function () {
       return {
+        timetext1: '请选择生日',
         couponData: [],
         storeData: [],
         editModal: false,
