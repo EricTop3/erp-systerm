@@ -160,8 +160,9 @@
     ready: function () {
       var self = this
 //    获取制单人
-      getDataFromApi(requestUrl + '/backend-system/store/store-account', {}, function (response) {
+      getDataFromApi(requestUrl + '/backend-system/store/account', {}, function (response) {
         self.search.orderMaker = response.data.body.list
+
       })
 //      获取合作工厂cooperativeFactory
       getDataFromApi(requestUrl + '/backend-system/provider/provider', {}, function (response) {
@@ -176,6 +177,9 @@
         getDataFromApi(url, data, function (response) {
           self.list = response.data.body.list
           self.page = response.data.body.pagination
+          $.each(self.list,function(inddex,val){
+            val.amount = '￥'+  (val.amount* 0.01).toFixed(2)
+          })
           exchangeData(self.list)
         })
       },
@@ -184,12 +188,12 @@
         var data = {
           document_number: this.search.code,
           checked: this.search.selectedStatus,
-          created_id: this.search.selectedMaker,
+          creator_id: this.search.selectedMaker,
           start_time: this.time.startTime,
           end_time: this.time.endTime,
           start_receive_time: this.time.startTime1,
           end_receive_time: this.time.endTime1,
-          iprovider_id: this.search.selectedFactory
+          provider_id: this.search.selectedFactory
         }
         this.listData(data)
       },

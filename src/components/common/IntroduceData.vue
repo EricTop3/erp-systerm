@@ -17,7 +17,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label>配送时间段</label>
+            <label>时间段</label>
             <date-picker :value.sync="startTime" :time-text="timeText"></date-picker> -
             <date-picker :value.sync="endTime"   :time-text="timeText"></date-picker>
           </div>
@@ -88,7 +88,7 @@
       url: '',
       secondUrl: '',
       requestData: {},
-      productFlag: true
+      productFlag: false
     },
     events: {
 //    绑定翻页事件
@@ -123,11 +123,14 @@
         var  data = this.requestData
           getDataFromApi(url + "/" + currentId,data,function(response){
             if(self.productFlag){
-              console.log('wangg')
+              var len = response.data.body.list.length
+              console.log(len)
+              var cur = 0
               $.each(response.data.body.list,function(index,val){
-                if(val.product_type ===2){
-                  response.data.body.list.splice(index,1)
-                }
+                  if(val.product_type ===2){
+                    response.data.body.list.splice(index,1)
+                    cur++
+                  }
               })
               fetchedData = response.data.body.list
             }else{
