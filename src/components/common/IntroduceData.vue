@@ -124,22 +124,24 @@
         var  data = this.requestData
           getDataFromApi(url + "/" + currentId,data,function(response){
             if(self.productFlag){
+              var currentArray = []
 //              var len = response.data.body.list.length
 //              var cur = 0
               $.each(response.data.body.list,function(index,val){
-                  if(val.product_type ===2){
-                    response.data.body.list.splice(index,1)
-//                    cur++
+                  if(val.product_type != 2){
+                    currentArray.push(val)
                   }
               })
-              fetchedData = response.data.body.list
-            }if(self.purchaseFlag){
+              fetchedData = currentArray
+              console.log(fetchedData)
+            }else if(self.purchaseFlag){
+              var currentArray = []
               $.each(response.data.body.list,function(index,val){
-                if(val.product_type !==2){
-                  response.data.body.list.splice(index,1)
+                if(val.product_type ===2){
+                  currentArray.push(val)
                 }
               })
-              fetchedData = response.data.body.list
+              fetchedData = currentArray
             }else{
               fetchedData = response.data.body.list
             }
