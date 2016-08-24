@@ -139,8 +139,6 @@
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
           val.realInstock_amount = val.main_reference_value
-
-
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)

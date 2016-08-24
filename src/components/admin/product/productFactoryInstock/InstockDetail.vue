@@ -145,6 +145,11 @@
           console.log(err)
         })
       },
+//      编辑
+      editGoods: function (event) {
+        this.editFlag = true
+        this.isExist =  true
+      },
 //      删除请求
       deleteFromApi: function (id) {
         var self = this
