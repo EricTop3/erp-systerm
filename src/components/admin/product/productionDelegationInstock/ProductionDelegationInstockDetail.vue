@@ -48,7 +48,7 @@
                 <td v-if="!editFlag">{{entry.main_reference_value}}/{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
                 <td v-if="!editFlag">{{entry.defective_amount}}/{{entry.unit_name}}</td>
-                <td>{{entry.unit_price}}元/{{entry.unit_name}}</td>
+                <td>{{entry.unit_price| priceChange}}元/{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
               </tr>
               </tbody>
