@@ -18,6 +18,7 @@
           :grid-operate="gridOperate"
           :check-url="checkUrl"
           :edit-flag.sync = "editFlag"
+          :is-exist.sync="isExist"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -45,9 +46,9 @@
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.produce_amount}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync=entry.main_reference_value></count>{{entry.unit_name}}</td>
-                <td v-if="!editFlag">{{entry.main_reference_value}}/{{entry.unit_name}}</td>
+                <td v-if="!editFlag">{{entry.main_reference_value}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.defective_amount></count>{{entry.unit_name}}</td>
-                <td v-if="!editFlag">{{entry.defective_amount}}/{{entry.unit_name}}</td>
+                <td v-if="!editFlag">{{entry.defective_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.unit_price| priceChange}}元/{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
               </tr>
@@ -70,10 +71,10 @@
               <tr class="text-center" v-for="entry in detailList" track-by="$index" :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
-                <td>{{entry.produce_amount}}/{{entry.unit_name}}</td>
-                <td>{{entry.main_reference_value}}/{{entry.unit_name}}</td>
-                <td>{{entry.defective_amount}}/{{entry.unit_name}}</td>
-                <td>{{entry.unit_price}}元/{{entry.unit_name}}</td>
+                <td>{{entry.produce_amount}}{{entry.unit_name}}</td>
+                <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
+                <td>{{entry.defective_amount}}{{entry.unit_name}}</td>
+                <td>{{entry.unit_price| priceChange }}元/{{entry.unit_name}}</td>
                 <td>{{entry.unit_specification}}</td>
               </tr>
               </tbody>
@@ -143,11 +144,6 @@
           console.log(err)
         })
       },
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-        this.isExist = true
-      },
 //      删除请求
       deleteFromApi: function (id) {
         var self = this
@@ -161,6 +157,14 @@
         finishRequest(requestSystemUrl +'/backend-system/production/outsource/'+ id +'/finished',function(response){
           console.log('finished')
         })
+      },
+//      审核失败
+      checkFail: function (err){
+        var self = this
+        if(Number(err.data.code) === 220000){
+          self.modal.errModal = true
+          self.modal.errInfo =  "库存不足，无法通过审核"
+        }
       },
 //      保存
       saveGoods: function (event) {
