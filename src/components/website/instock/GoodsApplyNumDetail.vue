@@ -13,6 +13,7 @@
       :table-data="list"
       :check-url="checkUrl"
       :edit-flag.sync = 'editFlag'
+      :is-exist.sync = 'isExist'
     >
     </summary-detail>
         <!--表格详情列表-->
@@ -89,10 +90,6 @@
           console.log(err)
         })
       },*/
-//      编辑
-      editGoods: function (event) {
-        this.editFlag = true
-      },
 //      保存
       saveGoods: function (event) {
         var self = this
@@ -154,6 +151,7 @@
         list: [],
         checkUrl: requestSystemUrl + '/front-system/stock/enquiry/',
         detailList: [],
+        isExist: false,
         editFlag: false,
         detailModal: true,
         summaryModal: false,
