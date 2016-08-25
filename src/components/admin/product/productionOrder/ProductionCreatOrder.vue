@@ -332,6 +332,7 @@
 //    后台开始生产
       startProduct: function (even) {
         var curId = Number($(even.currentTarget).parents("tr").attr("id"))
+        $(even.currentTarget).attr("disabled",true)
         var self = this
         putDataToApi(requestSystemUrl + '/backend-system/order/order/produce/' +  curId,{},function (response){
           self.getOrderList({})
