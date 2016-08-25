@@ -500,6 +500,13 @@
           },
           function (response) {
             self.finishPage(response)
+            this.search.orderNumber = ""
+            this.search.selectedPayway = ""
+            this.search.selectedClerk = ''
+            this.search.selectedClerk = ''
+            this.search.selectedProgress = ''
+            this.time.startTime = ''
+            this.time.endTime = ''
           }
         )
       },
