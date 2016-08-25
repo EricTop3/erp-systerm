@@ -100,7 +100,10 @@
             <div style="float:right" v-if=" addFormData.type == 'reduce' ">满 <input type="text" class="form-control" placeholder="100" style="width: 50px;" v-model="addFormData.condition" v-validate:condition="[ 'required' ]">
               减 <input type="text" class="form-control" placeholder="30" style="width: 50px;" v-model="addFormData.value" v-validate:value="[ 'required' ]">
             </div>
-            <input v-else type="text" class="form-control" placeholder="折扣率,如：0.8" style="width: 150px;" v-model="addFormData.value" v-validate:value="[ 'required' ]">
+
+
+            
+            <input v-else type="text" class="form-control" placeholder="折扣率,如：0.8" style="width: 145px; float:right" v-model="addFormData.value" v-validate:value="[ 'required' ]">
             <div v-if="$validation1.value.touched">
               <p class="error" v-if="$validation1.value.required">这是必填字段</p>
               <p class="error" v-if="$validation1.condition.required">这是必填字段</p>
@@ -159,13 +162,14 @@
             <div style="float:right" v-if=" formData.type == 'reduce' ">满 <input type="text" class="form-control" placeholder="100" style="width: 50px;" v-model="formData.condition" v-validate:condition="[ 'required' ]">
               减 <input type="text" class="form-control" placeholder="30" style="width: 50px;" v-model="formData.value" v-validate:value="[ 'required' ]">
             </div>
-            <input v-else type="text" class="form-control" placeholder="折扣率,如：0.8" style="width: 150px;" v-model="formData.value" v-validate:value="[ 'required' ]">
+            <input v-else type="text" class="form-control" placeholder="折扣率,如：0.8" style="width: 145px; float:right" v-model="formData.value" v-validate:value="[ 'required' ]">
             <div v-if="$validation1.value.touched">
               <p class="error" v-if="$validation1.value.required">这是必填字段</p>
             </div>
           </div>
         </div>
       </form>
+
       </validator>
     </div>
     <div slot="footer">
