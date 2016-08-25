@@ -86,6 +86,8 @@
       </div>
     </div>
   </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
 </style>
@@ -101,6 +103,7 @@
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
   import Price from  '../../../common/Price'
+  import ErrorTip  from '../../../common/ErrorTip'
   import {
     requestUrl,
     putDataToApi,
@@ -125,7 +128,8 @@
       LeftProduction: LeftProduction,
       SummaryDetail: SummaryDetail,
       Count: Count,
-      Price: Price
+      Price: Price,
+      ErrorTip: ErrorTip
     },
     events: {
 //    绑定翻页事件
@@ -160,6 +164,14 @@
           console.log('finished')
         })
       },
+//     审核失败
+      checkFail: function (err){
+        var self = this
+        if(Number(err.data.code) === 220000){
+          self.modal.errModal = true
+          self.modal.errInfo =  "库存不足，无法通过审核"
+        }
+      },
 //      保存
       saveGoods: function (event) {
         var self = this
@@ -181,6 +193,7 @@
         putDataToApi(url,data,function (res) {
           self.editFlag = false
           self.isExist = false
+          self.listData()
         },function(err){
           self.editFlag = true
           self.isExist = true
@@ -236,7 +249,7 @@
         $.each(this.summarystockGoods,function (index,val){
           val.item_origin_stock_amount = val.origin_stock_amount
           val.item_demand_amount = val.demand_amount
-          val.item_price = val.item_demand_amount  * val.unit_price
+          val.item_price = val.main_reference_value  * val.unit_price
           val.item_main_reference_value = val.main_reference_value
           self.summaryPrice += val.item_price
         })
@@ -280,6 +293,10 @@
         summaryModal: false,
         detailList: [],
         tabFlag: true,
+        modal: {
+          errModal: false,
+          errInfo: ''
+        },
         gridColumns: {
           document_number: '生产单号',
           checked: '审核状态',
