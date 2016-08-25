@@ -178,7 +178,7 @@
           obj['amount'] = val.main_reference_value
           obj['defective_amount'] = val.defective_amount
           obj['reference_type'] = val.item_type
-          obj['price'] = val.unit_price
+          obj['price'] = (val.unit_price*0.01).toFixed(2)
           item.push(obj)
         })
         var data = {

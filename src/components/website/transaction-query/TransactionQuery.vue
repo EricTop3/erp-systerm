@@ -122,7 +122,7 @@
                 {{entry[$key]}}
               </td>
               <td  :id="[entry.id ? entry.id : '']">
-                <span class="btn btn-primary btn-sm" @click="payment($event)">回款</span>
+                <span class="btn btn-primary btn-sm" @click="payment($event)" v-if="entry.status!='已退货'">回款</span>
                 <span class="btn btn-info btn-sm" @click="lookDetail($event)">查看</span>
                 <span class="btn btn-warning btn-sm" @click="returnGoods($event)" v-if="entry.status!='已退货'">退货</span>
               </td>
@@ -753,11 +753,17 @@
 //      选择回款
       changeOperate: function (event) {
         var self = this
+        var len = this.queryList.length
         var currentId = Number($(event.currentTarget).attr('id'))
         var currentObjCheck = $(event.currentTarget).prop('checked')
-        var len = this.queryList.length
         if(!currentObjCheck){
           self.checkAll = false
+          self.singleCheckMount --
+        }else{
+          self.singleCheckMount++
+        }
+        if(len ===  self.singleCheckMount){
+          self.checkAll = true
         }else{
           self.checkAll = false
         }
@@ -823,6 +829,7 @@
       return {
         refundFlag: false,
         checkAll: false,
+        singleCheckMount: 0,
         modal:{
            errModal: false,
            errInfo: 'high,这是退货错误提示',

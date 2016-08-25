@@ -1,6 +1,6 @@
 <template>
   <!--审核按钮-->
-  <span class="btn btn-danger btn-sm" data-toggle="modal" data-target="#inventory-audit-templ" @click="validate($event)">审核</span>
+  <span class="btn btn-sm"   :class="whenClick ? btn-primary : 'btn-danger' " data-toggle="modal" data-target="#inventory-audit-templ" @click="validate($event)">审核</span>
   <!--审核模态框-->
   <modal :show.sync="validateModal" :modal-size="validateModalSize">
     <div slot="header">
@@ -37,7 +37,8 @@
     data: function () {
       return {
         validateModal: false,
-        validateModalSize: 'modal-sm'
+        validateModalSize: 'modal-sm',
+        whenClick: false,
       }
     },
     methods: {
@@ -46,15 +47,20 @@
         var self = this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
         self.validateModal = true
+        if(self.whenClick){
+          return false
+        }
       },
 //    确定审核
       confirmValidate: function () {
         var self = this
+        self.whenClick = true
         self.validateModal = false
         checkRequest(this.checkUrl +currentId+ '/checked' ,function (){
           if(!(self.list instanceof Array)){
             if (self.list.id === currentId) {
               self.list.checked = '已审核'
+              self.whenClick = false
               if(window.location.href.indexOf('/admin')>0){
                 self.list.auditor = window.localStorage.getItem("systermName")
                 self.list.auditor_name=  window.localStorage.getItem("systermName")
