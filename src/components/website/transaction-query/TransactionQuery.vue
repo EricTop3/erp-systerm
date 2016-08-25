@@ -792,16 +792,19 @@
 //      全部选择回款
       changeAllOperate: function (checkall) {
         var self = this
-        if (checkall) {
-          $.each(this.queryList, function (index, val) {
+        self.checkAll = true
+        $('.singleChecked').prop('checked',self.checkAll)
+        $.each(this.queryList, function (index, val) {
+          if(self.checkAll){
             self.totalPayMent = self.totalPayMent + val.total_sum * 100
-          })
-        } else {
-          self.totalPayMent = 0
-        }
+          }else{
+            self.totalPayMent = self.totalPayMent - val.total_sum * 100
+          }
+        })
       },
 //      点击全部回款金额
       paymentAll: function () {
+        this.changeAllOperate()
         this.modal.paymentModal = true
         this.paymentAmount = (this.totalPayMent * 0.01).toFixed(2)
       },

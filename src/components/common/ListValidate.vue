@@ -46,9 +46,10 @@
       validate: function (event) {
         var self = this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
-        self.validateModal = true
         if(self.whenClick){
           return false
+        }else{
+          self.validateModal = true
         }
       },
 //    确定审核
@@ -85,6 +86,7 @@
           }
           self.$dispatch("finishEdit")
         },function(err){
+          self.whenClick = false
           self.$dispatch("checkFail",err)
         })
       }
