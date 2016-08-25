@@ -3,9 +3,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2" role="navigation">
-        <left-production></left-production>
-      </div>
+      <left-production></left-production>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
@@ -13,7 +11,6 @@
           <li class="active">领料单</li>
           <li class="active">新建</li>
         </ol>
-
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
