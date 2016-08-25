@@ -90,7 +90,7 @@
                 <!--<label>会员密码</label>-->
                 <!--<input type='email' class='form-control'>-->
                 <!--</div>-->
-                <button  class='btn btn-primary ml10' @click="memberRequest">确定</button>
+                <span  class='btn btn-primary ml10' @click="memberRequest">确定</span>
               </form>
               <div v-if="member.memberInfoModal">
                 <ul class="fl memberInfoList">
@@ -213,7 +213,7 @@
       <div class="form-group">
         <label for=""   class="col-sm-4 control-label">找零</label>
         <div class="col-sm-8">
-          <p class="form-control-static">￥{{ finalPrice > paymentAmount ? 0 : (paymentAmount*100-finalPrice*100)*0.01 }}</p>
+          <p class="form-control-static">￥{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</p>
         </div>
       </div>
     </div>
@@ -365,6 +365,7 @@
       const payment = $('.pay-list')
       var $this = this
       this.checkedGoodsList = []
+//    点单类型切换
       function changeActive(elem, elemSon) {
         var orderTypeData = ''
         var paymentData = ''
@@ -536,6 +537,12 @@
         postSiteDataToApi(requestUrl + '/front-system/order/order',data,function(response){
           callback && callback(response)
         },function(err){
+          if(err.data.code==='200016'){
+            self.settlementFlag = false
+            this.messageTipModal = true
+            this.messageTip = "今日已结算,不能再结算"
+            this.error = true
+          }
           errback && errback(err)
         })
       },
@@ -725,7 +732,7 @@
         }else {
           getDataFromSiteApi(requestUrl + '/front-system/member/member/c/' + this.member.memberCode,{},function(response){
             self.member.memberCount = response.data.body.data.balance
-            self.member.memberId = response.data.body.data.id
+            self.member.memberId = Number(response.data.body.data.id)
             self.member.memberCodeModal = false
             self.member.memberInfoModal = true
             self.member.memberInfoList  = response.data.body.data
@@ -778,11 +785,12 @@
         if(this.settlementFlag === false){
           return
         }
-        this.order_mata_data.user_id = this.member.memberId
+        console.log(this.member.memberId)
         var settlementData = {}
         orderItems = []
         window.localStorage.setItem('orderType', this.order_mata_data.order_type)
         orderType = Number(window.localStorage.getItem('orderType'))
+        this.order_mata_data.user_id = Number(this.member.memberId)
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
@@ -791,7 +799,6 @@
           obj['note'] = val.priceNote
           orderItems.push(obj)
         })
-        console.log(settlementData)
         settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,

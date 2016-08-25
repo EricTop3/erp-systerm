@@ -510,13 +510,13 @@
           },
           function (response) {
             self.finishPage(response)
-            self.search.orderNumber = ''
-            self.search.selectedPayway = ''
-            self.search.cardNumber = ''
-            self.search.selectedClerk = ''
-            self.search.selectedProgress = ''
-            self.time.startTime = ''
-            self.time.endTime = ''
+            this.search.orderNumber = ''
+            this.search.selectedPayway = ''
+            this.search.cardNumber = ''
+            this.search.selectedClerk = ''
+            this.search.selectedProgress = ''
+            this.time.startTime = ''
+            this.time.endTime = ''
           }
         )
       },
