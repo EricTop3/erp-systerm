@@ -50,8 +50,8 @@
                 <td>{{entry.demand_amount=entry.demand_amount||0}}{{entry.unit_name}}</td>
                 <td v-if="editFlag"><count :count.sync =entry.main_reference_value></count>{{entry.unit_name}}</td>
                 <td v-if="!editFlag">{{entry.main_reference_value}}{{entry.unit_name}}</td>
-                <td v-if="editFlag"><price :price.sync ="entry.unit_price | priceChange"}></price>元/{{entry.unit_name}}</td>
-                <td v-if="!editFlag">￥{{entry.unit_price | priceChange}}元/{{entry.unit_name}}</td>
+                <td v-if="editFlag"><price :price.sync ="entry.unit_price"}></price>元/{{entry.unit_name}}</td>
+                <td v-if="!editFlag">￥{{entry.unit_price}}元/{{entry.unit_name}}</td>
                 <td >{{entry.reference_number}}</td>
               </tr>
               </tbody>
@@ -216,6 +216,7 @@
           self.detailList = response.data.body.list
           $.each(self.detailList,function(index,val){
             val.origin_stock_amount = (val.origin_stock_amount*1000*0.001).toFixed(3)
+            val.unit_price = (val.unit_price * 0.01).toFixed(2)
           })
         })
 //        获取列表详情
