@@ -77,7 +77,7 @@
                 <td>{{entry.item_origin_stock_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.item_demand_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
-                <td>￥{{entry.item_price | priceChange}}</td>
+                <td>￥{{entry.item_price }}</td>
               </tr>
               </tbody>
             </table>
@@ -250,9 +250,9 @@
         $.each(this.summarystockGoods,function (index,val){
           val.item_origin_stock_amount = val.origin_stock_amount
           val.item_demand_amount = val.demand_amount
-          val.item_price = val.main_reference_value  * val.unit_price
+          val.item_price = (val.main_reference_value  * val.unit_price).toFixed(2)
           val.item_main_reference_value = val.main_reference_value
-          self.summaryPrice += val.item_price
+          self.summaryPrice += val.item_price*100
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
       },
