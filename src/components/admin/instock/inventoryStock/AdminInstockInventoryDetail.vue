@@ -42,9 +42,9 @@
             <td>{{entry.item_name}}</td>
             <td>{{entry.system_stock}}</td>
             <td v-if='!editFlag'>{{entry.main_reference_value}}</td>
-            <td v-if='editFlag'><count :count.sync =entry.main_reference_value :flag.sync="editFlag"></count></td>
+            <td v-if='editFlag'><count :count.sync =entry.main_reference_value :flag.sync="editFlag" :is-float="true"></count></td>
             <td v-if='!editFlag'>{{entry.difference}}</td>
-            <td v-if='editFlag'>{{entry.difference = entry.main_reference_value - entry.system_stock }}</td>
+            <td v-if='editFlag'>{{entry.difference = ((entry.main_reference_value*1000 - entry.system_stock*1000)/1000).toFixed(3) }}</td>
             <td>{{entry.unit_name}}</td>
             <td>{{entry.unit_specification}}</td>
           </tr>
@@ -99,20 +99,7 @@
     events: {
 /*//    绑定翻页事件
       pagechange: function (currentpage) {
-        var self = this
-        this.$http({
-          url:requestSystemUrl + '/backend-system/stock/inventory',
-          data: {
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          self.page = response.data.body.pagination
-          self.list = response.data.body.list
-        }, function (err) {
-          console.log(err)
-        })
+
       },*/
 //     完成請求
       finishFromApi: function (id) {
