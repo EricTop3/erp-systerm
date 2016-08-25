@@ -285,7 +285,7 @@
     <div slot="body" class="gzhk">
       <div class="radio">
         <label>
-          <input type="radio" value="cash" name="payment">现金
+          <input type="radio" value="cash" name="payment" checked="true">现金
         </label>
         <label>
           <input type="radio" value="alipay" name="payment">支付宝
