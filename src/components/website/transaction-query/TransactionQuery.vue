@@ -500,13 +500,13 @@
           },
           function (response) {
             self.finishPage(response)
-            this.search.orderNumber = ""
-            this.search.selectedPayway = ""
-            this.search.selectedClerk = ''
-            this.search.selectedClerk = ''
-            this.search.selectedProgress = ''
-            this.time.startTime = ''
-            this.time.endTime = ''
+            self.search.orderNumber = ""
+            self.search.selectedPayway = ""
+            self.search.selectedClerk = ''
+            self.search.selectedClerk = ''
+            self.search.selectedProgress = ''
+            self.time.startTime = ''
+            self.time.endTime = ''
           }
         )
       },
