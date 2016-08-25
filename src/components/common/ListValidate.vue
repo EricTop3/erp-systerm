@@ -1,6 +1,6 @@
 <template>
   <!--审核按钮-->
-  <span class="btn btn-sm" :disabled="whenClick ? true : 'false'" :class="whenClick ? btn-primary : 'btn-danger' " data-toggle="modal" data-target="#inventory-audit-templ" @click="validate($event)">审核</span>
+  <span class="btn btn-sm"   :class="whenClick ? btn-primary : 'btn-danger' " data-toggle="modal" data-target="#inventory-audit-templ" @click="validate($event)">审核</span>
   <!--审核模态框-->
   <modal :show.sync="validateModal" :modal-size="validateModalSize">
     <div slot="header">
