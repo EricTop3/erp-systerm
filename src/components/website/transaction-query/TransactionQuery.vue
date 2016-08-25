@@ -203,7 +203,7 @@
           <td>零售单价</td>
           <td>销售数量</td>
           <td>退货数量</td>
-          <td>小计退款额</td>
+          <td>小计</td>
         </tr>
         </thead>
         <tbody>
@@ -218,7 +218,9 @@
       </table>
       <div class="panel">
         <div class="panel-body">
-          <p style="line-height: 33px;">合计退款：<span>￥{{refund_total_sum | priceChange}}</span><span
+          <p style="line-height: 33px;">订单金额：<span>￥{{allReturnPrice}}</span>
+          <p style="line-height: 33px;">合计退款：<span>￥{{refund_total_sum | priceChange}}</span>
+            <span
             class="pull-right btn-primary btn" @click="confirmRefoundGoods"
             :disabled="refundFlag"
             :class="{'btn-primary':!refundFlag,'btn-warning':refundFlag}">确定退货</span>
