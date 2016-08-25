@@ -63,8 +63,8 @@
         <!-- 表格 -->
         <grid :data="productList" :columns="gridColumns" :operate="productOperate">
           <div slot="operateList">
-            <span class="btn btn-primary btn-sm" @click="fluctuations($event)">价格波动</span>
-            <span class="btn btn-default btn-sm" @click="edit($event)">编辑</span>
+            <span class="btn btn-info btn-sm" @click="fluctuations($event)">价格波动</span>
+            <span class="btn btn-success btn-sm" @click="edit($event)">编辑</span>
             <list-delete :delete-data.sync="productList"></list-delete>
           </div>
         </grid>

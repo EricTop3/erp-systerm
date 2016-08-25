@@ -39,6 +39,8 @@
           </tbody>
         </table>
         <!-- end表格1 -->
+
+        <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
         <!-- 表格2 -->
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
@@ -193,6 +195,9 @@
               value.pay_method = 'POS支付'
               break;
           }
+          if(!value.document_number){
+            value.document_number = '会员卡充值'
+          }
         })
       },
 //    对获取到的单条数据进行处理
@@ -250,8 +255,8 @@
     computed: {
 //      导出
       exports: function () {
-        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/statistics/' + this.$route.params.queryId + '/statistics'
-        return this.exportUrl = url + '/export-excel'
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/export-excel/' + this.$route.params.queryId
+        return this.exportUrl = url
       }
     },
     data: function () {

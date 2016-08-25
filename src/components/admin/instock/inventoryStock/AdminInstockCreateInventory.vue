@@ -57,7 +57,7 @@
             </td>
             <td>
               <template v-if="entry.current_stock == ''">{{ - entry.system_stock}}</template>
-              <template v-else>{{entry.current_stock - entry.system_stock}}</template>
+              <template v-else>{{((entry.current_stock*1000 - entry.system_stock*1000)/1000).toFixed(3)}}</template>
             </td>
             <td>{{entry.production_unit_name}}</td>
             <td>{{entry.specification_unit}}</td>
@@ -217,7 +217,7 @@
             self.dataArray = respon.data.body.list
             $.each(self.dataArray,function(index,val){
               if(val.current_stock == '0'){
-                val.current_stock = null
+                val.current_stock = val.system_stock
               }
             })
             self.rederStockGoods = self.dataArray

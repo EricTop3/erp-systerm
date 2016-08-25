@@ -256,7 +256,7 @@
     computed: {
 //      导出
       exports: function () {
-        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/statistics/statistics'
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/statistics'
         var data =
           'store_id=' + this.searchData.store_id + '&' +
           'start_time=' + this.searchData.start_time + '&' +
