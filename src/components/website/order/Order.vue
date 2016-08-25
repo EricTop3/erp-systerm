@@ -868,6 +868,7 @@
         settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,
+          'truncate': 1,
           'all_total': this.paymentAmount * 1000
         }
         this.settlementRequest(settlementData, this.setuploadFinish)

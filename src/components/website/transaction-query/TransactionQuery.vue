@@ -199,16 +199,16 @@
       <table class="table table-striped table-border table-hover">
         <thead>
         <tr class="text-aligen">
-          <td>商品名称</td>
+          <td  style="text-align: center">商品名称</td>
           <td>零售单价</td>
           <td>销售数量</td>
           <td>退货数量</td>
-          <td>小计退额款</td>
+          <td>小计退款额</td>
         </tr>
         </thead>
         <tbody>
         <tr v-for="item in returnGoodsList" class="text-aligen">
-          <td>{{item.name}}</td>
+          <td  style="text-align: center">{{item.name}}</td>
           <td>￥{{item.new_price |priceChange}}</td>
           <td>{{item.amount}}</td>
           <td>{{item.amount}}</td>
@@ -291,7 +291,7 @@
       </div>
       <div class="radio">
         <label>
-          <input type="radio" value="post" name="payment"> post刷卡
+          <input type="radio" value="pos" name="payment"> post刷卡
         </label>
         <label>
           <input type="radio" value="weixin" name="payment"> 微信
@@ -480,6 +480,10 @@
 //      搜索
       searchMethod: function () {
         var self = this
+        var url = requestUrl + '/front-system/order'
+        var data = {
+          order_type: self.orderType
+        }
         searchRequest(
           requestUrl + '/front-system/order',
           {
@@ -493,8 +497,7 @@
             end_time: this.time.endTime
           },
           function (response) {
-            self.queryList = response.data.body.list
-            self.page = response.data.body.pagination
+            self.finishPage(response)
           }
         )
       },
@@ -506,8 +509,14 @@
             order_type: this.orderType
           },
           function (response) {
-            self.queryList = response.data.body.list
-            self.page = response.data.body.pagination
+            self.finishPage(response)
+            self.search.orderNumber = ''
+            self.search.selectedPayway = ''
+            self.search.cardNumber = ''
+            self.search.selectedClerk = ''
+            self.search.selectedProgress = ''
+            self.time.startTime = ''
+            self.time.endTime = ''
           }
         )
       },
