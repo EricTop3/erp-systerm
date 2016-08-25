@@ -98,23 +98,30 @@
         console.log(currentpage)
       },
       getGoodsWhenClick: function () {
-        this.firstData = []
-        this.secondData = []
-//       不同的url加载不同的数据
-        if(this.secondUrl!==undefined){
-          this.getProductByUrl(this.url)
-          this.getProductByUrl(this.secondUrl)
-        }else{
-          this.getProductByUrl(this.url)
-        }
+        var self = this
+//        一次加载
+        if(!this.isLoadFinish){
+          //       不同的url加载不同的数据
+          if(this.secondUrl!==undefined){
+            this.getProductByUrl(this.url,function(){
+              self.getProductByUrl(self.secondUrl,function(){
+                self.isLoadFinish = true
+              })
+            })
+          }else{
+            this.getProductByUrl(this.url,function(){
+              self.isLoadFinish = true
+            })
+          }
 //      获取门店列表
-        if(this.isPurchase){
-          var self = this
-          getDataFromApi(requestUrl + '/backend-system/store/store',{},function (response){
-            self.storeList = response.data.body.list
-          })
+          if(this.isPurchase){
+            var self = this
+            getDataFromApi(requestUrl + '/backend-system/store/store',{},function (response){
+              self.storeList = response.data.body.list
+            })
+          }
         }
-      }
+        }
     },
     methods: {
 //      根据id获取商品
@@ -166,18 +173,20 @@
           })
       },
 //      根据url加载的时候获取一级商品
-      getProductByUrl: function (url) {
+      getProductByUrl: function (url,callback) {
         var self = this
         var data = this.requestData
         if(this.secondUrl!==undefined){
           getDataFromApi(url,data,function(response){
             self.firstData =  self.firstData.concat(response.data.body.list)
             exchangeData( self.firstData)
+            callback && callback ()
           })
         }else{
           getDataFromApi(url,data,function(response){
             self.firstData = response.data.body.list
             exchangeData( self.firstData)
+            callback && callback ()
           })
         }
       },
@@ -292,6 +301,7 @@
       return {
         isAdd: false,
         isAddFlag: false,
+        isLoadFinish: false,
         timeText: '请输入日期',
         startTime: '',
         endTime: '',

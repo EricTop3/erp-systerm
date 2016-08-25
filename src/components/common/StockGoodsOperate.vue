@@ -77,13 +77,18 @@
         })
       },
      getGoodsWhenClick: function () {
-       //      分类
        var self = this
-       getDataFromApi(self.categoryUrl,{},function(response){
-         self.category = response.data.body.list
-       })
-//       获取产品
-       this.requestApi(this.requestData)
+       if(!this.isLoadFinish){
+//        分类
+         var self = this
+         getDataFromApi(self.categoryUrl,{},function(response){
+           self.category = response.data.body.list
+//           获取产品
+           self.requestApi(self.requestData,function(){
+               self.isLoadFinish = true
+             })
+         })
+       }
      }
     },
     props: {
@@ -99,11 +104,12 @@
     },
     methods: {
 //     公共产品列表请求
-      requestApi: function (data) {
+      requestApi: function (data,callback) {
         var self = this
         getDataFromApi(this.productUrl,data,function(response){
           self.addData = response.data.body.list
           self.page = response.data.body.pagination
+          callback && callback ()
         })
       },
 //    根据分类进行产品请求
