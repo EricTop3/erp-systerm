@@ -68,8 +68,8 @@
                     :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.origin_stock.toFixed(3)}}</td>
-                  <td>{{entry.target_stock.toFixed(3)}}</td>
+                  <td>{{entry.origin_stock}}</td>
+                  <td>{{entry.target_stock}}</td>
                   <td>{{entry.main_reference_value}}</td>
                   <td>
                     <count :count.sync=entry.distribution_amount></count>
@@ -102,8 +102,8 @@
                     :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.origin_stock.toFixed(3)}}</td>
-                  <td>{{entry.target_stock.toFixed(3)}}</td>
+                  <td>{{entry.origin_stock}}</td>
+                  <td>{{entry.target_stock}}</td>
                   <td>{{entry.item_main_reference_value}}</td>
                   <td>{{entry.item_amount}}</td>
                   <td>{{entry.unit_name}}</td>

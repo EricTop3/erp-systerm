@@ -256,7 +256,7 @@
           self.orderList = response.data.body.list
           self.page =  response.data.body.pagination
           $.each(self.orderList,function (index,val) {
-            val.total_sum = (val.total_sum * 0.01).toFixed(2)
+            val.total_sum = '￥' + (val.total_sum * 0.01).toFixed(2)
             switch (val.payment) {
               case  'cash':
                 val.payment = '现金支付'

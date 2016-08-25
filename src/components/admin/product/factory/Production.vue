@@ -39,20 +39,21 @@
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
-            </div><br>
-            <div class="form-group mt10">
+            </div>
+            <div class="form-group">
               <label>生产时间段</label>
               <date-picker :value.sync="searchData.start_receive_time" :time-text="timetext1"
                            :timewidth="timewidth"></date-picker>
               <date-picker :value.sync="searchData.end_receive_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
-            <span type="submit" class="btn btn-primary mt10" @click="searchMethod()">搜索</span>
-            <span class="btn btn-warning mt10" @click="cancelSearch()">撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
-            <span class="btn btn-info spanblocks fr mr10 mt10" v-link="{ path: '/admin/production/factoryCreat'}">新建生产单</span>
+            <span type="submit" class="btn btn-primary" @click="searchMethod(1)">搜索</span>
+            <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryCreat'}">新建生产单</span>
           </form>
         </div>
+
         <!-- 表格 -->
         <summary
           :table-data="list"
@@ -109,24 +110,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.$http({
-          url: requestUrl + '/backend-system/stock/distribution',
-          data: {
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          $.each(this.list,function (index,val){
-            val.amount =  val.amount + val. val.amount
-          } )
-          var self = this
-          exchangeData(this.list)
-        }, function (err) {
-          console.log(err)
-        })
+        this.searchMethod(currentpage)
       },
 //     删除请求
       deleteFromApi: function (id) {
@@ -174,7 +158,7 @@
           exchangeData(self.list)
         })
       },
-      searchMethod: function () {
+      searchMethod: function (page) {
         var data ={
           document_number: this.searchData.document_number || '',
           checked: this.searchData.checked || '',
@@ -183,7 +167,8 @@
           end_time: this.searchData.end_time,
           start_receive_time: this.searchData.start_receive_time || '',
           end_receive_time: this.searchData.end_receive_time || '',
-          type: 'ManageAccount'
+          type: 'ManageAccount',
+          page:page
         }
         this.listData(data)
       },
@@ -238,6 +223,7 @@
           checked: '审核状态',
           creator_name: '制单人',
           auditor_name: '审核人',
+          created_at: '制单时间',
           operated_at: '生产时间',
           amount: '生产数量'
         },

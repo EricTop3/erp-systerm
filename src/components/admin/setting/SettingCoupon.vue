@@ -32,9 +32,9 @@
           <tr class="text-center" v-for="item in listdata" :id="item.id">
             <td class="text-left">{{item.display_name}}</td>
             <td>
-              <template v-if="item.type=='discount'">折扣</template>
-              <template v-if="item.type=='reduce'">减少</template>
-               系数 {{item.value}}</td>
+              <template v-if="item.type=='discount'">折扣 系数 {{item.value}}</template>
+              <template v-if="item.type=='reduce'">减少 系数 {{item.condition}}减{{item.value}}</template>
+            </td>
             <td>{{item.begin_time}}</td>
             <td>{{item.end_time}}</td>
             <td>
@@ -97,9 +97,14 @@
               <option value="discount">折扣</option>
               <option value="reduce">减少</option>
             </select>
-            <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" v-model="addFormData.value" v-validate:value="[ 'required' ]">
+            <div style="float:right" v-if=" addFormData.type == 'reduce' ">满 <input type="text" class="form-control" placeholder="100" style="width: 50px;" v-model="addFormData.condition" v-validate:condition="[ 'required' ]">
+              减 <input type="text" class="form-control" placeholder="30" style="width: 50px;" v-model="addFormData.value" v-validate:value="[ 'required' ]">
+            </div>
+
+            <input v-else type="text" class="form-control" placeholder="折扣率,如：0.8" style="width: 145px; float:right" v-model="addFormData.value" v-validate:value="[ 'required' ]">
             <div v-if="$validation1.value.touched">
               <p class="error" v-if="$validation1.value.required">这是必填字段</p>
+              <p class="error" v-if="$validation1.condition.required">这是必填字段</p>
             </div>
           </div>
         </div>
@@ -126,13 +131,13 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">开始时间</label>
           <div class="col-sm-9">
-            <date-picker :value.sync="formData.begin_time" :time-text="timetext1" :timewidth="timewidth"></date-picker>
+            <date-picker :value.sync="formData.begin_time" :time-text="timetext1"></date-picker>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3 control-label">结束时间</label>
           <div class="col-sm-9">
-            <date-picker :value.sync="formData.end_time" :time-text="timetext2" :timewidth="timewidth"></date-picker>
+            <date-picker :value.sync="formData.end_time" :time-text="timetext2"></date-picker>
           </div>
           <div v-if="flag2">
             <p class="error">这是必填字段</p>
@@ -152,13 +157,17 @@
               <option value="discount">折扣</option>
               <option value="reduce">减少</option>
             </select>
-            <input type="text" class="form-control" placeholder="折扣率或扣减现金" style="width: 150px;" v-model="formData.value" v-validate:value="[ 'required' ]">
+            <div style="float:right" v-if=" formData.type == 'reduce' ">满 <input type="text" class="form-control" placeholder="100" style="width: 50px;" v-model="formData.condition" v-validate:condition="[ 'required' ]">
+              减 <input type="text" class="form-control" placeholder="30" style="width: 50px;" v-model="formData.value" v-validate:value="[ 'required' ]">
+            </div>
+            <input v-else type="text" class="form-control" placeholder="折扣率,如：0.8" style="width: 145px; float:right" v-model="formData.value" v-validate:value="[ 'required' ]">
             <div v-if="$validation1.value.touched">
               <p class="error" v-if="$validation1.value.required">这是必填字段</p>
             </div>
           </div>
         </div>
       </form>
+
       </validator>
     </div>
     <div slot="footer">
@@ -247,6 +256,7 @@
         var data = {
           display_name: this.formData.display_name,
           type: this.formData.type,
+          condition: this.formData.condition,
           value: this.formData.value,
           begin_time: this.formData.begin_time,
           end_time: this.formData.end_time
@@ -277,6 +287,7 @@
         var data = {
           display_name: this.addFormData.display_name,
           type: this.addFormData.type,
+          condition: this.addFormData.condition,
           value: this.addFormData.value,
           begin_time: this.addFormData.begin_time,
           end_time: this.addFormData.end_time
@@ -304,6 +315,7 @@
           if (self.$validation1.invalid) {
             console.log(self.$validation1.invalid)
             self.$validation1.value.touched = true
+            self.$validation1.condition.touched = true
             e.preventDefault()
           } else {
             console.log(self.$validation1.invalid)
@@ -345,6 +357,7 @@
         formData: {
           display_name: '',
           type: '',
+          condition: '',
           value: '',
           begin_time: '',
           end_time: ''
@@ -352,6 +365,7 @@
         addFormData: {
           display_name: '',
           type: '',
+          condition: '',
           value: '',
           begin_time: '',
           end_time: ''
