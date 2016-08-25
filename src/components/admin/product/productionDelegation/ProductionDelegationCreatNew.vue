@@ -93,7 +93,7 @@
                   <td>{{entry.item_stock}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                   <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
-                  <td>￥{{entry.item_price|priceChange}}</td>
+                  <td>￥{{entry.item_price| priceChange}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -211,7 +211,7 @@
           val.purchase_amount =  0
           val.stock = val.system_stock
           val.main_reference_value = 0
-          val.purchase_price = (val.apuc*0.01).toFixed(2) || 0
+          val.purchase_price = (val.apuc*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -344,8 +344,7 @@
         this.summarystockGoods =this.summarystockGoods.concat(self. renderstockGoods)
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.purchase_amount
-          console.log(val.item_amount)
-          val.item_price = Number(val.item_amount  * val.purchase_price * 100)
+          val.item_price = val.item_amount  * val.purchase_price * 100
           val.item_stock = val.stock
           val.item_main_reference_value = val.main_reference_value
           self.summaryPrice += val.item_price
