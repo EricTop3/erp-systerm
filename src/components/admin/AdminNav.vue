@@ -1,11 +1,11 @@
 <template>
   <div class="container-fluid admin-header">
-    <div class="row">
+    <div class="row" style="height:97px; overflow:hidden">
       <div class="col-md-3 text-center mt10">
-        <img src="/static/assets/images/admin_logo.png" class="fl ml30">
+        <img src="/static/assets/images/admin_logo.png" class="fl ml20">
         <div class="fl mt10 ml20" style="width:150px; overflow:hidden;">
           <h2 class="fl mt0">{{systerm.name}}</h2>
-          <h3 class="fl ml10 pt10">您好：{{systerm.account}}</h3>
+          <h3 class="fl pt10">您好：{{systerm.account}}</h3>
           <span @click="exit" class="exit">[退出]</span></div>
       </div>
       <div class="col-md-8">

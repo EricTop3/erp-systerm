@@ -2798,7 +2798,7 @@ select[multiple].input-lg,
 @media (min-width: 768px) {
   .form-inline .form-group {
     display: inline-block;
-    margin-bottom: 0;
+    margin: 5px 0;
     vertical-align: middle; }
   .form-inline .form-control {
     display: inline-block;
@@ -2870,7 +2870,7 @@ select[multiple].input-lg,
 
 .btn {
   display: inline-block;
-  margin-bottom: 0;
+  margin: 5px 0;
   font-weight: normal;
   text-align: center;
   vertical-align: middle;
@@ -5141,7 +5141,7 @@ button.close {
     clear: both; }
   .modal-footer .btn + .btn {
     margin-left: 5px;
-    margin-bottom: 0; }
+    margin-bottom: 5px; }
   .modal-footer .btn-group .btn + .btn {
     margin-left: -1px; }
   .modal-footer .btn-block + .btn-block {

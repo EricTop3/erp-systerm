@@ -3,10 +3,7 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-2" role="navigation">
-        <left-setting></left-setting>
-        <h2>this is retail body</h2>
-      </div>
+      <left-setting></left-setting>
       <div class="col-lg-10">
         <!-- 路径导航 -->
         <ol class="breadcrumb">
