@@ -173,7 +173,7 @@
                       @click="storeReceived($event)">门店收货</span>
                 <span v-if="item.status=='等待签收'" class="btn btn-sm btn-primary"
                       @click="userReceived($event)">客户签收</span>
-                <span v-if="item.status=='订单已取消' && item.status=='已退款'" class="btn btn-sm btn-primary" @click="returnMondy($event)">退款</span>
+                <span v-if="item.status=='订单已取消' && item.status!=='已退款'" class="btn btn-sm btn-primary" @click="returnMondy($event)">退款</span>
                 <span class="btn btn-sm btn-info" @click="lookDetail($event)">查看</span>
               </td>
             </tr>
