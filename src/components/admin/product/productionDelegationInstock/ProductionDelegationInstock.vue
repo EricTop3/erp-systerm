@@ -40,7 +40,6 @@
               -
               <date-picker :value.sync="time.endTime" :time-text="timetext1"></date-picker>
             </div>
-            <br>
             <div class="form-group mt20">
               <label>供应商</label>
               <select class="form-control" v-model="search.selectedFactory">
@@ -48,8 +47,8 @@
                 <option :value="item.id" v-for="item in search.cooperativeFactory">{{item.name}}</option>
               </select>
             </div>
-            <span class="btn btn-primary mt20" @click="searchMethod">搜索</span>
-            <span class="btn btn-warning mt20" @click="cancelSearch">撤销搜索</span>
+            <span class="btn btn-primary" @click="searchMethod">搜索</span>
+            <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
             <a v-link="{ path: '/admin/production/delegationInstock/ProductionDelegationInstockNew' }" class="btn btn-info spanblocks fr mr10">新建委外入库单</a>
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
