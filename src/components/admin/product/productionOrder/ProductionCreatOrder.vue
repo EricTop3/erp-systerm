@@ -259,19 +259,19 @@
             val.total_sum = (val.total_sum * 0.01).toFixed(2)
             switch (val.payment) {
               case  'cash':
-                val.payment = '现金'
+                val.payment = '现金支付'
                 break
               case 'alipay':
-                val.payment = '支付宝'
+                val.payment = '支付宝支付'
                 break
               case  'weixin':
-                val.payment = '微信'
+                val.payment = '微信支付'
                 break
-              case 'post':
-                val.payment= 'post机刷卡'
+              case 'pos':
+                val.payment= 'pos支付'
                 break
               case  'vip':
-                val.payment = '会员卡余额'
+                val.payment = '会员卡余额支付'
                 break
             }
             switch (val.status) {
@@ -332,6 +332,7 @@
 //    后台开始生产
       startProduct: function (even) {
         var curId = Number($(even.currentTarget).parents("tr").attr("id"))
+        $(even.currentTarget).attr("disabled",true)
         var self = this
         putDataToApi(requestSystemUrl + '/backend-system/order/order/produce/' +  curId,{},function (response){
           self.getOrderList({})
@@ -388,13 +389,14 @@
         },
 //      撤销搜索
       cancelSearch: function () {
-        this.getOrderList({})
+        this.search.code = ""
         this.search.selectClerk = ""
         this.search.selectStore = ""
         this.search.selectProgress = ''
         this.time.startTime = ""
         this.time.endTime = ""
-        this.time.timeText = "请输入下单日期"
+        this.time.timeText = "结束日期"
+        this.getOrderList({})
       }
     },
     computed: {
@@ -431,7 +433,7 @@
         time:{
           startTime: '',
           endTime: '',
-          timeText: '请输入下单日期'
+          timeText: '开始时间'
         },
         note: {
           coupon_note: '',
