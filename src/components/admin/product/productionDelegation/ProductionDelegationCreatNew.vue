@@ -184,6 +184,7 @@
       Modal: Modal,
       StockGoods:StockGoods,
       DatePicker: DatePicker,
+      summarystockGoods: [],
       LeftProduction: LeftProduction,
       Count: Count,
       Summary: Summary,
@@ -340,10 +341,10 @@
         var self = this
         self.summaryPrice = 0
         this.summarystockGoods = []
-        this.summarystockGoods =this.summarystockGoods.concat(self. renderstockGoods)
+        this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
         $.each(this.summarystockGoods,function (index,val){
           val.item_amount = val.purchase_amount
-          val.item_price = val.item_amount  * val.purchase_price * 100
+          val.item_price = val.item_amount * val.purchase_price * 100
           val.item_stock = val.stock
           val.item_main_reference_value = val.main_reference_value
           self.summaryPrice += val.item_price
