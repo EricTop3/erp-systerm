@@ -59,13 +59,8 @@
     <!-- 表格 详情列表 -->
     <grid :data="detailList" :columns="gridColumns2" :operate="gridOperate2"></grid>
 
-    <!-- 翻页 -->
-    <page
-      :total="page.total"
-      :current.sync="page.current_page"
-      :display="page.per_page"
-      :last-page="page.last_page" v-if="detailList>0">
-    </page>
+    <!--分页-->
+    <page :total="page.total" :current.sync="page.current_page" :display="page.per_page" :last-page="page.last_page" v-if="detailList.length>0"></page>
   </div>
 </template>
 <script>
@@ -97,20 +92,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        var self = this
-        this.$http({
-          url: requestSystemUrl + '/front-system/stock/log/' + self.id + '/detail',
-          data: {
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          self.detailList = response.data.body.list
-          self.page = response.data.body.pagination
-        }, function (err) {
-          console.log(err)
-        })
+        this.searchMethod(currentpage)
       }
     },
     methods: {
@@ -178,10 +160,11 @@
         })
       },
 //    查询
-      searchMethod: function () {
+      searchMethod: function (page) {
         var data = {
           start_time: this.start_time || '',
-          ned_time: this.ned_time || ''
+          ned_time: this.ned_time || '',
+          page:page
         }
         this.detailListData(data)
       }

@@ -81,7 +81,7 @@
       SiteNav: SiteNav
     },
     ready: function () {
-      this.todayListData()
+      this.todayListData(1)
     },
     events: {
 //    绑定翻页事件
@@ -91,10 +91,12 @@
     },
     methods: {
 //    渲染当日结算列表
-      todayListData: function () {
+      todayListData: function (page) {
         var self = this
         var url = requestSystemUrl + '/front-system/settlement/today'
-        var data = {}
+        var data = {
+          page: page
+        }
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body.today
           self.modifyGetedOneData(self.onedata)
