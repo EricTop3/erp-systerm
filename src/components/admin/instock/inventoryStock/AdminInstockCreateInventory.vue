@@ -217,7 +217,7 @@
             self.dataArray = respon.data.body.list
             $.each(self.dataArray,function(index,val){
               if(val.current_stock == '0'){
-                val.current_stock = null
+                val.current_stock = val.system_stock
               }
             })
             self.rederStockGoods = self.dataArray
