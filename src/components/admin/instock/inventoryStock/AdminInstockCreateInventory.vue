@@ -56,8 +56,8 @@
               <count :count.sync ="entry.current_stock" :is-float="true"></count>
             </td>
             <td>
-              <template v-if="entry.current_stock == ''">{{ - entry.system_stock.toFixed(3)}}</template>
-              <template v-else>{{(entry.current_stock - entry.system_stock).toFixed(3)}}</template>
+              <template v-if="entry.current_stock == ''">{{ - entry.system_stock}}</template>
+              <template v-else>{{entry.current_stock - entry.system_stock}}</template>
             </td>
             <td>{{entry.production_unit_name}}</td>
             <td>{{entry.specification_unit}}</td>
