@@ -122,7 +122,7 @@
                 {{entry[$key]}}
               </td>
               <td  :id="[entry.id ? entry.id : '']">
-                <span class="btn btn-primary btn-sm" @click="payment($event)">回款</span>
+                <span class="btn btn-primary btn-sm" @click="payment($event)" v-if="entry.status!='已退货'">回款</span>
                 <span class="btn btn-info btn-sm" @click="lookDetail($event)">查看</span>
                 <span class="btn btn-warning btn-sm" @click="returnGoods($event)" v-if="entry.status!='已退货'">退货</span>
               </td>
