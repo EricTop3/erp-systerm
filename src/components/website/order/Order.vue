@@ -156,7 +156,6 @@
             :sell_mark='item.sell_mark' >
           <h4>{{item.name}}</h4>
           <span>{{item.code}}</span>
-
           <p>￥<span class='single-price'>{{item.original_price|priceChange}}</span></p>
         </li>
       </ul>
@@ -480,6 +479,7 @@
       select: function (event) {
         var cur = Number($(event.currentTarget).val())
         var settlementData = {}
+        var self  = this
 //      判断是选择了优惠还是已经选择过优惠了
         this.order_mata_data.strategy_id = $(event.currentTarget).val()
         this.order_mata_data.user_id = this.member.memberId
@@ -499,7 +499,14 @@
           'order_meta_data': this.order_mata_data,
           'get_order_price': 1
         }
-        this.settlementRequest(settlementData, this.select_money)
+        this.settlementRequest(settlementData, this.select_money,function(err){
+          if(err.data.code === '200006'){
+            self.order_mata_data.strategy_id = 0
+            self.messageTipModal = true
+            self.messageTip = "会员账号未登陆"
+            self.error = true
+          }
+        })
       },
 //     执行优惠函数
       globalCoupon: function () {
@@ -538,10 +545,16 @@
           callback && callback(response)
         },function(err){
           if(err.data.code==='200016'){
+            self.retailBill = false
+            self.creditlBill = false
             self.settlementFlag = false
-            this.messageTipModal = true
-            this.messageTip = "今日已结算,不能再结算"
-            this.error = true
+            self.messageTipModal = true
+            self.messageTip = "今日已结算,不能在点单"
+            self.error = true
+          }else if(err.data.code===220000){
+            self.messageTipModal = true
+            self.messageTip = "库存不足，操作被拒绝"
+            self.error = true
           }
           errback && errback(err)
         })
@@ -686,6 +699,7 @@
             val.priceNote = priceNote
           }
         })
+        this.globalCoupon ()
         this.newSinglePrice = ''
         this.priceNote = ''
       },
@@ -805,7 +819,6 @@
           'all_total': this.paymentAmount * 1000
         }
         if(orderType === 2) {
-          this.order_mata_data = ""
           this.settlementRequest(settlementData, this.billLoadFinsh,this.memberBill)
         }else if(this.order_mata_data.payment==='vip'){
            this.settlementRequest(settlementData, this.memberpayFinish, this.memberPayFail)

@@ -330,8 +330,8 @@ export function adminLogin(loginUrl,data, callback){
     window.localStorage.setItem('token', curtoken)
     token =  window.localStorage.getItem('token')
     getDataFromApi(requestSystemUrl + '/backend-system/auth/info',{},function(response){
-      window.localStorage.setItem('systermAccount', response.data.body.name)
-      window.localStorage.setItem('systermName', response.data.body.account)
+      window.localStorage.setItem('systermAccount', response.data.body.account)
+      window.localStorage.setItem('systermName', response.data.body.name)
       systermName = window.localStorage.getItem('systermName')
       systermAccount = window.localStorage.getItem('systermAccount')
       window.location.href = '#!/admin/setting'
