@@ -151,11 +151,19 @@
     computed: {
 //      导出
       exports: function () {
-        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/statistics/statistics/'
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/settlement/statistics'
+        var sTime = ''
+        var eTime = ''
+        if(this.searchData.start_time == ''){
+          sTime = this.$route.query.start_time
+        }
+        if(this.searchData.end_time == ''){
+          eTime = this.$route.query.end_time
+        }
         var data =
-          'start_time=' + this.searchData.start_time + '&' +
-          'end_time=' + this.searchData.end_time
-        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId + '/?' + data
+          'start_time=' + sTime + '&' +
+          'end_time=' + eTime
+        return this.exportUrl = url + '/export-excel?store_id=' + this.$route.params.queryId + '?' + data
       }
     },
     data: function () {
