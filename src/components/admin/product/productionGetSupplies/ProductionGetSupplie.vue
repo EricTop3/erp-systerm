@@ -101,6 +101,11 @@
           </tr>
           </tbody>
         </table>
+
+        <!--分页-->
+        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+              :last-page="page.last_page" v-if="listdata.length > 0">
+        </page>
       </div>
     </div>
   </div>
