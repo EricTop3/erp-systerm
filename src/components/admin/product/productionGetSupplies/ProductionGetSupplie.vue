@@ -52,7 +52,6 @@
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
-            <br>
             <div class="form-group mt10">
               <label>领料日期</label>
               <date-picker :value.sync="searchData.receive_start_time" :time-text="timetext1"
