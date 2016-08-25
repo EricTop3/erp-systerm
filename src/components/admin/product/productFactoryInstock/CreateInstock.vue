@@ -402,7 +402,7 @@
           secondDataTitle: {
             "item_code": "货号",
             "item_name": "品名",
-            "main_reference_value": "要货数量",
+            "main_reference_value": "生产数量",
             "unit_name": "单位",
             "unit_specification": "单位规格"
           },

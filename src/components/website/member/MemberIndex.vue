@@ -268,7 +268,8 @@
       <button type="button" class="btn btn-primary" :value="edit.id" @click="verifyRecharge($event)">保存</button>
     </div>
   </modal>
-
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <script>
   import $ from 'jquery'
@@ -276,6 +277,7 @@
   import Modal from '../../common/Modal'
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
+  import ErrorTip from '../../common/ErrorTip'
   import DatePicker from  '../../common/DatePicker'
   import {
     requestSystemUrl,
@@ -288,6 +290,7 @@
     components: {
       Modal: Modal,
       Page: Page,
+      ErrorTip: ErrorTip,
       DatePicker: DatePicker,
       Grid: Grid,
       SiteNav: SiteNav
@@ -473,7 +476,6 @@
         var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
         this.edit.id = id
         this.edit.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
-
         this.modal.rechargeModal = true
       },
 //      充值金额的验证
@@ -505,6 +507,12 @@
             self.modal.rechargeModal = false
             self.edit.trade_number = ''
             self.edit.balance = ''
+          },function(err){
+            if(err.data.code == '200016'){
+              self.modal.rechargeModal = false
+              self.modal.errModal = true
+              self.modal.errInfo = '已结算，不能进行充值'
+            }
           })
         } else {
 //          判断是否填写交易单号
@@ -568,6 +576,8 @@
           creatMemberModal: false,
           editModal: false,
           rechargeModal: false,
+          errModal: false,
+          errInfo: ''
         },
         member_level_group: [],
 //        创建新会员

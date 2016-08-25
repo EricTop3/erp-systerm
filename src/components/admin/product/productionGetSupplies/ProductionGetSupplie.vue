@@ -44,8 +44,8 @@
               <label>领料工厂</label>
               <select class="form-control" v-model="searchData.target_id">
                 <option value="">请选择</option>
-                <option value="2">默认工厂[仓库配料间]</option>
-                <!--<option v-for="item in listProviderB" track-by="$index" :value="item.id">{{item.name}}-->
+                <option v-for="item in listProviderA"  value="{{item.id}}">{{item.name}}
+                <option v-for="item in listProviderB"  value="{{item.id}}">{{item.name}}
               </select>
             </div>
             <div class="form-group ml10">
@@ -218,7 +218,8 @@
       }
     },
     ready: function () {
-      this.getlistProviderB()
+      this.getlistProviderA()  //type = 2
+      this.getlistProviderB()  //type = 3
       this.getlistData(1)
     },
     methods: {
@@ -327,11 +328,24 @@
         this.getlistData(1)
       },
 //      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
+      getlistProviderA: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+        var data = {
+          type: 2
+        }
+        getDataFromApi(url, data, function (response) {
+          self.listProviderA = response.data.body.list
+        })
+      },
       getlistProviderB: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store/warehouses-list'
-        getDataFromApi(url, {}, function (response) {
-          self.listProviderB = response.data.body
+        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+        var data = {
+          type: 3
+        }
+        getDataFromApi(url, data, function (response) {
+          self.listProviderB = response.data.body.list
         })
       }
     },
@@ -356,6 +370,7 @@
         timewidth: "timewidth",
         timetext1: "开始时间",
         timetext2: "结束时间",
+        listProviderA: [],
         listProviderB: [],
         listdata: [],
         page: [],

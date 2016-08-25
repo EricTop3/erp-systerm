@@ -70,8 +70,8 @@
                     :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.origin_stock}}</td>
-                  <td>{{entry.target_stock}}</td>
+                  <td>{{entry.origin_stock.toFixed(3)}}</td>
+                  <td>{{entry.target_stock.toFixed(3)}}</td>
                   <td>{{entry.main_reference_value}}</td>
                   <td>
                     <count :count.sync=entry.distribution_amount></count>
@@ -104,8 +104,8 @@
                     :id="[entry.id ? entry.id : '']">
                   <td>{{entry.item_code}}</td>
                   <td>{{entry.item_name}}</td>
-                  <td>{{entry.origin_stock}}</td>
-                  <td>{{entry.target_stock}}</td>
+                  <td>{{entry.origin_stock.toFixed(3)}}</td>
+                  <td>{{entry.target_stock.toFixed(3)}}</td>
                   <td>{{entry.item_main_reference_value}}</td>
                   <td>{{entry.item_amount}}</td>
                   <td>{{entry.unit_name}}</td>
@@ -202,7 +202,7 @@
         $.each(self.stockGoods, function (index, val) {
           val.distribution_amount = ''
           if (val.choice && !val.again) {
-            val.again = true
+//            val.again = true
             self.dataArray.push(val)
           }
         })
@@ -213,11 +213,10 @@
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
-        var saveDataArray = []
         var detailArrayFromApi = []
         detailGoodsInfo(this.origenData.secondData, 'Requisition')
-        saveDataArray = this.stockGoods.concat(this.origenData.secondData)
-        $.each(saveDataArray, function (index, val) {
+        self.saveDataArray = this.stockGoods.concat(this.origenData.secondData)
+        $.each(self.saveDataArray, function (index, val) {
           val.distribution_amount = val.main_reference_value
           if (val.choice && !val.again) {
             val.again = true
@@ -375,6 +374,7 @@
 //        入库汇总
         summaryModal: false,
         summarystockGoods: [],
+        saveDataArray: [],
         showPage: [],
         reference_type: 'Receiving',
         sendTime: '',
