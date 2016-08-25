@@ -151,7 +151,7 @@
       },
 //    查看详情
       gotoDetail: function (id){
-        window.location.href = '#!/admin/purchase/delivery/deliverydetail/'+ id
+        window.location.href = '/#!/admin/purchase/delivery/deliverydetail/'+ id
       }
     },
     data: function () {

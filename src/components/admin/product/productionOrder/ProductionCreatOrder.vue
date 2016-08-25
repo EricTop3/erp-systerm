@@ -331,17 +331,21 @@
       },
 //    后台开始生产
       startProduct: function (even) {
-        var curId = Number($(even.currentTarget).parents("tr").attr("id"))
-        $(even.currentTarget).attr("disabled",true)
-        var self = this
-        putDataToApi(requestSystemUrl + '/backend-system/order/order/produce/' +  curId,{},function (response){
-          self.getOrderList({})
-        },function(err){
-           if(err.data.code==='220001'){
-             self.modal.skipModal = true
-             self.modal.errInfo = err.data.message
-           }
-        })
+        if($(even.currentTarget).attr("disabled")){
+          console.log("请勿重复操作")
+        }else{
+          var curId = Number($(even.currentTarget).parents("tr").attr("id"))
+          $(even.currentTarget).attr("disabled",true)
+          var self = this
+          putDataToApi(requestSystemUrl + '/backend-system/order/order/produce/' +  curId,{},function (response){
+            self.getOrderList({})
+          },function(err){
+            if(err.data.code==='220001'){
+              self.modal.skipModal = true
+              self.modal.errInfo = err.data.message
+            }
+          })
+        }
       },
       skip: function () {
         window.location.href = '#!/admin/production/getSupplies'
