@@ -211,16 +211,14 @@
           <td>{{item.name}}</td>
           <td>￥{{item.new_price |priceChange}}</td>
           <td>{{item.amount}}</td>
-          <td>
-            <count :count.sync="item.return_number"   :flag.sync="refundFlag"></count>
-          </td>
+          <td>{{item.amount}}</td>
           <td>￥{{(item.new_price * item.return_number)|priceChange}}</td>
         </tr>
         </tbody>
       </table>
       <div class="panel">
         <div class="panel-body">
-          <p style="line-height: 33px;">合计退款：<span>￥{{allReturnPrice}}</span><span
+          <p style="line-height: 33px;">合计退款：<span>￥{{refund_total_sum | priceChange}}</span><span
             class="pull-right btn-primary btn" @click="confirmRefoundGoods"
             :disabled="refundFlag"
             :class="{'btn-primary':!refundFlag,'btn-warning':refundFlag}">确定退货</span>
@@ -433,7 +431,7 @@
         var len = 0
         $.each(this.returnGoodsList,function(index,val){
           (function(){
-            if( Number(val.return_number ) > Number(val.amount) || Number(val.return_number ) === 0){
+            if( Number(val.return_number ) !== Number(val.amount) ){
               val.return_number = ''
               self.refundFlag = true
             }else {
@@ -704,6 +702,7 @@
             self.returnGoodsList = response.data.body.list
             $.each(self.returnGoodsList,function(index,val){
               val.return_number = val.amount
+              self.refund_total_sum = val.total_sum
             })
         })
         this.currentButton = button
@@ -767,7 +766,6 @@
         }else{
           self.checkAll = false
         }
-        console.log(currentObjCheck)
         $.each(this.queryList, function (index, val) {
           if (currentId === val.id) {
             if (currentObjCheck) {
@@ -833,6 +831,7 @@
         refundFlag: false,
         checkAll: false,
         singleCheckMount: 0,
+        refund_total_sum: 0,
         modal:{
            errModal: false,
            errInfo: 'high,这是退货错误提示',
