@@ -101,8 +101,6 @@
               减 <input type="text" class="form-control" placeholder="30" style="width: 50px;" v-model="addFormData.value" v-validate:value="[ 'required' ]">
             </div>
 
-
-            
             <input v-else type="text" class="form-control" placeholder="折扣率,如：0.8" style="width: 145px; float:right" v-model="addFormData.value" v-validate:value="[ 'required' ]">
             <div v-if="$validation1.value.touched">
               <p class="error" v-if="$validation1.value.required">这是必填字段</p>
