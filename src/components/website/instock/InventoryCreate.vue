@@ -43,7 +43,7 @@
         </td>
         <td>
           <template v-if="item.current_stock == ''">{{ - item.system_stock}}</template>
-          <template v-else>{{(item.current_stock - item.system_stock).toFixed(3) }}</template>
+          <template v-else>{{((item.current_stock*1000 - item.system_stock*1000)/1000).toFixed(3) }}</template>
         </td>
         <td>{{item.production_unit_name}}</td>
         <td>{{item.specification_unit}}</td>
@@ -122,7 +122,7 @@
           self.dataArray = []
         }
         $.each(self.stockGoods, function (index, val) {
-          val.current_stock = ''
+          val.current_stock = val.system_stock
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -155,11 +155,11 @@
       pagechange: function (currentpage) {
         this.pageLocal.current_page = currentpage
         this.localPage(this.dataArray)
-        $.each(this.dataArray, function (index, val) {
-          if (val.current_stock == '') {
-            val.current_stock = null
-          }
-        })
+//        $.each(this.dataArray, function (index, val) {
+//          if (val.current_stock == '') {
+//            val.current_stock = null
+//          }
+//        })
       }
     },
     methods: {
@@ -183,6 +183,9 @@
           self.dataArray = respon.data.body.list
           self.rederStockGoods = self.dataArray
           self.localPage(self.dataArray)
+          $.each(self.dataArray,function(index,val){
+            val.current_stock = val.system_stock
+          })
         })
         $.each(self.stockGoods,function(index,val){
           val.again = false

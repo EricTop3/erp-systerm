@@ -18,7 +18,7 @@
               <label>操作类型</label>
               <select class="form-control" v-model="search.type">
                 <option value="">请选择</option>
-                <option value="S ">零售出库</option>
+                <option value="Sale">零售出库</option>
                 <option value="ProduceDocument">生产出库</option>
                 <option value="ProductionPutInDocument">生产入库</option>
                 <option value="DistributionDocument">配送出库</option>
@@ -27,9 +27,9 @@
                 <option value="AppointmentDistribute">预约单出货</option>
                 <option value="AppointmentProduce">预约单生产</option>
                 <option value="">预约单收货</option>
-                <option value="">调拨出库</option>
+                <option value="AllocateDocument">调拨出库</option>
                 <option value="">调拨入库</option>
-                <option value="">差异处理</option>
+                <option value="CheckListDocument">差异处理</option>
                 <option value="PickDocument-1">领料入库</option>
                 <option value="PickDocument-2">领料出库</option>
               </select>
@@ -172,6 +172,9 @@
               break;
             case 'AllocateDocument':
               val.operated_type = '调拨出库'
+              break;
+            case 'CheckListDocument':
+              val.operated_type = '差异处理'
               break;
           }
         })
