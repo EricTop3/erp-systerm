@@ -363,3 +363,23 @@ export function siteLogin(loginUrl,data,callback){
     console.log(err)
   })
 }
+//  获取当前时间点的函数
+export function getTimeOnNow() {
+  var time = new Date()
+  var currentTime = ''
+  var hour =  detailTime(time.getHours())
+  var mimute = detailTime(time.getMinutes())
+  var second = detailTime(time.getSeconds())
+  currentTime = hour + ':' + mimute + ':' + second
+  return currentTime
+}
+// 处理数字小于十的问题
+function detailTime (value) {
+  if(value < 10) {
+    value = Number('0'+ value)
+  }else{
+    value = value
+  }
+  return value
+}
+getTimeOnNow  ()
