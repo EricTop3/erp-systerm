@@ -130,7 +130,10 @@
           <div class="form-group">
             <label class="col-sm-4 control-label">充值金额：</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate">
+              <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate" v-validate:money="{required: true}">
+              <div v-if="$validationRecharge.money.touched">
+                <p class="error" v-if="$validationRecharge.money.required">充值金额不能为空</p>
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -238,6 +241,20 @@
                 value.point_type = 'erp管理系统变更'
                 break;
             }
+            switch(value.note){
+              case 'alipay':
+                value.note = '支付宝支付'
+                break;
+              case 'weixin':
+                value.note = '微信支付'
+                break;
+              case 'pos':
+                value.note = 'pos支付'
+                break;
+              case 'cash':
+                value.note = '现金支付'
+                break;
+            }
           })
         })
       },
@@ -339,14 +356,16 @@
 //    充值金额的验证
       verifyRecharge: function (e) {
         var self = this
-        self.$validate(function () {
+        this.$validate(function () {
           if (self.$validationRecharge.invalid) {
+            self.$validationRecharge.money.touched = true
             e.preventDefault()
           } else {
             self.saveRecharge(e)
           }
         })
       },
+
 //    金额正则
       priceValidate: function () {
         var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/

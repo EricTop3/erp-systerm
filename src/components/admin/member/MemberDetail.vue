@@ -293,6 +293,20 @@
               value.point_type = 'erp管理系统变更'
               break;
           }
+          switch(value.note){
+            case 'alipay':
+              value.note = '支付宝支付'
+              break;
+            case 'weixin':
+              value.note = '微信支付'
+              break;
+            case 'pos':
+              value.note = 'pos支付'
+              break;
+            case 'cash':
+              value.note = '现金支付'
+              break;
+          }
         })
       },
 //    价格正则1
