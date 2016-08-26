@@ -433,6 +433,7 @@
       }
     },
     methods: {
+//      分类切换
 //      搜索
       searchProduct: function () {
         var self = this
@@ -772,18 +773,35 @@
       memberUpload: function () {
         this.messageTipModal = false
         this.memberModal = false
-        switch (orderType) {
-          case 1:
-            this.messageTipModal = true
-            this.messageTip = '支付成功'
-            break
-          case 2:
-            this.creditlBill = true
-            break
-          case 3:
-            this.messageTip = '支付成功'
-            break
+        var self = this
+        $.each(this.checkedGoodsList, function (index, val) {
+          var obj = {}
+          obj['goods_id'] = val.id
+          obj['amount'] = val.count
+          obj['price'] = val.goodPrice
+          obj['note'] = val.priceNote
+          orderItems.push(obj)
+        })
+        var settlementData = {
+          'items': orderItems,
+          'order_meta_data': this.order_mata_data,
+          'all_total': this.paymentAmount * 1000
         }
+        this.settlementRequest(settlementData, function(){
+          switch (orderType) {
+            case 1:
+              self.messageTipModal = true
+              self.messageTip = '支付成功'
+              break
+            case 2:
+              self.creditlBill = true
+              break
+            case 3:
+              self.messageTip = '支付成功'
+              break
+          }
+        }, this.memberPayFail)
+
       },
 //     结算请求成功后的函数
       setFinish: function (response) {
@@ -824,7 +842,7 @@
             'order_meta_data': this.order_mata_data,
             'get_order_price': 1
           }
-           this.settlementRequest(settlementData, this.memberpayFinish, this.memberPayFail)
+           this.settlementRequest(settlementData, this.memberpayFinish)
         }else{
           settlementData = {
             'items': orderItems,
