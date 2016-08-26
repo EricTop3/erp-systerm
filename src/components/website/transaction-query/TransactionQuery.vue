@@ -237,7 +237,7 @@
   <modal :show.sync="modal.deleteModal" :modal-size.sync='modal.deleteModalSize'>
     <div slot="header">
       <button type="button" class="close" aria-label="Close"><span
-        aria-hidden="true" @click="deleteModal=false">&times;</span></button>
+        aria-hidden="true" @click="modal.deleteModal=false">&times;</span></button>
       <h4 class="modal-title">订单明细</h4>
     </div>
     <div slot="body">
