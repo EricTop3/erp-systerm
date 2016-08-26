@@ -397,8 +397,8 @@
             case '预约订单':
               orderTypeData = 3
               $.each($this.productFromCategory,function (index,val){
-                if(val.product_type===1 && val.sell_unit_stock <= 0){
-                  val.sell_unit_stock = 0.114
+                if(val.product_type === 1  && val.sell_unit_stock <= 0){
+                  val.sell_unit_stock = 1.114
                   $('.index-list-porducts').find('li').eq(index).removeClass('disabled')
                 }
               })

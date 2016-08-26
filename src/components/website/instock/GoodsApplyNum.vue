@@ -1,4 +1,4 @@
-<template>
+  <template>
   <site-nav></site-nav>
   <div class="container-fluid">
     <!-- 路径导航 -->
@@ -84,6 +84,10 @@
           self.list = response.data.body.list
           exchangeData(self.list)
         })
+      },
+//     审核失败
+      checkFail: function() {
+
       },
 //     删除请求
       deleteFromApi: function (id) {
