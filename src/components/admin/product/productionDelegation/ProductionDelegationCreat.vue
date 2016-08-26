@@ -215,14 +215,14 @@
       exports: function () {
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/produce/outsource'
         var data =
-          'document_number=' + this.searchData.code + '&' +
-          'checked=' + this.searchData.selectedStatus + '&' +
-          'created_id=' + this.searchData.selectedMaker + '&' +
-          'start_time=' + this.searchData.startTime + '&' +
-          'end_time=' + this.searchData.endTime + '&' +
-          'start_receive_time=' + this.searchData.startTime1 + '&' +
-          'end_receive_time=' + this.searchData.endTime1 + '&' +
-          'iprovider_id=' + this.searchData.selectedFactory
+          'document_number=' + this.search.code + '&' +
+          'checked=' + this.search.selectedStatus + '&' +
+          'created_id=' + this.search.selectedMaker + '&' +
+          'start_time=' + this.search.startTime + '&' +
+          'end_time=' + this.search.endTime + '&' +
+          'start_receive_time=' + this.search.startTime1 + '&' +
+          'end_receive_time=' + this.search.endTime1 + '&' +
+          'iprovider_id=' + this.search.selectedFactory
         return this.exportUrl = url + '/export-excel?' + data
       }
     },

@@ -184,8 +184,8 @@
           'start_time=' + this.time.startTime + '&' +
           'iprovider_id=' + this.search.selectedFactory + '&' +
           'end_time=' + this.time.endTime + '&' +
-          'start_receive_time=' + this.time.startTime1 + '&' +
-          'end_receive_time=' + this.time.endTime1
+          'start_receive_time=' + this.time.startTime + '&' +
+          'end_receive_time=' + this.time.endTime
         return this.exportUrl = url + '/export-excel?' + data
       }
     },
