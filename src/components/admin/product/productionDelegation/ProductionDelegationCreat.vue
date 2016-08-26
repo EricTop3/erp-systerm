@@ -218,10 +218,10 @@
           'document_number=' + this.search.code + '&' +
           'checked=' + this.search.selectedStatus + '&' +
           'created_id=' + this.search.selectedMaker + '&' +
-          'start_time=' + this.search.startTime + '&' +
-          'end_time=' + this.search.endTime + '&' +
-          'start_receive_time=' + this.search.startTime1 + '&' +
-          'end_receive_time=' + this.search.endTime1 + '&' +
+          'start_time=' + this.time.startTime + '&' +
+          'end_time=' + this.time.endTime + '&' +
+          'start_receive_time=' + this.time.startTime1 + '&' +
+          'end_receive_time=' + this.time.endTime1 + '&' +
           'iprovider_id=' + this.search.selectedFactory
         return this.exportUrl = url + '/export-excel?' + data
       }
