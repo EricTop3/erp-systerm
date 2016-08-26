@@ -151,7 +151,7 @@
       <hr>
       <ul class='index-list-porducts'>
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1}"
+            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak}"
             :stock='item.sell_unit_stock'
             :sell_mark='item.sell_mark' >
           <h4>{{item.name}}</h4>
@@ -378,30 +378,15 @@
           switch ($(this).html()) {
             case '零售订单':
               orderTypeData = 1
-              $.each($this.productFromCategory,function (index,val){
-                if(val.product_type===1 && val.sell_unit_stock === 0.114){
-                  $('.index-list-porducts').find('li').eq(index).addClass('disabled')
-                  val.sell_unit_stock = 0
-                }
-              })
+              $this.bespeak = false
               break
             case '挂账订单':
               orderTypeData = 2
-              $.each($this.productFromCategory,function (index,val){
-                if(val.product_type===1 && val.sell_unit_stock === 0.114){
-                  $('.index-list-porducts').find('li').eq(index).addClass('disabled')
-                  val.sell_unit_stock = 0
-                }
-              })
+              $this.bespeak = false
               break
             case '预约订单':
               orderTypeData = 3
-              $.each($this.productFromCategory,function (index,val){
-                if(val.product_type === 1  && val.sell_unit_stock <= 0){
-                  val.sell_unit_stock = 1.114
-                  $('.index-list-porducts').find('li').eq(index).removeClass('disabled')
-                }
-              })
+              $this.bespeak = true
               break
             case '现金':
               paymentData = 'cash'
@@ -551,11 +536,17 @@
             self.messageTipModal = true
             self.messageTip = "今日已结算,不能在点单"
             self.error = true
-          }else if(err.data.code===220000){
+          }else if(err.data.code===220000  ){
             self.retailBill = false
             self.creditlBill = false
             self.messageTipModal = true
             self.messageTip = "库存不足，操作被拒绝"
+            self.error = true
+          }else if(err.data.code === "100000"){
+            self.retailBill = false
+            self.creditlBill = false
+            self.messageTipModal = true
+            self.messageTip = "库存不足，你的订单阔能包含预约单的商品"
             self.error = true
           }
           errback && errback(err)
@@ -578,7 +569,7 @@
         /*//       判断是否为不可议价
          currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
-        if (currentStock < 1 ) {
+        if (currentStock < 1 && ! self.bespeak ) {
           return false
         } else {
 //          结算的状态
@@ -926,6 +917,7 @@
       return {
         goodsNote: '',
         paymentAmount: '',
+        bespeak: false,
         couponSelected: 0,
         couponName: [],
         truncate: false,
