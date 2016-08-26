@@ -86,8 +86,10 @@
           aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">历史价格波动</h4>
       </div>
-      <div slot="body">
+      <div slot="body" style="height:400px; overflow:auto;">
         <grid :data="priceList" :columns="priceHeader"></grid>
+        <page :total='historyPage.total' :current.sync='historyPage.current_page' :display='historyPage.per_page' :last-page='historyPage.last_page' v-if="priceList.length>0">
+        </page>
       </div>
       <div slot="footer">
         <button type="button" class="btn btn-default" @click="modal.priceModal = false">关闭</button>
@@ -127,7 +129,11 @@
         })
       },
       pagechange: function (currentpage) {
-        this.getlistData(currentpage)
+        if(!this.modal.priceModal){
+          this.getlistData(currentpage)
+        }else{
+          this.fluctuationsData(currentpage)
+        }
       }
     },
     ready: function () {
@@ -234,10 +240,20 @@
 //      价格波动
       fluctuations: function (event) {
         var self = this
-        var currtId = $(event.currentTarget).parents('tr').attr('id')
+        this.thisId = $(event.currentTarget).parents('tr').attr('id')
         self.modal.priceModal = true
-        getDataFromApi(requestSystemUrl + '/backend-system/product/' + currtId + '/price-wave',{},function (response) {
+        self.fluctuationsData(1)
+      },
+//      价格波动的数据渲染
+      fluctuationsData: function(page){
+        var self = this
+        var data = {
+          page: page,
+          per_page: 20
+        }
+        getDataFromApi(requestSystemUrl + '/backend-system/product/' + this.thisId + '/price-wave',data,function (response) {
           self.priceList = response.data.body.list
+          self.historyPage = response.data.body.pagination
           self.modifyGetedData(self.priceList)
         })
       },
@@ -262,8 +278,11 @@
     },
     data: function () {
       return {
+        isflag: true,
+        thisId: '',
         product_id: '',
         page: [],
+        historyPage: [],
         category: '',
         productOperate: true,
         search: {
