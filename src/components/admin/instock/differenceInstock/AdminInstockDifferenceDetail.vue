@@ -98,7 +98,12 @@
 //      导出
       exports: function () {
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/difference'
-        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
+        var sTime = this.searchData.start_time|| ''
+        var eTime = this.searchData.end_time|| ''
+        var data =
+          'start_time=' + sTime + '&' +
+          'end_time=' + eTime
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId + '?' +data
       }
     },
     methods: {

@@ -48,14 +48,13 @@
                 <option :value="item.id" v-for="item in orderMaker">{{item.name}}</option>
               </select>
             </div>
-            <br/>
-            <div class="form-group ml10 mt20">
+            <div class="form-group ml10">
               <label>配送时间段</label>
               <date-picker :value.sync="searchData.start_receive_time" :time-text="timetext1"></date-picker> -
               <date-picker :value.sync="searchData.end_receive_time" :time-text="timetext2"></date-picker>
             </div>
-            <span class="btn btn-primary mt20" @click="searchMethod()">搜索</span>
-            <span class="btn btn-warning mt20" @click="cancelSearch()">撤销搜索</span>
+            <span class="btn btn-primary" @click="searchMethod()">搜索</span>
+            <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
 
             <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span>

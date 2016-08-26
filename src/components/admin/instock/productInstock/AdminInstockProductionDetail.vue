@@ -98,7 +98,22 @@
 //      导出
       exports: function () {
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/produce'
-        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
+        var sTime = ''
+        var eTime = ''
+        if(this.searchData.start_time == ''){
+          sTime = this.$route.query.start_time || ''
+        }else{
+          sTime = this.searchData.start_time|| ''
+        }
+        if(this.searchData.end_time == ''){
+          eTime = this.$route.query.end_time || ''
+        }else{
+          eTime = this.searchData.end_time|| ''
+        }
+        var data =
+          'start_time=' + sTime + '&' +
+          'end_time=' + eTime
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId + '?' +data
       }
     },
     methods: {

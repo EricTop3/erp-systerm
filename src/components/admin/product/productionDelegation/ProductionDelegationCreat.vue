@@ -39,23 +39,21 @@
               -
               <date-picker :value.sync="time.endTime" :time-text="timetext2"></date-picker>
             </div>
-            <br>
-            <div class="form-group ml10 mt20">
+            <div class="form-group ml10">
               <label>生产时间段</label>
               <date-picker :value.sync="time.startTime1"></date-picker>
               -
               <date-picker :value.sync="time.endTime1"></date-picker>
             </div>
-            <div class="form-group mt20">
+            <div class="form-group">
               <label>合作工厂</label>
               <select class="form-control" v-model="search.selectedFactory">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in search.cooperativeFactory">{{item.name}}</option>
               </select>
             </div>
-            <span class="btn btn-primary mt20" @click="searchMethod">搜索</span>
-            <span class="btn btn-warning mt20" @click="cancelSearch">撤销搜索</span>
-
+            <span class="btn btn-primary" @click="searchMethod">搜索</span>
+            <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             <a v-link="{ path: '/admin/production/delegationCreatNew' }" class="btn btn-info spanblocks fr mr10">新建委外生产单</a>
           </form>
