@@ -414,6 +414,7 @@
         gridColumns: {
           name: '员工名称',
           account: '登录名',
+          warehouse_id: '所属工厂',
           permissio: '权限',
           status: '状态'
         },
