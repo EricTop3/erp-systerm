@@ -14,15 +14,29 @@
         <div class="form-group ml10">
           <label>操作类型</label>
           <select class="form-control" v-model="search.operation_type">
-            <option>暂时没有接口</option>
+            <option value="">请选择</option>
+            <option value="Sale">零售出库</option>
+            <option value="ProduceDocument">生产出库</option>
+            <option value="ProductionPutInDocument">生产入库</option>
+            <option value="DistributionDocument">配送出库</option>
+            <option value="ReceivingDocument">采购收货</option>
+            <option value="StoreReceivingDocument">门店收货</option>
+            <option value="AppointmentDistribute">预约单出货</option>
+            <option value="AppointmentProduce">预约单生产出库</option>
+            <option value="">预约单收货</option>
+            <option value="AllocateDocument">调拨出库</option>
+            <option value="">调拨入库</option>
+            <option value="CheckListDocument">差异处理</option>
+            <option value="PickDocument-1">领料入库</option>
+            <option value="PickDocument-2">领料出库</option>
           </select>
         </div>
         <div class="form-group ml10">
           <label>盘点时间段</label>
-          <date-picker :value.sync="search.start_time"></date-picker>-
-          <date-picker :value.sync="search.ned_time"></date-picker>
+          <date-picker :value.sync="search.start_time" :time-text='timetext1'></date-picker>-
+          <date-picker :value.sync="search.end_time" :time-text='timetext2'></date-picker>
         </div>
-        <span class="btn btn-primary" @click="searchMethod">查询</span>
+        <span class="btn btn-primary" @click="searchMethod(1)">查询</span>
       </form>
     </div>
 
@@ -155,6 +169,9 @@
               case 'AllocateDocument':
                 val.operated_type = '调拨出库'
                 break;
+              case 'CheckListDocument':
+                val.operated_type = '差异处理'
+                break;
             }
           })
         })
@@ -162,15 +179,18 @@
 //    查询
       searchMethod: function (page) {
         var data = {
-          start_time: this.start_time || '',
-          ned_time: this.ned_time || '',
-          page:page
+          start_time: this.search.start_time || '',
+          end_time: this.search.end_time || '',
+          type: this.search.operation_type,
+          page: page
         }
         this.detailListData(data)
       }
     },
     data: function () {
       return {
+        timetext1: '开始时间',
+        timetext2: '结束时间',
         id: '',
         page: [],
         list: [],
@@ -188,7 +208,7 @@
         },
         search: {
           start_time: '',
-          ned_time: '',
+          end_time: '',
           operation_type: ''
         }
       }

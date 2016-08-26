@@ -2,9 +2,9 @@
   <div class="container-fluid admin-header">
     <div class="row">
       <div class="col-md-2 text-center">
-        <h2>{{store.info}}</h2>
-        <h3>{{store.name}}</h3>
-        <span @click="exit" class="exit">[退出]</span></div>
+        <h2 style="text-align:left">{{store.info}}</h2>
+        <h3 style="text-align:left">{{store.name}}<span @click="exit" class="exit">[退出]</span></h3>
+      </div>
       <div class="col-md-9">
         <ul class="nav nav-pills navbar-right">
           <li><a v-link="{ path: '/site/order'}" >点单</a></li>

@@ -66,7 +66,7 @@ ul li{list-style: none;}
 .c-erp{color: #ff500b;}
 .admin-header{background: url(../images/header_bg.jpg) center top no-repeat #000; height: 97px; border-bottom: 3px solid #666; color: #fff;}
 .admin-header h2{font-size: 24px;}
-.admin-header h3{font-size: 14px; margin-top: 0; display: inline-block;}
+.admin-header h3{font-size: 14px; margin-top: 0;}
 .admin-header span, .admin-header span a{color: #ff500b;}
 .admin-header-nav{}
 .admin-content{}
