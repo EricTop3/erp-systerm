@@ -301,7 +301,7 @@
       </div>
       <div class="radio">
         <label>
-          <input type="radio" value="vip" name="payment"> 会员卡余额
+          <input type="radio" value="vip" name="payment" > 会员卡余额
         </label>
       </div>
     </div>
@@ -820,6 +820,8 @@
       },
 //       确定回款
       confirmPayment: function () {
+        var self = this
+
         var payment = $(".gzhk").find('input[name="payment"]:checked').val()
         this.$http({
           url: requestUrl + '/front-system/order/back-money/' + paymentid,
@@ -834,6 +836,11 @@
           }
           this.fetchData(url, data, this.finishPage)
         }, function (err) {
+          if(err.data.code === 200018){
+            self.modal.paymentModal = false
+            self.modal.errModal = true
+            self.modal.errInfo = '会员余额不足'
+          }
           error(err)
         })
       }

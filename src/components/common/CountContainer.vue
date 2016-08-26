@@ -22,13 +22,13 @@
           this.count = 1
         }
         if(Number( this.count)>= Number(this.maxCount)){
-         this.count =  this.maxCount
+         this.count =   Number(this.maxCount)
         }
         this.$dispatch('inputCount')
       },
       addCount: function () {
         if(Number( this.count)>= Number(this.maxCount)){
-          this.count =  this.maxCount
+          this.count =  Number(this.maxCount)
         }else{
           this.count++
           this.$dispatch('countIncrease')
