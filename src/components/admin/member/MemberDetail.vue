@@ -199,10 +199,13 @@
         this.thisId = this.$route.params.queryId
         var self = this
         var url = requestSystemUrl + '/backend-system/member/member/' + this.thisId
-        var data = {}
+        var data = {
+          page: page
+        }
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body.data
           self.modifyGetedOneData(self.onedata)
+
           self.listdata = response.data.body.list.data
           self.modifyGetedData(self.listdata)
           self.page = response.data.body.list.pagination

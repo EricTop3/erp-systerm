@@ -178,41 +178,23 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        var self = this
-        var id = self.$route.params.queryId
-
-        this.$http({
-          url: requestSystemUrl + '/front-system/member/member/' + id,
-          data: {
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          self.page = response.data.body.pagination
-          self.gridData = response.data.body.list
-
-          $.each(self.gridData, function (index, value) {
-            value.balance_change = Number(Number(value.balance_change) * 0.01).toFixed(2)
-            value.balance = Number(Number(value.balance) * 0.01).toFixed(2)
-          })
-
-        }, function (err) {
-          console.log(err)
-        })
+        this.listData(currentpage)
       }
     },
     ready: function () {
 //    会员详情-列表渲染
-      this.listData()
+      this.listData(1)
     },
     methods: {
 //    数据渲染
-      listData: function () {
+      listData: function (page) {
         var self = this
         var id = self.$route.params.queryId
         var url = requestSystemUrl + '/front-system/member/member/' + id
-        getDataFromSiteApi(url, {}, function (response) {
+        var data = {
+          page: page
+        }
+        getDataFromSiteApi(url, data, function (response) {
 //          单条
           self.memberData = response.data.body.data
           self.memberData.balance = Number(Number(self.memberData.balance) * 0.01).toFixed(2)
@@ -297,7 +279,7 @@
         putDataToApi(url, data, function (response) {
           self.modal.editModal = false
 //    会员详情-列表渲染
-          self.listData()
+          self.listData(1)
         })
       },
 //    编辑会员的验证
@@ -338,7 +320,7 @@
           putDataToApi(url, data, function (response) {
             self.modal.rechargeModal = false
 //    会员详情-列表渲染
-            self.listData()
+            self.listData(1)
           })
         } else {
 //          判断是否填写交易单号
@@ -348,7 +330,7 @@
             putDataToApi(url, data, function (response) {
               self.modal.rechargeModal = false
 //    会员详情-列表渲染
-              self.listData()
+              self.listData(1)
             })
           }
         }
