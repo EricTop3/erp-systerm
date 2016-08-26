@@ -247,7 +247,7 @@
         pageLocal: {
           current_page: 1, // 当前页
           last_page: 1, // 最后一页
-          per_page: 6, // 一页有多少个
+          per_page: 16, // 一页有多少个
           len: 0 // 总共的个数
         },
         showPage: [],
