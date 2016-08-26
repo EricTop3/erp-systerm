@@ -372,7 +372,7 @@
   import DatePicker from '../../common/DatePicker'
   import Modal from  '../../common/Modal'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestUrl, token, searchRequest, error,getDataFromSiteApi,putDataToApi} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, error,getDataFromSiteApi,putDataToApi,getTimeOnNow} from '../../../publicFunction/index'
   var detailId = 0
   var paymentid = 0
   var refundId = 0
@@ -449,6 +449,7 @@
     ready: function () {
       var self = this
       var url = requestUrl + '/front-system/order'
+      console.log(getTimeOnNow())
 //    获取营业员
       getDataFromSiteApi( requestUrl + '/front-system/account',{},function(response){
         self.search.clerk = response.data.body.list

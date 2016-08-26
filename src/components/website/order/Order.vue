@@ -139,7 +139,7 @@
             全部分类
           </li>
           <li class='btn btn-warning' track-by="$index" :id='item.id'
-              v-for='item in category' @click='fetchProduct($event)'>
+              v-for='item in category' @click='fetchProduct($event)' v-if="item.count">
             {{item.display_name }}
           </li>
         </ul>
@@ -534,7 +534,7 @@
             self.creditlBill = false
             self.settlementFlag = false
             self.messageTipModal = true
-            self.messageTip = "今日已结算,不能在点单"
+            self.messageTip = "今日已结算,不能再点单"
             self.error = true
           }else if(err.data.code===220000  ){
             self.retailBill = false
@@ -748,10 +748,15 @@
             self.settlementFlag = true
           },function(err){
 //            会员不存在的情况下
-            if(err.data.code = '120000') {
+            if(err.data.code === '120000') {
               self.error = true
               self.messageTipModal = true
               self.messageTip = '你的会员卡号不存在'
+              self.member.memberCode = ''
+            }else if(err.data.code === '110007') {
+              self.error = true
+              self.messageTipModal = true
+              self.messageTip = '你的会员账号已停用'
               self.member.memberCode = ''
             }
           })
@@ -814,6 +819,11 @@
         if(orderType === 2) {
           this.settlementRequest(settlementData, this.billLoadFinsh,this.memberBill)
         }else if(this.order_mata_data.payment==='vip'){
+          settlementData = {
+            'items': orderItems,
+            'order_meta_data': this.order_mata_data,
+            'get_order_price': 1
+          }
            this.settlementRequest(settlementData, this.memberpayFinish, this.memberPayFail)
         }else{
           settlementData = {
