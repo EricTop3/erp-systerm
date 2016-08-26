@@ -45,7 +45,7 @@
                 <option :value="item.id" v-for="item in search.providerList">{{item.name}}</option>
               </select>
             </div>
-            <span type="submit" class="btn btn-primary " @click="searchMethod">搜索</span>
+            <span type="submit" class="btn btn-primary " @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
             <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
@@ -91,29 +91,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.$http({
-          url: requestUrl + '/backend-system/purchase/purchase',
-          data: {
-            creator_id: this.search.selectedMaker,
-            document_number: this.search.code,
-            checked: this.search.selectedStatus,
-            start_time: this.time.startTime,
-            provider_id: this.search.selectedSuppier,
-            end_time: this.time.endTime,
-            start_receive_time: this.time.startTime1,
-            end_receive_time: this.time.endTime1,
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
-          exchangeData(this.list)
-        }, function (err) {
-          console.log(err)
-        })
+        this.searchMethod(currentpage)
       },
 //     删除请求
       deleteFromApi: function (id) {
@@ -125,22 +103,6 @@
 //    查看详情
       gotoDetail: function (id){
         window.location.href = '#!/admin/purchase/order/purchasedetail/'+ id
-      }
-    },
-    computed: {
-//      导出
-      exports: function () {
-        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/purchase/purchase'
-        var data =
-          'creator_id=' + this.search.selectedMaker + '&' +
-          'document_number=' + this.search.code + '&' +
-          'checked=' + this.search.selectedStatus + '&' +
-          'start_time=' + this.time.startTime + '&' +
-          'provider_id=' + this.search.selectedSuppier + '&' +
-          'end_time=' + this.time.endTime + '&' +
-          'start_receive_time=' + this.time.startTime1 + '&' +
-          'end_receive_time=' + this.time.endTime1
-        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     ready: function () {
@@ -165,14 +127,15 @@
           exchangeData(self.list)
         })
       },
-      searchMethod: function(){
+      searchMethod: function(page){
         var data = {
           creator_id: this.search.selectedMaker,
           document_number: this.search.code,
           checked: this.search.selectedStatus,
           start_time: this.time.startTime,
           provider_id: this.search.selectedSuppier,
-          end_time: this.time.endTime
+          end_time: this.time.endTime,
+          page: page
         }
         this.listData(data)
       },
@@ -186,6 +149,22 @@
         this.time.endTime = ''
         this.time.startTime1= ''
         this.time.endTime1 = ''
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/purchase/purchase'
+        var data =
+          'creator_id=' + this.search.selectedMaker + '&' +
+          'document_number=' + this.search.code + '&' +
+          'checked=' + this.search.selectedStatus + '&' +
+          'start_time=' + this.time.startTime + '&' +
+          'provider_id=' + this.search.selectedSuppier + '&' +
+          'end_time=' + this.time.endTime + '&' +
+          'start_receive_time=' + this.time.startTime1 + '&' +
+          'end_receive_time=' + this.time.endTime1
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {

@@ -51,7 +51,7 @@
                   <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
                 </select>
               </div>
-              <span type="submit" class="btn btn-primary mt10" @click="searchMethod">搜索</span>
+              <span type="submit" class="btn btn-primary mt10" @click="searchMethod(1)">搜索</span>
               <span class="btn btn-warning mt10" @click="cancelSearch">撤销搜索</span>
               <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr mt10">新建收货单</a>
               <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
@@ -119,28 +119,7 @@
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
-        this.$http({
-          url: requestUrl + '/backend-system/purchase/purchase',
-          data: {
-            created_id: this.search.selectedMaker,
-            document_number: this.search.code,
-            checked: this.search.selectedStatus,
-            provider_id: this.search.selectedSuppier,
-            start_receive_time: this.time.startTime,
-            end_receive_time: this.time.endTime,
-            warehouse_id: this.search.stream_origin_id,
-            page: currentpage
-          },
-          method: 'get',
-          headers: {'X-Overpowered-Token': token}
-        }).then(function (response) {
-          this.page = response.data.body.pagination
-          this.list = response.data.body.list
-          var self = this
-          changeStatus(this.list)
-        }, function (err) {
-          console.log(err)
-        })
+        this.searchMethod(currentpage)
       },
 //     删除请求
       deleteFromApi: function (id) {
@@ -200,7 +179,7 @@
           self.page = response.data.body.pagination
         })
       },
-      searchMethod: function () {
+      searchMethod: function (page) {
         var data = {
           creator_id: this.search.selectedMaker,
           document_number: this.search.code,
@@ -208,7 +187,8 @@
           provider_id: this.search.selectedSuppier,
           start_receive_time: this.time.startTime,
           end_receive_time: this.time.endTime,
-          warehouse_id: this.search.stream_origin_id
+          warehouse_id: this.search.stream_origin_id,
+          page: page
         }
         this.fetlistFormApi(data)
       },
