@@ -24,7 +24,7 @@
             <option value="">请选择</option>
             <option value="cash" checked>现金</option>
             <option value="alipay">支付宝</option>
-            <option value="post">post刷卡</option>
+            <option value="pos">post刷卡</option>
             <option value="weixin">微信</option>
             <option value="vip">会员余额</option>
           </select>
@@ -38,7 +38,7 @@
         </div>
         <div class="form-group ml10">
           <label>进度</label>
-          <select class="form-control" v-model="search.selectedProgress">
+          <select class="form-control" v-model="search.selectedProgress"  :disabled="orderType!==3 ?  true : false">
             <option value="">请选择</option>
             <option value="at00">已提交</option>
             <option value="ip00">生产中</option>
@@ -500,13 +500,6 @@
           },
           function (response) {
             self.finishPage(response)
-            self.search.orderNumber = ""
-            self.search.selectedPayway = ""
-            self.search.selectedClerk = ''
-            self.search.selectedClerk = ''
-            self.search.selectedProgress = ''
-            self.time.startTime = ''
-            self.time.endTime = ''
           }
         )
       },
@@ -519,13 +512,13 @@
           },
           function (response) {
             self.finishPage(response)
-            this.search.orderNumber = ''
-            this.search.selectedPayway = ''
-            this.search.cardNumber = ''
-            this.search.selectedClerk = ''
-            this.search.selectedProgress = ''
-            this.time.startTime = ''
-            this.time.endTime = ''
+            self.search.orderNumber = ''
+            self.search.selectedPayway = ''
+            self.search.cardNumber = ''
+            self.search.selectedClerk = ''
+            self.search.selectedProgress = ''
+            self.time.startTime = ''
+            self.time.endTime = ''
           }
         )
       },
@@ -553,7 +546,7 @@
             case  'weixin':
               val.payment = '微信'
               break
-            case 'post':
+            case 'pos':
               val.payment= 'post机刷卡'
               break
             case  'vip':

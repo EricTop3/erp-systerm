@@ -806,7 +806,7 @@
         orderItems = []
         window.localStorage.setItem('orderType', this.order_mata_data.order_type)
         orderType = Number(window.localStorage.getItem('orderType'))
-        this.order_mata_data.user_id = Number(this.member.memberId)
+        this.order_mata_data.user_id = this.member.memberId
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
