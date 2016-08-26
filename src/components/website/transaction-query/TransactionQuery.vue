@@ -90,7 +90,7 @@
                 {{entry[$key]}}
               </td>
               <td  :id="[entry.id ? entry.id : '']">
-                <span class="btn btn-primary btn-sm" data-target="#inventory-returnGoods-templ" @click="returnGoods($event)" v-if="entry.status === '已提交'">退货</span>
+                <span class="btn btn-primary btn-sm" data-target="#inventory-returnGoods-templ" @click="returnGoods($event)" v-if="entry.status === '已提交' && entry.refund_status">退货</span>
                 <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkRetailGoods-templ"
                     @click="lookDetail($event)">查看</span>
               </td>
