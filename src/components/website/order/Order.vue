@@ -151,7 +151,7 @@
       <hr>
       <ul class='index-list-porducts'>
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<=0}"
+            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1}"
             :stock='item.sell_unit_stock'
             :sell_mark='item.sell_mark' >
           <h4>{{item.name}}</h4>
@@ -552,6 +552,8 @@
             self.messageTip = "今日已结算,不能在点单"
             self.error = true
           }else if(err.data.code===220000){
+            self.retailBill = false
+            self.creditlBill = false
             self.messageTipModal = true
             self.messageTip = "库存不足，操作被拒绝"
             self.error = true
@@ -576,7 +578,7 @@
         /*//       判断是否为不可议价
          currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
-        if (currentStock <= 0) {
+        if (currentStock < 1 ) {
           return false
         } else {
 //          结算的状态
@@ -885,11 +887,19 @@
 //      零售账单结算提交
       settlementUpload: function (event) {
         var settlementData = {}
-        settlementData = {
-          'items': orderItems,
-          'order_meta_data': this.order_mata_data,
-          'truncate': 1,
-          'all_total': this.paymentAmount * 1000
+        if (this.truncate) {
+          settlementData = {
+            'items': orderItems,
+            'order_meta_data': this.order_mata_data,
+            'truncate': 1,
+            'all_total': this.paymentAmount * 1000
+          }
+        }else {
+          settlementData = {
+            'items': orderItems,
+            'order_meta_data': this.order_mata_data,
+            'all_total': this.paymentAmount * 1000
+          }
         }
         this.settlementRequest(settlementData, this.setuploadFinish)
       },
