@@ -243,14 +243,17 @@
               <option value="cash" selected>现金</option>
               <option value="alipay">支付宝</option>
               <option value="weixin">微信支付</option>
-              <option value="post">POSE刷卡</option>
+              <option value="post">POS刷卡</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-4 control-label">充值金额：</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate">
+            <input type="text" class="form-control" v-model="edit.balance" @input="priceValidate" v-validate:money="{required: true}">
+            <div v-if="$validationRecharge.money.touched">
+              <p class="error" v-if="$validationRecharge.money.required">充值金额不能为空</p>
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -481,8 +484,9 @@
 //      充值金额的验证
       verifyRecharge: function (e) {
         var self = this
-        self.$validate(function () {
+        this.$validate(function () {
           if (self.$validationRecharge.invalid) {
+            self.$validationRecharge.money.touched = true
             e.preventDefault()
           } else {
             self.saveRecharge(e)
@@ -643,6 +647,7 @@
   .calendar{
     z-index: 1;
   }
+  .error { color:red}
   .errT{
     float: left;
     color: red;
