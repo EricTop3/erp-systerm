@@ -397,8 +397,8 @@
             case '预约订单':
               orderTypeData = 3
               $.each($this.productFromCategory,function (index,val){
-                if(val.product_type===1 && val.sell_unit_stock <= 0){
-                  val.sell_unit_stock = 0.114
+                if(val.product_type === 1  && val.sell_unit_stock <= 0){
+                  val.sell_unit_stock = 1.114
                   $('.index-list-porducts').find('li').eq(index).removeClass('disabled')
                 }
               })
@@ -806,7 +806,7 @@
         orderItems = []
         window.localStorage.setItem('orderType', this.order_mata_data.order_type)
         orderType = Number(window.localStorage.getItem('orderType'))
-        this.order_mata_data.user_id = Number(this.member.memberId)
+        this.order_mata_data.user_id = this.member.memberId
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
