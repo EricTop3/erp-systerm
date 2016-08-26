@@ -123,7 +123,7 @@
                 <option value="cash" selected>现金</option>
                 <option value="alipay">支付宝</option>
                 <option value="weixin">微信支付</option>
-                <option value="post">POSE刷卡</option>
+                <option value="pos">POSE刷卡</option>
               </select>
             </div>
           </div>
