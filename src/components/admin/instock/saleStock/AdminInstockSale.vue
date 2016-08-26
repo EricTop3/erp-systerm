@@ -39,6 +39,7 @@
             </div>
             <span class="btn btn-primary" @click=getlistData()>搜索</span>
             <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!--表格-->
@@ -141,6 +142,19 @@
       cancelSearch: function () {
         this.searchData = {}
         this.getlistData(1)
+      }
+    },
+    computed: {
+//      导出/backend-system/stock/sale/log
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/sale'
+        var data =
+          'name=' + this.searchData.name + '&' +
+          'category_id=' + this.searchData.category_id + '&' +
+          'store_id=' + this.searchData.store_id + '&' +
+          'start_time=' + this.searchData.start_time + '&' +
+          'end_time=' + this.searchData.end_time
+        return this.exportUrl = url + '/export-excel?' + data
       }
     },
     data: function () {

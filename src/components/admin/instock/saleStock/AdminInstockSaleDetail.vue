@@ -23,6 +23,7 @@
             </div>
             <span class="btn btn-primary" @click="searchListData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!--详情页面单条数据-->
@@ -127,8 +128,6 @@
         this.getlistData(1)
         this.getOneData()
       },
-
-
 //      取消搜索
       cancelSearch: function () {
         this.searchData = {}
@@ -136,6 +135,13 @@
         this.$route.query.end_time = ''
         this.getlistData(1)
         this.getOneData()
+      }
+    },
+    computed: {
+//      导出
+      exports: function () {
+        var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/stock/sale'
+        return this.exportUrl = url + '/export-excel/' + this.$route.params.queryId
       }
     },
     data: function () {
