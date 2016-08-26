@@ -7,9 +7,7 @@
       <h4 class='modal-title'>友情提示</h4>
     </div>
     <div slot='body'>
-      <div class='form-group'>
-        <p class="modal-body">{{errInfo}}</p>
-      </div>
+        <h4 style="text-align:center">{{errInfo}}</h4>
     </div>
     <div slot='footer'>
       <button type='button' class='btn btn-primary' @click='close'>关闭</button>
