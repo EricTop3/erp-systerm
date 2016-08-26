@@ -105,6 +105,16 @@
           </div>
         </div>
         <div class="form-group">
+          <label class="col-sm-4 control-label">所属工厂</label>
+          <div class="col-sm-8">
+            <select class="form-control"  v-model="postData.warehouse_id">
+              <option value="">请选择</option>
+              <option v-for="item in listProviderA"  value="{{item.id}}">{{item.name}}
+              <option v-for="item in listProviderB"  value="{{item.id}}">{{item.name}}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="col-sm-4 control-label">状态</label>
           <div class="col-sm-8">
             <label class="radio-inline">
@@ -123,6 +133,7 @@
     </div>
   </modal>
   <!--模态框HTML-->
+
   <!--模态框-编辑账号-->
   <modal :show.sync="editModal" :modal-size="editModalSize">
     <div slot="header">
@@ -151,6 +162,16 @@
         <label class="col-sm-4 control-label">密码</label>
         <div class="col-sm-8">
           <input type="password" class="form-control" v-model="formData.password">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">所属工厂</label>
+        <div class="col-sm-8">
+          <select class="form-control"  v-model="formData.warehouse_id">
+            <option value="">请选择</option>
+            <option v-for="item in listProviderA"  value="{{item.id}}">{{item.name}}
+            <option v-for="item in listProviderB"  value="{{item.id}}">{{item.name}}
+          </select>
         </div>
       </div>
       <div class="form-group">
@@ -212,8 +233,31 @@
     },
     ready: function () {
       this.getlistData(1)
+      this.getlistProviderA()
+      this.getlistProviderB()
     },
     methods: {
+//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
+      getlistProviderA: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+        var data = {
+          type: 2
+        }
+        getDataFromApi(url, data, function (response) {
+          self.listProviderA = response.data.body.list
+        })
+      },
+      getlistProviderB: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+        var data = {
+          type: 3
+        }
+        getDataFromApi(url, data, function (response) {
+          self.listProviderB = response.data.body.list
+        })
+      },
 //      对获取到的数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, val) {
@@ -286,6 +330,7 @@
             account: this.postData.account,
             name: this.postData.name,
             password: this.postData.password,
+            warehouse_id: this.postData.warehouse_id,
             status: this.postData.status
           },
           {
@@ -299,6 +344,7 @@
           this.postData.account = ''
           this.postData.name = ''
           this.postData.password = ''
+          this.postData.warehouse_id = ''
         }, function (err) {
           if (err.data.code == '100000') {
             this.createModal = false
@@ -328,6 +374,7 @@
           data: {
             name: this.formData.name,
             password: this.formData.password,
+            warehouse_id: this.formData.warehouse_id,
             status: this.formData.status
           },
           headers: {'X-Overpowered-Token': token},
@@ -358,6 +405,8 @@
         thisId: '',
         formData: [],
         listdata: [],
+        listProviderA: [],
+        listProviderB: [],
         page: [],
         messageTipModal: false,
         messageTip: '该用户名已注册！',
@@ -365,6 +414,7 @@
         gridColumns: {
           name: '员工名称',
           account: '登录名',
+          warehouse_id: '所属工厂',
           permissio: '权限',
           status: '状态'
         },
@@ -372,6 +422,7 @@
           account: '',
           name: '',
           password: '',
+          warehouse_id: '',
           status: ''
         },
         searchData: {
