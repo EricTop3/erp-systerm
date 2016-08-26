@@ -33,7 +33,6 @@
               <label>配送时间</label>
               <date-picker :value.sync="sendTime"></date-picker>
             </div>
-
             <div class="form-group ml10">
               <label>备注</label>
               <input type="text" class="form-control" v-model="note" style="width: 250px">
