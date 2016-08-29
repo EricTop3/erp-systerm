@@ -367,10 +367,13 @@ export function siteLogin(loginUrl,data,callback){
 export function getTimeOnNow() {
   var time = new Date()
   var currentTime = ''
+  var year = detailTime(time.getFullYear())
+  var month = detailTime(time.getMonth() + 1)
+  var date  = detailTime(time.getDate())
   var hour =  detailTime(time.getHours())
   var mimute = detailTime(time.getMinutes())
   var second = detailTime(time.getSeconds())
-  currentTime = hour + ':' + mimute + ':' + second
+  currentTime = year + '-' + month + '-' + date + ' ' + hour + ':' + mimute + ':' + second
   return currentTime
 }
 // 处理数字小于十的问题
@@ -382,4 +385,3 @@ function detailTime (value) {
   }
   return value
 }
-getTimeOnNow  ()

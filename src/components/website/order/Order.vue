@@ -580,8 +580,8 @@
         if (checkedGoodsList && checkedGoodsList.length > 0) {
           $.each(checkedGoodsList, function (index, val) {
             if (val.id === currentGoodId) {
-              if(val.count>=val.stock){
-                val.count = val.stock
+              if(val.count >= val.stock){
+                val.count = Number(val.stock)
               }else{
                 val.count++
               }
@@ -774,33 +774,16 @@
         this.messageTipModal = false
         this.memberModal = false
         var self = this
-        $.each(this.checkedGoodsList, function (index, val) {
-          var obj = {}
-          obj['goods_id'] = val.id
-          obj['amount'] = val.count
-          obj['price'] = val.goodPrice
-          obj['note'] = val.priceNote
-          orderItems.push(obj)
-        })
         var settlementData = {
           'items': orderItems,
           'order_meta_data': this.order_mata_data,
           'all_total': this.paymentAmount * 1000
         }
-        this.settlementRequest(settlementData, function(){
-          switch (orderType) {
-            case 1:
-              self.messageTipModal = true
-              self.messageTip = '支付成功'
-              break
-            case 2:
-              self.creditlBill = true
-              break
-            case 3:
-              self.messageTip = '支付成功'
-              break
-          }
-        }, this.memberPayFail)
+        this.settlementRequest(settlementData, function(response){
+          self.memberPayConfirm()
+        }, function(err){
+          self.memberPayFail(err)
+        })
 
       },
 //     结算请求成功后的函数

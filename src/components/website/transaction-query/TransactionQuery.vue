@@ -90,7 +90,7 @@
                 {{entry[$key]}}
               </td>
               <td  :id="[entry.id ? entry.id : '']">
-                <span class="btn btn-primary btn-sm" data-target="#inventory-returnGoods-templ" @click="returnGoods($event)" v-if="entry.status === '已提交'">退货</span>
+                <span class="btn btn-primary btn-sm" data-target="#inventory-returnGoods-templ" @click="returnGoods($event)" v-if="entry.status === '已提交' && entry.refund_status">退货</span>
                 <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-checkRetailGoods-templ"
                     @click="lookDetail($event)">查看</span>
               </td>
@@ -237,7 +237,7 @@
   <modal :show.sync="modal.deleteModal" :modal-size.sync='modal.deleteModalSize'>
     <div slot="header">
       <button type="button" class="close" aria-label="Close"><span
-        aria-hidden="true" @click="deleteModal=false">&times;</span></button>
+        aria-hidden="true" @click="modal.deleteModal=false">&times;</span></button>
       <h4 class="modal-title">订单明细</h4>
     </div>
     <div slot="body">
@@ -301,7 +301,7 @@
       </div>
       <div class="radio">
         <label>
-          <input type="radio" value="vip" name="payment"> 会员卡余额
+          <input type="radio" value="vip" name="payment" > 会员卡余额
         </label>
       </div>
     </div>
@@ -820,6 +820,8 @@
       },
 //       确定回款
       confirmPayment: function () {
+        var self = this
+
         var payment = $(".gzhk").find('input[name="payment"]:checked').val()
         this.$http({
           url: requestUrl + '/front-system/order/back-money/' + paymentid,
@@ -834,6 +836,11 @@
           }
           this.fetchData(url, data, this.finishPage)
         }, function (err) {
+          if(err.data.code === 200018){
+            self.modal.paymentModal = false
+            self.modal.errModal = true
+            self.modal.errInfo = '会员余额不足'
+          }
           error(err)
         })
       }
