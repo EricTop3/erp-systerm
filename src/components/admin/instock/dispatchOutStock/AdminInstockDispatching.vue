@@ -57,7 +57,7 @@
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
 
             <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/createOutInstock',exact: true}">新建配送出库单</span>
+            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/dispatching/create',exact: true}">新建配送出库单</span>
           </form>
         </div>
 
@@ -137,7 +137,7 @@
       },
 //    查看详情
       gotoDetail: function (id){
-        window.location.href = '#!/admin/instock/dispatching/'+ id
+        window.location.href = '/#!/admin/instock/dispatching/Detail/'+ id
       },
 //    审核失败
       checkFail: function (err){

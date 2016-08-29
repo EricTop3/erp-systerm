@@ -167,11 +167,12 @@
       <div class="form-group">
         <label class="col-sm-4 control-label">所属工厂</label>
         <div class="col-sm-8">
-          <select class="form-control"  v-model="formData.warehouse_id">
+          <input type="text" class="form-control" v-model="formData.warehouse_name" disabled>
+          <!--<select class="form-control"  v-model="formData.warehouse_id">
             <option value="">请选择</option>
             <option v-for="item in listProviderA"  value="{{item.id}}">{{item.name}}
             <option v-for="item in listProviderB"  value="{{item.id}}">{{item.name}}
-          </select>
+          </select>-->
         </div>
       </div>
       <div class="form-group">
@@ -414,7 +415,7 @@
         gridColumns: {
           name: '员工名称',
           account: '登录名',
-          warehouse_id: '所属工厂',
+          warehouse_name: '所属工厂',
           permissio: '权限',
           status: '状态'
         },

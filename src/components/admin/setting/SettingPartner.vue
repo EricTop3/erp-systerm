@@ -16,11 +16,11 @@
           <form class="form-inline">
             <div class="form-group">
               <label>编号</label>
-              <input type="text" class="form-control" placeholder="" v-model='searchData.code'>
+              <input type="text" class="form-control" placeholder="请输入编号" v-model='searchData.code'>
             </div>
             <div class="form-group ml10">
               <label>公司全称</label>
-              <input type="text" class="form-control" placeholder="" v-model='searchData.name'>
+              <input type="text" class="form-control" placeholder="请输入公司全称" v-model='searchData.name'>
             </div>
             <div class="form-group">
               <label>合作形式</label>

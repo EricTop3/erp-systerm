@@ -41,7 +41,6 @@
               <date-picker :value.sync="searchData.requisition_end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
-            <br>
             <div class="form-group ml10">
               <label>送货时间段</label>
               <date-picker :value.sync="searchData.distribution_start_time" :time-text="timetext1"
