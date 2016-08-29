@@ -41,16 +41,15 @@
                 <option :value="item.id" v-for="item in storeAccountData">{{item.name}}</option>
               </select>
             </div>
-            <br>
-            <div class="form-group ml10 mt20">
+            <div class="form-group ml10">
               <label>盘点时间段</label>
               <date-picker :value.sync="search.startTime" :time-text="timetext1"></date-picker>
               -
               <date-picker :value.sync="search.endTime" :time-text="timetext2"></date-picker>
             </div>
 
-            <span class="btn btn-primary mt20" @click="searchMethod">搜索</span>
-            <span class="btn btn-warning mt20" @click="cancelSearch">撤销搜索</span>
+            <span class="btn btn-primary" @click="searchMethod">搜索</span>
+            <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
 
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             <span v-link="{ path:'/admin/instock/inventory/create' }"
