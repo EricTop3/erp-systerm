@@ -227,7 +227,7 @@
 //      查看详情
       view: function(event){
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        window.location.href = '/#!/admin/production/getSupplies/' + this.thisId
+        window.location.href = '/#!/admin/production/getSupplies/Detail/' + this.thisId
       },
 //      审核
       audit: function (evnet) {

@@ -50,7 +50,7 @@
             <span type="submit" class="btn btn-primary" @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryCreat'}">新建生产单</span>
+            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryProduction/factoryCreat'}">新建生产单</span>
           </form>
         </div>
 
@@ -128,7 +128,7 @@
       },
 //    查看详情
       gotoDetail: function (id){
-        window.location.href = '#!/admin/production/factory/'+ id
+        window.location.href = '/#!/admin/production/factoryProduction/detail/'+ id
       },
       //    审核失败
       checkFail: function (err){

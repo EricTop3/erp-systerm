@@ -53,7 +53,7 @@
             <span class="btn btn-warning mt20" @click="cancelSearch">撤销搜索</span>
 
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <span v-link="{ path:'/admin/instock/createInventory' }"
+            <span v-link="{ path:'/admin/instock/inventory/create' }"
                   class="btn btn-info spanblocks fr mr10">新建盘点单</span>
           </form>
         </div>
@@ -143,7 +143,7 @@
       },
 //    查看详情
       gotoDetail: function (id) {
-        window.location.href = '?#!/admin/instock/inventoryDetail/'+ id
+        window.location.href = '/#!/admin/instock/inventory/Detail/'+ id
       }
     },
     methods: {

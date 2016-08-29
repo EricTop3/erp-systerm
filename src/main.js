@@ -274,25 +274,28 @@ router.map({
   '/admin/production': {
     component: Production
   },
-  '/admin/production/factoryCreat': {
+  '/admin/production/factoryProduction': {
+    component: Production
+  },
+  '/admin/production/factoryProduction/factoryCreat': {
     component: ProductionFactoryCreat
   },
-  '/admin/production/factory/:queryId': {
+  '/admin/production/factoryProduction/detail/:queryId': {
     component: FactoryProductDetail
   },
   '/admin/production/delegationCreat': {
     component: ProductionDelegationCreat
   },
-  '/admin/production/delegationCreatNew': {
+  '/admin/production/delegationCreat/New': {
     component: ProductionDelegationCreatNew
   },
-  '/admin/production/delegationCreatDetail/:queryId': {
+  '/admin/production/delegationCreat/Detail/:queryId': {
     component: ProductionDelegationCreateDetail
   },
   '/admin/production/getSupplies': {
     component: ProductionGetSupplies
   },
-  '/admin/production/getSupplies/:queryId': {
+  '/admin/production/getSupplies/Detail/:queryId': {
     component: ProductionGetSuppliesDetail
   },
   '/admin/production/factoryInstock': {
@@ -325,31 +328,34 @@ router.map({
   '/admin/instock': {
     component: AdminInstock
   },
-  '/admin/instock/inStockDetail/:queryId': {
+  '/admin/instock/query': {
+    component: AdminInstock
+  },
+  '/admin/instock/query/Detail/:queryId': {
     component: AdminInstockDetail
   },
   '/admin/instock/inventory': {
     component: AdminInstockInventory
   },
-  '/admin/instock/createInventory': {
+  '/admin/instock/inventory/create': {
     component: AdminInstockCreateInventory
   },
-  '/admin/instock/inventoryDetail/:queryId': {
+  '/admin/instock/inventory/Detail/:queryId': {
     component: AdminInstockInventoryDetail
   },
   '/admin/instock/difference': {
     component: AdminInstockDifference
   },
-  '/admin/instock/differenceDetail/:queryId': {
+  '/admin/instock/difference/Detail/:queryId': {
     component: AdminInstockDifferenceDetail
   },
   '/admin/instock/dispatching': {
     component: AdminInstockDispatching
   },
-  '/admin/instock/createOutInstock': {
+  '/admin/instock/dispatching/create': {
     component: AdminCreateOutInstock
   },
-  '/admin/instock/dispatching/:queryId': {
+  '/admin/instock/dispatching/Detail/:queryId': {
     component: DispatchStockDetail
   },
   '/admin/instock/sale': {
@@ -371,6 +377,9 @@ router.map({
     component: AdminInstockapplyDetail
   },
   '/admin/retail': {
+    component: Retail
+  },
+  '/admin/retail/statistics': {
     component: Retail
   },
   '/admin/retail/statistics/view/:queryId': {

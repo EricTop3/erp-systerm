@@ -96,7 +96,7 @@
       },
       //    查看详情
       gotoDetail: function (id) {
-        window.location.href = '/#!/admin/instock/differenceDetail/' + id
+        window.location.href = '/#!/admin/instock/difference/Detail/' + id
       }
     },
     ready: function () {

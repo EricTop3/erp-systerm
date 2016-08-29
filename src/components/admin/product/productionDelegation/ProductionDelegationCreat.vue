@@ -41,9 +41,9 @@
             </div>
             <div class="form-group ml10">
               <label>生产时间段</label>
-              <date-picker :value.sync="time.startTime1"></date-picker>
+              <date-picker :value.sync="time.startTime1" :time-text="timetext1"></date-picker>
               -
-              <date-picker :value.sync="time.endTime1"></date-picker>
+              <date-picker :value.sync="time.endTime1" :time-text="timetext2"></date-picker>
             </div>
             <div class="form-group">
               <label>合作工厂</label>
@@ -55,7 +55,7 @@
             <span class="btn btn-primary" @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <a v-link="{ path: '/admin/production/delegationCreatNew' }" class="btn btn-info spanblocks fr mr10">新建委外生产单</a>
+            <a v-link="{ path: '/admin/production/delegationCreat/New' }" class="btn btn-info spanblocks fr mr10">新建委外生产单</a>
           </form>
         </div>
 
@@ -144,7 +144,7 @@
       },
 //    查看详情
       gotoDetail: function (id) {
-        window.location.href = '#!/admin/production/delegationCreatDetail/' + id
+        window.location.href = '/#!/admin/production/delegationCreat/Detail/' + id
       },
 //     审核失败
       checkFail: function (err){
