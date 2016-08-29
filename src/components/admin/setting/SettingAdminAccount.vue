@@ -33,18 +33,19 @@
           <tr class="text-center">
             <td class="text-left">员工名称</td>
             <td>登录名</td>
-            <td>所属工厂</td>
             <td>权限</td>
             <td>状态</td>
             <td>操作</td>
           </tr>
           </thead>
           <tbody>
-          <tr class="text-center" v-for="item in listdata" :id="item.id">
+          <tr class="text-center" v-for="item in listdata" :id="item.id" track-by="$index">
             <td class="text-left">{{item.name}}</td>
             <td>{{item.account}}</td>
-            <td>{{item.warehouse_name}}</td>
-            <td><span v-for="entry in item.permissions" class="entry">{{entry}}</span></td>
+            <td><span v-for="entry in item.permissions" class="entry" track-by="$index">{{entry}}</span></td>
+
+
+
             <td>{{item.status}}</td>
             <td>
               <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
@@ -127,16 +128,16 @@
               </div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">所属工厂</label>
-            <div class="col-sm-8">
-              <select class="form-control" v-model="postData.warehouse_id">
-                <option value="">请选择</option>
-                <option v-for="item in listProviderA" value="{{item.id}}">{{item.name}}
-                <option v-for="item in listProviderB" value="{{item.id}}">{{item.name}}
-              </select>
-            </div>
-          </div>
+          <!--<div class="form-group">-->
+            <!--<label class="col-sm-4 control-label">所属工厂</label>-->
+            <!--<div class="col-sm-8">-->
+              <!--<select class="form-control" v-model="postData.warehouse_id">-->
+                <!--<option value="">请选择</option>-->
+                <!--<option v-for="item in listProviderA" value="{{item.id}}">{{item.name}}-->
+                <!--<option v-for="item in listProviderB" value="{{item.id}}">{{item.name}}-->
+              <!--</select>-->
+            <!--</div>-->
+          <!--</div>-->
           <div class="form-group">
             <label class="col-sm-4 control-label">状态</label>
             <div class="col-sm-8">
@@ -187,17 +188,12 @@
             <input type="password" class="form-control" v-model="formData.password">
           </div>
         </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">所属工厂</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" v-model="formData.warehouse_name" disabled>
-            <!--<select class="form-control"  v-model="formData.warehouse_id">
-              <option value="">请选择</option>
-              <option v-for="item in listProviderA"  value="{{item.id}}">{{item.name}}
-              <option v-for="item in listProviderB"  value="{{item.id}}">{{item.name}}
-            </select>-->
-          </div>
-        </div>
+        <!--<div class="form-group">-->
+          <!--<label class="col-sm-4 control-label">所属工厂</label>-->
+          <!--<div class="col-sm-8">-->
+            <!--<input type="text" class="form-control" v-model="formData.warehouse_name" disabled>-->
+          <!--</div>-->
+        <!--</div>-->
         <div class="form-group">
           <label class="col-sm-4 control-label">状态</label>
           <div class="col-sm-8">
@@ -356,7 +352,6 @@
             account: this.postData.account,
             name: this.postData.name,
             password: this.postData.password,
-            warehouse_id: this.postData.warehouse_id,
             status: this.postData.status
           },
           {
@@ -370,7 +365,6 @@
           this.postData.account = ''
           this.postData.name = ''
           this.postData.password = ''
-          this.postData.warehouse_id = ''
         }, function (err) {
           if (err.data.code == '100000') {
             this.createModal = false
@@ -400,7 +394,6 @@
           data: {
             name: this.formData.name,
             password: this.formData.password,
-            warehouse_id: this.formData.warehouse_id,
             status: this.formData.status
           },
           headers: {'X-Overpowered-Token': token},
@@ -487,7 +480,6 @@
         gridColumns: {
           name: '员工名称',
           account: '登录名',
-          warehouse_name: '所属工厂',
           permissions: '权限',
           status: '状态'
         },
@@ -495,7 +487,6 @@
           account: '',
           name: '',
           password: '',
-          warehouse_id: '',
           status: ''
         },
         searchData: {
