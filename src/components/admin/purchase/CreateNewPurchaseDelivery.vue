@@ -167,7 +167,7 @@
 //    供应商请求接口
       var url = requestSystemUrl + '/backend-system/provider/provider'
 //    获取仓库名称
-      getDataFromApi( requestUrl + '/backend-system/warehouse-minimal-list',{},function(response){
+      getDataFromApi( requestUrl + '/backend-system/warehouse-minimal-list',{type:2},function(response){
         self.alotStock = response.data.body.list
       })
 //    获取供应商列表

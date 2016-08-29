@@ -96,7 +96,7 @@
         self.search.providerList = response.data.body.list
       })
 //      获取仓库列表
-      getDataFromApi(requestSystemUrl + '/backend-system/warehouse-minimal-list',{},function(response){
+      getDataFromApi(requestSystemUrl + '/backend-system/warehouse-minimal-list',{type: 2},function(response){
         self.warehouseList = response.data.body.list
       })
       this.fetlistFormApi({})
