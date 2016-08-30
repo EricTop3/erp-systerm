@@ -901,7 +901,7 @@
         this.settlementFlag = false
         this.retailBill = false
         this.checkedGoodsList = []
-        this.print()
+        this.preview()
         window.location.href = '/?#!/site/tranquery'
       },
 //      挂账账单结算提交成功回调函数

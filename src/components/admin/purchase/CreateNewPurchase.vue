@@ -187,6 +187,7 @@
 //      添加商品确认增加
       confirmAdd: function () {
         var self = this
+        this.renderstockGoods = []
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
           val.purchase_amount = val.main_reference_value || 0
@@ -197,25 +198,26 @@
             self.dataArray.push(val)
           }
         })
-       this.renderstockGoods = self.dataArray
+       this.renderstockGoods =  this.renderstockGoods.concat(self.dataArray)
       },
 //      引入原始数据添加商品
-      includeConfirmAdd: function () {
+      includeConfirmAdd: function (){
         var self = this
         var saveDataArray = []
         var detailArrayFromApi = []
+        this.renderstockGoods = []
         detailGoodsInfo(this.origenData.secondData,'Requisition')
-        saveDataArray = this.stockGoods.concat(this.origenData.secondData)
+        saveDataArray = this.origenData.secondData
         $.each(saveDataArray, function (index, val) {
           val.purchase_amount = val.main_reference_value
-          val.purchase_price = parseFloat(val.unit_price*0.01).toFixed(2)
+          val.purchase_price = val.unit_price*0.01.toFixed(2)
           val.stock = (val.stock*1000*0.001).toFixed(3)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
           }
         })
-        this.renderstockGoods = self.dataArray
+        this.renderstockGoods = this.renderstockGoods.concat(self.dataArray)
       },
 //     删除商品
       delete: function (id) {
@@ -293,15 +295,14 @@
         this.summarystockGoods = []
         this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
         console.log(this.summarystockGoods)
-//        $.each(this.summarystockGoods,function (index,val){
-//          val.item_amount = val.purchase_amount
-//          val.item_stock = val.stock
-//          val.item_main_reference_value = val.main_reference_value
-//          console.log(val.purchase_price)
-//          val.item_price = val.item_amount  * val.purchase_price * 100
-//          self.summaryPrice += val.item_price
-//        })
-//        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+        $.each(this.summarystockGoods,function (index,val){
+          val.item_amount = val.purchase_amount
+          val.item_stock = val.stock
+          val.item_main_reference_value = val.main_reference_value
+          val.item_price = val.item_amount  * val.purchase_price * 100
+          self.summaryPrice += val.item_price
+        })
+        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
       },
 //       汇总方法
       summaryMethod: function  (ObjPropInArr, array){
