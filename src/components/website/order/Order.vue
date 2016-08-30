@@ -151,9 +151,11 @@
       <hr>
       <ul class='index-list-porducts'>
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak}"
+            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak || (bespeak && item.product_type===2 )}"
             :stock='item.sell_unit_stock'
-            :sell_mark='item.sell_mark' >
+            :sell_mark='item.sell_mark'
+            :type="item.product_type"
+        >
           <h4>{{item.name}}</h4>
           <span>{{item.code}}</span>
           <p>￥<span class='single-price'>{{item.original_price|priceChange}}</span></p>
@@ -202,7 +204,7 @@
       </tbody>
     </table>
     <div>金额：{{finalPrice}} 抹零：0.00</div>
-    <div>会员: {{member.memberInfoList.card_number|| '无'}}  卡结余: ￥{{member.memberInfoList.balance!=undefind ? member.memberInfoList.balance|priceChange: '0.00'}}</div>
+    <div>会员: {{member.memberInfoList.card_number|| '无'}}  卡结余: ￥{{member.memberInfoList.balance}}</div>
     <div>会员储值卡：￥{{finalPrice}}  找零金额：￥{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</div>
     <div class="tip">谢谢惠顾，欢迎再次光临</div>
   </div>
@@ -576,7 +578,7 @@
             self.retailBill = false
             self.creditlBill = false
             self.messageTipModal = true
-            self.messageTip = "库存不足，你的订单阔能包含预约单的商品"
+            self.messageTip = "库存不足，你的订单可能包含预约单的商品"
             self.error = true
           }
           errback && errback(err)
@@ -591,6 +593,8 @@
         const currentGoodId = Number(currentGood.attr('id'))
         const currentStock = Number(currentGood.attr('stock'))
         const currentSaleMark = Number(currentGood.attr('sell_mark'))
+        const currentPtype = Number(currentGood.attr('type'))
+        console.log(currentPtype)
         const currentGoodName = currentGood.find('h4').html()
         const currentGoodPrice = currentGood.find('.single-price').html()
         const checkedGoodsList = this.checkedGoodsList
@@ -601,6 +605,9 @@
          currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
         if (currentStock < 1 && ! self.bespeak ) {
+          return false
+        } else  if(self.bespeak && currentPtype === 2)
+        {
           return false
         } else {
 //          结算的状态
@@ -892,7 +899,7 @@
         this.settlementFlag = false
         this.retailBill = false
         this.checkedGoodsList = []
-        this. preview()
+        this.print()
         window.location.href = '/?#!/site/tranquery'
       },
 //      挂账账单结算提交成功回调函数
@@ -1073,21 +1080,21 @@
     margin-top:40px;
 
   }
-   body {
-     color: #000;
-     background: #fff
-   }
-  @page {
-    margin: 0  2cm;
-  }
-  ul, li, table, tr, td {
-    margin: 0;
-    padding: 0;
-  }
+   /*body {*/
+     /*color: #000;*/
+     /*background: #fff*/
+   /*}*/
+  /*@page {*/
+    /*margin: 0  2cm;*/
+  /*}*/
+  /*ul, li, table, tr, td {*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+  /*}*/
 
-  ul, li {
-    list-style: none;
-  }
+  /*ul, li {*/
+    /*list-style: none;*/
+  /*}*/
 
   .print {
     width:5.6cm;
@@ -1095,38 +1102,38 @@
     display: none;
   }
 
-  .print .company {
-    font-size:18pt;
-    width: 5.6cm;
-    display: inline-block;
-    margin-left:2cm;
-  }
+  /*.print .company {*/
+    /*font-size:18pt;*/
+    /*width: 5.6cm;*/
+    /*display: inline-block;*/
+    /*margin-left:2cm;*/
+  /*}*/
 
-  .print .top {
-    margin-top: 10px;;
-  }
+  /*.print .top {*/
+    /*margin-top: 10px;;*/
+  /*}*/
 
-  .print .goodsList {
-    padding: 5px 0;
-  }
+  /*.print .goodsList {*/
+    /*padding: 5px 0;*/
+  /*}*/
 
-  .print .goodsList tr {
-    height: 24px;;
-    line-height: 1.4;
-  }
+  /*.print .goodsList tr {*/
+    /*height: 24px;;*/
+    /*line-height: 1.4;*/
+  /*}*/
 
-  .print .goodsList tr td {
-    padding: 0 8px;
-    text-align: center;
-  }
+  /*.print .goodsList tr td {*/
+    /*padding: 0 8px;*/
+    /*text-align: center;*/
+  /*}*/
 
-  .print .top li, .settmen li {
-    height: 24px;;
-    line-height: 1.4;
-  }
+  /*.print .top li, .settmen li {*/
+    /*height: 24px;;*/
+    /*line-height: 1.4;*/
+  /*}*/
 
-  .print .tip {
-    margin-top: 12px;
-  }
+  /*.print .tip {*/
+    /*margin-top: 12px;*/
+  /*}*/
 </style>
 

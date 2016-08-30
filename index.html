@@ -24,7 +24,7 @@
       css.id='loadCss';
       head.appendChild(css);
     }
-     if(window.location.href.indexOf('/admin')>0){
+     if(window.location.href.indexOf('/admin')>-1){
        loadCss('static/assets/css/bootstrap')
        loadCss('static/assets/css/admin')
      }else{
