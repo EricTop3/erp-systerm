@@ -26,6 +26,8 @@
             }
           })
           self.$dispatch("finishToApi",currentId)
+        },function(err){
+          self.$dispatch("finishFail",err)
         })
       }
     }
