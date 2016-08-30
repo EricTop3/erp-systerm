@@ -11,6 +11,7 @@ export var storeAccount = window.localStorage.getItem('storeAccount')
 export var storeInfo = window.localStorage.getItem('storeInfo')
 export var systermName = window.localStorage.getItem('systermName')
 export var systermAccount = window.localStorage.getItem('systermAccount')
+export var systermAuthority = window.localStorage.getItem('systermAuthority')
 //后台0,1状态没完成状态的展示方式
 export function changeStatus(origindata) {
   if(!(origindata instanceof Array)){
@@ -332,8 +333,10 @@ export function adminLogin(loginUrl,data, callback){
     getDataFromApi(requestSystemUrl + '/backend-system/auth/info',{},function(response){
       window.localStorage.setItem('systermAccount', response.data.body.account)
       window.localStorage.setItem('systermName', response.data.body.name)
+      window.localStorage.setItem('systermAuthority',response.data.body.permissions)
       systermName = window.localStorage.getItem('systermName')
       systermAccount = window.localStorage.getItem('systermAccount')
+      systermAuthority = window.localStorage.getItem('systermAuthority')
       window.location.href = '#!/admin/setting'
     })
   },function(err){

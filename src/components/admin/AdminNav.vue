@@ -10,12 +10,12 @@
       </div>
       <div class="col-md-8">
         <ul class="nav nav-pills navbar-right">
-          <li><a v-link="{ path: '/admin/setting'}">设置</a></li>
-          <li><a v-link="{ path: '/admin/purchase'}">采购</a></li>
-          <li><a v-link="{ path: '/admin/instock'}">库存</a></li>
-          <li><a v-link="{ path: '/admin/production'}">生产</a></li>
-          <li><a v-link="{ path: '/admin/retail'}">零售</a></li>
-          <li><a v-link="{ path: '/admin/member'}">会员</a></li>
+          <li v-if="authority.setting"><a v-link="{ path: '/admin/setting'}">设置</a></li>
+          <li v-if="authority.purchase"><a v-link="{ path: '/admin/purchase'}">采购</a></li>
+          <li v-if="authority.instock"><a v-link="{ path: '/admin/instock'}" >库存</a></li>
+          <li v-if="authority.product"><a v-link="{ path: '/admin/production'}">生产</a></li>
+          <li v-if="authority.retail"><a v-link="{ path: '/admin/retail'}">零售</a></li>
+          <li v-if="authority.member"><a v-link="{ path: '/admin/member'}" >会员</a></li>
           <!--<li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>-->
         </ul>
       </div>
@@ -24,9 +24,24 @@
     </div>
 </template>
 <script>
-   import {systermName,systermAccount } from '../../publicFunction/index'
+   import {systermName,systermAccount,systermAuthority} from '../../publicFunction/index'
     export default{
        name: 'admin-nav',
+       ready: function() {
+           if(systermAuthority.indexOf('生产')>-1){
+             this. authority.product = true
+           }else if(systermAuthority.indexOf('设置')>-1){
+             this. authority.setting = true
+           }else if(systermAuthority.indexOf('采购')>-1) {
+             this.authority.purchase = true
+           }else if(systermAuthority.indexOf('零售')>-1) {
+             this.authority.retail = true
+           }else if(systermAuthority.indexOf('仓库')>-1) {
+             this.authority.instock = true
+           }else if(systermAuthority.indexOf('会员')>-1) {
+             this.authority.member = true
+           }
+       },
        methods: {
          exit: function () {
 //         TODO 未来可能有接口，暂时如此
@@ -42,6 +57,14 @@
           systerm: {
             account: systermAccount,
             name: systermName
+          },
+          authority: {
+            setting: false,
+            purchase: false,
+            instock: false,
+            product: false,
+            retail: false,
+            member: false,
           }
         }
       }
