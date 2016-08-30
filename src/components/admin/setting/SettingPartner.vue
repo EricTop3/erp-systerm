@@ -400,7 +400,10 @@
       create: function () {
         this.postData = {}
         this.postData.type = ''
-        this.createModal = true
+        this.createModal = truethis
+        // 表单验证提示消息
+        this.codeFlag = false
+        this.nameFlag = false
       },
 //      创建合作方 点击提交按钮
       createSubmit: function () {
@@ -441,6 +444,9 @@
           this.postData = response.data.body
           this.modifyGetedData(this.postData)
           this.editModal = true
+          // 表单验证提示消息
+          this.codeFlag = false
+          this.nameFlag = false
         }, function (err) {
           error(err)
         })
@@ -527,7 +533,6 @@
             self.codeFlag = false
           }
         })
-
       },
 //      公司名称不能重复的验证
       repeatName: function(){

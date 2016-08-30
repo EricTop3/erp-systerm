@@ -206,21 +206,27 @@
             if(value.balance != ''){
               value.balance = '￥' + (value.balance * 0.01).toFixed(2)
             }
-            if(value.balance_change < 0){
-              if(value.point_type == 'Store'){
-                value.point_type ='会员余额支付'
-              }
-            }else{
-              if(value.point_type == 'Store' && value.score_change < 0){
-                value.point_type ='退货退款'
-              }else if(value.point_type == 'Management'){
-                value.point_type = 'erp管理系统变更'
-              }else{
-                value.point_type ='会员卡充值'
-              }
-            }
             if(value.balance_change != ''){
               value.balance_change = '￥' + (value.balance_change * 0.01).toFixed(2)
+            }
+
+            switch(value.operate_type){
+              case 1:
+                value.point_type = '会员卡充值'
+                break;
+              case 5:
+                value.point_type = 'erp管理系统变更'
+                break;
+              case 6:
+                value.point_type = '退货退款'
+                break;
+              case 2:
+                if(value.balance_change == 0){
+                  value.point_type = '订单交易'
+                }else{
+                  value.point_type = '会员余额支付'
+                }
+                break;
             }
 
             switch(value.note){
