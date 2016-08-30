@@ -326,6 +326,7 @@ export function error(err) {
 export function adminLogin(loginUrl,data, callback){
   token = null
   var cur = new Vue()
+  var curRouter = []
   cur.$http.post(loginUrl,data).then(function(response){
     var curtoken = response.headers('X-Overpowered-Token-Set')
     window.localStorage.setItem('token', curtoken)
@@ -337,7 +338,25 @@ export function adminLogin(loginUrl,data, callback){
       systermName = window.localStorage.getItem('systermName')
       systermAccount = window.localStorage.getItem('systermAccount')
       systermAuthority = window.localStorage.getItem('systermAuthority')
-      window.location.href = '#!/admin/setting'
+      if(systermAuthority.indexOf('生产')>-1){
+        curRouter.push('product')
+      }
+      if(systermAuthority.indexOf('设置')>-1){
+        curRouter.push('setting')
+      }
+      if(systermAuthority.indexOf('采购')>-1){
+        curRouter.push('purchase')
+      }
+      if(systermAuthority.indexOf('零售')>-1){
+        curRouter.push('retail')
+      }
+      if(systermAuthority.indexOf('仓库')>-1) {
+        curRouter.push('instock')
+      }
+      if(systermAuthority.indexOf('会员')>-1) {
+        curRouter.push('member')
+      }
+      window.location.href = '#!/admin/' + curRouter[0]
     })
   },function(err){
     callback && callback(err)

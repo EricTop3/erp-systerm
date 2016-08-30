@@ -29,16 +29,21 @@
        name: 'admin-nav',
        ready: function() {
            if(systermAuthority.indexOf('生产')>-1){
-             this. authority.product = true
-           }else if(systermAuthority.indexOf('设置')>-1){
-             this. authority.setting = true
-           }else if(systermAuthority.indexOf('采购')>-1) {
+             this.authority.product = true
+           }
+           if(systermAuthority.indexOf('设置')>-1){
+             this.authority.setting = true
+           }
+           if(systermAuthority.indexOf('采购')>-1) {
              this.authority.purchase = true
-           }else if(systermAuthority.indexOf('零售')>-1) {
+           }
+           if(systermAuthority.indexOf('零售')>-1) {
              this.authority.retail = true
-           }else if(systermAuthority.indexOf('仓库')>-1) {
+           }
+           if(systermAuthority.indexOf('仓库')>-1) {
              this.authority.instock = true
-           }else if(systermAuthority.indexOf('会员')>-1) {
+           }
+           if(systermAuthority.indexOf('会员')>-1) {
              this.authority.member = true
            }
        },
