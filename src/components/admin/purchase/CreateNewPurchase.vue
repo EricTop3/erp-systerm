@@ -209,7 +209,7 @@
         $.each(saveDataArray, function (index, val) {
           val.purchase_amount = val.main_reference_value
           val.purchase_price = (val.unit_price*0.01).toFixed(2)
-          val.stock = ( (val.stock* 1000)*0.001).toFixed(3)
+          val.stock = (val.stock*1000*0.001).toFixed(3)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)

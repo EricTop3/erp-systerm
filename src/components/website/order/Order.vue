@@ -202,7 +202,7 @@
       </tbody>
     </table>
     <div>金额：{{finalPrice}} 抹零：0.00</div>
-    <div>会员: {{member.memberInfoList.card_number|| '无'}}  卡结余: ￥{{member.memberInfoList.balance!=undefind ? member.memberInfoList.balance|priceChange: '0.00'}}</div>
+    <div>会员: {{member.memberInfoList.card_number|| '无'}}  卡结余: ￥{{member.memberInfoList.balance}}</div>
     <div>会员储值卡：￥{{finalPrice}}  找零金额：￥{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</div>
     <div class="tip">谢谢惠顾，欢迎再次光临</div>
   </div>
@@ -892,7 +892,7 @@
         this.settlementFlag = false
         this.retailBill = false
         this.checkedGoodsList = []
-        this. preview()
+        this.print()
         window.location.href = '/?#!/site/tranquery'
       },
 //      挂账账单结算提交成功回调函数
@@ -1073,21 +1073,21 @@
     margin-top:40px;
 
   }
-   body {
-     color: #000;
-     background: #fff
-   }
-  @page {
-    margin: 0  2cm;
-  }
-  ul, li, table, tr, td {
-    margin: 0;
-    padding: 0;
-  }
+   /*body {*/
+     /*color: #000;*/
+     /*background: #fff*/
+   /*}*/
+  /*@page {*/
+    /*margin: 0  2cm;*/
+  /*}*/
+  /*ul, li, table, tr, td {*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+  /*}*/
 
-  ul, li {
-    list-style: none;
-  }
+  /*ul, li {*/
+    /*list-style: none;*/
+  /*}*/
 
   .print {
     width:5.6cm;
@@ -1095,38 +1095,38 @@
     display: none;
   }
 
-  .print .company {
-    font-size:18pt;
-    width: 5.6cm;
-    display: inline-block;
-    margin-left:2cm;
-  }
+  /*.print .company {*/
+    /*font-size:18pt;*/
+    /*width: 5.6cm;*/
+    /*display: inline-block;*/
+    /*margin-left:2cm;*/
+  /*}*/
 
-  .print .top {
-    margin-top: 10px;;
-  }
+  /*.print .top {*/
+    /*margin-top: 10px;;*/
+  /*}*/
 
-  .print .goodsList {
-    padding: 5px 0;
-  }
+  /*.print .goodsList {*/
+    /*padding: 5px 0;*/
+  /*}*/
 
-  .print .goodsList tr {
-    height: 24px;;
-    line-height: 1.4;
-  }
+  /*.print .goodsList tr {*/
+    /*height: 24px;;*/
+    /*line-height: 1.4;*/
+  /*}*/
 
-  .print .goodsList tr td {
-    padding: 0 8px;
-    text-align: center;
-  }
+  /*.print .goodsList tr td {*/
+    /*padding: 0 8px;*/
+    /*text-align: center;*/
+  /*}*/
 
-  .print .top li, .settmen li {
-    height: 24px;;
-    line-height: 1.4;
-  }
+  /*.print .top li, .settmen li {*/
+    /*height: 24px;;*/
+    /*line-height: 1.4;*/
+  /*}*/
 
-  .print .tip {
-    margin-top: 12px;
-  }
+  /*.print .tip {*/
+    /*margin-top: 12px;*/
+  /*}*/
 </style>
 
