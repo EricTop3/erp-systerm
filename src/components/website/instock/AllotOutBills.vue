@@ -46,7 +46,7 @@
         <a v-link="{ path: '/site/instock/AllotOut'}"><span class="btn btn-primary">新建出库</span></a>
       </form>
     </div>
-    <summary :table-header="gridColumns" :table-data="list"  :page="page" :check-url="checkUrl"></summary>
+    <summary :table-header="gridColumns" :table-data="list"  :page="page" :check-url="checkUrl" :finish-url="checkUrl" :finish-flag="true"></summary>
   </div>
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
@@ -94,7 +94,7 @@
       },
 //          查看详情
     gotoDetail: function (id){
-      window.location.href = '#!/site/instock/AllotOutBills/'+ id
+      window.location.href = '/#!/site/instock/AllotOutBills/'+ id
     },
 //         审核失败
       checkFail: function (err){
