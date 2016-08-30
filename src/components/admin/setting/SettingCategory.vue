@@ -316,7 +316,7 @@
         messageTip: '该分类下有商品，不能删除此分类',
         gridOperate: true,
         gridColumns: {
-          id: 'ID',
+          sort: '序号',
           display_name: '一级分类'
         },
         formData: []

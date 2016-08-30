@@ -124,8 +124,6 @@
       finishToApi: function () {
         this.getlistData(1)
       },
-//      完成错误
-      
       //    查看详情
       gotoDetail: function (id) {
         window.location.href = '/#!/admin/instock/apply/applyDetail/' + id
