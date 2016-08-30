@@ -161,6 +161,7 @@
       </ul>
       <div class='clearboth'></div>
       <hr>
+
       <div class='cow'>
         <div class='col-lg-6'>
           <form class='form-inline'>
@@ -178,6 +179,32 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="print" id="print">
+    <div class="company">hey coffee</div>
+    <div>门店：{{storeInfo}}     15730078956</div>
+    <div> 时间：2015-08-22     08:59:26</div>
+    <div>单号：20130516168</div>
+    <table class="goodsList">
+      <tbody>
+      <tr>
+        <td>序</td>
+        <td>品名/货号</td>
+        <td>单价</td>
+        <td>数量/金额</td>
+      </tr>
+      <tr v-for=" (index,item) in checkedGoodsList" >
+        <td>{{index+1}}</td>
+        <td>{{item.goodName}}</td>
+        <td>{{item.goodPrice}}</td>
+        <td>{{item.count}}/{{item.goodPrice}}</td>
+      </tr>
+      </tbody>
+    </table>
+    <div>金额：{{finalPrice}} 抹零：0.00</div>
+    <div>会员: {{member.memberInfoList.card_number|| '无'}}  卡结余: ￥{{member.memberInfoList.balance!=undefind ? member.memberInfoList.balance|priceChange: '0.00'}}</div>
+    <div>会员储值卡：￥{{finalPrice}}  找零金额：￥{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</div>
+    <div class="tip">谢谢惠顾，欢迎再次光临</div>
   </div>
   <!--结算零售账单弹窗-->
   <modal :show.sync="retailBill" :modal-size="retailBillSize" class="form-horizontal">
@@ -326,7 +353,7 @@
   import CountContainer from '../../common/CountContainer'
   import Page from '../../common/Page'
   import Slide from 'vue-slide'
-  import {requestUrl, token,searchRequest,getDataFromSiteApi,postSiteDataToApi} from '../../../publicFunction/index'
+  import {requestUrl, token,searchRequest,getDataFromSiteApi,postSiteDataToApi,storeInfo} from '../../../publicFunction/index'
   //  商品信息数组
   var orderItems = []
   //  订单类型
@@ -335,6 +362,7 @@
   var orderMount = 0
   var deleteCheckedGoodId = ''
   var priceCheckdGoodId = ''
+  var LODOP  //声明为全局变量
   export default {
     components: {
       CountContainer: CountContainer,
@@ -343,6 +371,7 @@
       Slide: Slide,
       SiteNav: SiteNav
     },
+
     compiled: function () {
       var self = this
 //    分类
@@ -556,6 +585,7 @@
 //     增加到左侧商品列表
       addOrderToList: function (event) {
         var flag = false
+
         var self = this
         const currentGood = $(event.currentTarget)
         const currentGoodId = Number(currentGood.attr('id'))
@@ -862,6 +892,7 @@
         this.settlementFlag = false
         this.retailBill = false
         this.checkedGoodsList = []
+        this. preview()
         window.location.href = '/?#!/site/tranquery'
       },
 //      挂账账单结算提交成功回调函数
@@ -922,7 +953,24 @@
         this.creditlBill = false
         this.checkedGoodsList = []
         window.location.href = '/?#!/site/tranquery'
-      }
+      },
+//   打印页面内容
+      createOneFormPage: function() {
+        LODOP = getLodop();
+        LODOP.SET_PRINT_STYLEA("FontSize", '1pt');
+        LODOP.SET_PRINT_PAGESIZE(3, "6.4cm", "0.5cm")
+        LODOP.ADD_PRINT_HTM('0cm', '0cm', '6.4cm', '10cm', document.getElementById("print").innerHTML)
+     },
+//   打印预览
+      preview: function () {
+        this.createOneFormPage();
+        LODOP.PREVIEW();
+     },
+//  打印
+     print : function () {
+       this.createOneFormPage();
+       LODOP.PRINT();
+     }
     },
     data: function () {
       return {
@@ -1024,6 +1072,61 @@
     width: 20%;
     margin-top:40px;
 
+  }
+   body {
+     color: #000;
+     background: #fff
+   }
+  @page {
+    margin: 0  2cm;
+  }
+  ul, li, table, tr, td {
+    margin: 0;
+    padding: 0;
+  }
+
+  ul, li {
+    list-style: none;
+  }
+
+  .print {
+    width:5.6cm;
+    font-size: 1pt;
+    display: none;
+  }
+
+  .print .company {
+    font-size:18pt;
+    width: 5.6cm;
+    display: inline-block;
+    margin-left:2cm;
+  }
+
+  .print .top {
+    margin-top: 10px;;
+  }
+
+  .print .goodsList {
+    padding: 5px 0;
+  }
+
+  .print .goodsList tr {
+    height: 24px;;
+    line-height: 1.4;
+  }
+
+  .print .goodsList tr td {
+    padding: 0 8px;
+    text-align: center;
+  }
+
+  .print .top li, .settmen li {
+    height: 24px;;
+    line-height: 1.4;
+  }
+
+  .print .tip {
+    margin-top: 12px;
   }
 </style>
 
