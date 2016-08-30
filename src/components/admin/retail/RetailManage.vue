@@ -53,6 +53,7 @@
             <td>刷卡支付额</td>
             <td>微信支付额</td>
             <td>支付宝支付额</td>
+            <td>退货退款</td>
             <td>操作</td>
           </tr>
           </thead>
@@ -68,6 +69,7 @@
             <td>{{item.pos_total_sum}}</td>
             <td>{{item.weixin_total_sum}}</td>
             <td>{{item.alipay_total_sum}}</td>
+            <td>{{item.refund_total_sum}}</td>
             <td>
               <span v-if="item.status=='未结账'" class="btn btn-primary btn-sm" @click="settlement($event)">结账</span>
               <span class="btn btn-default btn-sm" @click="view($event)">查看</span>
@@ -186,6 +188,9 @@
           }
           if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+          }
+          if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
+            value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
           }
           if(value.status == '1' ){
             value.status = "未结账"

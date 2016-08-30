@@ -41,6 +41,7 @@
             <td>刷卡支付额</td>
             <td>微信支付额</td>
             <td>支付宝支付额</td>
+            <td>退货退款</td>
           </tr>
           </thead>
           <tbody>
@@ -52,6 +53,7 @@
             <td>{{onedata.pos_total_sum}}</td>
             <td>{{onedata.weixin_total_sum}}</td>
             <td>{{onedata.alipay_total_sum}}</td>
+            <td>{{onedata.refund_total_sum}}</td>
           </tr>
           </tbody>
         </table>
@@ -70,6 +72,7 @@
             <td>刷卡支付额</td>
             <td>微信支付额</td>
             <td>支付宝支付额</td>
+            <td>退货退款</td>
             <td>操作</td>
           </tr>
           </thead>
@@ -84,6 +87,7 @@
             <td>{{item.pos_total_sum}}</td>
             <td>{{item.weixin_total_sum}}</td>
             <td>{{item.alipay_total_sum}}</td>
+            <td>{{item.refund_total_sum}}</td>
             <td>
               <span class="btn btn-info btn-sm" @click="view($event)">查看</span>
             </td>
@@ -199,6 +203,9 @@
           if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
+          if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
+            value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
+          }
         })
       },
 //    对获取到的单条数据进行处理
@@ -220,6 +227,9 @@
         }
         if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
           value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+        }
+        if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
+          value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
         }
       },
 //      查看
