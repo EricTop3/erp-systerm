@@ -207,27 +207,27 @@
       confirmAdd: function () {
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
+        this.renderstockGoods = []
         $.each(self.stockGoods, function (index, val) {
-          if(!val.purchase_amount){
-            val.purchase_amount = val.main_reference_value
-          }
           val.stock = val.system_stock
           val.main_reference_value = 0
+          val.purchase_amount = val.main_reference_value
           val.purchase_price = (val.apuc*0.01).toFixed(2)
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
           }
         })
-        this.renderstockGoods = self.dataArray
+        this.renderstockGoods = this.renderstockGoods.concat(self.dataArray)
       },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
         var saveDataArray = []
         var detailArrayFromApi = []
+        this.renderstockGoods = []
         detailGoodsInfo(this.origenData.secondData,'Requisition')
-        saveDataArray = this.stockGoods.concat(this.origenData.secondData)
+        saveDataArray = this.origenData.secondData
         $.each(saveDataArray, function (index, val) {
           if(val.main_reference_value){
             val.purchase_amount = val.main_reference_value
@@ -239,7 +239,7 @@
             self.dataArray.push(val)
           }
         })
-        this.renderstockGoods = self.dataArray
+        this.renderstockGoods =  this.renderstockGoods.concat(self.dataArray)
       },
 //     删除商品
       delete: function (id) {
