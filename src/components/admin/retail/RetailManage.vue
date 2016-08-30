@@ -190,7 +190,7 @@
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
           if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
-            value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
+            value.refund_total_sum = '￥' + (value.refund_total_sum * (-0.01)).toFixed(2)
           }
           if(value.status == '1' ){
             value.status = "未结账"
