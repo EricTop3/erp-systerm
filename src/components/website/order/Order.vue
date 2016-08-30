@@ -619,7 +619,7 @@
         if (checkedGoodsList && checkedGoodsList.length > 0) {
           $.each(checkedGoodsList, function (index, val) {
             if (val.id === currentGoodId) {
-              if(val.count >= val.stock){
+              if(val.count >= val.stock && !self.isValidate){
                 val.count = Number(val.stock)
               }else{
                 val.count++
