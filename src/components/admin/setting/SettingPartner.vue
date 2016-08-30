@@ -16,7 +16,7 @@
           <form class="form-inline">
             <div class="form-group">
               <label>编号</label>
-              <input type="text" class="form-control" placeholder="请输入编号" v-model='searchData.code'>
+              <input type="text" class="form-control" placeholder="请输入编号" @change='repeatCode()' v-model='searchData.code'>
             </div>
             <div class="form-group ml10">
               <label>公司全称</label>
@@ -79,20 +79,22 @@
             <label class="col-sm-4 control-label">编号</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code"
-                     v-validate:code="{required: true}">
+                     v-validate:code="{required: true}" @change="repeatCode()">
               <div v-if="$validation1.code.touched">
                 <p class="error" v-if="$validation1.code.required">这是必填项</p>
               </div>
+              <div v-if="codeFlag"><p class="error">编号已存在！</p></div>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">公司全称</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name"
-                     v-validate:name="{required: true}">
+                     v-validate:name="{required: true}" @change="repeatName()">
               <div v-if="$validation1.name.touched">
                 <p class="error" v-if="$validation1.name.required">这是必填项</p>
               </div>
+              <div v-if="nameFlag"><p class="error">公司名称已存在！</p></div>
             </div>
           </div>
           <div class="form-group">
@@ -173,20 +175,22 @@
             <label class="col-sm-4 control-label">编号</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.code"
-                     v-validate:code="{required: true}">
+                     v-validate:code="{required: true}" @change="repeatCode()">
               <div v-if="$validation2.code.touched">
                 <p class="error" v-if="$validation2.code.required">这是必填项</p>
               </div>
+              <div v-if="codeFlag"><p class="error">编号已存在！</p></div>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label">公司全称</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" placeholder="必填且不可重复" v-model="postData.name"
-                     v-validate:name="{required: true}">
+                     v-validate:name="{required: true}" @change="repeatName()">
               <div v-if="$validation2.name.touched">
                 <p class="error" v-if="$validation2.name.required">这是必填项</p>
               </div>
+              <div v-if="nameFlag"><p class="error">公司名称已存在！</p></div>
             </div>
           </div>
           <div class="form-group">
@@ -490,7 +494,9 @@
             self.$validation1.name.touched = true
             e.preventDefault()
           } else {
-            self.createSubmit()
+            if(!self.codeFlag && !self.nameFlag){
+              self.createSubmit()
+            }
           }
         })
       },
@@ -504,13 +510,44 @@
             self.$validation2.name.touched = true
             e.preventDefault()
           } else {
-            self.confirmEdit()
+            if(!self.codeFlag && !self.nameFlag){
+              self.confirmEdit()
+            }
           }
         })
+      },
+//      编号不能重复的验证
+      repeatCode: function(){
+        var self = this
+        $.each(self.listdata,function(index,val){
+          if(String((self.postData.code).trim()).toUpperCase() === String(val.code).toUpperCase()){
+            self.codeFlag = true
+            return false
+          }else{
+            self.codeFlag = false
+          }
+        })
+
+      },
+//      公司名称不能重复的验证
+      repeatName: function(){
+        var self = this
+        $.each(self.listdata,function(index,val){
+          if(String((self.postData.name).trim()).toUpperCase() === String(val.name).toUpperCase()){
+            self.nameFlag = true
+            return false
+          }else{
+            self.nameFlag = false
+          }
+        })
+
       }
     },
     data: function () {
       return {
+        //code重复判断flag
+        codeFlag: false,
+        nameFlag: false,
         createModal: false,
         createModalSize: 'modal-sm',
         editModal: false,
