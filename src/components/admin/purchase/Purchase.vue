@@ -35,8 +35,8 @@
             </div>
             <div class="form-group ml10">
               <label>制单时间段</label>
-              <date-picker :value.sync="time.startTime"></date-picker> -
-              <date-picker :value.sync="time.endTime"></date-picker>
+              <date-picker :value.sync="time.startTime" time-text=开始时间></date-picker> -
+              <date-picker :value.sync="time.endTime"  time-text=结束时间></date-picker>
             </div>
             <div class="form-group ml10">
               <label>供应商</label>

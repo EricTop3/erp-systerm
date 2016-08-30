@@ -88,6 +88,7 @@
                   <td>{{entry.stock}}{{entry.unit_name}}</td>
                   <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                   <td>{{entry.item_amount}}{{entry.unit_name}}</td>
+                  <td>{{entry.reference_number}}</td>
                 </tr>
                 </tbody>
               </table>

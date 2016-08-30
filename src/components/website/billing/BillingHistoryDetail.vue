@@ -13,6 +13,7 @@
         <td>刷卡支付额</td>
         <td>微信支付额</td>
         <td>支付宝支付额</td>
+        <td>退款金额</td>
         <td>操作</td>
       </tr>
       </thead>
@@ -25,8 +26,10 @@
         <td>{{onedata.pos_total_sum}}</td>
         <td>{{onedata.weixin_total_sum}}</td>
         <td>{{onedata.alipay_total_sum}}</td>
+        <td>{{onedata.refund_total_sum}}</td>
         <td>
-          <span v-if="onedata.settled_at==''" id="todaySet" class="btn btn-primary btn-sm" @click="settlementModal=true">结算</span>
+          <span v-if="onedata.settled_at==''" id="todaySet" class="btn btn-primary btn-sm"
+                @click="settlementModal=true">结算</span>
           <span class="btn btn-info btn-sm" v-link="{path: '/site/billing/list' }">结算历史</span>
         </td>
       </tr>
@@ -62,7 +65,15 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import SiteNav from '../SiteNav'
-  import {requestUrl, token, error, requestSystemUrl, getDataFromApi, postSiteDataToApi, putDataToApi} from '../../../publicFunction/index'
+  import {
+    requestUrl,
+    token,
+    error,
+    requestSystemUrl,
+    getDataFromApi,
+    postSiteDataToApi,
+    putDataToApi
+  } from '../../../publicFunction/index'
   export default {
     components: {
       Modal: Modal,
@@ -108,8 +119,8 @@
         var self = this
         var url = requestSystemUrl + '/front-system/settlement/' + this.thisId
         var data = {
-            page: page
-          }
+          page: page
+        }
         getDataFromApi(url, data, function (response) {
           self.todayDetailGridData = response.data.body.list
           self.modifyGetedData(self.todayDetailGridData)
@@ -132,34 +143,40 @@
           if (value.pay_method == 'vip') {
             this.pay_method = '会员卡支付'
           }
-          if(value.total_sum != '' && value.total_sum > 0 ){
+          if (value.pay_method == 'refund') {
+            this.pay_method = '退货退款'
+          }
+          if (value.total_sum != '' && value.total_sum > 0) {
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
-          if(!value.document_number){
+          if (!value.document_number) {
             value.document_number = '会员卡充值'
           }
         })
       },
 //      对获取的单条数据处理2
-      modifyGetedOneData: function (value){
-          if(value.total_sum != '' && value.total_sum > 0 ){
-            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
-          }
-          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
-            value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
-          }
-          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
-            value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
-          }
-          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
-            value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
-          }
-          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
-            value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
-          }
-          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
-            value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
-          }
+      modifyGetedOneData: function (value) {
+        if (value.total_sum != '' && value.total_sum > 0) {
+          value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+        }
+        if (value.vip_total_sum != '' && value.vip_total_sum > 0) {
+          value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
+        }
+        if (value.cash_total_sum != '' && value.cash_total_sum > 0) {
+          value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
+        }
+        if (value.pos_total_sum != '' && value.pos_total_sum > 0) {
+          value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
+        }
+        if (value.weixin_total_sum != '' && value.weixin_total_sum > 0) {
+          value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
+        }
+        if (value.alipay_total_sum != '' && value.alipay_total_sum > 0) {
+          value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+        }
+        if (value.refund_total_sum != '' && value.refund_total_sum > 0) {
+          value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
+        }
       },
 //    确定结算
       yesSettlement: function () {

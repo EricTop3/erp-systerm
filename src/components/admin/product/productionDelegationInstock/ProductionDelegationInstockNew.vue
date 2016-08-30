@@ -16,7 +16,7 @@
           <form class="form-inline">
             <div class="form-group">
               <label>收货日期</label>
-              <date-picker :value.sync="sendTime"></date-picker>
+              <date-picker :value.sync="sendTime" :time-text=timetext1></date-picker>
             </div>
             <div class="form-group">
               <label>合作工厂</label>
@@ -166,8 +166,11 @@
       var self = this
 //    仓库请求接口
       var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+      var data = {
+        type:2
+      }
 //    获取仓库列表
-      getDataFromApi(url,{},function(response){
+      getDataFromApi(url,data,function(response){
         self.warehouseList = response.data.body.list
       })
 //      获取合作工厂cooperativeFactory
@@ -327,6 +330,7 @@
     },
     data: function () {
       return {
+        timetext1: '请输入日期',
         selectedFactory: '',
         sendTime: '',
         cooperativeFactory: [],

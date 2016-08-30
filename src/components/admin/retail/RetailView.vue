@@ -125,6 +125,9 @@
           if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
+          if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
+            value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
+          }
         })
       },
 //      查看
@@ -184,7 +187,8 @@
           vip_total_sum: "会员卡支付额",
           pos_total_sum: "刷卡支付额",
           weixin_total_sum: "微信支付额",
-          alipay_total_sum: "支付宝支付额"
+          alipay_total_sum: "支付宝支付额",
+          refund_total_sum: "退货退款"
         },
         thisId: '',
         gridOperate: true,

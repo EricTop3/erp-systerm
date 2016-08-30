@@ -211,7 +211,9 @@
                 value.point_type ='会员余额支付'
               }
             }else if(value.balance_change > 0){
-              if(value.point_type == 'Store'){
+              if(value.point_type == 'Store' && value.score_change < 0){
+                value.point_type ='退货退款'
+              }else{
                 value.point_type ='会员卡充值'
               }
             }

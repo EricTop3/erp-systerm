@@ -33,6 +33,7 @@
         <td>刷卡支付额</td>
         <td>微信支付额</td>
         <td>支付宝支付额</td>
+        <td>退款金额</td>
         <td>操作</td>
       </tr>
       </thead>
@@ -46,6 +47,7 @@
         <td>{{item.pos_total_sum}}</td>
         <td>{{item.weixin_total_sum}}</td>
         <td>{{item.alipay_total_sum}}</td>
+        <td>{{item.refund_total_sum}}</td>
         <td>
           <span class="btn btn-danger btn-sm" v-if="item.status=='0'" @click="settlement($event)">结算</span>
           <span class="btn btn-info btn-sm" @click="checkDetail($event)">结算明细</span>
@@ -142,6 +144,9 @@
           }
           if (value.alipay_total_sum != '' && value.alipay_total_sum > 0) {
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+          }
+          if (value.refund_total_sum != '' && value.refund_total_sum > 0) {
+            value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
           }
         })
       },

@@ -26,6 +26,7 @@
             <td>刷卡支付额</td>
             <td>微信支付额</td>
             <td>支付宝支付额</td>
+            <td>退货退款</td>
             <td>操作</td>
           </tr>
           </thead>
@@ -41,6 +42,7 @@
             <td>{{onedata.pos_total_sum}}</td>
             <td>{{onedata.weixin_total_sum}}</td>
             <td>{{onedata.alipay_total_sum}}</td>
+            <td>{{onedata.refund_total_sum}}</td>
             <td><span v-if="onedata.status=='未结账'" class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
           </tr>
           </tbody>
@@ -126,13 +128,13 @@
 //    列表数据处理
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if(value.total_sum != '' && value.total_sum > 0 ){
+          if (value.total_sum != '' && value.total_sum > 0) {
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
-          if(!value.document_number){
+          if (!value.document_number) {
             value.document_number = '会员卡充值'
           }
-          switch(value.pay_method){
+          switch (value.pay_method) {
             case 'cash':
               value.pay_method = '现金支付'
               break;
@@ -148,42 +150,48 @@
             case 'pos':
               value.pay_method = 'POS支付'
               break;
+            case 'refund':
+              value.pay_method = '退货退款'
+              break;
           }
         })
       },
 //    对获取到的单条数据进行处理
       modifyGetedOneData: function (value) {
-          if(value.total_sum != '' && value.total_sum > 0 ){
-            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
-          }
-          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
-            value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
-          }
-          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
-            value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
-          }
-          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
-            value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
-          }
-          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
-            value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
-          }
-          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
-            value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
-          }
-          if(value.status == '1' ){
-            value.status = "未结账"
-          }
-          if(value.status == '2'){
-            value.status = "已结账"
-          }
+        if (value.total_sum != '' && value.total_sum > 0) {
+          value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+        }
+        if (value.vip_total_sum != '' && value.vip_total_sum > 0) {
+          value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
+        }
+        if (value.cash_total_sum != '' && value.cash_total_sum > 0) {
+          value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
+        }
+        if (value.pos_total_sum != '' && value.pos_total_sum > 0) {
+          value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
+        }
+        if (value.weixin_total_sum != '' && value.weixin_total_sum > 0) {
+          value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
+        }
+        if (value.alipay_total_sum != '' && value.alipay_total_sum > 0) {
+          value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+        }
+        if (value.refund_total_sum != '' && value.refund_total_sum > 0) {
+          value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
+        }
+        if (value.status == '1') {
+          value.status = "未结账"
+        }
+        if (value.status == '2') {
+          value.status = "已结账"
+        }
       },
 //      结账
       settlement: function () {
         this.thisId = this.$route.params.queryId
         var self = this
         var url = requestSystemUrl + '/backend-system/settlement/' + this.thisId + '/terminate'
-        putDataToApi(url,{}, function (response) {
+        putDataToApi(url, {}, function (response) {
           self.getOneData()
         })
       }

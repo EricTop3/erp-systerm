@@ -51,6 +51,11 @@
           </tbody>
         </table>
 
+        <!--分页-->
+        <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
+              :last-page="page.last_page" v-if="detailList.length>0">
+        </page>
+
       </div>
     </div>
   </div>
@@ -168,6 +173,7 @@
         var listUrl = requestSystemUrl + '/backend-system/stock/inventory/' + currentId
         getDataFromApi(listUrl,{},function(response){
           self.detailList = response.data.body.list
+          self.page = response.data.body.pagination
         })
       }
     },

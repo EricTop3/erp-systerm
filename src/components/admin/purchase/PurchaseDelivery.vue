@@ -36,25 +36,25 @@
                 <label>收货时间段</label>
                 <date-picker :value.sync="time.startTime" :time-text="timetext1"></date-picker> -
                 <date-picker :value.sync="time.endTime" :time-text="timetext2"></date-picker>
-              </div><br>
-              <div class="form-group ml10 mt10">
+              </div>
+              <div class="form-group ml10">
                 <label>供应商</label>
                 <select class="form-control" v-model="search.selectedSuppier">
                   <option value="">请选择</option>
                   <option :value="item.id" v-for="item in search.providerList">{{item.name}}</option>
                 </select>
               </div>
-              <div class="form-group ml10 mt10">
+              <div class="form-group ml10">
                 <label>收货仓库</label>
                 <select class="form-control" v-model="search.stream_origin_id">
                   <option value="">请选择</option>
                   <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
                 </select>
               </div>
-              <span type="submit" class="btn btn-primary mt10" @click="searchMethod(1)">搜索</span>
-              <span class="btn btn-warning mt10" @click="cancelSearch">撤销搜索</span>
-              <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr mt10">新建收货单</a>
-              <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
+              <span type="submit" class="btn btn-primary" @click="searchMethod(1)">搜索</span>
+              <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
+              <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr">新建收货单</a>
+              <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
             </form>
           </div>
 
@@ -96,7 +96,10 @@
         self.search.providerList = response.data.body.list
       })
 //      获取仓库列表
-      getDataFromApi(requestSystemUrl + '/backend-system/warehouse-minimal-list',{type: 2},function(response){
+      var data = {
+        type:2
+      }
+      getDataFromApi(requestSystemUrl + '/backend-system/warehouse-minimal-list',data,function(response){
         self.warehouseList = response.data.body.list
       })
       this.fetlistFormApi({})

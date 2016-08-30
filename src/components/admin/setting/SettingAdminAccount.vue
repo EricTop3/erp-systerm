@@ -28,12 +28,32 @@
         </div>
 
         <!-- 表格 -->
-        <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
-          <div slot="operateList">
-            <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-            <span class="btn btn-default btn-sm" @click="permission($event)">权限管理</span>
-          </div>
-        </grid>
+        <table class="table table-striped table-border table-hover">
+          <thead>
+          <tr class="text-center">
+            <td class="text-left">员工名称</td>
+            <td>登录名</td>
+            <td>权限</td>
+            <td>状态</td>
+            <td>操作</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center" v-for="item in listdata" :id="item.id" track-by="$index">
+            <td class="text-left">{{item.name}}</td>
+            <td>{{item.account}}</td>
+            <td><span v-for="entry in item.permissions" class="entry" track-by="$index">{{entry}}</span></td>
+
+
+
+            <td>{{item.status}}</td>
+            <td>
+              <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
+              <span class="btn btn-default btn-sm" @click="permission($event)">权限管理</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
         <!--分页-->
         <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
@@ -51,15 +71,16 @@
       <h4 class="modal-title">权限管理</h4>
     </div>
     <div slot="body">
-      <form action="" method="post" class="form-inline">
-        <label><input type="checkbox" class="input-group">设置</label>
-        <label class="ml10"><input type="checkbox" class="input-group">采购</label>
-        <label class="ml10"><input type="checkbox" class="input-group">库存</label><br>
-        <label><input type="checkbox" class="input-group">零售</label>
-        <label class="ml10"><input type="checkbox" class="input-group">会员</label>
-        <label class="ml10"><input type="checkbox" class="input-group">微商城</label>
-        <label><input type="checkbox" class="input-group">生产</label>
+      <form action="" method="post" class="form-inline" id="permissionsId">
+        <label><input value="setting" type="checkbox" class="input-group">设置</label>
+        <label class="ml10"><input value="purchase" type="checkbox" class="input-group">采购</label>
+        <label class="ml10"><input value="warehouse"  type="checkbox" class="input-group">库存</label><br>
+        <label><input value="sale" type="checkbox" class="input-group">零售</label>
+        <label class="ml10"><input value="member" type="checkbox" class="input-group">会员</label>
+        <label class="ml10"><input value="mini-mall" type="checkbox" class="input-group">微商城</label>
+        <label><input value="production" type="checkbox" class="input-group">生产</label>
       </form>
+      <div v-if="isflag"><p class="error">请勾选相应的权限选项</p></div>
     </div>
     <div slot="footer">
       <button type="button" class="btn btn-primary" @click="confirmPermission()">确定</button>
@@ -76,56 +97,59 @@
     </div>
     <div slot="body">
       <validator name="validation1">
-      <form class="form-horizontal">
-        <div class="form-group">
-          <label class="col-sm-4 control-label">员工名称</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="" v-model="postData.name" v-validate:name="[ 'required' ]">
-            <div v-if="$validation1.name.touched">
-              <p class="error" v-if="$validation1.name.required">员工名不能为空</p>
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">员工名称</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="" v-model="postData.name"
+                     v-validate:name="[ 'required' ]">
+              <div v-if="$validation1.name.touched">
+                <p class="error" v-if="$validation1.name.required">员工名不能为空</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">登录名</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="用户名一经提交不可更改" v-model="postData.account" v-validate:account="[ 'required' ]">
-            <div v-if="$validation1.account.touched">
-              <p class="error" v-if="$validation1.account.required">用户名不能为空</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">登录名</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="用户名一经提交不可更改" v-model="postData.account"
+                     v-validate:account="[ 'required' ]">
+              <div v-if="$validation1.account.touched">
+                <p class="error" v-if="$validation1.account.required">用户名不能为空</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">密码</label>
-          <div class="col-sm-8">
-            <input type="password" class="form-control" placeholder="" v-model="postData.password" v-validate:password="[ 'required' ]">
-            <div v-if="$validation1.password.touched">
-              <p class="error" v-if="$validation1.password.required">密码不能为空</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">密码</label>
+            <div class="col-sm-8">
+              <input type="password" class="form-control" placeholder="" v-model="postData.password"
+                     v-validate:password="[ 'required' ]">
+              <div v-if="$validation1.password.touched">
+                <p class="error" v-if="$validation1.password.required">密码不能为空</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">所属工厂</label>
-          <div class="col-sm-8">
-            <select class="form-control"  v-model="postData.warehouse_id">
-              <option value="">请选择</option>
-              <option v-for="item in listProviderA"  value="{{item.id}}">{{item.name}}
-              <option v-for="item in listProviderB"  value="{{item.id}}">{{item.name}}
-            </select>
+          <!--<div class="form-group">-->
+            <!--<label class="col-sm-4 control-label">所属工厂</label>-->
+            <!--<div class="col-sm-8">-->
+              <!--<select class="form-control" v-model="postData.warehouse_id">-->
+                <!--<option value="">请选择</option>-->
+                <!--<option v-for="item in listProviderA" value="{{item.id}}">{{item.name}}-->
+                <!--<option v-for="item in listProviderB" value="{{item.id}}">{{item.name}}-->
+              <!--</select>-->
+            <!--</div>-->
+          <!--</div>-->
+          <div class="form-group">
+            <label class="col-sm-4 control-label">状态</label>
+            <div class="col-sm-8">
+              <label class="radio-inline">
+                <input type="radio" name="status" value="1" v-model="postData.status" checked> 开启
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="status" value="0" v-model="postData.status"> 关闭
+              </label>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-4 control-label">状态</label>
-          <div class="col-sm-8">
-            <label class="radio-inline">
-              <input type="radio" name="status" value="1" v-model="postData.status" checked> 开启
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="status" value="0" v-model="postData.status"> 关闭
-            </label>
-          </div>
-        </div>
-      </form>
+        </form>
       </validator>
     </div>
     <div slot="footer">
@@ -143,49 +167,44 @@
     </div>
     <div slot="body" class="form-horizontal">
       <validator name="validation2">
-      <div class="form-group">
-        <label class="col-sm-4 control-label">员工名称</label>
-        <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.name" v-validate:name="[ 'required' ]">
-          <div v-if="$validation2.name.touched">
-            <p class="error" v-if="$validation2.name.required">员工名不能为空</p>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">员工名称</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" v-model="formData.name" v-validate:name="[ 'required' ]">
+            <div v-if="$validation2.name.touched">
+              <p class="error" v-if="$validation2.name.required">员工名不能为空</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-4 control-label">登录名</label>
-        <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.account" disabled>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">登录名</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" v-model="formData.account" disabled>
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-4 control-label">密码</label>
-        <div class="col-sm-8">
-          <input type="password" class="form-control" v-model="formData.password">
+        <div class="form-group">
+          <label class="col-sm-4 control-label">密码</label>
+          <div class="col-sm-8">
+            <input type="password" class="form-control" v-model="formData.password">
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-4 control-label">所属工厂</label>
-        <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="formData.warehouse_name" disabled>
-          <!--<select class="form-control"  v-model="formData.warehouse_id">
-            <option value="">请选择</option>
-            <option v-for="item in listProviderA"  value="{{item.id}}">{{item.name}}
-            <option v-for="item in listProviderB"  value="{{item.id}}">{{item.name}}
-          </select>-->
+        <!--<div class="form-group">-->
+          <!--<label class="col-sm-4 control-label">所属工厂</label>-->
+          <!--<div class="col-sm-8">-->
+            <!--<input type="text" class="form-control" v-model="formData.warehouse_name" disabled>-->
+          <!--</div>-->
+        <!--</div>-->
+        <div class="form-group">
+          <label class="col-sm-4 control-label">状态</label>
+          <div class="col-sm-8">
+            <label class="radio-inline">
+              <input type="radio" name="status" value="1" v-model="formData.status" checked> 开启
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="status" value="0" v-model="formData.status"> 关闭
+            </label>
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-4 control-label">状态</label>
-        <div class="col-sm-8">
-          <label class="radio-inline">
-            <input type="radio" name="status" value="1" v-model="formData.status" checked> 开启
-          </label>
-          <label class="radio-inline">
-            <input type="radio" name="status" value="0" v-model="formData.status"> 关闭
-          </label>
-        </div>
-      </div>
       </validator>
     </div>
     <div slot="footer">
@@ -215,6 +234,7 @@
     token,
     searchRequest,
     exchangeData,
+    putDataToApi,
     error
   } from '../../../publicFunction/index'
   export default{
@@ -261,6 +281,7 @@
       },
 //      对获取到的数据进行处理
       modifyGetedData: function (data) {
+        var self = this
         $.each(data, function (index, val) {
           switch (val.status) {
             case  1:
@@ -331,7 +352,6 @@
             account: this.postData.account,
             name: this.postData.name,
             password: this.postData.password,
-            warehouse_id: this.postData.warehouse_id,
             status: this.postData.status
           },
           {
@@ -345,7 +365,6 @@
           this.postData.account = ''
           this.postData.name = ''
           this.postData.password = ''
-          this.postData.warehouse_id = ''
         }, function (err) {
           if (err.data.code == '100000') {
             this.createModal = false
@@ -375,7 +394,6 @@
           data: {
             name: this.formData.name,
             password: this.formData.password,
-            warehouse_id: this.formData.warehouse_id,
             status: this.formData.status
           },
           headers: {'X-Overpowered-Token': token},
@@ -390,12 +408,59 @@
       permission: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.PermissionModal = true
+        this.isflag = false
+        var url = requestSystemUrl + '/backend-system/store/account/' + this.thisId + '/permissions'
+        var self = this
+        getDataFromApi(url, {}, function (response) {
+          self.permissionsData = response.data.body.list
+          $("#permissionsId").find('input').prop('checked',false)
+          $.each(self.permissionsData,function(index,val){
+            if(val == 'setting'){
+              $("#permissionsId").find('input').eq(0).prop('checked',true)
+            }else if(val == 'purchase'){
+              $("#permissionsId").find('input').eq(1).prop('checked',true)
+            }else if(val == 'warehouse'){
+              $("#permissionsId").find('input').eq(2).prop('checked',true)
+            }else if(val == 'sale'){
+              $("#permissionsId").find('input').eq(3).prop('checked',true)
+            }else if(val == 'member'){
+              $("#permissionsId").find('input').eq(4).prop('checked',true)
+            }else if(val == 'mini-mall'){
+              $("#permissionsId").find('input').eq(5).prop('checked',true)
+            }else if(val == 'production'){
+              $("#permissionsId").find('input').eq(6).prop('checked',true)
+            }
+          })
+        }, function (err) {
+        })
       },
+//      权限保存
       confirmPermission: function () {
+        var url = requestSystemUrl + '/backend-system/store/account/' + this.thisId + '/permissions'
+        var permissions = []
+        $.each($("#permissionsId input:checked"), function () {
+          permissions.push($(this).val())
+        })
+        var data = {
+          permissions: permissions
+        }
+        var self = this
+        if ($("#permissionsId input:checked").length > 0) {
+          putDataToApi(url, data, function (response) {
+            self.PermissionModal = false
+            self.getlistData(1)
+          }, function (err) {
+          })
+        } else {
+          self.isflag = true
+        }
       }
     },
     data: function () {
       return {
+        isflag: false,
+        permissions: '',
+        permissionsData: '',
         exportUrl: '',
         PermissionModal: false,
         PermissionModalSize: 'modal-sm',
@@ -415,15 +480,13 @@
         gridColumns: {
           name: '员工名称',
           account: '登录名',
-          warehouse_name: '所属工厂',
-          permissio: '权限',
+          permissions: '权限',
           status: '状态'
         },
         postData: {
           account: '',
           name: '',
           password: '',
-          warehouse_id: '',
           status: ''
         },
         searchData: {
