@@ -125,7 +125,12 @@
         this.getlistData(1)
       },
 //      完成错误
-      
+      finishFail: function(err){
+//        if(err.data.code == '200002'){
+//          modal.errModal = true
+//          modal.errInfo = '未配送'
+//        }
+      },
       //    查看详情
       gotoDetail: function (id) {
         window.location.href = '/#!/admin/instock/apply/applyDetail/' + id
