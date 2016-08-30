@@ -90,8 +90,8 @@
                   <td>{{entry.item_name}}</td>
                   <td>{{entry.unit_specification}}</td>
                   <td>{{entry.item_stock}}{{entry.unit_name}}</td>
-                  <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                   <td>{{entry.item_main_reference_value}}{{entry.unit_name}}</td>
+                  <td>{{entry.item_amount}}{{entry.unit_name}}</td>
                   <td>￥{{entry.item_price| priceChange}}</td>
                 </tr>
                 </tbody>
@@ -208,7 +208,9 @@
         var self = this
         detailGoodsInfo(self.stockGoods,'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.purchase_amount =  0
+          if(!val.purchase_amount){
+            val.purchase_amount = val.main_reference_value
+          }
           val.stock = val.system_stock
           val.main_reference_value = 0
           val.purchase_price = (val.apuc*0.01).toFixed(2)
@@ -227,7 +229,9 @@
         detailGoodsInfo(this.origenData.secondData,'Requisition')
         saveDataArray = this.stockGoods.concat(this.origenData.secondData)
         $.each(saveDataArray, function (index, val) {
-          val.purchase_amount = val.main_reference_value
+          if(val.main_reference_value){
+            val.purchase_amount = val.main_reference_value
+          }
           val.stock = (val.stock*1000*0.001).toFixed(3)
           val.purchase_price = (val.unit_price*0.01).toFixed(2)
           if (val.choice && !val.again) {
