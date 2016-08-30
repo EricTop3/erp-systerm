@@ -112,6 +112,13 @@
 //    对获取到的数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
+          if (value.total_sum != '' && value.total_sum > 0) {
+            if(value.pay_method == 'refund'){
+              value.total_sum = '￥' + (value.total_sum * (-0.01)).toFixed(2)
+            }else{
+              value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+            }
+          }
           if (value.pay_method == 'cash') {
             this.pay_method = '现金支付'
           }
@@ -126,10 +133,6 @@
           }
           if (value.pay_method == 'refund') {
             this.pay_method = '退货退款'
-          }
-
-          if (value.total_sum != '' && value.total_sum > 0) {
-            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
           if (!value.document_number) {
             value.document_number = '会员卡充值'
@@ -157,7 +160,7 @@
           value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
         }
         if (value.refund_total_sum != '' && value.refund_total_sum > 0) {
-          value.refund_total_sum = '￥' + (value.refund_total_sum * 0.01).toFixed(2)
+          value.refund_total_sum = '￥' + (value.refund_total_sum * (-0.01)).toFixed(2)
         }
       },
 //      确定结算

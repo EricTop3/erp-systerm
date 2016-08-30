@@ -23,6 +23,7 @@
             <td>刷卡支付额</td>
             <td>微信支付额</td>
             <td>支付宝支付额</td>
+            <td>退款</td>
           </tr>
           </thead>
           <tbody>
@@ -35,6 +36,7 @@
             <td>{{onedata.pos_total_sum}}</td>
             <td>{{onedata.weixin_total_sum}}</td>
             <td>{{onedata.alipay_total_sum}}</td>
+            <td>{{onedata.refund_total_sum}}</td>
           </tr>
           </tbody>
         </table>
@@ -176,7 +178,11 @@
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
           if(value.total_sum != '' && value.total_sum > 0 ){
-            value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+            if(value.pay_method == 'refund'){
+              value.total_sum = '￥' + (value.total_sum * (-0.01)).toFixed(2)
+            }else{
+              value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+            }
           }
           switch(value.pay_method){
             case 'cash':
@@ -193,6 +199,9 @@
               break;
             case 'pos':
               value.pay_method = 'POS支付'
+              break;
+            case 'refund':
+              value.pay_method = '退货退款'
               break;
           }
           if(!value.document_number){
@@ -217,8 +226,8 @@
         if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
           value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
         }
-        if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
-          value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+        if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
+          value.refund_total_sum = '￥' + (value.refund_total_sum * (-0.01)).toFixed(2)
         }
       },
 //      订单明细数据处理
