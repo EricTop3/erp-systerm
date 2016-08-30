@@ -151,9 +151,11 @@
       <hr>
       <ul class='index-list-porducts'>
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak}"
+            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak || (bespeak && item.product_type===2 )}"
             :stock='item.sell_unit_stock'
-            :sell_mark='item.sell_mark' >
+            :sell_mark='item.sell_mark'
+            :type="item.product_type"
+        >
           <h4>{{item.name}}</h4>
           <span>{{item.code}}</span>
           <p>￥<span class='single-price'>{{item.original_price|priceChange}}</span></p>
@@ -576,7 +578,7 @@
             self.retailBill = false
             self.creditlBill = false
             self.messageTipModal = true
-            self.messageTip = "库存不足，你的订单阔能包含预约单的商品"
+            self.messageTip = "库存不足，你的订单可能包含预约单的商品"
             self.error = true
           }
           errback && errback(err)
@@ -591,6 +593,8 @@
         const currentGoodId = Number(currentGood.attr('id'))
         const currentStock = Number(currentGood.attr('stock'))
         const currentSaleMark = Number(currentGood.attr('sell_mark'))
+        const currentPtype = Number(currentGood.attr('type'))
+        console.log(currentPtype)
         const currentGoodName = currentGood.find('h4').html()
         const currentGoodPrice = currentGood.find('.single-price').html()
         const checkedGoodsList = this.checkedGoodsList
@@ -601,6 +605,9 @@
          currentSaleMark === 3 ? this.saleMark = true : this.saleMark = false*/
 //        判断库存是否为零
         if (currentStock < 1 && ! self.bespeak ) {
+          return false
+        } else  if(self.bespeak && currentPtype === 2)
+        {
           return false
         } else {
 //          结算的状态
