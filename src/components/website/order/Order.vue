@@ -18,7 +18,7 @@
             <td class='text-left'>{{item.goodName}}<br>￥{{item.goodPrice}}</td>
             <!--数量-->
             <td>
-              <count-container :count.sync='item.count' :max-count='item.stock'></count-container>
+              <count-container :count.sync='item.count' :max-count='item.stock' :is-validate="isValidate"></count-container>
             </td>
             <td class='c-erp'>
               <b>￥{{(item.goodPrice * item.count).toFixed(2)}}</b>
@@ -151,7 +151,7 @@
       <hr>
       <ul class='index-list-porducts'>
         <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak || (bespeak && item.product_type===2 )}"
+            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak || (bespeak && item.product_type!==1 )}"
             :stock='item.sell_unit_stock'
             :sell_mark='item.sell_mark'
             :type="item.product_type"
@@ -410,14 +410,17 @@
             case '零售订单':
               orderTypeData = 1
               $this.bespeak = false
+              $this.isValidate = true
               break
             case '挂账订单':
               orderTypeData = 2
               $this.bespeak = false
+              $this.isValidate = false
               break
             case '预约订单':
               orderTypeData = 3
               $this.bespeak = true
+              $this.isValidate = true
               break
             case '现金':
               paymentData = 'cash'
@@ -587,7 +590,6 @@
 //     增加到左侧商品列表
       addOrderToList: function (event) {
         var flag = false
-
         var self = this
         const currentGood = $(event.currentTarget)
         const currentGoodId = Number(currentGood.attr('id'))
@@ -606,7 +608,7 @@
 //        判断库存是否为零
         if (currentStock < 1 && ! self.bespeak ) {
           return false
-        } else  if(self.bespeak && currentPtype === 2)
+        } else  if(self.bespeak && currentPtype !== 1)
         {
           return false
         } else {
@@ -617,7 +619,7 @@
         if (checkedGoodsList && checkedGoodsList.length > 0) {
           $.each(checkedGoodsList, function (index, val) {
             if (val.id === currentGoodId) {
-              if(val.count >= val.stock){
+              if(val.count >= val.stock && !self.isValidate){
                 val.count = Number(val.stock)
               }else{
                 val.count++
@@ -981,6 +983,7 @@
     },
     data: function () {
       return {
+        isValidate: false,
         goodsNote: '',
         paymentAmount: '',
         bespeak: false,
