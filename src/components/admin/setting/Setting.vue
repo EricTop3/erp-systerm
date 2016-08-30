@@ -182,7 +182,7 @@
             curId = val.product_id
           }
         })
-        window.location.href = '?#!/admin/setting/settingEditProduct/' + curId
+        window.location.href = '/#!/admin/setting/settingEditProduct/' + curId
       },
 //    搜索
       searchMethod: function (){
