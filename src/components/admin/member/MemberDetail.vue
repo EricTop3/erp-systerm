@@ -286,17 +286,14 @@
           }else{
             if(value.point_type == 'Store' && value.score_change < 0){
               value.point_type ='退货退款'
+            }else if(value.point_type == 'Management'){
+              value.point_type = 'erp管理系统变更'
             }else{
               value.point_type ='会员卡充值'
             }
           }
           if(value.balance_change != ''){
             value.balance_change = '￥' + (value.balance_change * 0.01).toFixed(2)
-          }
-          switch (value.point_type) {
-            case 'Management':
-              value.point_type = 'erp管理系统变更'
-              break;
           }
           switch(value.note){
             case 'alipay':
