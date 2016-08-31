@@ -12,7 +12,7 @@
       <form class="form-inline">
         <div class="form-group">
           <label>单号</label>
-          <input type="text" class="form-control" placeholder="" v-model="query.order_code">
+          <input type="text" class="form-control" placeholder="请输入单号" v-model="query.order_code">
         </div>
         <div class="form-group ml10">
           <label>审核状态</label>
@@ -38,12 +38,13 @@
         </div>
         <div class="form-group ml10">
           <label>出库时间段</label>
-          <date-picker :value.sync="query.start_time"></date-picker>
+          <date-picker :value.sync="query.start_time" :time-text=timetext1></date-picker>
           -
-          <date-picker :value.sync="query.end_time"></date-picker>
+          <date-picker :value.sync="query.end_time" :time-text=timetext2></date-picker>
         </div>
-        <button class="btn btn-info" @click="search">搜索</button>
-        <a v-link="{ path: '/site/instock/AllotOut'}"><span class="btn btn-primary">新建出库</span></a>
+        <span class="btn btn-info" @click="listData(1)">搜索</span>
+        <span class="btn btn-warning" @click="cancel">取消搜索</span>
+        <a v-link="{ path: '/site/instock/AllotOut'}"><span class="btn btn-primary fr">新建出库</span></a>
       </form>
     </div>
     <summary :table-header="gridColumns" :table-data="list"  :page="page" :check-url="checkUrl" :finish-url="checkUrl" :finish-flag="true"></summary>
@@ -131,7 +132,7 @@
             order_number: this.query.order_code || '',
             checked: this.query.check_status || '',
             creator_id: this.query.create_person || '',
-            receipts_store_id: this.query.receipts_store || '',
+            warehouse_id: this.query.receipts_store || '',
             page: page,
             per_page: 16
           }
@@ -143,30 +144,21 @@
             console.log(err)
         })
       },
-      //      搜索页面
-      search: function () {
-        var self = this
-        searchRequest(
-          requestUrl + '/front-system/stock/distribution',
-          {
-            start_time: this.query.start_time,
-            end_time: this.query.end_time,
-            order_number: this.query.order_code,
-            checked: this.query.check_status,
-            creator_id: this.query.create_person,
-            receipts_store_id: this.query.receipts_store,
-            per_page: 16
-          },
-          function (response) {
-            self.list = response.data.body.list
-            self.page = response.data.body.pagination
-            exchangeData(self.list)
-          }
-        )
+//      搜索页面
+      cancel: function () {
+        this.query.start_time = ''
+        this.query.end_time = ''
+        this.query.order_code = ''
+        this.query.check_status = ''
+        this.query.create_person = ''
+        this.query.receipts_store = ''
+        this.listData(1)
       }
     },
     data: function () {
       return {
+        timetext1: '开始时间',
+        timetext2: '结束时间',
         store: [],
         creators: [],
         showPage: [],
