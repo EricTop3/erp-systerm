@@ -17,14 +17,14 @@
           <form class="form-inline">
             <div class="form-group">
               <label>出货仓库</label>
-              <select class="form-control" v-model="selectedOutHouse" id="selectedOutHouse">
+              <select class="form-control" v-model="selectedOutHouse" id="selectedOutHouse" @change="selectOut">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group">
               <label>调入仓库</label>
-              <select class="form-control" v-model="selectedInHouse" id="selectedInHouse">
+              <select class="form-control" v-model="selectedInHouse" id="selectedInHouse" @change="selectIn">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
@@ -120,6 +120,7 @@
   <introduce-data
     :title="origenData.title"
     :url="origenData.dataUrl"
+    :is-select-data.sync="isSelectData"
     :instroduce-data-modal.sync='modal.parentIntroModal'
     :instroduce-data-modal-size="modal.parentIntroModalSize"
     :first-data-title="origenData.firstDataTitle"
@@ -317,6 +318,15 @@
           this.modal.errInfo = '请选择调入仓库'
         }
       },
+//      选择出货仓库
+      selectOut: function () {
+        this.isSelectData = false
+        console.log('wang')
+      },
+//      选择入货仓库
+      selectIn: function () {
+        this.isSelectData = false
+      },
       //      入库明细与入库汇总切换
       changeActive: function (event) {
         var cur = $(event.currentTarget)
@@ -368,6 +378,7 @@
         detailModal: true,
 //        入库汇总
         summaryModal: false,
+        isSelectData: false,
         summarystockGoods: [],
         saveDataArray: [],
         showPage: [],

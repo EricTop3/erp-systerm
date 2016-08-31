@@ -29,13 +29,13 @@
         <!--表格-->
         <!--表格-->
         <grid :check="true" :data="firstData" :columns="firstDataTitle" v-on:change-operate="change"
-              v-on:change-all-operate="changeAll" :check-all.sync="citeCheckAll"></grid>
+              v-on:change-all-operate="changeAll" :check-all.sync="citeCheckAll" :is-check-all="isCheckAllOne"></grid>
       </div>
 
       <div style="height:200px; overflow: auto; margin-top: 20px;">
         <!--表格-->
         <grid :check="true" :data="secondData" :columns="secondDataTitle" :is-add-flag.sync="isAdd" :check-all.sync="secondDataCheckAll"
-              v-on:change-add-operate="changeOperate" v-on:change-all-operate="changeAllOperate"></grid>
+              v-on:change-add-operate="changeOperate" v-on:change-all-operate="changeAllOperate" :is-check-all="isCheckAllTwo"></grid>
       </div>
     </div>
     <div slot="footer">
@@ -64,6 +64,7 @@
     props: {
       instroduceDataModal: false,
       instroduceDataModalSize: 'modal-sm',
+      isSelectData: false,
       secondData: [],
       title:'',
       isPurchase: false,
@@ -100,17 +101,17 @@
       getGoodsWhenClick: function () {
         var self = this
 //        一次加载
-        if(!this.isLoadFinish){
+        if(!this.isSelectData){
           //       不同的url加载不同的数据
           if(this.secondUrl!==undefined){
             this.getProductByUrl(this.url,function(){
               self.getProductByUrl(self.secondUrl,function(){
-                self.isLoadFinish = true
+                self.isSelectData = true
               })
             })
           }else{
             this.getProductByUrl(this.url,function(){
-              self.isLoadFinish = true
+              self.isSelectData = true
             })
           }
 //      获取门店列表
@@ -301,6 +302,8 @@
       return {
         isAdd: false,
         isAddFlag: false,
+        isCheckAllOne: false,
+        isCheckAllTwo: true,
         isLoadFinish: false,
         timeText: '请输入日期',
         startTime: '',

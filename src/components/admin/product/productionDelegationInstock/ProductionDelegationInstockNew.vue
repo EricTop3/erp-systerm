@@ -20,14 +20,14 @@
             </div>
             <div class="form-group">
               <label>合作工厂</label>
-              <select class="form-control" v-model="selectedFactory">
+              <select class="form-control" v-model="selectedFactory" @change="selectOut">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in cooperativeFactory">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group">
               <label>调入仓库</label>
-              <select class="form-control" v-model="selectedInHouse">
+              <select class="form-control" v-model="selectedInHouse" @change="selectIn">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
               </select>
@@ -118,6 +118,7 @@
     :first-data.sync="origenData.firstData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
+    :is-select-data.sync = "isSelectData"
     :request-data="{stream_origin_id:selectedFactory,stream_target_id:selectedInHouse}"
   >
   </introduce-data>
@@ -280,6 +281,14 @@
           this.modal.parentIntroModal = true
           this.$broadcast('getGoodsWhenClick')  }
        },
+//          选择出货仓库
+      selectOut: function () {
+        this.isSelectData = false
+      },
+//      选择入货仓库
+      selectIn: function () {
+        this.isSelectData = false
+      },
       //      入库明细与入库汇总切换
       changeActive: function (event) {
         var cur = $(event.currentTarget)
@@ -338,6 +347,7 @@
         detailModal: true,
 //        入库汇总
         summaryModal: false,
+        isSelectData: false,
         reference_type: 'pick',
         warehouseList: [],
         selectedInHouse: '',
