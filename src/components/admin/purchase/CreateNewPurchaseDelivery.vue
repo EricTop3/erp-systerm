@@ -291,13 +291,9 @@
         this.summarystockGoods = []
         this.summarystockGoods =this.summarystockGoods.concat(self.renderstockGoods)
         $.each(this.summarystockGoods,function (index,val){
-          val.item_amount = val.received_amount
-          val.item_refund = val.refund_amount
-          val.item_main_reference_value = val.main_reference_value
-          val.item_additional_amount  = val.additional_amount
-          console.log( val.item_additional_amount)
-          console.log( val.received_amount)
-          console.log( val.item_main_reference_value)
+          val.item_amount = Number(val.received_amount) + Number(val.additional_amount)
+          val.item_refund = Number(val.refund_amount)
+          val.item_main_reference_value = Number(val.main_reference_value)
           val.item_price = Number (val.item_amount  * val.purchase_price * 100)
           self.summaryPrice += val.item_price
         })
@@ -310,7 +306,7 @@
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].  item_main_reference_value)
-            hash[array[i][ObjPropInArr]].item_amount=Number( hash[array[i][ObjPropInArr]].item_amount)+(Number(array[i].item_amount) + Number(array[i].item_additional_amount) - Number(array[i].item_refund))
+            hash[array[i][ObjPropInArr]].item_amount=Number( hash[array[i][ObjPropInArr]].item_amount)+ array[i].item_amount
             hash[array[i][ObjPropInArr]].item_refund=Number(array[i].item_refund) + Number( hash[array[i][ObjPropInArr]].item_refund)
             hash[array[i][ObjPropInArr]].item_price+=array[i].item_price
           }else{
