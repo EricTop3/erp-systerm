@@ -407,3 +407,4 @@ function detailTime (value) {
   }
   return value
 }
+export var currentTime = getTimeOnNow()

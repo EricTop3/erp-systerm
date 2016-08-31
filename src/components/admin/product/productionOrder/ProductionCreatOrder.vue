@@ -291,7 +291,7 @@
                 val.status = '订单已取消'
                 break
               case  'hr00':
-                val.status = '已退货'
+                val.status = '已退款'
                 break
               case  'kd00':
                 val.status = '快递配送中'
