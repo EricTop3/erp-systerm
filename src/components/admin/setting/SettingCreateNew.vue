@@ -31,7 +31,7 @@
                 <p v-if="$validationSet.goodscate.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
-            <div class="form-group" style="margin-left: 37px;">
+            <div class="form-group ml10"  style="margin-left: 28px;">
               <label>商品属性</label>
               <select class="form-control" v-model="createList.product_type" v-validate:producttype="['required']">
                 <option value="">请选择</option>
@@ -55,22 +55,21 @@
               <div style="float: right;">
                 <p v-if="$validationSet.selltype.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
-            </div>
-            <div class="form-group ml10">
+            </div><br>
+            <div class="form-group ml10"  style="margin-left: 28px;">
               <label>品名</label>
               <input type="text" class="form-control" v-model="createList.name" v-validate:goodsname="['required']">
               <div style="float: right;">
                 <p v-if="$validationSet.goodsname.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
-            <div class="form-group ml10">
+            <div class="form-group ml10"  style="margin-left: 56px;">
               <label>货号</label>
               <input type="text" class="form-control" v-model="createList.code" v-validate:goodscode="['required']">
               <div style="float: right;">
                 <p v-if="$validationSet.goodscode.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
-            <br>
             <div class="form-group ml10">
               <label>销售状态</label>
               <select class="form-control" v-model="createList.sell_status" v-validate:sellstatus="['required']">
@@ -82,7 +81,8 @@
                 <p v-if="$validationSet.sellstatus.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
-            <div class="form-group" style="margin-left: 37px;">
+            <br>
+            <div class="form-group ml10">
               <label>一级单位</label>
               <select class="form-control" v-model="createList.base_unit" @change="oneUnit" v-validate:baseunit="['required']">
                 <option value="">请选择</option>
@@ -91,33 +91,34 @@
               <div style="float: right;">
                 <p v-if="$validationSet.baseunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
-              <span v-if="createList.neutral_unit">{{hasNeutralUnit}}</span>
             </div>
-            <div class="form-group ml10">
+            <div class="form-group ml10" style="margin-left: 28px;">
               <label>二级单位</label>
               <select class="form-control" v-model="createList.neutral_unit" @change="twoUnit">
                 <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
-              <input type="text" v-if="createList.neutral_unit == ''" class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value">
-              <input type="text" v-else class="form-control fsamll" placeholder="单位转换" v-model="createList.neutral_unit_value" v-validate:neutralunit="['required']">
+              <input type="text" v-if="createList.neutral_unit == ''" class="form-control fsamll" style="width:85px!important;"  placeholder="单位转换" v-model="createList.neutral_unit_value">
+              <input type="text" v-else class="form-control fsamll" style="width:85px!important;"  placeholder="单位转换" v-model="createList.neutral_unit_value" v-validate:neutralunit="['required']">
               <div v-if="createList.neutral_unit != ''" style="float: right;">
                 <p v-if="$validationSet.neutralunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
-
             </div>
-            <div class="form-group ml10">
+            <div class="form-group" style="padding-left:20px;">
               <label>三级单位</label>
               <select class="form-control" v-model="createList.minimal_unit" @change="threeUnit">
                 <option value="">请选择</option>
                 <option v-for="item in baseUnit" :value="item.id">{{item.name}} {{item.alias}}</option>
               </select>
-              <input type="text" v-if="createList.minimal_unit == ''" class="form-control fsamll" placeholder="单位转换" style="width: 85px;" v-model="createList.minimal_unit_value">
-              <input type="text" v-else class="form-control fsamll" placeholder="单位转换" style="width: 85px;" v-model="createList.minimal_unit_value" v-validate:minimalunit="['required']">
-              <div v-if="createList.minimal_unit != ''" style="float: right;">
-                <p v-if="$validationSet.minimalunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              <input type="text" v-if="createList.minimal_unit == ''" class="form-control fsamll" style="width:85px!important;" placeholder="单位转换" style="width: 85px;" v-model="createList.minimal_unit_value">
+              <input type="text" v-else class="form-control fsamll" style="width:85px!important;" placeholder="单位转换" style="width: 85px;" v-model="createList.minimal_unit_value" v-validate:minimalunit="['required']">
+              <div style="float: right;">
+                <template v-if="createList.minimal_unit != ''">
+                  <p v-if="$validationSet.minimalunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+                </template>
               </div>
             </div>
+            <span v-if="createList.neutral_unit">{{hasNeutralUnit}}</span>
             <br>
             <div class="form-group ml10">
               <label>零售单位</label>
@@ -129,8 +130,10 @@
                 <option value="">请选择</option>
                 <option v-for="item in retailUnit" :value="item.id">{{item.name}}</option>
               </select>
-              <div v-if="createList.product_type != 2 || createList.sell_status == 1" style="float: right;">
-                <p v-if="$validationSet.sellunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              <div style="float: right;">
+                <template v-if="createList.product_type != 2 || createList.sell_status == 1">
+                  <p v-if="$validationSet.sellunit.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+                </template>
               </div>
             </div>
             <div class="form-group ml10">
@@ -167,16 +170,20 @@
               <label>零售单价</label>
               <input v-if="!(createList.product_type != 2 || createList.sell_status == 1)" type="text" class="form-control" v-model="createList.aruc" @input="priceValidateA()">
               <input v-else type="text" class="form-control"  v-model="createList.aruc" v-validate:goodsaruc="['required']" @input="priceValidateA()">
-              <div v-if="createList.product_type != 2 || createList.sell_status == 1" style="float: right;">
-                <p v-if="$validationSet.goodsaruc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              <div style="float: right;">
+                <template v-if="createList.product_type != 2 || createList.sell_status == 1">
+                  <p v-if="$validationSet.goodsaruc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+                </template>
               </div>
             </div>
             <div class="form-group ml10">
               <label>采购加工单价</label>
               <input v-if="createList.product_type != 2" type="text" class="form-control" v-model="createList.apuc" @input="priceValidateB()">
               <input v-else type="text" class="form-control" v-model="createList.apuc" v-validate:goodsapuc="['required']" @input="priceValidateB()">
-              <div v-if="createList.product_type == 2" style="float: right;">
-                <p v-if="$validationSet.goodsapuc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+              <div style="float: right;">
+                <template v-if="createList.product_type == 2" >
+                  <p v-if="$validationSet.goodsapuc.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
+                </template>
               </div>
             </div>
           </form>
@@ -256,6 +263,7 @@
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 <style>
+  .form-group div { width:30px; overflow: hidden;}
 </style>
 <script>
   import $ from 'jquery'
