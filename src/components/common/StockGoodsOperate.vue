@@ -118,11 +118,9 @@
         var currenHtml = $(event.currentTarget).find('a').text()
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.query.category = Number(currentObj.attr('id'))
-        var data = {
-          category: this.query.category
-        }
+        var data = $.extend({category: this.query.category},this.requestData)
         if(currenHtml === '全部分类'){
-          this.requestApi({})
+          this.requestApi(this.requestData)
         }else{
 //         获取产品
           this.requestApi(data)
