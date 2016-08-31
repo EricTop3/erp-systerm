@@ -63,7 +63,7 @@
                 <p v-if="$validationSet.goodsname.required" style="margin: 0px; margin-left: 5px; line-height: 34px; color: red;">*</p>
               </div>
             </div>
-            <div class="form-group ml10"  style="margin-left: 28px;">
+            <div class="form-group ml10" style="margin-left: 28px;">
               <label>商品货号</label>
               <input type="text" class="form-control" v-model="createList.code" v-validate:goodscode="['required']">
               <div style="float: right;">
