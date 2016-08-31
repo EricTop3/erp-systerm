@@ -2,7 +2,7 @@
   <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr class="text-center">
-      <th v-if="check"><label><input type="checkbox" @change="checkAllMethod()" v-model="checkAll" :disabled="data  && data.length<0" v-if="isCheckAll">全选</label></th>
+      <th v-if="check"><label><input type="checkbox" @change="checkAllMethod()" v-model="checkAll" :disabled="data  && data.length<0" >全选</label></th>
       <th v-for="value in columns">
         {{value}}
       </th>
