@@ -195,24 +195,24 @@
 //      添加商品确认增加
       confirmAdd: function () {
         var self = this
+        this.renderstockGoods = []
         detailGoodsInfo(self.stockGoods, 'ProductItem')
         $.each(self.stockGoods, function (index, val) {
-          val.distribution_amount = ''
+          val.distribution_amount = 0
+          val.main_reference_value = 0
           if (val.choice && !val.again) {
-//            val.again = true
+            val.again = true
             self.dataArray.push(val)
           }
         })
-        this.renderstockGoods = self.dataArray
-        $("#selectedOutHouse").attr('disabled',true)
-        $("#selectedInHouse").attr('disabled',true)
+        this.renderstockGoods = this.renderstockGoods.concat(self.dataArray)
       },
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
         var self = this
-        var detailArrayFromApi = []
+        this.renderstockGoods = []
         detailGoodsInfo(this.origenData.secondData, 'Requisition')
-        self.saveDataArray = this.stockGoods.concat(this.origenData.secondData)
+        self.saveDataArray = this.origenData.secondData
         $.each(self.saveDataArray, function (index, val) {
           val.distribution_amount = val.main_reference_value
           if (val.choice && !val.again) {
@@ -220,9 +220,7 @@
             self.dataArray.push(val)
           }
         })
-        this.renderstockGoods = self.dataArray
-        $("#selectedOutHouse").attr('disabled',true)
-        $("#selectedInHouse").attr('disabled',true)
+        this.renderstockGoods =  this.renderstockGoods.concat(self.dataArray)
       },
 //     删除商品
       delete: function (id) {
