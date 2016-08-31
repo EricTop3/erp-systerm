@@ -262,7 +262,7 @@
   <!--错误提示信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
-<style>
+<style scoped>
   .form-group div { width:30px; overflow: hidden;}
 </style>
 <script>
