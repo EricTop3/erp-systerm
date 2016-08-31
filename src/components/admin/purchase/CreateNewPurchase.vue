@@ -358,7 +358,7 @@
           name: "品名",
           specification_unit:"单位规格",
           systerm_stock: "总部库存",
-          order_quantity:"门店要货量",
+          order_quantity:"要货量",
           purchase_quantity:"采购数量",
           purchase_price:"采购单价",
           source_number: "来源要货单号"
@@ -368,7 +368,7 @@
           name: "品名",
           specification_unit:"单位规格",
           systerm_stock: "总部库存",
-          order_quantity:"门店要货量",
+          order_quantity:"要货量",
           purchase_quantity:"采购数量",
           source_number: "小计"
         },
