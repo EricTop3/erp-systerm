@@ -26,7 +26,7 @@
               <li class="active"  @click="fetchStockGood($event)">
                 <a href="javascript:void(0)">全部分类<span class="glyphicon glyphicon-chevron-right"></span></a></li>
               </li>
-              <li v-for="item in category" track-by="$index"  @click="fetchStockGood($event)" :id="item.id">
+              <li v-for="item in category" track-by="$index"  @click="fetchStockGood($event)" :id="item.id" categoryFlag="false">
                 <a href="javascript:void(0)">{{item.display_name}}<span
                   class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
@@ -116,6 +116,8 @@
       fetchStockGood: function (event) {
         var currentObj = $(event.currentTarget)
         var currenHtml = $(event.currentTarget).find('a').text()
+        var categoryLoadFinish = $(event.currentTarget).attr('catagoryFlag')
+        console.log(categoryLoadFinish)
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.query.category = Number(currentObj.attr('id'))
         var data = $.extend({category: this.query.category},this.requestData)
@@ -123,7 +125,12 @@
           this.requestApi(this.requestData)
         }else{
 //         获取产品
-          this.requestApi(data)
+          if(!categoryLoadFinish){
+            this.requestApi(data,function(){
+              $(event.currentTarget).attr('catagoryFlag',true)
+            })
+          }
+
         }
         this.$dispatch('fetchProduct')
       },

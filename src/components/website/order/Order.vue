@@ -183,11 +183,11 @@
     </div>
   </div>
   <div class="print" id="print">
-    <div class="company">hey coffee</div>
-    <div>门店：{{storeInfo}}     15730078956</div>
-    <div> 时间：2015-08-22     08:59:26</div>
-    <div>单号：20130516168</div>
-    <table class="goodsList">
+    <div class="company" style="font-size: 12pt; margin-left:60px;">hey coffee</div>
+    <div style="font-size: 9pt; margin-top: 5px;">门店: {{printStore}} <span style="margin-left: 20px;">15730078956</span></div>
+    <div style="font-size: 9pt; margin-top: 5px;"> 时间: {{printTime}}</div>
+    <div style="font-size: 9pt; padding-bottom:5px; border-bottom:1px dashed #000;">单号: {{printOrderNumber}}</div>
+    <table class="goodsList" style="font-size: 9pt; padding-top: 5px;">
       <tbody>
       <tr>
         <td>序</td>
@@ -195,7 +195,8 @@
         <td>单价</td>
         <td>数量/金额</td>
       </tr>
-      <tr v-for=" (index,item) in checkedGoodsList" >
+      <tr v-for=" (index,item) in checkedGoodsList" style="margin-top: 5px">
+
         <td>{{index+1}}</td>
         <td>{{item.goodName}}</td>
         <td>{{item.goodPrice}}</td>
@@ -203,10 +204,11 @@
       </tr>
       </tbody>
     </table>
-    <div>金额：{{finalPrice}} 抹零：0.00</div>
-    <div>会员: {{member.memberInfoList.card_number|| '无'}}  卡结余: ￥{{member.memberInfoList.balance}}</div>
-    <div>会员储值卡：￥{{finalPrice}}  找零金额：￥{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</div>
-    <div class="tip">谢谢惠顾，欢迎再次光临</div>
+    <div style="font-size: 9pt; margin-top: 5px; border-top:1px dashed #000; padding-top: 5px;"><span style="width: 80px" >金额: {{finalPrice}} </span> <span style="margin-left: 10px;"> 找零金额：{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</span></div>
+    <div style="font-size: 9pt; margin-top: 5px;"><span style="width:80px;">会员: {{member.memberInfoList.card_number|| '无'}} </span> <span style="margin-left: 10px;">卡结余: {{member.memberInfoList.balance}}</span></div>
+    <div style="font-size: 9pt; margin-top: 5px;">会员储值卡：{{finalPrice}}  </div>
+    <div style="font-size: 9pt; border-top:1px dashed #000;margin-top:5px; padding-top:5px">谢谢惠顾，欢迎再次光临</div>
+    <div style="background: #fff; margin-top: 25px;">.</div>
   </div>
   <!--结算零售账单弹窗-->
   <modal :show.sync="retailBill" :modal-size="retailBillSize" class="form-horizontal">
@@ -355,7 +357,7 @@
   import CountContainer from '../../common/CountContainer'
   import Page from '../../common/Page'
   import Slide from 'vue-slide'
-  import {requestUrl, token,searchRequest,getDataFromSiteApi,postSiteDataToApi,storeInfo} from '../../../publicFunction/index'
+  import {requestUrl, token,searchRequest,getDataFromSiteApi,postSiteDataToApi,storeInfo,currentTime} from '../../../publicFunction/index'
   //  商品信息数组
   var orderItems = []
   //  订单类型
@@ -755,7 +757,6 @@
 //        价格正则
         var re = /^\d{0,8}\.{0,1}(\d{1,2})?$/
         var flagData = $(event.currentTarget).attr('id')
-        console.log(flagData)
         switch (flagData) {
           case 'priceValidateFirst':
             if (!re.test(this.paymentAmount)) {
@@ -895,14 +896,20 @@
         }
       },
 //      零售账单结算提交成功回调函数
-      setuploadFinish: function () {
+      setuploadFinish: function (response) {
+        var self = this
         orderType = Number(window.localStorage.getItem('orderType'))
+        this.printOrderNumber = response.data.body.order_number
         this.order_mata_data.paymentAmount = ""
-        this.settlementFlag = false
-        this.retailBill = false
-        this.checkedGoodsList = []
-        this.preview()
-        window.location.href = '/?#!/site/tranquery'
+        window.setTimeout(function(){
+          self.print()
+        },16)
+        window.setTimeout(function(){
+          this.settlementFlag = false
+          this.retailBill = false
+          this.checkedGoodsList = []
+          window.location.href = '/?#!/site/tranquery'
+        },32)
       },
 //      挂账账单结算提交成功回调函数
        billLoadFinsh: function () {
@@ -967,13 +974,14 @@
       createOneFormPage: function() {
         LODOP = getLodop();
         LODOP.SET_PRINT_STYLEA("FontSize", '1pt');
-        LODOP.SET_PRINT_PAGESIZE(3, "6.4cm", "0.5cm")
+        LODOP.SET_PRINT_PAGESIZE(3, "6.4cm", "5cm")
         LODOP.ADD_PRINT_HTM('0cm', '0cm', '6.4cm', '10cm', document.getElementById("print").innerHTML)
      },
 //   打印预览
       preview: function () {
-        this.createOneFormPage();
-        LODOP.PREVIEW();
+        this.createOneFormPage()
+        LODOP.PREVIEW()
+
      },
 //  打印
      print : function () {
@@ -1005,6 +1013,9 @@
         messageTipModalSize: 'modal-sm',
         messageTip: 'high，这是友情提示框',
         memberFlag: false,
+        printStore: storeInfo,
+        printTime: currentTime,
+        printOrderNumber: '',
         member: {
           memberCode: '',
           memberId: '',
@@ -1083,60 +1094,12 @@
     margin-top:40px;
 
   }
-   /*body {*/
-     /*color: #000;*/
-     /*background: #fff*/
-   /*}*/
-  /*@page {*/
-    /*margin: 0  2cm;*/
-  /*}*/
-  /*ul, li, table, tr, td {*/
-    /*margin: 0;*/
-    /*padding: 0;*/
-  /*}*/
-
-  /*ul, li {*/
-    /*list-style: none;*/
-  /*}*/
-
   .print {
     width:5.6cm;
     font-size: 1pt;
     display: none;
+    color: #000;
+    background: #fff;
   }
-
-  /*.print .company {*/
-    /*font-size:18pt;*/
-    /*width: 5.6cm;*/
-    /*display: inline-block;*/
-    /*margin-left:2cm;*/
-  /*}*/
-
-  /*.print .top {*/
-    /*margin-top: 10px;;*/
-  /*}*/
-
-  /*.print .goodsList {*/
-    /*padding: 5px 0;*/
-  /*}*/
-
-  /*.print .goodsList tr {*/
-    /*height: 24px;;*/
-    /*line-height: 1.4;*/
-  /*}*/
-
-  /*.print .goodsList tr td {*/
-    /*padding: 0 8px;*/
-    /*text-align: center;*/
-  /*}*/
-
-  /*.print .top li, .settmen li {*/
-    /*height: 24px;;*/
-    /*line-height: 1.4;*/
-  /*}*/
-
-  /*.print .tip {*/
-    /*margin-top: 12px;*/
-  /*}*/
 </style>
 
