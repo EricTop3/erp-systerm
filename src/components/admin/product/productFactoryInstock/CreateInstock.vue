@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
               <label>生产工厂</label>
-              <select class="form-control" v-model="selectedOutHouse">
+              <select class="form-control" v-model="selectedOutHouse" @change="selectOut">
                 <option value="">请选择</option>
                 <!--<option value="2">默认工厂[仓库配料间]</option>-->
                 <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
               <label>调入仓库</label>
-              <select class="form-control" v-model="selectedInHouse">
+              <select class="form-control" v-model="selectedInHouse" @change="selectIn">
                 <option value="">请选择</option>
                 <!--<option value="1">默认工厂[仓库]</option>-->
                 <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
@@ -132,6 +132,7 @@
     :instroduce-data-modal-size="modal.parentIntroModalSize"
     :first-data-title="origenData.firstDataTitle"
     :first-data.sync="origenData.firstData"
+    :is-select-data.sync = "isSelectData"
     :second-data-title="origenData.secondDataTitle"
     :second-data.sync="origenData.secondData"
     :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse}">
@@ -286,6 +287,14 @@
           })
         }
       },
+//      选择出货仓库
+      selectOut: function () {
+        this.isSelectData = false
+      },
+//      选择入货仓库
+      selectIn: function () {
+        this.isSelectData = false
+      },
 //      添加商品
       addStockGoods: function () {
         this.modal.addGoodModal = true
@@ -356,6 +365,7 @@
         detailModal: true,
 //        入库汇总
         summaryModal: false,
+        isSelectData: false,
         showPage: [],
         sendTime: '',
         selectedOutHouse: '',
