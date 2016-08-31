@@ -77,8 +77,8 @@
         <label class="ml10"><input value="warehouse"  type="checkbox" class="input-group">库存</label><br>
         <label><input value="sale" type="checkbox" class="input-group">零售</label>
         <label class="ml10"><input value="member" type="checkbox" class="input-group">会员</label>
-        <label class="ml10"><input value="mini-mall" type="checkbox" class="input-group">微商城</label>
         <label><input value="production" type="checkbox" class="input-group">生产</label>
+        <!--<label class="ml10"><input value="mini-mall" type="checkbox" class="input-group">微商城</label>-->
       </form>
       <div v-if="isflag"><p class="error">请勾选相应的权限选项</p></div>
     </div>
@@ -425,11 +425,12 @@
               $("#permissionsId").find('input').eq(3).prop('checked',true)
             }else if(val == 'member'){
               $("#permissionsId").find('input').eq(4).prop('checked',true)
-            }else if(val == 'mini-mall'){
-              $("#permissionsId").find('input').eq(5).prop('checked',true)
             }else if(val == 'production'){
-              $("#permissionsId").find('input').eq(6).prop('checked',true)
+              $("#permissionsId").find('input').eq(5).prop('checked',true)
             }
+//            else if(val == 'mini-mall'){
+//              $("#permissionsId").find('input').eq(6).prop('checked',true)
+//            }
           })
         }, function (err) {
         })
