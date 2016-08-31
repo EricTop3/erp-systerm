@@ -79,7 +79,7 @@
                   val.auditor =  window.localStorage.getItem("systermName")
                 }else{
                   val.auditor_name = window.localStorage.getItem("storeName")
-                  val.auditor = window.localStorage.getItem("storeAccount")
+                  val.auditor = window.localStorage.getItem("storeName")
                 }
               }
             })
