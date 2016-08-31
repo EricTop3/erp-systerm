@@ -140,7 +140,7 @@
     :goods-list-title="purchaseTabelHead"
     :product-url="request.productUrl"
     :category-url='request.categoryUrl'
-    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse,product_type:1}"
+    :request-data="{stream_origin_id:selectedOutHouse,stream_target_id:selectedInHouse}"
   >
   </stock-goods>
   <!--错误信息-->
