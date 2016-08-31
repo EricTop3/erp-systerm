@@ -250,8 +250,8 @@
         $.each(this.summarystockGoods,function (index,val){
           val.item_origin_stock_amount = val.origin_stock_amount
           val.item_demand_amount = val.demand_amount
-          val.item_price = (val.main_reference_value  * val.unit_price).toFixed(2)
           val.item_main_reference_value = val.main_reference_value
+          val.item_price = (val.main_reference_value  * val.unit_price *100*0.01)
           self.summaryPrice += val.item_price*100
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
@@ -263,7 +263,7 @@
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
             hash[array[i][ObjPropInArr]].item_demand_amount=Number(array[i].item_demand_amount) + Number( hash[array[i][ObjPropInArr]].item_demand_amount)
-            hash[array[i][ObjPropInArr]].item_price=((array[i].item_price +hash[array[i][ObjPropInArr]].item_price)*100*0.01).toFixed(2)
+            hash[array[i][ObjPropInArr]].item_price=((array[i].item_price +hash[array[i][ObjPropInArr]].item_price)).toFixed(2)
             hash[array[i][ObjPropInArr]].item_origin_stock_amount=((array[i].item_origin_stock_amount*1000 +  hash[array[i][ObjPropInArr]].item_origin_stock_amount*1000)*0.001).toFixed(3)
             hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].item_main_reference_value)
           }else{
@@ -292,6 +292,7 @@
         isExist: false,
         detailModal: true,
         summaryModal: false,
+        summarystockGoods: [],
         detailList: [],
         tabFlag: true,
         modal: {
