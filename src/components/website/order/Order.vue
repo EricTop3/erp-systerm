@@ -901,9 +901,9 @@
         orderType = Number(window.localStorage.getItem('orderType'))
         this.printOrderNumber = response.data.body.order_number
         this.order_mata_data.paymentAmount = ""
-        window.setTimeout(function(){
-          self.print()
-        },16)
+//        window.setTimeout(function(){
+//          self.print()
+//        },16)
         window.setTimeout(function(){
           this.settlementFlag = false
           this.retailBill = false
