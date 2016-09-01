@@ -23,8 +23,8 @@
               <label>生产工厂</label>
               <select class="form-control" v-model="selectedOutHouse" @change="selectOut">
                 <option value="">请选择</option>
-                <option value="2">默认工厂[仓库配料间]</option>
-                <!--<option :value="item.id" v-for="item in warehouseListPLJ">{{item.name}}</option>-->
+                <!--<option value="2">默认工厂[仓库配料间]</option>-->
+                <option :value="item.id" v-for="item in warehouseListS">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group">
@@ -190,24 +190,22 @@
       ListDelete: ListDelete
     },
     ready: function () {
-//    获取仓库列表
       var self = this
       var data = {
         type:2
       }
+//    获取仓库列表
       getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',data,function(response){
         self.warehouseList = response.data.body.list
       })
-//    获取仓库列表默认仓库，配料间
-//      var self = this
-//      var data = {
-//        type:4
-//      }
-//      getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',data,function(response){
-//        self.warehouseListPLJ = response.data.body.list
-//      })
+      var datas = {
+        type:4
+      }
+//    获取仓库列表
+      getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',datas,function(response){
+        self.warehouseListS = response.data.body.list
+      })
     },
-
     events: {
 //      引入原始数据添加商品
       includeConfirmAdd: function () {
@@ -381,7 +379,7 @@
         selectedInHouse: '',
         note: '',
         warehouseList: [],
-        warehouseListPLJ: [],
+        warehouseListS: [],
         tabFlag: true,
         gridColumns: {
           code: "货号",
