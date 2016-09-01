@@ -400,7 +400,7 @@
       create: function () {
         this.postData = {}
         this.postData.type = ''
-        this.createModal = truethis
+        this.createModal = true
         // 表单验证提示消息
         this.codeFlag = false
         this.nameFlag = false
