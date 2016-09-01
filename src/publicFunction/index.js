@@ -358,7 +358,11 @@ export function adminLogin(loginUrl,data, callback){
       if(systermAuthority.indexOf('会员')>-1) {
         curRouter.push('member')
       }
-      window.location.href = '#!/admin/' + curRouter[0]
+      if(curRouter.length===0){
+        window.location.href = '#!/admin/setting'
+      }else {
+        window.location.href = '#!/admin/' + curRouter[0]
+      }
     })
   },function(err){
     callback && callback(err)
