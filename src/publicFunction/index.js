@@ -1,10 +1,12 @@
 // 导入jquery
 import $ from 'jquery'
 import Vue from 'vue'
+import {erpRequestUrl} from '../../config/requestUrl'
 // 请求服务器路径
-export var requestUrl = 'http://192.168.1.150:1401/v1'
+export var requestUrl = erpRequestUrl
+
 //  请求服务器路径真实接口
-export var requestSystemUrl = 'http://192.168.1.150:1401/v1'
+export var requestSystemUrl = erpRequestUrl
 var token =  window.localStorage.getItem('token')
 export var storeName = window.localStorage.getItem('storeName')
 export var storeAccount = window.localStorage.getItem('storeAccount')
