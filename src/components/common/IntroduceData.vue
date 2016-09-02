@@ -104,13 +104,13 @@
         if(!this.isSelectData){
           //       不同的url加载不同的数据
           if(this.secondUrl!==undefined){
-            this.getProductByUrl(this.url,function(){
-              self.getProductByUrl(self.secondUrl,function(){
+            this.getProductByUrl(this.url,self.requestData,function(){
+              self.getProductByUrl(self.secondUrl,self.requestData,function(){
                 self.isSelectData = true
               })
             })
           }else{
-            this.getProductByUrl(this.url,function(){
+            this.getProductByUrl(this.url,self.requestData,function(){
               self.isSelectData = true
             })
           }
@@ -174,9 +174,9 @@
           })
       },
 //      根据url加载的时候获取一级商品
-      getProductByUrl: function (url,callback) {
+      getProductByUrl: function (url,data,callback) {
         var self = this
-        var data = this.requestData
+        var data = data
         if(this.secondUrl!==undefined){
           getDataFromApi(url,data,function(response){
             self.firstData =  self.firstData.concat(response.data.body.list)
@@ -224,8 +224,8 @@
 //    搜索
       searchMethod: function () {
         var self = this
-        var url = this.url
         var data = {}
+        self.firstData = []
 //     判断是否是采购引用数据
         if(self.isPurchase){
           data =  {
@@ -239,48 +239,37 @@
             end_time: self.endTime
           }
         }
-        if(this.secondUrl!==undefined){
-          getDataFromApi(url,data,function(response){
-            self.firstData = response.data.body.list
-            exchangeData(self.firstData)
-          })
-          getDataFromApi(self.secondUrl,data,function(response){
-            self.firstData = response.data.body.list
-            exchangeData( self.firstData)
-          })
-        }else{
-          getDataFromApi(url,data,function(response){
-            self.firstData = response.data.body.list
-            exchangeData( self.firstData)
-          })
-        }
-      },
+          //       不同的url加载不同的数据
+          if (this.secondUrl !== undefined) {
+            this.getProductByUrl(this.url, data, function () {
+              self.getProductByUrl(self.secondUrl, data, function () {
+              })
+            })
+          } else {
+            this.getProductByUrl(this.url, data, function () {
+            })
+          }
+        },
 //   取消搜索
       cancelSearch: function () {
         var self = this
         var url = this.url
         var data =  {}
-        if(this.secondUrl!==undefined){
-          getDataFromApi(url,data,function(response){
-            self.firstData = response.data.body.list
-            exchangeData(self.firstData)
-            self.startTime = ''
-            self.endTime = ''
-          })
-          getDataFromApi(self.secondUrl,data,function(response){
-            self.firstData = response.data.body.list
-            exchangeData( self.firstData)
-            self.startTime = ''
-            self.endTime = ''
-          })
-        }else{
-          getDataFromApi(url,data,function(response){
-            self.firstData = response.data.body.list
-            exchangeData( self.firstData)
-            self.startTime = ''
-            self.endTime = ''
-          })
-        }
+        self.firstData = []
+          //       不同的url加载不同的数据
+          if (this.secondUrl !== undefined) {
+            this.getProductByUrl(this.url, data, function () {
+              self.getProductByUrl(self.secondUrl, data, function (){
+              self.startTime = ''
+              self.endTime = ''
+              })
+            })
+          } else {
+            this.getProductByUrl(this.url, data, function () {
+              self.startTime = ''
+              self.endTime = ''
+            })
+          }
       },
 //    全选上面表格加载下面数据
       changeAll: function (checkAll) {
