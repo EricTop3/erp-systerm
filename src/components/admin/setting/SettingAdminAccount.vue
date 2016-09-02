@@ -43,9 +43,6 @@
             <td class="text-left">{{item.name}}</td>
             <td>{{item.account}}</td>
             <td><span v-for="entry in item.permissions" class="entry" track-by="$index">{{entry}}</span></td>
-
-
-
             <td>{{item.status}}</td>
             <td>
               <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
@@ -72,12 +69,52 @@
     </div>
     <div slot="body">
       <form action="" method="post" class="form-inline" id="permissionsId">
-        <label><input value="setting" type="checkbox" class="input-group">设置</label>
-        <label class="ml10"><input value="purchase" type="checkbox" class="input-group">采购</label>
-        <label class="ml10"><input value="warehouse"  type="checkbox" class="input-group">库存</label><br>
-        <label><input value="sale" type="checkbox" class="input-group">零售</label>
-        <label class="ml10"><input value="member" type="checkbox" class="input-group">会员</label>
-        <label><input value="production" type="checkbox" class="input-group">生产</label>
+        <div class="form-group">
+          <label class="checkbox-inline"><input type="checkbox" value="setting"> <strong>设置</strong></label>
+          <label class="checkbox-inline"><input type="checkbox" value="option1"> 商品设置</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option2"> 商品分类</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option3"> 优惠设置</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option4"> 合作方设置</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option5"> 门店账号</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option6"> 系统账号</label>
+        </div><br>
+
+        <div class="form-group">
+          <label class="checkbox-inline"><input type="checkbox" value="purchase"> <strong>采购</strong></label>
+          <label class="checkbox-inline"><input type="checkbox" value="option1"> 采购订单</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option2"> 采购收货</label>
+        </div><br>
+
+        <div class="form-group">
+          <label class="checkbox-inline"><input type="checkbox" value="warehouse"> <strong>库存</strong></label>
+          <label class="checkbox-inline"><input type="checkbox" value="option1"> 库存查询</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option2"> 库存盘点</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option3"> 差异汇总</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option4"> 库存配送出库</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option5"> 销售出库</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option6"> 生产出库</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option6"> 要货汇总</label>
+        </div><br>
+
+        <div class="form-group">
+          <label class="checkbox-inline"><input type="checkbox" value="production"> <strong>生产</strong></label>
+          <label class="checkbox-inline"><input type="checkbox" value="option1"> 工厂生产单</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option2"> 委外生产单</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option3"> 领料单</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option4"> 工厂生产入库单</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option5"> 委外生产入库单</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option6"> 生产预约单</label>
+        </div><br>
+
+        <div class="form-group">
+          <label class="checkbox-inline"><input type="checkbox" value="member"> <strong>会员</strong></label>
+        </div><br>
+
+        <div class="form-group">
+          <label class="checkbox-inline"><input type="checkbox" value="sale"> <strong>零售</strong></label>
+          <label class="checkbox-inline"><input type="checkbox" value="option1"> 结算统计</label>
+          <label class="checkbox-inline"><input type="checkbox" value="option2"> 结算管理</label>
+        </div>
         <!--<label class="ml10"><input value="mini-mall" type="checkbox" class="input-group">微商城</label>-->
       </form>
       <div v-if="isflag"><p class="error">请勾选相应的权限选项</p></div>
@@ -129,14 +166,14 @@
             </div>
           </div>
           <!--<div class="form-group">-->
-            <!--<label class="col-sm-4 control-label">所属工厂</label>-->
-            <!--<div class="col-sm-8">-->
-              <!--<select class="form-control" v-model="postData.warehouse_id">-->
-                <!--<option value="">请选择</option>-->
-                <!--<option v-for="item in listProviderA" value="{{item.id}}">{{item.name}}-->
-                <!--<option v-for="item in listProviderB" value="{{item.id}}">{{item.name}}-->
-              <!--</select>-->
-            <!--</div>-->
+          <!--<label class="col-sm-4 control-label">所属工厂</label>-->
+          <!--<div class="col-sm-8">-->
+          <!--<select class="form-control" v-model="postData.warehouse_id">-->
+          <!--<option value="">请选择</option>-->
+          <!--<option v-for="item in listProviderA" value="{{item.id}}">{{item.name}}-->
+          <!--<option v-for="item in listProviderB" value="{{item.id}}">{{item.name}}-->
+          <!--</select>-->
+          <!--</div>-->
           <!--</div>-->
           <div class="form-group">
             <label class="col-sm-4 control-label">状态</label>
@@ -189,10 +226,10 @@
           </div>
         </div>
         <!--<div class="form-group">-->
-          <!--<label class="col-sm-4 control-label">所属工厂</label>-->
-          <!--<div class="col-sm-8">-->
-            <!--<input type="text" class="form-control" v-model="formData.warehouse_name" disabled>-->
-          <!--</div>-->
+        <!--<label class="col-sm-4 control-label">所属工厂</label>-->
+        <!--<div class="col-sm-8">-->
+        <!--<input type="text" class="form-control" v-model="formData.warehouse_name" disabled>-->
+        <!--</div>-->
         <!--</div>-->
         <div class="form-group">
           <label class="col-sm-4 control-label">状态</label>
@@ -413,20 +450,20 @@
         var self = this
         getDataFromApi(url, {}, function (response) {
           self.permissionsData = response.data.body.list
-          $("#permissionsId").find('input').prop('checked',false)
-          $.each(self.permissionsData,function(index,val){
-            if(val == 'setting'){
-              $("#permissionsId").find('input').eq(0).prop('checked',true)
-            }else if(val == 'purchase'){
-              $("#permissionsId").find('input').eq(1).prop('checked',true)
-            }else if(val == 'warehouse'){
-              $("#permissionsId").find('input').eq(2).prop('checked',true)
-            }else if(val == 'sale'){
-              $("#permissionsId").find('input').eq(3).prop('checked',true)
-            }else if(val == 'member'){
-              $("#permissionsId").find('input').eq(4).prop('checked',true)
-            }else if(val == 'production'){
-              $("#permissionsId").find('input').eq(5).prop('checked',true)
+          $("#permissionsId").find('input').prop('checked', false)
+          $.each(self.permissionsData, function (index, val) {
+            if (val == 'setting') {
+              $("#permissionsId").find('input').eq(0).prop('checked', true)
+            } else if (val == 'purchase') {
+              $("#permissionsId").find('input').eq(1).prop('checked', true)
+            } else if (val == 'warehouse') {
+              $("#permissionsId").find('input').eq(2).prop('checked', true)
+            } else if (val == 'sale') {
+              $("#permissionsId").find('input').eq(3).prop('checked', true)
+            } else if (val == 'member') {
+              $("#permissionsId").find('input').eq(4).prop('checked', true)
+            } else if (val == 'production') {
+              $("#permissionsId").find('input').eq(5).prop('checked', true)
             }
 //            else if(val == 'mini-mall'){
 //              $("#permissionsId").find('input').eq(6).prop('checked',true)
@@ -464,7 +501,7 @@
         permissionsData: '',
         exportUrl: '',
         PermissionModal: false,
-        PermissionModalSize: 'modal-sm',
+        PermissionModalSize: 'modal-lg',
         createModal: false,
         createModalSize: 'modal-sm',
         editModal: false,
