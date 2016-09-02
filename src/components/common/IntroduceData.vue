@@ -239,15 +239,26 @@
             end_time: self.endTime
           }
         }
-        getDataFromApi(url,data,function(response){
-        self.firstData = response.data.body.list
-        exchangeData( self.firstData)
-      })
+        if(this.secondUrl!==undefined){
+          getDataFromApi(url,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData(self.firstData)
+          })
+          getDataFromApi(self.secondUrl,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData( self.firstData)
+          })
+        }else{
+          getDataFromApi(url,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData( self.firstData)
+          })
+        }
       },
 //   取消搜索
       cancelSearch: function () {
         var self = this
-        var url = this.url
+        var url = this.url || this.secondUrl
         var data =  {}
         getDataFromApi(url,data,function(response){
           self.firstData = response.data.body.list

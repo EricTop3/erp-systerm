@@ -247,7 +247,7 @@
           if (Number(err.data.code) === 220000) {
             console.log(err.data.message)
             self.modal.errModal = true
-            self.modal.errInfo = err.data.message
+            self.modal.errInfo = '服务器错误'
           }
         })
       },

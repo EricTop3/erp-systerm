@@ -376,7 +376,7 @@
             self.listData({})
           },function (err) {
             if (err.data.code == 200017){
-              self.errData.date = err.data.message
+              self.errData.date = '该会员卡或者手机已经注册'
               self.errData.iserr = true
 
             }
@@ -391,7 +391,7 @@
               self.listData({})
             },function (err) {
               if (err.data.code == 200017){
-                self.errData.date = err.data.message
+                self.errData.date = '该会员卡或者手机已经注册'
                 self.errData.iserr = true
               }
             })

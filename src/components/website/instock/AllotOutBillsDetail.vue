@@ -58,7 +58,7 @@
         var self = this
         if(Number(err.data.code) === 220000){
           self.modal.errModal = true
-          self.modal.errInfo =  err.data.message
+          self.modal.errInfo =  '库存不足，操作被拒绝'
         }
       },
       //      编辑
