@@ -189,10 +189,12 @@
 //     提交入货
       goodsUpload: function () {
         var goods = []
+        var alLotType =''
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj['reference_id'] = val.id
           obj['amount'] = val.realInstock_amount
+          alLotType = val.type
           goods.push(obj)
         })
         if (this.time === '') {
@@ -205,7 +207,8 @@
           this.$http.post(requestUrl + '/front-system/stock/recipient', {
             'items': goods,
             'operated_at': this.time,
-             note: this.note
+             note: this.note,
+             type: alLotType
           }, {
             headers: {'X-Overpowered-Token': token}
           }).then(function (response) {
