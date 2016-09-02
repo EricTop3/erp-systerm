@@ -198,7 +198,7 @@
           self.isExist = true
           self.editFlag = true
           self.modal.errModal = true
-          self.modal.errInfo = err.data.message
+          self.modal.errInfo = '服务器错误'
         })
       }
     },

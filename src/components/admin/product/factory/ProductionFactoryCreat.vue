@@ -280,7 +280,7 @@
           },function(err){
             if(err.data.code ==="220001" ){
               self.modal.skipModal = true
-              self.modal.errInfo = err.data.message
+              self.modal.errInfo = '库存不足，操作被拒绝'
             }
           })
         }
