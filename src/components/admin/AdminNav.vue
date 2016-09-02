@@ -28,22 +28,22 @@
     export default{
        name: 'admin-nav',
        ready: function() {
-           if(systermAuthority.indexOf('设置')>-1){
+           if(systermAuthority.indexOf('setting')>-1){
              this.authority.setting = true
            }
-           if(systermAuthority.indexOf('采购')>-1) {
+           if(systermAuthority.indexOf('purchase')>-1) {
              this.authority.purchase = true
            }
-           if(systermAuthority.indexOf('仓库')>-1) {
+           if(systermAuthority.indexOf('warehouse')>-1) {
              this.authority.instock = true
            }
-           if(systermAuthority.indexOf('生产')>-1){
+           if(systermAuthority.indexOf('production')>-1){
              this.authority.product = true
            }
-           if(systermAuthority.indexOf('零售')>-1) {
+           if(systermAuthority.indexOf('sale')>-1) {
              this.authority.retail = true
            }
-           if(systermAuthority.indexOf('会员')>-1) {
+           if(systermAuthority.indexOf('member')>-1) {
              this.authority.member = true
            }
        },

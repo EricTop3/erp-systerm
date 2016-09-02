@@ -336,26 +336,26 @@ export function adminLogin(loginUrl,data, callback){
     getDataFromApi(requestSystemUrl + '/backend-system/auth/info',{},function(response){
       window.localStorage.setItem('systermAccount', response.data.body.account)
       window.localStorage.setItem('systermName', response.data.body.name)
-      window.localStorage.setItem('systermAuthority',response.data.body.permissions)
+      window.localStorage.setItem('systermAuthority',JSON.stringify(response.data.body.permissions))
       systermName = window.localStorage.getItem('systermName')
       systermAccount = window.localStorage.getItem('systermAccount')
       systermAuthority = window.localStorage.getItem('systermAuthority')
-      if(systermAuthority.indexOf('设置')>-1){
+      if(systermAuthority.indexOf('setting')>-1){
         curRouter.push('setting')
       }
-      if(systermAuthority.indexOf('采购')>-1){
+      if(systermAuthority.indexOf('purchase')>-1){
         curRouter.push('purchase')
       }
-      if(systermAuthority.indexOf('仓库')>-1) {
+      if(systermAuthority.indexOf('warehouse')>-1) {
         curRouter.push('instock')
       }
-      if(systermAuthority.indexOf('生产')>-1){
+      if(systermAuthority.indexOf('production')>-1){
         curRouter.push('production')
       }
-      if(systermAuthority.indexOf('零售')>-1){
+      if(systermAuthority.indexOf('sale')>-1){
         curRouter.push('retail')
       }
-      if(systermAuthority.indexOf('会员')>-1) {
+      if(systermAuthority.indexOf('member')>-1) {
         curRouter.push('member')
       }
       if(curRouter.length===0){
