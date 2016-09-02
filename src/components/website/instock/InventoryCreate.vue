@@ -12,22 +12,26 @@
       <form class="form-inline text-center">
         <div class="form-group">
           <label>备注</label>
-          <input type="text" class="form-control" placeholder="请填写盘点备注" v-model="note">
+          <input type="text" class="form-control" placeholder="请填写备注" v-model="note" style="width:300px;">
         </div>
         <span class="btn btn-info" @click="chooseAddGoods()">选择盘点商品</span>
         <span class="btn btn-primary" @click="inventoryAll()">盘点所有商品</span>
         <span class="btn btn-default" @click="upLoadEnquiry()">提交盘点</span>
       </form>
     </div>
+    <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
+      <div class="panel-body">提示：* 实际库存量可以保留3位小数</div>
+    </div>
+    
     <!-- 表格 -->
     <table class="table table-striped table-border table-hover">
       <thead>
       <tr class="text-center">
         <td class="text-left">货号</td>
         <td>品名</td>
-        <td>系统库存量</td>
+        <!--<td>系统库存量</td>-->
         <td>实际库存量</td>
-        <td>差异库存量</td>
+        <!--<td>差异库存量</td>-->
         <td>单位</td>
         <td>单位规格</td>
         <td>操作</td>
@@ -37,14 +41,14 @@
       <tr class="text-center" v-for="item in rederStockGoods" track-by="$index" :id="item.id">
         <td class="text-left">{{item.code}}</td>
         <td>{{item.name}}</td>
-        <td><span style="color:red;">{{item.system_stock}}</span></td>
+        <!--<td><span style="color:red;">{{item.system_stock}}</span></td>-->
         <td align="center">
-          <count :count.sync=item.current_stock  :is-float="true"></count>
+          <count :count.sync=item.current_stock :is-float="true"></count>
         </td>
-        <td>
-          <template v-if="item.current_stock == ''">{{ - item.system_stock}}</template>
-          <template v-else>{{((item.current_stock*1000 - item.system_stock*1000)/1000).toFixed(3) }}</template>
-        </td>
+        <!--<td>-->
+        <!--<template v-if="item.current_stock == ''">{{ - item.system_stock}}</template>-->
+        <!--<template v-else>{{((item.current_stock*1000 - item.system_stock*1000)/1000).toFixed(3) }}</template>-->
+        <!--</td>-->
         <td>{{item.production_unit_name}}</td>
         <td>{{item.specification_unit}}</td>
         <td>
@@ -122,7 +126,7 @@
           self.dataArray = []
         }
         $.each(self.stockGoods, function (index, val) {
-          val.current_stock = val.system_stock
+          val.current_stock = ''
           if (val.choice && !val.again) {
             val.again = true
             self.dataArray.push(val)
@@ -183,11 +187,11 @@
           self.dataArray = respon.data.body.list
           self.rederStockGoods = self.dataArray
           self.localPage(self.dataArray)
-          $.each(self.dataArray,function(index,val){
-            val.current_stock = val.system_stock
+          $.each(self.dataArray, function (index, val) {
+            val.current_stock = ''
           })
         })
-        $.each(self.stockGoods,function(index,val){
+        $.each(self.stockGoods, function (index, val) {
           val.again = false
         })
       },
