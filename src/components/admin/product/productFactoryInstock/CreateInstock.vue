@@ -24,7 +24,7 @@
               <select class="form-control" v-model="selectedOutHouse" @change="selectOut">
                 <option value="">请选择</option>
                 <!--<option value="2">默认工厂[仓库配料间]</option>-->
-                <option :value="item.id" v-for="item in warehouseList">{{item.name}}</option>
+                <option :value="item.id" v-for="item in warehouseListS">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group">
@@ -197,6 +197,13 @@
 //    获取仓库列表
       getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',data,function(response){
         self.warehouseList = response.data.body.list
+      })
+      var datas = {
+        type:4
+      }
+//    获取仓库列表
+      getDataFromApi( requestSystemUrl + '/backend-system/warehouse-minimal-list',datas,function(response){
+        self.warehouseListS = response.data.body.list
       })
     },
     events: {
@@ -372,6 +379,7 @@
         selectedInHouse: '',
         note: '',
         warehouseList: [],
+        warehouseListS: [],
         tabFlag: true,
         gridColumns: {
           code: "货号",

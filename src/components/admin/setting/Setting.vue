@@ -216,9 +216,16 @@
       },
 //    取消搜索
       cancelSearch: function () {
+
         var self = this
         var url = requestSystemUrl + '/backend-system/product/product'
         var data = {}
+        this.search.name = ''
+        this.search.selectCategory = ''
+        this.search.selectProductStatus = ''
+        this.search.selectSellStatus = ''
+        this.search.code = ''
+        this.search.selectPriceStatus = ''
         searchRequest(url,data,function(response){
           self.productList = response.data.body.list
           exchangeData( self.productList)

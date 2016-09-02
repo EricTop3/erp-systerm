@@ -4,8 +4,8 @@
       <div class="col-md-3 text-center mt10">
         <img src="/static/assets/images/admin_logo.png" class="fl ml20">
         <div class="fl mt10 ml20" style="width:150px; overflow:hidden;">
-          <h2 class="fl mt0">{{systerm.name}}</h2>
-          <h3 class="fl pt10">您好：{{systerm.account}}</h3>
+          <h2 class="mt0" style="text-align:left">{{systerm.name}}</h2>
+          <h3 class="fl pt10"  style="text-align:left">您好：{{systerm.account}}</h3>
           <span @click="exit" class="exit">[退出]</span></div>
       </div>
       <div class="col-md-8">
@@ -76,6 +76,12 @@
     }
 </script>
 <style scoped>
+
+
+
+
+
+
   a.active{
     color: #000;
     border-top: 6px solid  #0d9ae2;
