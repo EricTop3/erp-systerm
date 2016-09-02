@@ -258,17 +258,29 @@
 //   取消搜索
       cancelSearch: function () {
         var self = this
-        var url = this.url || this.secondUrl
+        var url = this.url
         var data =  {}
-        getDataFromApi(url,data,function(response){
-          self.firstData = response.data.body.list
-          exchangeData( self.firstData)
-          self.startTime = ''
-          self.endTime = ''
-          if(self.isPurchase){
-            self.selectedStore = ''
-          }
-        })
+        if(this.secondUrl!==undefined){
+          getDataFromApi(url,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData(self.firstData)
+            self.startTime = ''
+            self.endTime = ''
+          })
+          getDataFromApi(self.secondUrl,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData( self.firstData)
+            self.startTime = ''
+            self.endTime = ''
+          })
+        }else{
+          getDataFromApi(url,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData( self.firstData)
+            self.startTime = ''
+            self.endTime = ''
+          })
+        }
       },
 //    全选上面表格加载下面数据
       changeAll: function (checkAll) {
