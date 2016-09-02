@@ -115,6 +115,14 @@
       this.listData({})
     },
     events: {
+//    审核错误提示
+      checkFail: function(err){
+        if(err.data.code == '200002'){
+          modal.errModal = true
+          modal.errInfo = '该订单不允许执行此操作，请联系管理员'
+        }
+
+      },
 //    绑定翻页事件
       pagechange: function (currentpage) {
         var self = this

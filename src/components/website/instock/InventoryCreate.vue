@@ -22,7 +22,7 @@
     <div class="panel panel-default" style="background-color: #fffdf4; color: #f76060; font-size: 12px;">
       <div class="panel-body">提示：* 实际库存量可以保留3位小数</div>
     </div>
-    
+
     <!-- 表格 -->
     <table class="table table-striped table-border table-hover">
       <thead>
