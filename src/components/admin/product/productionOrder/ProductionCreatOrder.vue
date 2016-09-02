@@ -342,7 +342,7 @@
           },function(err){
             if(err.data.code==='220001'){
               self.modal.skipModal = true
-              self.modal.errInfo = '库存不足，操作被拒绝'
+              self.modal.errInfo = '库存不足，可能已经生成领料单'
             }
           })
         }

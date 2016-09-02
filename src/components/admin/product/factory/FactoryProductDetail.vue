@@ -176,7 +176,7 @@
           self.isExist = true
           self.editFlag = true
           self.modal.errModal = true
-          self.modal.errInfo =  '库存不足，操作被拒绝'
+          self.modal.errInfo =  '服务器错误'
         })
       }
     },
