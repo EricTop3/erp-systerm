@@ -91,7 +91,7 @@
           <div class="col-sm-8">
             <select class="form-control"  v-model="formData.member_type_id">
               <option value="">请选择</option>
-              <option v-for="item in couponData" track-by="$index" :value="item.id">{{item.display_name}}</option>
+              <option v-for="item in couponData" track-by="$index" v-if="item.model=='Member'" :value="item.id">{{item.display_name}}</option>
             </select>
           </div>
         </div>

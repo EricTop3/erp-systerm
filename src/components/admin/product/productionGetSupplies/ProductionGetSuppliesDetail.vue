@@ -72,6 +72,7 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
+                <td>{{entry.material_stock + entry.consume}} {{entry.consume_unit_name}}</td>
                 <td>{{entry.material_stock}} {{entry.consume_unit_name}}</td>
                 <td>{{entry.consume}} {{entry.consume_unit_name}}</td>
                 <td v-if='editFlag'>
@@ -100,6 +101,7 @@
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
+                <td>{{entry.material_stock + entry.consume}} {{entry.unit_name}}</td>
                 <td>{{entry.material_stock}} {{entry.unit_name}}</td>
                 <td>{{entry.consume}} {{entry.consume_unit_name}}</td>
                 <td>{{entry.main_reference_value}}{{entry.unit_name}}</td>
@@ -407,8 +409,9 @@
           item_code: '货号',
           item_name: '品名',
           unit_specification: '单位规格',
+          a: '耗料量',
           material_stock: '生产车间库存',
-          consume: '耗料量',
+          consume: '差料量',
           main_reference_value: '领料量',
           reference_number: '来源生产单号'
         },
@@ -416,8 +419,9 @@
           item_code: '货号',
           item_name: '品名',
           unit_specification: '单位规格',
+          a: '耗料量',
           material_stock: '生产车间库存',
-          consume: '耗料量',
+          consume: '差料量',
           main_reference_value: '领料量'
         },
         searchData: {

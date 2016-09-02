@@ -16,10 +16,10 @@
       </td>
       <td>
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" :check-url="checkUrl" v-if="entry.checked==='未审核'"></list-validate>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" :check-url="checkUrl" v-if="entry.checked==='未审核' && !specialShow"></list-validate>
           <list-finish  :list.sync="tableData"  :finish-url="finishUrl" v-if="entry.checked=='已审核' && finishFlag ===true " ></list-finish>
           <span class="btn btn-info btn-sm" @click="detail($event)">查看</span>
-          <list-delete :delete-data.sync="tableData"  v-if="entry.checked==='未审核'"></list-delete>
+          <list-delete :delete-data.sync="tableData"  v-if="entry.checked==='未审核' && !specialShow "></list-delete>
         </slot>
       </td>
     </tr>
@@ -40,6 +40,7 @@
       tableHeader: [],
       tableData: [],
       page:{},
+      specialShow: false,
       operate: false,
       finishFlag: false,
       checkUrl: '',
