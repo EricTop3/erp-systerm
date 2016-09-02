@@ -265,17 +265,6 @@
           operated_at: this.sendTime
         }
 
-
-
-
-
-
-
-        
-
-
-
-
 //       提交之前的判断
        if(this.sendTime===''){
           this.modal.errModal = true

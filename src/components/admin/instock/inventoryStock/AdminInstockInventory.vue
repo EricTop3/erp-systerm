@@ -61,7 +61,6 @@
           :table-data="list"
           :table-header="gridColumns"
           :page="page"
-          :special-show="specialShow"
           :check-url="checkUrl">
         </summary>
       </div>
@@ -200,7 +199,6 @@
         page: [],
         list: [],
         storeAccountData: [],
-        specialShow: true,
         checkUrl: requestSystemUrl + '/backend-system/stock/inventory/',
         gridColumns: {
           document_number: '盘点单号',

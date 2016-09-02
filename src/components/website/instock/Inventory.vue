@@ -41,7 +41,7 @@
     </div>
 
     <!--列表详情-->
-    <summary :table-header="gridColumns" :table-data="list" :check-url="checkUrl" :page="page"></summary>
+    <summary :table-header="gridColumns" :table-data="list" :check-url="checkUrl" :page="page" :special-show="specialShow"></summary>
 
   </div>
 </template>
@@ -149,6 +149,7 @@
       return {
         timetext1: "开始时间",
         timetext2: "结束时间",
+        specialShow: true,
         creators: [],
         page: [],
         checkUrl: requestUrl + '/front-system/stock/inventory/',
