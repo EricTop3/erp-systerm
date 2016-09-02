@@ -88,13 +88,9 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">等 级：</label>
               <div class="col-sm-8">
-                <select class="form-control" v-model="edit.level" v-validate:level="{required: true}">
-                  <option value="" selected>请选择</option>
-                  <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
+                <select class="form-control" v-model="edit.level" disabled>
+                  <option>{{edit.level}}</option>
                 </select>
-                <span v-if="$validationEditMember.level.touched">
-                  <span v-if="$validationEditMember.level.required" class="errT">请选择会员等级！</span>
-                </span>
               </div>
             </div>
           </form>
@@ -263,12 +259,7 @@
         this.edit.name = name.replace(/(^\s*)|(\s*$)/g, '')
         this.edit.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
         this.edit.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
-        var self = this
-        $.each(self.member_level_group, function (index, val) {
-          if (level.replace(/(^\s*)|(\s*$)/g, '') == val.display_name) {
-            self.edit.level = val.id
-          }
-        })
+        this.edit.level = level.replace(/(^\s*)|(\s*$)/g, '')
       },
 //    保存修改的会员数据
       saveUpdateMember: function (event) {
