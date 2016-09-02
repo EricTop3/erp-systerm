@@ -39,7 +39,7 @@
             <td>{{item.end_time}}</td>
             <td>
               <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span class="btn btn-warning btn-sm" @click="deletes($event)">删除</span>
+              <span v-if="item.model!='Member'" class="btn btn-warning btn-sm" @click="deletes($event)">删除</span>
             </td>
           </tr>
           </tbody>

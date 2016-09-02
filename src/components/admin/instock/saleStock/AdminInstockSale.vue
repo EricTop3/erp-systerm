@@ -140,7 +140,11 @@
       },
 //      取消搜索
       cancelSearch: function () {
-        this.searchData = {}
+        this.searchData.name = ''
+        this.searchData.category_id = ''
+        this.searchData.store_id = ''
+        this.searchData.start_time = ''
+        this.searchData.end_time = ''
         this.getlistData(1)
       }
     },

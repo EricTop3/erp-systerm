@@ -10,19 +10,19 @@
       <form class="form-inline">
         <div class="form-group">
           <label>会员卡号</label>
-          <input type="text" class="form-control" placeholder="" v-model="search.card_number">
+          <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="search.card_number">
         </div>
         <div class="form-group ml10">
           <label>会员姓名</label>
-          <input type="text" class="form-control" placeholder="" v-model="search.name">
+          <input type="text" class="form-control" placeholder="请输入会员姓名" v-model="search.name">
         </div>
         <div class="form-group ml10">
           <label>会员手机号</label>
-          <input type="text" class="form-control" placeholder="" v-model="search.phone">
+          <input type="text" class="form-control" placeholder="请输入手机号码" v-model="search.phone">
         </div>
         <div class="form-group ml10">
           <label>会员生日</label>
-          <date-picker :value.sync="search.birthday"></date-picker>
+          <date-picker :value.sync="search.birthday" :time-text=timetext></date-picker>
         </div>
         <div class="form-group ml10">
           <label>开卡点</label>
@@ -76,9 +76,10 @@
                 <label class="col-sm-4 control-label">会员卡号：</label>
                 <div class="col-sm-8">
                   <!--只能输入数字 number: /^[0-9]+$/-->
-                  <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="create.member_card" v-validate:member_card="{required: true}">
+                  <input type="text" class="form-control" placeholder="请输入会员卡号" onkeyup="value=this.value.replace(/[^\d]/g,'')" v-model="create.member_card" v-validate:member_card="{required: true,minlength: 8,maxlength: 8}">
                   <span v-if="$validationNewMember.member_card.touched">
-                    <span v-if="$validationNewMember.member_card.required" class="errT">请输入会员卡号！</span>
+                    <span v-if="$validationNewMember.member_card.minlength" class="errT">会员卡号只能是8位有效数字！</span>
+                    <span v-if="$validationNewMember.member_card.maxlength" class="errT">会员卡号只能是8位有效数字！</span>
                   </span>
                 </div>
               </div>
@@ -118,7 +119,7 @@
                 <div class="col-sm-8">
                   <select class="form-control" v-model="create.level" v-validate:level="{required: true}">
                     <option value="">请选择</option>
-                    <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
+                    <option value="{{member_level_group.id}}">{{member_level_group.display_name}}</option>
                   </select>
                   <span v-if="$validationNewMember.level.touched">
                     <span v-if="$validationNewMember.level.required" class="errT">请选择会员等级！</span>
@@ -130,7 +131,7 @@
                 <div class="col-sm-8">
                   <div class="form-inline">
                     <input type="text" class="form-control" v-model="create.balance" style="width:104px;" @input="priceValidate">
-                    <select class="form-control ml10" v-model="create.payment">
+                    <select class="form-control fr" v-model="create.payment">
                       <option value="cash" selected>现金</option>
                       <option value="alipay">支付宝</option>
                       <option value="weixin">微信支付</option>
@@ -208,9 +209,8 @@
           <div class="form-group">
             <label class="col-sm-4 control-label">等 级：</label>
             <div class="col-sm-8">
-              <select class="form-control" v-model="edit.level" v-validate:level="{required: true}">
-                <option value="">请选择</option>
-                <option v-for="item in member_level_group" value="{{item.id}}">{{item.display_name}}</option>
+              <select class="form-control" v-model="edit.level" v-validate:level="{required: true}" disabled>
+                <option>{{edit.level}}</option>
               </select>
               <span v-if="$validationEditMember.level.touched">
                 <span v-if="$validationEditMember.level.required" class="errT">请选择会员等级！</span>
@@ -438,12 +438,7 @@
         self.edit.name = name.replace(/(^\s*)|(\s*$)/g, '')
         self.edit.phone = phone.replace(/(^\s*)|(\s*$)/g, '')
         self.edit.birthday = birthday.replace(/(^\s*)|(\s*$)/g, '')
-
-        $.each(self.member_level_group, function (index, val) {
-          if (level.replace(/(^\s*)|(\s*$)/g, '') == val.display_name) {
-            self.edit.level = val.id
-          }
-        })
+        self.edit.level = level.replace(/(^\s*)|(\s*$)/g, '')
       },
 //    编辑会员的验证
       verifyEditMember: function (e) {
@@ -565,6 +560,7 @@
     computed: {},
     data: function () {
       return {
+        timetext: '请选择日期',
         hasTN: false,
         errData: {
           date: '',
@@ -638,7 +634,7 @@
 //    新增会员获取会员等级
       var url = requestSystemUrl + '/front-system/coupon'
       getDataFromSiteApi(url, {}, function (response) {
-        self.member_level_group = response.data.body.list
+        self.member_level_group = response.data.body
       })
     }
   }
