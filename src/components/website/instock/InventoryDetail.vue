@@ -27,7 +27,7 @@
       </tr>
       </tbody>
     </table>
-    
+
     <!-- 表格2 详情页面列表数据-->
     <table class="table table-striped table-bordered table-hover">
       <thead>
