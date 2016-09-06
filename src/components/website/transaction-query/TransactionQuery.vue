@@ -349,15 +349,35 @@
   <modal :show.sync="modal.returnMoneyModal" :modal-size.sync='modal.returnMoneyModalSize'>
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">提示</h4>
+        aria-hidden="true" @click="modal.returnMoneyModal=false">&times;</span></button>
+      <h4 class="modal-title">退款</h4>
     </div>
-    <div slot="body">
-      <h4 class="text-center">确定退款至客户？</h4>
+    <div slot="body" class="gztk">
+      <div class="radio">
+        <label>
+          <input type="radio" value="cash" name="returnPayment" checked="true">现金
+        </label>
+        <label>
+          <input type="radio" value="alipay" name="returnPayment">支付宝
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="pos" name="returnPayment"> post刷卡
+        </label>
+        <label>
+          <input type="radio" value="weixin" name="returnPayment"> 微信
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" value="vip" name="returnPayment" > 会员卡余额
+        </label>
+      </div>
     </div>
     <div slot="footer">
-      <button type="button" class="btn btn-info" data-dismiss="modal" @click="confirmReturnMoney">确定</button>
-      <button type="button" class="btn btn-primary" @click="modal.returnMoneyModal=false">取消</button>
+      <p class="text-left" style="line-height: 33px;"><span
+        class="pull-right btn-primary btn" data-dismiss="modal" @click="confirmReturnMoney">确定退款</span></p>
     </div>
   </modal>
   <!--错误信息-->
@@ -693,13 +713,14 @@
         var data = {
           order_type: self.orderType
         }
+        var payment = $(".gztk").find('input[name="returnPayment"]:checked').val()
         $.each(self.receivedGoodsList,function(index,val){
               var obj = {}
               obj.amount = val.return_number
               obj.consumable_id  = val.id
               items.push(obj)
         })
-        putDataToApi(requestUrl + '/front-system/order/refund-goods/' + this.receivedId,{'items':items},function(response){
+        putDataToApi(requestUrl + '/front-system/order/refund-goods/' + this.receivedId,{'items':items,'payment':payment},function(response){
           self.modal.returnMoneyModal = false
           self.fetchData(url, data, self.finishPage)
         })
