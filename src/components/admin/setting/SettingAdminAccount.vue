@@ -42,7 +42,7 @@
           <tr class="text-center" v-for="item in listdata" :id="item.id" track-by="$index">
             <td class="text-left">{{item.name}}</td>
             <td>{{item.account}}</td>
-            <td><span v-for="entry in item.permissions" class="entry" track-by="$index">{{entry}}</span></td>
+            <td><span v-for="entry in item.permissions" track-by="$index">{{entry}}</span></td>
             <td>{{item.status}}</td>
             <td>
               <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
@@ -69,53 +69,18 @@
     </div>
     <div slot="body">
       <form action="" method="post" class="form-inline" id="permissionsId">
-        <div class="form-group">
-          <label class="checkbox-inline"><input type="checkbox" value="setting"> <strong>设置</strong></label>
-          <label class="checkbox-inline"><input type="checkbox" value="option1"> 商品设置</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option2"> 商品分类</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option3"> 优惠设置</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option4"> 合作方设置</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option5"> 门店账号</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option6"> 系统账号</label>
-        </div><br>
-
-        <div class="form-group">
-          <label class="checkbox-inline"><input type="checkbox" value="purchase"> <strong>采购</strong></label>
-          <label class="checkbox-inline"><input type="checkbox" value="option1"> 采购订单</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option2"> 采购收货</label>
-        </div><br>
-
-        <div class="form-group">
-          <label class="checkbox-inline"><input type="checkbox" value="warehouse"> <strong>库存</strong></label>
-          <label class="checkbox-inline"><input type="checkbox" value="option1"> 库存查询</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option2"> 库存盘点</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option3"> 差异汇总</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option4"> 库存配送出库</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option5"> 销售出库</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option6"> 生产出库</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option6"> 要货汇总</label>
-        </div><br>
-
-        <div class="form-group">
-          <label class="checkbox-inline"><input type="checkbox" value="production"> <strong>生产</strong></label>
-          <label class="checkbox-inline"><input type="checkbox" value="option1"> 工厂生产单</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option2"> 委外生产单</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option3"> 领料单</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option4"> 工厂生产入库单</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option5"> 委外生产入库单</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option6"> 生产预约单</label>
-        </div><br>
-
-        <div class="form-group">
-          <label class="checkbox-inline"><input type="checkbox" value="member"> <strong>会员</strong></label>
-        </div><br>
-
-        <div class="form-group">
-          <label class="checkbox-inline"><input type="checkbox" value="sale"> <strong>零售</strong></label>
-          <label class="checkbox-inline"><input type="checkbox" value="option1"> 结算统计</label>
-          <label class="checkbox-inline"><input type="checkbox" value="option2"> 结算管理</label>
-        </div>
-        <!--<label class="ml10"><input value="mini-mall" type="checkbox" class="input-group">微商城</label>-->
+        <template v-for="item in listPermissionData">
+          <div class="form-group">
+            <label class="checkbox-inline"><input type="checkbox" :value="item.value" :data-name="item.value"> <strong>
+              {{item.display_name}}</strong></label>
+            <template v-if="item.children">
+              <label class="checkbox-inline" v-for="it in item.children"><input type="checkbox" :value="it.value"
+                                                                                :data-name="it.value">
+                {{it.display_name}}</label>
+            </template>
+          </div>
+          <br>
+        </template>
       </form>
       <div v-if="isflag"><p class="error">请勾选相应的权限选项</p></div>
     </div>
@@ -293,8 +258,35 @@
       this.getlistData(1)
       this.getlistProviderA()
       this.getlistProviderB()
+      this.getPermission()
     },
     methods: {
+//      获取权限列表
+      getPermission: function () {
+        var self = this
+        var url = requestSystemUrl + '/backend-system/permissions'
+        getDataFromApi(url, {}, function (response) {
+          self.listPermission = response.data.body.list
+//          把对象转换成数组输出
+          for (var i in self.listPermission) {
+            var obj = {}
+            obj['value'] = i
+            obj['display_name'] = self.listPermission[i].display_name
+//            children属性循环
+            if (self.listPermission[i].children) {
+              var childrenData = []
+              for (var o in self.listPermission[i].children) {
+                var childrenObj = {}
+                childrenObj['value'] = o
+                childrenObj['display_name'] = self.listPermission[i].children[o].display_name
+                childrenData.push(childrenObj)
+              }
+              obj['children'] = childrenData
+            }
+            self.listPermissionData.push(obj)
+          }
+        })
+      },
 //      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
       getlistProviderA: function () {
         var self = this
@@ -328,6 +320,33 @@
               val.status = '关闭'
               break
           }
+          $.each(val.permissions, function (current, currentVal) {
+            switch (currentVal) {
+              case  '设置':
+                val.permissions[current] = '设置 '
+                break
+              case  '采购':
+                val.permissions[current] = '采购 '
+                break
+              case  '仓库':
+                val.permissions[current] = '仓库 '
+                break
+              case  '生产':
+                val.permissions[current] = '生产 '
+                break
+              case  '零售':
+                val.permissions[current] = '零售 '
+                break
+              case  '会员':
+                val.permissions[current] = '会员 '
+                break
+              case  '微商城':
+                val.permissions[current] = '微商城'
+                break
+              default:
+                val.permissions[current] = ''
+            }
+          })
         })
       },
 //      获取列表
@@ -451,23 +470,24 @@
         getDataFromApi(url, {}, function (response) {
           self.permissionsData = response.data.body.list
           $("#permissionsId").find('input').prop('checked', false)
-          $.each(self.permissionsData, function (index, val) {
-            if (val == 'setting') {
-              $("#permissionsId").find('input').eq(0).prop('checked', true)
-            } else if (val == 'purchase') {
-              $("#permissionsId").find('input').eq(1).prop('checked', true)
-            } else if (val == 'warehouse') {
-              $("#permissionsId").find('input').eq(2).prop('checked', true)
-            } else if (val == 'sale') {
-              $("#permissionsId").find('input').eq(3).prop('checked', true)
-            } else if (val == 'member') {
-              $("#permissionsId").find('input').eq(4).prop('checked', true)
-            } else if (val == 'production') {
-              $("#permissionsId").find('input').eq(5).prop('checked', true)
+          $.each(self.listPermissionData, function (current, value) {
+//          循环比较返回来的值，看是否相等
+            $.each(self.permissionsData, function (index, val) {
+              if (value.value == val) {
+                $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked', 'true')
+              }
+            })
+            if (value.children) {
+              $.each(value.children, function (childrenCurrent, childrenValue) {
+//              再次循环比较返回来的值，看是否相等
+                $.each(self.permissionsData, function (indexs, vals) {
+                  if (childrenValue.value == vals) {
+                    console.log(childrenValue.value)
+                    $("#permissionsId").find('input:checkbox[value=' + vals + ']').prop('checked', 'true')
+                  }
+                })
+              })
             }
-//            else if(val == 'mini-mall'){
-//              $("#permissionsId").find('input').eq(6).prop('checked',true)
-//            }
           })
         }, function (err) {
         })
@@ -500,6 +520,8 @@
         permissions: '',
         permissionsData: '',
         exportUrl: '',
+        listPermission: {},
+        listPermissionData: [],
         PermissionModal: false,
         PermissionModalSize: 'modal-lg',
         createModal: false,
