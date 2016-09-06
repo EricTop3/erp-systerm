@@ -26,15 +26,24 @@
     components: {
       ErrorTip: ErrorTip
     },
+    ready: function () {
+      var self = this
+      document.onkeydown = function (event) {
+        var e = event || window.event || arguments.callee.caller.arguments[0]
+        if (e && e.keyCode === 13) {
+          self.uploadLogin()
+        }
+      }
+    },
     methods: {
       uploadLogin: function () {
         var self = this
-        if (this.userName === "") {
-          this.modal.errModal = true,
-            this.modal.errInfo = '请输入您的登录名'
-        } else if (this.password === "") {
-          this.modal.errModal = true,
-            this.modal.errInfo = '请输入您的密码'
+        if (this.username ==='') {
+          this.modal.errModal = true
+          this.modal.errInfo = '请输入您的登录名'
+        } else if (this.password === '') {
+          this.modal.errModal = true
+          this.modal.errInfo = '请输入您的密码'
         } else {
           var loginUrl = requestUrl + '/front-system/auth/login'
           var data = {

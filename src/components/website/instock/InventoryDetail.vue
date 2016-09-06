@@ -8,17 +8,25 @@
       <li class="active">查看盘点单</li>
     </ol>
     <!--列表汇总-->
-
-
-    <summary-detail
-      :table-header="gridColumns"
-      :table-data="onedata"
-      :grid-operate="gridOperate"
-      :check-url="checkUrl"
-      :edit-flag.sync ="editFlag"
-      :is-exist = 'isExist'
-    >
-    </summary-detail>
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+      <tr class="text-center">
+        <th v-for="value in gridColumns">
+          {{value}}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="text-center">
+        <td>{{onedata.document_number}}</td>
+        <td>{{onedata.checked}}</td>
+        <td>{{onedata.creator_name}}</td>
+        <td>{{onedata.auditor_name}}</td>
+        <td>{{onedata.created_at}}</td>
+        <td>{{onedata.difference}}</td>
+      </tr>
+      </tbody>
+    </table>
 
     <!-- 表格2 详情页面列表数据-->
     <table class="table table-striped table-bordered table-hover">
