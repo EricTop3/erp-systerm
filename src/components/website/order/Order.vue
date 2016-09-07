@@ -6,31 +6,31 @@
       <div style='height:532px; overflow: auto; border: 1px solid #ddd;'>
         <table class='table table-striped table-border table-hover' style="border: transparent; border-bottom: 1px solid #ddd;">
           <thead>
-          <tr class='text-center'>
-            <td class='text-left col-lg-5'>品名/单价</td>
-            <td class='col-lg-3'>数量</td>
-            <td>小计</td>
-            <td class='col-lg-3'>操作</td>
-          </tr>
+            <tr class='text-center'>
+              <td class='text-left col-lg-5'>品名/单价</td>
+              <td class='col-lg-3'>数量</td>
+              <td>小计</td>
+              <td class='col-lg-3'>操作</td>
+            </tr>
           </thead>
           <tbody class='checkedGoodsList'>
-          <tr class='checkedGoods' v-for='item in checkedGoodsList' :id='item.id'>
-            <td class='text-left'>{{item.goodName}}<br>￥{{item.goodPrice}}</td>
-            <!--数量-->
-            <td>
-              <count-container :count.sync='item.count' :max-count='item.stock' :is-validate="isValidate"></count-container>
-            </td>
-            <td class='c-erp'>
-              <b>￥{{(item.goodPrice * item.count).toFixed(2)}}</b>
-            </td>
-            <td class='text-center'>
-              <slot name='orderOperate'>
-                  <span class='btn btn-primary' data-toggle='modal' data-target='#order-price-templ'
-                        @click='priceAdject($event)' :class="{'btn-warning': saleMark}" :disabled="saleMark">价格</span>
-                <span class='btn btn-default ml10' @click='deleteListgood($event)'>删除</span>
-              </slot>
-            </td>
-          </tr>
+            <tr class='checkedGoods' v-for='item in checkedGoodsList' :id='item.id'>
+              <td class='text-left'>{{item.goodName}}<br>￥{{item.goodPrice}}</td>
+              <!--数量-->
+              <td>
+                <count-container :count.sync='item.count' :max-count='item.stock' :is-validate="isValidate"></count-container>
+              </td>
+              <td class='c-erp'>
+                <b>￥{{(item.goodPrice * item.count).toFixed(2)}}</b>
+              </td>
+              <td class='text-center'>
+                <slot name='orderOperate'>
+                  <span class='btn btn-primary' data-toggle='modal' data-target='#order-price-templ' @click='priceAdject($event)' :class="{'btn-warning': saleMark}"
+                    :disabled="saleMark">价格</span>
+                  <span class='btn btn-default ml10' @click='deleteListgood($event)'>删除</span>
+                </slot>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -59,10 +59,9 @@
             <div class='index-list'>
               <form class='form-inline m30'>
                 <div class='form-group'>
-                  <select class='form-control couponFlag' style='width: 150px;' v-model="order_mata_data.strategy_id"
-                          @change="select($event)">
+                  <select class='form-control couponFlag' style='width: 150px;' v-model="order_mata_data.strategy_id" @change="select($event)">
                     <option selected="selected" value="0">无优惠</option>
-                    <option :value="item.id" v-for="item in couponName" :name="item.display_name">{{item.display_name}}</option>
+                    <option :value="item.id" v-for="item in couponName" :name="item.display_name" class="couponOption">{{item.display_name}}</option>
                   </select>
                 </div>
                 <div class='form-group ml10'>
@@ -90,7 +89,7 @@
                 <!--<label>会员密码</label>-->
                 <!--<input type='email' class='form-control'>-->
                 <!--</div>-->
-                <span  class='btn btn-primary ml10' @click="memberRequest">确定</span>
+                <span class='btn btn-primary ml10' @click="memberRequest">确定</span>
               </form>
               <div v-if="member.memberInfoModal">
                 <ul class="fl memberInfoList">
@@ -123,10 +122,8 @@
             <p class='c-erp f18'>实际订单额：<span><strong>￥{{ finalPrice }}</strong></span></p>
 
           </div>
-          <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal'
-                                      :disabled="!settlementFlag"
-                                      :class="{'btn-primary':settlementFlag,'btn-warning':!settlementFlag}"
-                                      data-target='#order-settlement-templ' @click="settlement()">结算</span></div>
+          <div class='col-xs-3'><span class='btn  btn-lg' data-toggle='modal' :disabled="!settlementFlag" :class="{'btn-primary':settlementFlag,'btn-warning':!settlementFlag}"
+              data-target='#order-settlement-templ' @click="settlement()">结算</span></div>
           <div class='clearboth'></div>
         </div>
       </div>
@@ -135,11 +132,10 @@
       <div class='index-nav-left' @click='slidePre()'><span class='glyphicon glyphicon-menu-left'></span></div>
       <div class='index-nav'>
         <ul class='index-list-category'>
-          <li class="btn btn-primary"  @click="fetchProduct($event)">
+          <li class="btn btn-primary" @click="fetchProduct($event)">
             全部分类
           </li>
-          <li class='btn btn-warning' track-by="$index" :id='item.id'
-              v-for='item in category' @click='fetchProduct($event)' v-if="item.count">
+          <li class='btn btn-warning' track-by="$index" :id='item.id' v-for='item in category' @click='fetchProduct($event)' v-if="item.count">
             {{item.display_name }}
           </li>
         </ul>
@@ -150,12 +146,8 @@
       <div class='clearboth'></div>
       <hr>
       <ul class='index-list-porducts'>
-        <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id'
-            :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak || (bespeak && item.product_type!==1 )}"
-            :stock='item.sell_unit_stock'
-            :sell_mark='item.sell_mark'
-            :type="item.product_type"
-        >
+        <li @click='addOrderToList($event)' v-for='item in productFromCategory' :id='item.id' :class="{'tejia':item.sell_mark===2,'bukeyijia':item.sell_mark===3,'disabled':item.sell_unit_stock<1 && !bespeak || (bespeak && item.product_type!==1 )}"
+          :stock='item.sell_unit_stock' :sell_mark='item.sell_mark' :type="item.product_type">
           <h4>{{item.name}}</h4>
           <span>{{item.code}}</span>
           <p>￥<span class='single-price'>{{item.original_price|priceChange}}</span></p>
@@ -176,8 +168,7 @@
         </div>
         <div class='col-lg-6'>
           <!-- 翻页 -->
-          <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
-                :last-page='page.last_page'></page>
+          <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
         </div>
       </div>
     </div>
@@ -189,24 +180,24 @@
     <div style="font-size: 9pt; padding-bottom:5px; border-bottom:1px dashed #000;">单号: {{printOrderNumber}}</div>
     <table class="goodsList" style="font-size: 9pt; padding-top: 5px;">
       <tbody>
-      <tr>
-        <td>序</td>
-        <td>品名/货号</td>
-        <td>单价</td>
-        <td>数量/金额</td>
-      </tr>
-      <tr v-for=" (index,item) in checkedGoodsList" style="margin-top: 5px">
+        <tr>
+          <td>序</td>
+          <td>品名/货号</td>
+          <td>单价</td>
+          <td>数量/金额</td>
+        </tr>
+        <tr v-for=" (index,item) in checkedGoodsList" style="margin-top: 5px">
 
-        <td>{{index+1}}</td>
-        <td>{{item.goodName}}</td>
-        <td>{{item.goodPrice}}</td>
-        <td>{{item.count}}/{{item.goodPrice}}</td>
-      </tr>
+          <td>{{index+1}}</td>
+          <td>{{item.goodName}}</td>
+          <td>{{item.goodPrice}}</td>
+          <td>{{item.count}}/{{item.goodPrice}}</td>
+        </tr>
       </tbody>
     </table>
-    <div style="font-size: 9pt; margin-top: 5px; border-top:1px dashed #000; padding-top: 5px;"><span style="width: 80px" >金额: {{finalPrice}} </span> <span style="margin-left: 10px;"> 找零金额：{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</span></div>
+    <div style="font-size: 9pt; margin-top: 5px; border-top:1px dashed #000; padding-top: 5px;"><span style="width: 80px">金额: {{finalPrice}} </span> <span style="margin-left: 10px;"> 找零金额：{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</span></div>
     <div style="font-size: 9pt; margin-top: 5px;"><span style="width:80px;">会员: {{member.memberInfoList.card_number|| '无'}} </span> <span style="margin-left: 10px;">卡结余: {{member.memberInfoList.balance}}</span></div>
-    <div style="font-size: 9pt; margin-top: 5px;">会员储值卡：{{finalPrice}}  </div>
+    <div style="font-size: 9pt; margin-top: 5px;">会员储值卡：{{finalPrice}} </div>
     <div style="font-size: 9pt; border-top:1px dashed #000;margin-top:5px; padding-top:5px">谢谢惠顾，欢迎再次光临</div>
     <div style="background: #fff; margin-top: 25px;">.</div>
   </div>
@@ -236,12 +227,11 @@
         <label for="" class="col-sm-4 control-label">支付金额</label>
 
         <div class="col-sm-8">
-          <input type="text" class="form-control" id="priceValidateFirst" v-model="paymentAmount"
-                 @input=priceAjectValdate($event)>
+          <input type="text" class="form-control" id="priceValidateFirst" v-model="paymentAmount" @input=priceAjectValdate($event)>
         </div>
       </div>
       <div class="form-group">
-        <label for=""   class="col-sm-4 control-label">找零</label>
+        <label for="" class="col-sm-4 control-label">找零</label>
         <div class="col-sm-8">
           <p class="form-control-static">￥{{ finalPrice*100 > paymentAmount*100 ? 0 : ((paymentAmount*100-finalPrice*100)*0.01).toFixed(2) }}</p>
         </div>
@@ -299,8 +289,7 @@
         <label for='' class='col-sm-4 control-label'>新单价</label>
 
         <div class='col-sm-8'>
-          <input type='text' class='form-control' id='priceValidateSecond' v-model='newSinglePrice'
-                 @input='priceAjectValdate($event)'>
+          <input type='text' class='form-control' id='priceValidateSecond' v-model='newSinglePrice' @input='priceAjectValdate($event)'>
         </div>
       </div>
       <div class='form-group'>
@@ -388,7 +377,7 @@
         self.page = response.data.body.pagination
       })
 //      优惠
-      getDataFromSiteApi(requestUrl + '/front-system/coupon',{},function(response) {
+      getDataFromSiteApi(requestUrl + '/front-system/coupon',{type: 'order'},function(response) {
         self.couponName = response.data.body.list
       })
     },
@@ -470,6 +459,23 @@
     },
     methods: {
 //      分类切换
+      slideNext: function() {
+        var categoryLen = this.category.length
+        var showCount = 14
+        var maxCategoryIndex =  Math.ceil(categoryLen / 14)
+        if(categoryLen > showCount && this.categoryIndex < maxCategoryIndex ){
+          this.category = this.category.slice(this.categoryIndex*showCount-1,(this.categoryIndex+1)*showCount)
+          this.categoryIndex ++
+        }
+      },
+      slidePre: function() {
+        var categoryLen = this.category.length
+        var showCount = 14
+        if(categoryLen > showCount && this.categoryIndex  > 1 ){
+          this.category = this.category.slice((this.categoryIndex-1)*showCount-1,this.categoryIndex*showCount)
+          this.categoryIndex --
+        }
+      },
 //      搜索
       searchProduct: function () {
         var self = this
@@ -784,6 +790,14 @@
             self.member.memberCodeModal = false
             self.member.memberInfoModal = true
             self.member.memberInfoList  = response.data.body.data
+            self.member.memberType = response.data.body.data.member_type
+            $.each(self.couponName,function(index,val){
+              if(val.display_name ===   self.member.memberType) {
+                self.order_mata_data.strategy_id = val.id
+              }
+            })
+            console.log(self.member.memberType)
+            self.globalCoupon()
 //          是否点击会员的确定
             self.memberFlag = true
             self.settlementFlag = true
@@ -991,6 +1005,7 @@
     },
     data: function () {
       return {
+        categoryIndex: 1,
         isValidate: false,
         goodsNote: '',
         paymentAmount: '',
@@ -1066,21 +1081,26 @@
   .index-list-porducts {
     height: 442px;
   }
+
   .modal-body {
     text-align: center;
     height: 15px;
   }
+
   .modal-body span {
     margin-left: 20px;
   }
+
   .color {
     color: red
   }
-  .memberInfoList{
+
+  .memberInfoList {
     width: 80%;
   }
-  .memberInfoList  li{
-    width:30%;
+
+  .memberInfoList li {
+    width: 30%;
     margin: 6px 10px;
     list-style: none;
     float: left;
@@ -1089,17 +1109,17 @@
     text-align: left;
     line-height: 1.4;
   }
-  .memberChange{
-    width: 20%;
-    margin-top:40px;
 
+  .memberChange {
+    width: 20%;
+    margin-top: 40px;
   }
+
   .print {
-    width:5.6cm;
+    width: 5.6cm;
     font-size: 1pt;
     display: none;
     color: #000;
     background: #fff;
   }
 </style>
-
