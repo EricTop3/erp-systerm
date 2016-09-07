@@ -46,7 +46,7 @@
             <td>{{item.status}}</td>
             <td>
               <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span class="btn btn-default btn-sm" @click="permission($event)">权限管理</span>
+              <span class="btn btn-default btn-sm" v-if="item.id != 1" @click="getPermission($event)">权限管理</span>
             </td>
           </tr>
           </tbody>
@@ -54,7 +54,7 @@
 
         <!--分页-->
         <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"
-              :last-page="page.last_page">
+              :last-page="page.last_page" v-if="listdata.length > 0">
         </page>
       </div>
     </div>
@@ -255,58 +255,9 @@
       this.getlistData(1)
       this.getlistProviderA()
       this.getlistProviderB()
-      this.getPermission()
+//      this.getPermission()
     },
     methods: {
-//      一级checkbox方法
-      inputOne: function(event){
-//        判断是否为选中状态
-        var isChecked = $(event.currentTarget).is(":checked")
-        if(isChecked){
-          $(event.currentTarget).parent(".checkbox-inline").siblings().find("input:checkbox").prop('checked', true)
-        }else{
-          $(event.currentTarget).parent(".checkbox-inline").siblings().find("input:checkbox").prop('checked', false)
-        }
-      },
-//      二级checkbox方法
-      inputTwo: function(event){
-//        获取到所有的二级input:checkbox
-        var all_checked = true
-        var inputTwos = $(event.currentTarget).parents(".form-group").find("input:not(:first):checkbox") //除第一个checkbox
-        for(var i = 0 ; i < inputTwos.length ; i ++ ){
-          console.log(inputTwos[i])
-          if(!$(inputTwos[i]).prop('checked')){
-            all_checked = false
-          }
-        }
-        $(event.currentTarget).parents(".form-group").find("input:checkbox:first").prop("checked",all_checked) //获取到当前组第一个checkbox
-      },
-//      获取权限列表
-      getPermission: function () {
-        var self = this
-        var url = requestSystemUrl + '/backend-system/permissions'
-        getDataFromApi(url, {}, function (response) {
-          self.listPermission = response.data.body.list
-//          把对象转换成数组输出
-          for (var i in self.listPermission) {
-            var obj = {}
-            obj['value'] = i
-            obj['display_name'] = self.listPermission[i].display_name
-//            children属性循环
-            if (self.listPermission[i].children) {
-              var childrenData = []
-              for (var o in self.listPermission[i].children) {
-                var childrenObj = {}
-                childrenObj['value'] = o
-                childrenObj['display_name'] = self.listPermission[i].children[o].display_name
-                childrenData.push(childrenObj)
-              }
-              obj['children'] = childrenData
-            }
-            self.listPermissionData.push(obj)
-          }
-        })
-      },
 //      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
       getlistProviderA: function () {
         var self = this
@@ -342,26 +293,26 @@
           }
           $.each(val.permissions, function (current, currentVal) {
             switch (currentVal) {
-              case  '设置':
+              case  'setting':
                 val.permissions[current] = '设置 '
                 break
-              case  '采购':
+              case  'purchase':
                 val.permissions[current] = '采购 '
                 break
-              case  '仓库':
+              case  'warehouse':
                 val.permissions[current] = '仓库 '
                 break
-              case  '生产':
+              case  'production':
                 val.permissions[current] = '生产 '
                 break
-              case  '零售':
+              case  'sale':
                 val.permissions[current] = '零售 '
                 break
-              case  '会员':
+              case  'member':
                 val.permissions[current] = '会员 '
                 break
-              case  '微商城':
-                val.permissions[current] = '微商城'
+              case  'mini-mall':
+                val.permissions[current] = '微商城 '
                 break
               default:
                 val.permissions[current] = ''
@@ -480,13 +431,70 @@
           error(err)
         })
       },
-//      账号权限管理(获取数据)
-      permission: function (event) {
+//      获取所有权限列表
+      getPermission: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
+        var self = this
+        var url = requestSystemUrl + '/backend-system/permissions'
+        var listPermissionDataBox = []
+        getDataFromApi(url, {}, function (response) {
+          self.listPermission = response.data.body.list
+//          把对象转换成数组输出
+          for (var i in self.listPermission) {
+            var obj = {}
+            obj['value'] = i
+            obj['display_name'] = self.listPermission[i].display_name
+//            children属性循环，转换成数组
+            if (self.listPermission[i].children) {
+              var childrenData = []
+              for (var o in self.listPermission[i].children) {
+                var childrenObj = {}
+                childrenObj['value'] = o
+                childrenObj['display_name'] = self.listPermission[i].children[o].display_name
+                childrenData.push(childrenObj)
+              }
+              obj['children'] = childrenData
+            }
+            listPermissionDataBox.push(obj)
+          }
+          self.listPermissionData = listPermissionDataBox
+          self.permission()
+        }, function(err){
+          if(err.data.code == '110003'){
+            self.messageTipModal = true
+            self.messageTip = '您的权限不够'
+          }
+        })
+      },
+//      一级checkbox方法
+      inputOne: function(event){
+//        判断是否为选中状态
+        var isChecked = $(event.currentTarget).is(":checked")
+        if(isChecked){
+          $(event.currentTarget).parent(".checkbox-inline").siblings().find("input:checkbox").prop('checked', true)
+        }else{
+          $(event.currentTarget).parent(".checkbox-inline").siblings().find("input:checkbox").prop('checked', false)
+        }
+      },
+//      二级checkbox方法
+      inputTwo: function(event){
+//        获取到所有的二级input:checkbox
+        var all_checked = true
+        var inputTwos = $(event.currentTarget).parents(".form-group").find("input:not(:first):checkbox") //除第一个checkbox
+        for(var i = 0 ; i < inputTwos.length ; i ++ ){
+          if(!$(inputTwos[i]).prop('checked')){
+            all_checked = false
+          }
+        }
+        $(event.currentTarget).parents(".form-group").find("input:checkbox:first").prop("checked",all_checked) //获取到当前组第一个checkbox
+      },
+//      账号权限管理(获取数据)
+      permission: function () {
+        var self = this
         this.PermissionModal = true
         this.isflag = false
         var url = requestSystemUrl + '/backend-system/store/account/' + this.thisId + '/permissions'
-        var self = this
+
         getDataFromApi(url, {}, function (response) {
           self.permissionsData = response.data.body.list
           $("#permissionsId").find('input').prop('checked', false)
@@ -494,15 +502,14 @@
             if (value.children) {
               $.each(self.permissionsData, function (index, val) {
                 if (value.value == val) {
-                  $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked','true')
-                  $("#permissionsId").find('input:checkbox[value=' + val + ']').parents(".form-group").find("input:checkbox").prop('checked', 'true')
+                  $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked',true)
+                  $("#permissionsId").find('input:checkbox[value=' + val + ']').parents(".form-group").find("input:checkbox").prop('checked', true)
                 }else{
                   $.each(value.children, function (childrenCurrent, childrenValue) {
 //              再次循环比较返回来的值，看是否相等
                     $.each(self.permissionsData, function (indexs, vals) {
                       if (childrenValue.value == vals) {
-                        console.log(childrenValue.value)
-                        $("#permissionsId").find('input:checkbox[value=' + vals + ']').prop('checked', 'true')
+                        $("#permissionsId").find('input:checkbox[value=' + vals + ']').prop('checked', true)
                       }
                     })
                   })
@@ -512,7 +519,7 @@
 //          循环比较返回来的值，看是否相等
               $.each(self.permissionsData, function (index, val) {
                 if (value.value == val) {
-                  $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked', 'true')
+                  $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked', true)
                 }
               })
             }
