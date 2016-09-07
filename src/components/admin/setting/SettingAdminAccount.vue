@@ -460,6 +460,7 @@
           self.listPermissionData = listPermissionDataBox
           self.permission()
         }, function(err){
+
           if(err.data.code == '110003'){
             self.messageTipModal = true
             self.messageTip = '您的权限不够'
