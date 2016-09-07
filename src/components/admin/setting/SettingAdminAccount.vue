@@ -46,7 +46,7 @@
             <td>{{item.status}}</td>
             <td>
               <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span class="btn btn-default btn-sm" @click="permission($event)">权限管理</span>
+              <span class="btn btn-default btn-sm" @click="permission($event)" v-if="item.isHasPower">权限管理</span>
             </td>
           </tr>
           </tbody>
@@ -382,6 +382,13 @@
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
           this.listdata = response.data.body.list
+          $.each( this.listdata,function(index,val){
+            if(val.permissions.indexOf('grant')>-1){
+              val.isHasPower = true
+            }else {
+              val.isHasPower = false
+            }
+          })
           this.page = response.data.body.pagination
           this.modifyGetedData(this.listdata)
         }, function (err) {

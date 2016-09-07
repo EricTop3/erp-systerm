@@ -1,6 +1,7 @@
 // 导入jquery
 import $ from 'jquery'
 import Vue from 'vue'
+import ErrorTip from '../../src/components/common/ErrorTip'
 import {erpRequestUrl} from '../../config/requestUrl'
 // 请求服务器路径
 export var requestUrl = erpRequestUrl
@@ -328,6 +329,14 @@ export function error(err) {
 export function adminLogin(loginUrl,data, callback){
   token = null
   var cur = new Vue()
+  var authorityModule = {
+      setting: [],
+      purchase: [],
+      stock: [],
+      product: [],
+      retail: [],
+      member: []
+  }
   var curRouter = []
   cur.$http.post(loginUrl,data).then(function(response){
     var curtoken = response.headers('X-Overpowered-Token-Set')
@@ -340,26 +349,102 @@ export function adminLogin(loginUrl,data, callback){
       systermName = window.localStorage.getItem('systermName')
       systermAccount = window.localStorage.getItem('systermAccount')
       systermAuthority = window.localStorage.getItem('systermAuthority')
+      //         商品设置权限
+      if(systermAuthority.indexOf('goods-setting-list')>-1){
+        authorityModule.setting.push('commodity')
+      }
+      if(systermAuthority.indexOf('goods-category-list')>-1){
+        authorityModule.setting.push('category')
+      }
+      if(systermAuthority.indexOf('discount-setting-list')>-1){
+        authorityModule.setting.push('coupon')
+      }
+      if(systermAuthority.indexOf('cooperation-setting-list')>-1){
+        authorityModule.setting.push('partner')
+      }
+      if(systermAuthority.indexOf('store-account-list')>-1){
+        authorityModule.setting.push('userAccount')
+      }
+      if(systermAuthority.indexOf('manage-account-list')>-1){
+        authorityModule.setting.push('adminAccount')
+      }
+//        采购权限处理
+      if(systermAuthority.indexOf('purchase-order-list')>-1){
+        authorityModule.purchase.push('order')
+      }
+      if(systermAuthority.indexOf('purchase-receipt-list')>-1){
+        authorityModule.purchase.push('delivery')
+      }
+//         库存权限处理
+      if(systermAuthority.indexOf("stock-look-list")>-1){
+        authorityModule.stock.push('query')
+      }
+      if(systermAuthority.indexOf("stock-check-list")>-1){
+        authorityModule.stock.push('inventory')
+      }
+      if(systermAuthority.indexOf("stock-difference-list")>-1){
+        authorityModule.stock.push('difference')
+      }
+      if(systermAuthority.indexOf("distribution-out-list")>-1){
+        authorityModule.stock.push('dispatching')
+      }
+      if(systermAuthority.indexOf("sale-out-list")>-1){
+        authorityModule.stock.push('sale')
+      }
+      if(systermAuthority.indexOf("produce-out-list")>-1){
+        authorityModule.stock.push('production')
+      }
+      if(systermAuthority.indexOf("requisition-total-list")>-1){
+       authorityModule.stock.push('apply')
+      }
+//      生产权限处理
+      if(systermAuthority.indexOf('factory-produce-list') > -1){
+        authorityModule.product.push('factoryProduction')
+      }
+      if(systermAuthority.indexOf('outsource-produce-list') > -1){
+        authorityModule.product.push('delegationCreat')
+      }
+      if(systermAuthority.indexOf('pick-total-list') > -1){
+        authorityModule.product.push('getSupplies')
+      }
+      if(systermAuthority.indexOf('factory-produce-in-list') > -1){
+        authorityModule.product.push('factoryInstock')
+      }
+      if(systermAuthority.indexOf('outsource-produce-in-list') > -1){
+        authorityModule.product.push('delegationInstock')
+      }
+      if(systermAuthority.indexOf('produce-appointment-list') > -1){
+        authorityModule.product.push('creatOrder')
+      }
+//        零售权限
+      if(systermAuthority.indexOf('settlement-total-list')>-1){
+        authorityModule.retail.push('statistics')
+      }
+      if(systermAuthority.indexOf('settlement-administration-list')>-1){
+        authorityModule.retail.push('manage')
+      }
+      //大类权限
       if(systermAuthority.indexOf('setting')>-1){
-        curRouter.push('setting')
+        curRouter.push('setting/'+ authorityModule.setting[0])
       }
       if(systermAuthority.indexOf('purchase')>-1){
-        curRouter.push('purchase')
+        curRouter.push('purchase/'+  authorityModule.purchase[0])
       }
       if(systermAuthority.indexOf('warehouse')>-1) {
-        curRouter.push('instock')
+        curRouter.push('instock/' +  authorityModule.stock[0])
       }
       if(systermAuthority.indexOf('production')>-1){
-        curRouter.push('production')
+        curRouter.push('production/'+  authorityModule.product[0])
       }
       if(systermAuthority.indexOf('sale')>-1){
-        curRouter.push('retail')
+        curRouter.push('retail/'+  authorityModule.retail[0])
       }
       if(systermAuthority.indexOf('member')>-1) {
         curRouter.push('member')
       }
       if(curRouter.length===0){
-        window.location.href = '#!/admin/setting'
+        window.alert("你没有任何权限访问")
+        window.location.href = '#!/admin/login'
       }else {
         window.location.href = '#!/admin/' + curRouter[0]
       }
