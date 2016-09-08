@@ -138,6 +138,13 @@
           <label><input type="radio" name="status" value="1" checked v-model="clerk.status">开启</label>
         </div>
       </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">等级</label>
+        <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
+          <label style="margin-right: 20px;"><input type="radio" name="level" value="0" v-model="clerk.level">查看</label>
+          <label><input type="radio" name="level" value="1" checked v-model="clerk.level">店员</label>
+        </div>
+      </div>
       </validator>
     </div>
     <div slot="footer">
@@ -187,6 +194,13 @@
         <label><input type="radio" placeholder="" name="editstatus" checked value="1"  v-model="editClerkInfo.status">开启</label>
       </div>
     </div>
+        <div class="form-group">
+          <label class="col-sm-4 control-label">等级</label>
+          <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
+            <label style="margin-right: 20px;"><input type="radio" placeholder="" name="editlevel" value="0" v-model="editClerkInfo.level">查看</label>
+            <label><input type="radio" placeholder="" name="editlevel" checked value="1"  v-model="editClerkInfo.level">店员</label>
+          </div>
+        </div>
       </validator>
       </div>
     <div slot="footer">
@@ -296,6 +310,7 @@
             storeName: '',
             account: '',
             name: '',
+            level: 0,
             password: '',
             status: 1
         }
@@ -334,6 +349,7 @@
           name: this.clerk.name,
           password: this.clerk.password,
           status: Number(this.clerk.status),
+          level: Number(this.clerk.level)
         }
         postDataToApi(addStoreUrl,data,function(response){
           self.getAccountName({})
@@ -348,6 +364,7 @@
             name: '',
             password: '',
             status: 1,
+            level:0,
         }
         var self = this
         accountId = Number($(event.currentTarget).parents('tr').attr('id'))
@@ -385,7 +402,8 @@
         var data  = {
           name: this.editClerkInfo.name,
           password: this.editClerkInfo.password,
-          status: this.editClerkInfo.status
+          status: this.editClerkInfo.status,
+          level: Number(this.editClerkInfo.level)
         }
         putDataToApi(requestSystemUrl + '/backend-system/store/store-account/' + accountId,data,function(response){
           self.getAccountName({})
@@ -443,6 +461,7 @@
           name: '',
           password: '',
           status: 0,
+          level: 0,
         },
         editClerkInfo: {
           storeName:'',
@@ -450,6 +469,7 @@
           name: '',
           password: '',
           status: 0,
+          level: 0,
         },
         modal: {
           addStoreModal: false,
