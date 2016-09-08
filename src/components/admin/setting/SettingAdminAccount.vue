@@ -46,7 +46,8 @@
             <td>{{item.status}}</td>
             <td>
               <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span class="btn btn-default btn-sm" v-if="item.id != 1" @click="getPermission($event)">权限管理</span>
+              <span class="btn btn-default btn-sm" v-if="item.id != 1 &&  isHasGrant" @click="getPermission($event)">权限管理</span>
+
             </td>
           </tr>
           </tbody>
@@ -230,6 +231,7 @@
     requestUrl,
     requestSystemUrl,
     getDataFromApi,
+    systermAuthority,
     token,
     searchRequest,
     exchangeData,
@@ -255,6 +257,9 @@
       this.getlistData(1)
       this.getlistProviderA()
       this.getlistProviderB()
+      if(systermAuthority.indexOf('grant')>-1){
+        this.isHasGrant = true
+      }
 //      this.getPermission()
     },
     methods: {
@@ -553,6 +558,7 @@
     data: function () {
       return {
         isflag: false,
+        isHasGrant: false,
         permissions: '',
         permissionsData: '',
         exportUrl: '',
