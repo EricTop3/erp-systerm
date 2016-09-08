@@ -22,6 +22,33 @@
     </div>
 
     <!-- 表格 -->
+    <table class="table table-striped table-border table-hover mt20" :data="onedata">
+      <thead>
+      <tr class="text-center">
+
+        <td>合计收入额</td>
+        <td>会员卡支付额</td>
+        <td>现金支付额</td>
+        <td>刷卡支付额</td>
+        <td>微信支付额</td>
+        <td>支付宝支付额</td>
+        <td>退款金额</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="text-center">
+        <td>{{onedata.total_sum}}</td>
+        <td>{{onedata.vip_total_sum}}</td>
+        <td>{{onedata.cash_total_sum}}</td>
+        <td>{{onedata.pos_total_sum}}</td>
+        <td>{{onedata.weixin_total_sum}}</td>
+        <td>{{onedata.alipay_total_sum}}</td>
+        <td>{{onedata.refund_total_sum}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- 表格 -->
     <table class="table table-striped table-border table-hover">
       <thead>
       <tr class="text-center">
@@ -118,6 +145,8 @@
           self.page = response.data.body.pagination
           self.historyGridData = response.data.body.list
           self.modifyGetedData(self.historyGridData)
+          self.onedata = response.data.body.total
+          self.modifyGetedOneData(self.onedata)
         })
       },
       checkDetail: function (event) {
@@ -150,6 +179,30 @@
           }
         })
       },
+//      对获取的单条数据处理2
+      modifyGetedOneData: function (value) {
+        if (value.total_sum != '' && value.total_sum > 0) {
+          value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
+        }
+        if (value.vip_total_sum != '' && value.vip_total_sum > 0) {
+          value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
+        }
+        if (value.cash_total_sum != '' && value.cash_total_sum > 0) {
+          value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
+        }
+        if (value.pos_total_sum != '' && value.pos_total_sum > 0) {
+          value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
+        }
+        if (value.weixin_total_sum != '' && value.weixin_total_sum > 0) {
+          value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
+        }
+        if (value.alipay_total_sum != '' && value.alipay_total_sum > 0) {
+          value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
+        }
+        if (value.refund_total_sum != '' && value.refund_total_sum > 0) {
+          value.refund_total_sum = '￥' + (value.refund_total_sum * (-0.01)).toFixed(2)
+        }
+      },
 //      结算
       settlement: function (event) {
         this.settlementModal = true
@@ -173,6 +226,7 @@
     },
     data: function () {
       return {
+        onedata: [],
         thisId: '',
         settlementModal: false,
         settlementModalSize: 'modal-sm',
