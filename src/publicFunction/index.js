@@ -17,6 +17,7 @@
   export var systermName = window.localStorage.getItem('systermName')
   export var systermAccount = window.localStorage.getItem('systermAccount')
   export var systermAuthority = window.localStorage.getItem('systermAuthority')
+  export var storeAuthority = window.localStorage.getItem('storeAuthority')
   //后台0,1状态没完成状态的展示方式
   export function changeStatus(origindata) {
     if(!(origindata instanceof Array)){
@@ -477,10 +478,16 @@
         window.localStorage.setItem('storeName', response.data.body.name)
         window.localStorage.setItem('storeAccount', response.data.body.account)
         window.localStorage.setItem('storeInfo', response.data.body.store_name)
+        window.localStorage.setItem('storeAuthority', response.data.body.level)
         storeName = window.localStorage.getItem('storeName')
         storeAccount = window.localStorage.getItem('storeAccount')
         storeInfo = window.localStorage.getItem('storeInfo')
-        window.location.href ='#!/site/order'
+        storeAuthority = window.localStorage.getItem('storeAuthority')
+        if(storeAuthority.indexOf('0') > -1){
+          window.location.href = '#!/site/billing'
+        } else{
+          window.location.href = '#!/site/order'
+        }
       })
     },function(err){
       callback && callback(err)

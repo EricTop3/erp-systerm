@@ -7,12 +7,12 @@
       </div>
       <div class="col-md-9">
         <ul class="nav nav-pills navbar-right">
-          <li><a v-link="{ path: '/site/order'}" >点单</a></li>
-          <li><a v-link="{ path: '/site/member'}">会员</a></li>
-          <li><a v-link="{path: '/site/instock' }">库存</a></li>
-          <li><a v-link="{path: '/site/billing'}">结算</a></li>
-          <li><a v-link="{path: '/site/tranquery'}">交易查询</a></li>
-          <li><a href='#'>微商城订单</a></li>
+          <li v-if="isHasAuthority"><a v-link="{ path: '/site/order'}" >点单</a></li>
+          <li v-if="isHasAuthority"><a v-link="{ path: '/site/member'}">会员</a></li>
+          <li v-if="isHasAuthority"><a v-link="{path: '/site/instock' }">库存</a></li>
+          <li v-if="isHasAuthority || isLookAuthority"><a v-link="{path: '/site/billing'}">结算</a></li>
+          <li v-if="isHasAuthority"><a v-link="{path: '/site/tranquery'}">交易查询</a></li>
+          <li v-if="isHasAuthority"><a href='#'>微商城订单</a></li>
           <!--<li><a v-link="{path: '/site/microshoporder'}">微商城订单</a></li>-->
         </ul>
       </div>
@@ -21,9 +21,17 @@
   </div>
 </template>
 <script>
-  import {storeName,storeAccount,storeInfo} from '../../publicFunction/index'
+  import {storeName,storeAccount,storeInfo,storeAuthority} from '../../publicFunction/index'
   export default{
     name: 'site-nav',
+    ready: function () {
+      if(storeAuthority.indexOf('1')>-1){
+        this.isHasAuthority = true
+      }else {
+        this.isHasAuthority = false
+        this.isLookAuthority = true
+      }
+    },
     methods: {
       exit: function () {
 //         TODO 未来可能有接口，暂时如此
@@ -36,6 +44,8 @@
     },
     data: function () {
       return {
+        isHasAuthority: false,
+        isLookAuthority: false,
         store: {
           name: storeName,
           account: storeAccount,
