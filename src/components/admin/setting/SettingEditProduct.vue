@@ -217,6 +217,7 @@
             <td>品名</td>
             <td>耗量</td>
             <td>单位</td>
+            <td>操作</td>
           </tr>
           </thead>
           <tbody v-if="createList.use_bill_of_material == true">
@@ -234,6 +235,11 @@
                   <option v-for="items in item.unit" :value="items.id">{{items.name}}</option>
                 </select>
               </div>
+            </td>
+            <td>
+              <slot name="operate">
+                <list-delete :delete-data.sync="tableData" ></list-delete>
+              </slot>
             </td>
           </tr>
           </tbody>
@@ -265,6 +271,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import LeftSetting from '../common/LeftSetting'
+  import ListDelete  from '../../common/ListDelete'
   import SetGoods from '../common/SetGoods'
   import ErrorTip from '../../common/ErrorTip'
   import {requestUrl,requestSystemUrl, token, searchRequest,postDataToApi,getDataFromApi,putDataToApi} from '../../../publicFunction/index'
@@ -274,6 +281,7 @@
       Page: Page,
       SetGoods: SetGoods,
       AdminNav: AdminNav,
+      ListDelete: ListDelete,
       LeftSetting: LeftSetting,
       ErrorTip: ErrorTip
     },
@@ -371,6 +379,17 @@
         this.old = self.dataArray
         this.localPage(this.old)
         this.rederSetGoods = this.old
+      },
+//     删除商品
+      delete: function (id) {
+        var self = this
+        $.each(this.rederSetGoods, function (index, val) {
+          if (val.id === id) {
+            self.rederSetGoods.splice(index, 1)
+            val.choice = false
+            val.again =  false
+          }
+        })
       },
 //      分页
       pagechange: function (currentpage) {
