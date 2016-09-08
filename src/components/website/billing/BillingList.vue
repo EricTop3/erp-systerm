@@ -23,27 +23,15 @@
 
     <!-- 表格 -->
     <table class="table table-striped table-border table-hover mt20" :data="onedata">
-      <thead>
-      <tr class="text-center">
-
-        <td>合计收入额</td>
-        <td>会员卡支付额</td>
-        <td>现金支付额</td>
-        <td>刷卡支付额</td>
-        <td>微信支付额</td>
-        <td>支付宝支付额</td>
-        <td>退款金额</td>
-      </tr>
-      </thead>
       <tbody>
       <tr class="text-center">
-        <td>{{onedata.total_sum}}</td>
-        <td>{{onedata.vip_total_sum}}</td>
-        <td>{{onedata.cash_total_sum}}</td>
-        <td>{{onedata.pos_total_sum}}</td>
-        <td>{{onedata.weixin_total_sum}}</td>
-        <td>{{onedata.alipay_total_sum}}</td>
-        <td>{{onedata.refund_total_sum}}</td>
+        <td>合计收入额：{{onedata.total_sum}}</td>
+        <td>会员卡支付额：{{onedata.vip_total_sum}}</td>
+        <td>现金支付额：{{onedata.cash_total_sum}}</td>
+        <td>刷卡支付额：{{onedata.pos_total_sum}}</td>
+        <td>微信支付额：{{onedata.weixin_total_sum}}</td>
+        <td>支付宝支付额：{{onedata.alipay_total_sum}}</td>
+        <td>退款金额：{{onedata.refund_total_sum}}</td>
       </tr>
       </tbody>
     </table>
