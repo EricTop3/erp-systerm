@@ -342,7 +342,7 @@
           },function(err){
             if(err.data.code==='220001'){
               self.modal.skipModal = true
-              self.modal.errInfo = '库存不足，可能已经生成领料单'
+              self.modal.errInfo = '已生成领料单，请前往领料单查看！'
             }
           })
         }

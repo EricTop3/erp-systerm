@@ -25,7 +25,7 @@
   export default{
     name: 'site-nav',
     ready: function () {
-      if(storeAuthority.indexOf('1')>-1){
+      if(storeAuthority.indexOf('0')>-1){
         this.isHasAuthority = true
       }else {
         this.isHasAuthority = false
