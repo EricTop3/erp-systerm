@@ -87,7 +87,6 @@
     ready: function () {
       this.todayListData(1)
       if(storeAuthority.indexOf('0')>-1){
-        console.log('wanng')
         this.isBillToday = false
       }
     },

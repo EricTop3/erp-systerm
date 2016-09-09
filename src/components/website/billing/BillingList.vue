@@ -64,7 +64,7 @@
         <td>{{item.alipay_total_sum}}</td>
         <td>{{item.refund_total_sum}}</td>
         <td>
-          <span class="btn btn-danger btn-sm" v-if="item.status=='0'" @click="settlement($event)">结算</span>
+          <span class="btn btn-danger btn-sm" v-if="isBillToday && item.status=='0'" @click="settlement($event)">结算</span>
           <span class="btn btn-info btn-sm" @click="checkDetail($event)">结算明细</span>
         </td>
       </tr>
@@ -99,7 +99,7 @@
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
   import DatePicker from '../../common/DatePicker'
-  import {requestUrl, token, error, requestSystemUrl, getDataFromApi, putDataToApi} from '../../../publicFunction/index'
+  import {requestUrl, token, error, requestSystemUrl, storeAuthority ,getDataFromApi, putDataToApi} from '../../../publicFunction/index'
   export default {
     components: {
       Grid: Grid,
@@ -117,6 +117,9 @@
     ready: function () {
 //    渲染结算历史列表
       this.setMentListData(1)
+      if(storeAuthority.indexOf('0')>-1){
+        this.isBillToday = false
+      }
     },
     methods: {
 //    渲染结算历史列表
@@ -218,6 +221,7 @@
         thisId: '',
         settlementModal: false,
         settlementModalSize: 'modal-sm',
+        isBillToday: true,
         flag: true,
         timewidth: "timewidth",
         timetext1: "开始时间",
