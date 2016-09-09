@@ -483,7 +483,7 @@
         storeAccount = window.localStorage.getItem('storeAccount')
         storeInfo = window.localStorage.getItem('storeInfo')
         storeAuthority = window.localStorage.getItem('storeAuthority')
-        if(storeAuthority.indexOf('1') > -1){
+        if(storeAuthority.indexOf('0') > -1){
           window.location.href = '#!/site/billing'
         } else{
           window.location.href = '#!/site/order'

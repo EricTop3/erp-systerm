@@ -141,8 +141,8 @@
       <div class="form-group">
         <label class="col-sm-4 control-label">等级</label>
         <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
-          <label style="margin-right: 20px;"><input type="radio" name="level" value="0" v-model="clerk.level">店员</label>
-          <label><input type="radio" name="level" value="1" checked v-model="clerk.level">查看</label>
+          <label style="margin-right: 20px;"><input type="radio" name="level" value="1" checked v-model="clerk.level">店员</label>
+          <label><input type="radio" name="level" value="0" v-model="clerk.level">查看</label>
         </div>
       </div>
       </validator>
@@ -197,8 +197,8 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">等级</label>
           <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
-            <label style="margin-right: 20px;"><input type="radio" placeholder="" name="editlevel" value="0" v-model="editClerkInfo.level">店员</label>
-            <label><input type="radio" placeholder="" name="editlevel" checked value="1"  v-model="editClerkInfo.level">查看</label>
+            <label style="margin-right: 20px;"><input type="radio" placeholder="" name="editlevel" checked value="1"  v-model="editClerkInfo.level">店员</label>
+            <label><input type="radio" placeholder="" name="editlevel" value="0" v-model="editClerkInfo.level">查看</label>
           </div>
         </div>
       </validator>
@@ -364,7 +364,7 @@
             name: '',
             password: '',
             status: 1,
-            level:0,
+            level:1,
         }
         var self = this
         accountId = Number($(event.currentTarget).parents('tr').attr('id'))
@@ -462,7 +462,7 @@
           name: '',
           password: '',
           status: 0,
-          level: 0,
+          level: 1,
         },
         editClerkInfo: {
           storeName:'',
@@ -470,7 +470,7 @@
           name: '',
           password: '',
           status: 0,
-          level: 0,
+          level: 1,
         },
         modal: {
           addStoreModal: false,
