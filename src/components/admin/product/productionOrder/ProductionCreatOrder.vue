@@ -199,7 +199,7 @@
       <h4 class='modal-title'>友情提示</h4>
     </div>
     <div slot='body'>
-      <div class='form-group'>
+      <div class='form-group' style="text-align: center">
         <p class="modal-body">{{modal.errInfo}}</p>
       </div>
     </div>
