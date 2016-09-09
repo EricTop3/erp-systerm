@@ -28,7 +28,7 @@
         <td>{{onedata.alipay_total_sum}}</td>
         <td>{{onedata.refund_total_sum}}</td>
         <td>
-          <span v-if="onedata.settled_at==''" id="todaySet" class="btn btn-primary btn-sm"
+          <span v-if="isBillToday && onedata.settled_at==''" id="todaySet" class="btn btn-primary btn-sm"
                 @click="settlementModal=true">结算</span>
           <span class="btn btn-info btn-sm" v-link="{path: '/site/billing/list' }">结算历史</span>
         </td>
@@ -69,6 +69,7 @@
     requestUrl,
     token,
     error,
+    storeAuthority,
     requestSystemUrl,
     getDataFromApi,
     postSiteDataToApi,
@@ -84,6 +85,10 @@
     ready: function () {
       this.getOneData()
       this.todayListData(1)
+      console.log('wann')
+      if(storeAuthority.indexOf('0')>-1){
+        this.isBillToday = false
+      }
     },
     events: {
 //    绑定翻页事件
@@ -196,6 +201,7 @@
     data: function () {
       return {
         thisId: '',
+        isBillToday: true,
         onedata: [],
         page: [],
         settlementModal: false,

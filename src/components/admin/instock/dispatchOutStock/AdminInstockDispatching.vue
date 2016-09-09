@@ -53,6 +53,11 @@
               <date-picker :value.sync="searchData.start_receive_time" :time-text="timetext1"></date-picker> -
               <date-picker :value.sync="searchData.end_receive_time" :time-text="timetext2"></date-picker>
             </div>
+            <div class="form-group ml10">
+              <label>制单时间段</label>
+              <date-picker :value.sync="searchData.start_maker_time" :time-text="timetext1"></date-picker> -
+              <date-picker :value.sync="searchData.end_maker_time" :time-text="timetext2"></date-picker>
+            </div>
             <span class="btn btn-primary" @click="searchMethod()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
 
@@ -195,6 +200,9 @@
             creator_id: this.searchData.creator_id || '',
             start_receive_time: this.searchData.start_receive_time || '',
             end_receive_time: this.searchData.end_receive_time || '',
+            start: this.searchData.start_maker_time || '',
+            end: this.searchData.end_maker_time || '',
+
           }
         this.listData(data)
       },
@@ -207,6 +215,8 @@
         this.searchData.creator_id = ''
         this.searchData.start_receive_time = ''
         this.searchData.end_receive_time = ''
+        this.searchData.start_maker_time = ''
+        this.searchData.end_maker_time = ''
         this.listData({})
       }
     },
@@ -237,6 +247,7 @@
           creator_name: '制单人',
           auditor_name: '审核人',
           operated_at: '配送时间',
+          created_at: '制单时间',
           amount: '配送数量'
         },
         searchData: {
@@ -246,6 +257,8 @@
           creator_id: '',
           start_receive_time: '',
           end_receive_time: '',
+          start_maker_time: '',
+          end_maker_time: '',
           stream_origin_id: '',
         }
       }
