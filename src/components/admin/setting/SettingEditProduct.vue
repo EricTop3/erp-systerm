@@ -33,7 +33,7 @@
             </div>
             <div class="form-group" style="margin-left: 28px;">
               <label>商品属性</label>
-              <select class="form-control" v-model="createList.product_type" v-validate:producttype="['required']">
+              <select class="form-control" :disabled="true" v-model="createList.product_type" v-validate:producttype="['required']">
                 <option value="">请选择</option>
                 <option value="1">工厂产成品</option>
                 <option value="2">原材料</option>
@@ -204,7 +204,7 @@
                         v-model="createList.use_bill_of_material">
             启动BOM单</label>
           <button class="btn btn-primary spanblocks ml10"
-                  :disabled="createList.product_type == 2 || createList.use_bill_of_material == false"
+                  :disabled="createList.product_type == 2 || createList.use_bill_of_material == false || createList.bom_status == false"
                   @click="modal.addGoodModal=true">添加商品
           </button>
         </div>
@@ -226,20 +226,21 @@
             <td>{{item.name}}</td>
             <td class="form-inline">
               <div class="form-group">
-                <input type="text" class="form-control text-center" style="width:70px;" v-model="item.value">
+                <input type="text" :disabled="createList.bom_status == false" class="form-control text-center" style="width:70px;" v-model="item.value">
               </div>
             </td>
             <td class="form-inline">
               <div class="form-group">
-                <select class="form-control" v-model="item.units">
+                <select class="form-control" :disabled="createList.bom_status == false" v-model="item.units">
                   <option v-for="items in item.unit" :value="items.id">{{items.name}}</option>
                 </select>
               </div>
             </td>
             <td>
-              <slot name="operate">
-                <list-delete :delete-data.sync="tableData" ></list-delete>
+              <slot v-if="createList.bom_status" name="operate">
+                <list-delete :delete-data.sync="tableData"></list-delete>
               </slot>
+              <span v-else class="btn btn-primary" :disabled="true">删除</span>
             </td>
           </tr>
           </tbody>
@@ -296,6 +297,7 @@
 //      获取单条数据
       getDataFromApi(requestSystemUrl + '/backend-system/product/product/' + self.id,{},function(response){
 
+        self.createList.bom_status = response.data.body.bom_status
         self.createList.category_id = response.data.body.category_id
         self.createList.product_type = response.data.body.product_type
         self.createList.sell_type = response.data.body.sell_type
@@ -649,6 +651,7 @@
         dataArray: [],
         rederSetGoods: [],
         createList: {
+          bom_status: '',
           category_id: '',
           product_type: '',
           sell_type: '',
