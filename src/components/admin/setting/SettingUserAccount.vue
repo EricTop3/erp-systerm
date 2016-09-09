@@ -204,7 +204,7 @@
       </validator>
       </div>
     <div slot="footer">
-      <button type="button" class="btn" @click="editClerkSubmit($event)" :class=" btn-waring ? canEdit : btn-primary">确定</button>
+      <button type="button" class="btn btn-primary" @click="editClerkSubmit($event)">确定</button>
     </div>
     <!--错误信息-->
     <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
@@ -443,7 +443,6 @@
         clerkName: '',
         storeList: [],
         page: [],
-        canEdit: false,
         currentStatus: 0,
         accountHeader:{
           store_code: '门店编号',
