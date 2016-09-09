@@ -129,6 +129,7 @@
           page: page,
           per_page: 16
         }
+        
         getDataFromApi(url, data, function (response) {
           self.page = response.data.body.page.pagination
           self.historyGridData = response.data.body.list
