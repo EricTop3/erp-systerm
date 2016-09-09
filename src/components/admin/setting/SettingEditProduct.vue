@@ -376,7 +376,15 @@
             self.dataArray.push(val)
           }
         })
-        console.log(self.dataArray)
+        for (var a = 0; a < self.dataArray.length; a++) {
+          for (var b = a+1; b < self.dataArray.length; b++) {
+            if (self.dataArray[a].id == self.dataArray[b].id) {
+              console.log(self.dataArray[a].id)
+              console.log(self.dataArray[b].id)
+              self.dataArray.splice(b, 1)
+            }
+          }
+        }
         this.rederSetGoods = self.dataArray
         this.old = self.dataArray
         this.localPage(this.old)
@@ -390,6 +398,8 @@
             self.rederSetGoods.splice(index, 1)
             val.choice = false
             val.again =  false
+
+            self.dataArray = self.rederSetGoods
           }
         })
       },
