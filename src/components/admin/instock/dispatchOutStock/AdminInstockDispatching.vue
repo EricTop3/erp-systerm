@@ -247,7 +247,7 @@
           creator_name: '制单人',
           auditor_name: '审核人',
           operated_at: '配送时间',
-          created_at: '制单时间段',
+          created_at: '制单时间',
           amount: '配送数量'
         },
         searchData: {

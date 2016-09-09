@@ -40,6 +40,13 @@
               <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
                            :timewidth="timewidth"></date-picker>
             </div>
+            <div class="form-group ml10 ">
+              <label>制单时间段</label>
+              <date-picker :value.sync="searchData.start_maker_time" :time-text="timetext1"
+                           :timewidth="timewidth"></date-picker>
+              <date-picker :value.sync="searchData.end_maker_time" :time-text="timetext2"
+                           :timewidth="timewidth"></date-picker>
+            </div>
             <span type="submit" class="btn btn-primary" @click="searchMethod()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
             <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryInstock/createInstock'}">新建入库单</span>
@@ -158,8 +165,8 @@
           creator_id: this.searchData.creator_id || '',
           start_time: this.searchData.start_time,
           end_time: this.searchData.end_time,
-          start_receive_time: this.searchData.start_receive_time || '',
-          end_receive_time: this.searchData.end_receive_time || '',
+          start: this.searchData.start_maker_time || '',
+          end: this.searchData.end_maker_time || '',
           type: 'ManageAccount'
         }
         this.listData(data)
@@ -171,8 +178,8 @@
         this.searchData.creator_id = ''
         this.searchData.start_time = ''
         this.searchData.end_time = ''
-        this.searchData.start_receive_time = ''
-        this.searchData.end_receive_time = ''
+        this.searchData.start_maker_time = ''
+        this.searchData.end_maker_time = ''
         this.listData()
       }
     },
@@ -214,6 +221,7 @@
           auditor_name: '审核人',
           stream_target: '调入仓库',
           operated_at: '收货日期',
+          created_at: '制单时间',
           stock_amount: '入库数量',
           defective_amount: '次品数量',
         },
