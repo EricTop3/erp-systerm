@@ -130,7 +130,7 @@
           per_page: 16
         }
         getDataFromApi(url, data, function (response) {
-          self.page = response.data.body.pagination
+          self.page = response.data.body.page.pagination
           self.historyGridData = response.data.body.list
           self.modifyGetedData(self.historyGridData)
           self.onedata = response.data.body.total
