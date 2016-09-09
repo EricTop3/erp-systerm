@@ -9,7 +9,7 @@
         </div>
 
         <div class="modal-body">
-          <slot name="body" class="text-center">
+          <slot name="body" style="text-align: center">
             default body
           </slot>
         </div>
@@ -68,7 +68,9 @@
     display: table-cell;
     vertical-align: middle;
   }
-
+  .text-center{
+    text-align: center;
+  }
   .modal-content {
     margin: 0 auto;
     transition: transform .3s ease;

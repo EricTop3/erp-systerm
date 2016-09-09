@@ -135,7 +135,7 @@
         aria-hidden='true' @click="errModal=false">&times;</span></button>
       <h4 class='modal-title'>友情提示</h4>
     </div>
-    <div slot='body'>
+    <div slot='body' style="text-align: center">
       <div class='form-group'>
         <p class="modal-body">{{modal.errInfo}}</p>
       </div>
@@ -305,7 +305,7 @@
           },function (err) {
             if (err.data.code == '220001') {
               self.modal.skipModal = true
-              self.modal.errInfo = '库存不足，已生产领料单，请前往领料单查看！'
+              self.modal.errInfo = '已生成领料单，请前往领料单查看！'
             }
             console.log(err)
           })

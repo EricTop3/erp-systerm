@@ -141,7 +141,7 @@
       <div class="form-group">
         <label class="col-sm-4 control-label">等级</label>
         <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
-          <label style="margin-right: 20px;"><input type="radio" name="level" value="0" v-model="clerk.level">查看</label>
+          <label  style="margin-right: 20px;"><input type="radio" name="level" value="0" v-model="clerk.level">查看</label>
           <label><input type="radio" name="level" value="1" checked v-model="clerk.level">店员</label>
         </div>
       </div>
@@ -197,7 +197,7 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">等级</label>
           <div class="col-sm-8" class="statusChoose" style="height: 34px;line-height: 34px;">
-            <label style="margin-right: 20px;"><input type="radio" placeholder="" name="editlevel" value="0" v-model="editClerkInfo.level">查看</label>
+            <label  style="margin-right: 20px;"><input type="radio" placeholder="" name="editlevel" value="0" v-model="editClerkInfo.level">查看</label>
             <label><input type="radio" placeholder="" name="editlevel" checked value="1"  v-model="editClerkInfo.level">店员</label>
           </div>
         </div>
@@ -375,6 +375,7 @@
             self.editClerkInfo.name =val.name
             self.editClerkInfo.status =val.status
             self.editClerkInfo.storeName =val.store_name
+            self.editClerkInfo.level = val.level
             if(self.editClerkInfo.status ==='开启'){
               self.editClerkInfo.status = 1
             }else{
