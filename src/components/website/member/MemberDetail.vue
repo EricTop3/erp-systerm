@@ -227,13 +227,13 @@
 
             switch(value.note){
               case 'alipay':
-                value.note = '支付宝支付'
+                value.note = '支付宝支付:' + value.trade_number
                 break;
               case 'weixin':
-                value.note = '微信支付'
+                value.note = '微信支付:' + value.trade_number
                 break;
               case 'pos':
-                value.note = 'pos支付'
+                value.note = 'pos支付:' + value.trade_number
                 break;
               case 'cash':
                 value.note = '现金支付'
@@ -335,6 +335,7 @@
 //    充值金额的验证
       verifyRecharge: function (e) {
         var self = this
+        console.log('2222')
         this.$validate(function () {
           if (self.$validationRecharge.invalid) {
             self.$validationRecharge.money.touched = true

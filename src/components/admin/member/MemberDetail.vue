@@ -303,13 +303,13 @@
 
           switch(value.note){
             case 'alipay':
-              value.note = '支付宝支付'
+              value.note = '支付宝支付:' + value.trade_number
               break;
             case 'weixin':
-              value.note = '微信支付'
+              value.note = '微信支付:' + value.trade_number
               break;
             case 'pos':
-              value.note = 'pos支付'
+              value.note = 'pos支付:' + value.trade_number
               break;
             case 'cash':
               value.note = '现金支付'
