@@ -1,7 +1,7 @@
 <template>
   <div class="btn-group" role="group" id="countContainer">
     <button type="button" class="btn btn-default" @click="lessCount">-</button>
-    <input type="text" class="btn btn-default col-lg-4" v-model="count" @input="countValidate"/>
+    <input type="text" class="btn btn-default col-lg-5" v-model="count" @input="countValidate"/>
     <button type="button" class="btn btn-default" @click="addCount">+</button>
   </div>
 </template>
@@ -19,13 +19,15 @@
     methods: {
       countValidate: function () {
         var numberRe = /\D/
-        if (numberRe.test(this.count) && !isValidate) {
+        if (numberRe.test(this.count) && !this.isValidate ) {
           this.count = 1
+        } else   if(Number( this.count)>=  Math.floor(Number(this.maxCount))  && !this.isValidate){
+          this.count =  Math.floor(Number(this.maxCount))
+        } else {
+          if(this.count !== ''){
+            this.$dispatch('inputCount')
+          }
         }
-        if(Number( this.count)>=  Math.floor(Number(this.maxCount))  && !this.isValidate){
-         this.count =  Math.floor(Number(this.maxCount))
-        }
-        this.$dispatch('inputCount')
       },
       addCount: function () {
         if(Number( this.count)>= Math.floor(Number(this.maxCount)) && !this.isValidate){
