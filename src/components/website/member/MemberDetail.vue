@@ -53,7 +53,6 @@
     </div>
     <div slot="body">
       <div class="modal-body">
-        <validator name="validationEditMember">
           <form class="form-horizontal">
             <div class="form-group">
               <label class="col-sm-4 control-label">会员卡号：</label>
@@ -94,7 +93,6 @@
               </div>
             </div>
           </form>
-        </validator>
       </div>
     </div>
     <div slot="footer">
@@ -282,23 +280,22 @@
 //    编辑会员的验证
       verifyEditMember: function (e) {
         var self = this
-        this.$validate(function () {
+        self.saveUpdateMember(e)
+        /*this.$validate(function () {
           if (self.$validationEditMember.invalid) {
             self.$validationEditMember.level.touched = true
             e.preventDefault()
           } else {
             self.saveUpdateMember(e)
           }
-        })
+        })*/
       },
 //    充值金额
       recharge: function (event) {
         var id = Number($(event.currentTarget).parents('tr').attr('id'))
         var card_number = $(event.currentTarget).parents('tr').find('td:first-child').text()
-
         this.edit.id = id
         this.edit.member_card = card_number.replace(/(^\s*)|(\s*$)/g, '')
-
         this.modal.rechargeModal = true
       },
 //    保存充值金额
@@ -337,7 +334,9 @@
         var self = this
         console.log('2222')
         this.$validate(function () {
+          console.log('333333')
           if (self.$validationRecharge.invalid) {
+            console.log('444444')
             self.$validationRecharge.money.touched = true
             e.preventDefault()
           } else {
