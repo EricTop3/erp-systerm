@@ -548,7 +548,7 @@
         $.each(this.checkedGoodsList, function (index, val) {
           var obj = {}
           obj['goods_id'] = val.id
-          obj['amount'] = val.count
+          obj['amount'] = Number(val.count)
           obj['price'] = val.goodPrice
           obj['note'] = val.priceNote
           orderItems.push(obj)

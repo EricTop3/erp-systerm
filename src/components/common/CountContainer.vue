@@ -21,13 +21,11 @@
         var numberRe = /\D/
         if (numberRe.test(this.count) && !this.isValidate ) {
           this.count = 1
-        } else   if(Number( this.count)>=  Math.floor(Number(this.maxCount))  && !this.isValidate){
-          this.count =  Math.floor(Number(this.maxCount))
-        } else {
-          if(this.count !== ''){
-            this.$dispatch('inputCount')
-          }
         }
+        if(Number( this.count)>=  Math.floor(Number(this.maxCount))  && !this.isValidate){
+          this.count =  Math.floor(Number(this.maxCount))
+        }
+        this.$dispatch('inputCount')
       },
       addCount: function () {
         if(Number( this.count)>= Math.floor(Number(this.maxCount)) && !this.isValidate){
