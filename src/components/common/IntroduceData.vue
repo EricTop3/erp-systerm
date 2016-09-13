@@ -2,32 +2,40 @@
   <modal :show.sync='instroduceDataModal' :modal-size="instroduceDataModalSize">
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">原始配送出库单</h4>
+        aria-hidden="true" @click="instroduceDataModal= false">&times;</span></button>
+      <h4 class="modal-title">{{title}}</h4>
     </div>
     <div slot="body">
       <!-- 页头 -->
       <div class="page-header text-center">
         <form action="" method="post" class="form-inline">
-          <div class="form-group">
-            <label>配送时间段</label>
-            <input type="text" class="form-control date_picker" placeholder="开始时间">
-            <input type="text" class="form-control date_picker" placeholder="结束时间">
+          <div class="form-group mr50" v-if="isPurchase">
+            <label>要货门店</label>
+            <select class="form-control" v-model="selectedStore">
+              <option value="">请选择</option>
+              <option :value="item.id" v-for="item in storeList" >{{item.display_name}}</option>
+            </select>
           </div>
-          <span class="btn btn-info">搜索</span>
-          <span class="btn btn-info">撤销搜索</span>
+          <div class="form-group">
+            <label>时间段</label>
+            <date-picker :value.sync="startTime" :time-text="timeText"></date-picker> -
+            <date-picker :value.sync="endTime"   :time-text="timeText"></date-picker>
+          </div>
+          <span class="btn btn-info" @click="searchMethod">搜索</span>
+          <span class="btn btn-info" @click="cancelSearch">撤销搜索</span>
         </form>
       </div>
       <div style="height:200px; overflow: auto;">
         <!--表格-->
-        <grid :check="true" :data="citeData" :columns="citeDataTitle" v-on:change-operate="change"
-              v-on:change-all-operate="changeAll"></grid>
+        <!--表格-->
+        <grid :check="true" :data="firstData" :columns="firstDataTitle" v-on:change-operate="change"
+              v-on:change-all-operate="changeAll" :check-all.sync="citeCheckAll" :is-check-all="isCheckAllOne"></grid>
       </div>
 
       <div style="height:200px; overflow: auto; margin-top: 20px;">
         <!--表格-->
-        <grid :check="true" :data="addData" :columns="thisDataTitle" :is-add-flag.sync="isAdd"
-              v-on:change-add-operate="changeOperate" v-on:change-all-operate="changeAllOperate"></grid>
+        <grid :check="true" :data="secondData" :columns="secondDataTitle" :is-add-flag.sync="isAdd" :check-all.sync="secondDataCheckAll"
+              v-on:change-add-operate="changeOperate" v-on:change-all-operate="changeAllOperate" :is-check-all="isCheckAllTwo"></grid>
       </div>
     </div>
     <div slot="footer">
@@ -41,235 +49,282 @@
   import $ from 'jquery'
   import Modal from '../common/Modal'
   import Grid from '../common/Grid'
-  import {requestUrl} from '../../publicFunction/index'
+  import DatePicker from '../common/DatePicker'
+  import { requestUrl,token,getDataFromApi,exchangeData} from '../../publicFunction/index'
   import _ from 'underscore'
   export default{
     name: 'introduce-data',
     components: {
       Modal: Modal,
-      Grid: Grid
+      Grid: Grid,
+      DatePicker: DatePicker
+    },
+    ready: function () {
     },
     props: {
       instroduceDataModal: false,
       instroduceDataModalSize: 'modal-sm',
-      addData: []
+      isSelectData: false,
+      secondData: [],
+      title:'',
+      isPurchase: false,
+      firstDataTitle: {
+        code: '配送出库单号',
+        store_name: '调出仓库',
+        number: '配送数量',
+        date: '配送日期',
+        create_person: '制单人',
+        check_person: '审核人'
+      },
+      firstData: [],
+      secondDataTitle: {
+        goods_code: '货号',
+        goods_name: '品名',
+        demanding_number: '要货数量',
+        distribution_number: '配送数量',
+        unit: '单位',
+        unit_specification: '单位规格'
+      },
+      secondData: [],
+      url: '',
+      secondUrl: '',
+      requestData: {},
+      productFlag: false,
+      purchaseFlag: false
     },
     events: {
 //    绑定翻页事件
       pagechange: function (currentpage) {
 //        this.detailListData(currentpage)
         console.log(currentpage)
-      }
+      },
+      getGoodsWhenClick: function () {
+        var self = this
+//        一次加载
+        if(!this.isSelectData){
+          //       不同的url加载不同的数据
+          if(this.secondUrl!==undefined){
+            this.getProductByUrl(this.url,self.requestData,function(){
+              self.getProductByUrl(self.secondUrl,self.requestData,function(){
+                self.isSelectData = true
+              })
+            })
+          }else{
+            this.getProductByUrl(this.url,self.requestData,function(){
+              self.isSelectData = true
+            })
+          }
+//      获取门店列表
+          if(this.isPurchase){
+            var self = this
+            getDataFromApi(requestUrl + '/backend-system/store/store',{},function (response){
+              self.storeList = response.data.body.list
+            })
+          }
+        }
+        }
     },
     methods: {
-//      单选上面表格加载下面数据
-      change: function (currentId, currentObjCheck) {
-        var fetchedData = []
-//    根据当前id获取产品
-        this.$http({
-          url: requestUrl + '/front-system/store/resource/' + currentId + '/detail',
-          method: 'get'
-        }).then(function (response) {
-          this.thisData = response.data.body.list
-          console.log(this.thisData)
-          fetchedData = this.thisData
-          var firtElem = fetchedData[0]
-          var lastElem = fetchedData[fetchedData.length - 1]
-          var start = 0
-          var end = 0
-          if (currentObjCheck) {
-            this.addData = this.addData.concat(fetchedData)
-          } else {
-            $.each(this.addData, function (index, val) {
-              if (_.isEqual(val, firtElem)) {
-                start = index
-              }
-              if (_.isEqual(val, lastElem)) {
-                end = index
-              }
-            })
-            this.addData.splice(start, end - start + 1)
-          }
-        }, function (err) {
-          console.log(err)
-        })
+//      根据id获取商品
+      getProductById: function (url,currentId,currentObjCheck) {
+        var  fetchedData = []
+        var  self = this
+        var  data = this.requestData
+          getDataFromApi(url + "/" + currentId,data,function(response){
+            if(self.productFlag){
+              var currentArray = []
+//              var len = response.data.body.list.length
+//              var cur = 0
+              $.each(response.data.body.list,function(index,val){
+                  if(val.product_type != 2){
+                    currentArray.push(val)
+                  }
+              })
+              fetchedData = currentArray
+              console.log(fetchedData)
+            }else if(self.purchaseFlag){
+              var currentArray = []
+              $.each(response.data.body.list,function(index,val){
+                if(val.product_type ===2){
+                  currentArray.push(val)
+                }
+              })
+              fetchedData = currentArray
+            }else{
+              fetchedData = response.data.body.list
+            }
+            var firtElem = fetchedData[0]
+            var lastElem = fetchedData[fetchedData.length - 1]
+            var start = 0
+            var end = 0
+            var dataArray= []
+            if (currentObjCheck) {
+              self.secondData = self.secondData.concat(fetchedData)
+            } else {
+              $.each(self.secondData, function (index, val) {
+                if (_.isEqual(val, firtElem)) {
+                  start = index
+                }
+                if (_.isEqual(val, lastElem)) {
+                  end = index
+                }
+              })
+              self.secondData.splice(start, end - start + 1)
+            }
+          })
       },
-//      全选上面表格加载下面数据
-      changeAll: function (checkAll) {
+//      根据url加载的时候获取一级商品
+      getProductByUrl: function (url,data,callback) {
+        var self = this
+        var data = data
+        if(this.secondUrl!==undefined){
+          getDataFromApi(url,data,function(response){
+            self.firstData =  self.firstData.concat(response.data.body.list)
+            exchangeData( self.firstData)
+            callback && callback ()
+          })
+        }else{
+          getDataFromApi(url,data,function(response){
+            self.firstData = response.data.body.list
+            exchangeData( self.firstData)
+            callback && callback ()
+          })
+        }
+      },
+//      全选选择不同的url加载二级数据
+      getProductByCheckData: function (url,checkAll) {
         var self = this
         if (checkAll) {
-          $.each(this.citeData, function (index, val) {
+          $.each(this.firstData, function (index, val) {
             var currentId = val.id
-            console.log(currentId)
-            self.$http({
-              url: requestUrl + '/front-system/store/resource/' + currentId + '/detail',
-              method: 'get'
-            }).then(function (response) {
-              self.addData = self.addData.concat(response.data.body.list)
-              console.log(self.addData)
-            }, function (err) {
-              console.log(err)
+            getDataFromApi(url+'/'+currentId,{},function(response){
+              self.secondData = self.secondData.concat(response.data.body.list)
             })
           })
           this.isAdd = this.isAddFlag
         } else {
           this.isAdd = false
-          this.addData = []
+          this.secondData = []
         }
+      },
+//      单选上面表格加载下面数据
+      change: function (currentId, currentObjCheck,event) {
+        var type= $(event.currentTarget).parents('tr').attr('type')
+//    根据当前id获取产品
+        if(this.secondUrl !== undefined){
+          if(type === 'Requisition' || type === 'Distribution'){
+            this.getProductById(this.url,currentId, currentObjCheck)
+          }else{
+            this.getProductById(this.secondUrl,currentId, currentObjCheck)
+          }
+        }else{
+          this.getProductById(this.url,currentId, currentObjCheck)
+        }
+      },
+//    搜索
+      searchMethod: function () {
+        var self = this
+        var data = {}
+        self.firstData = []
+//     判断是否是采购引用数据
+        if(self.isPurchase){
+          data =  {
+            start_time: self.startTime,
+            end_time: self.endTime,
+            store_id: self.selectedStore
+          }
+        }else {
+          data =  {
+            start_time: self.startTime,
+            end_time: self.endTime
+          }
+        }
+          //       不同的url加载不同的数据
+          if (this.secondUrl !== undefined) {
+            this.getProductByUrl(this.url, data, function () {
+              self.getProductByUrl(self.secondUrl, data, function () {
+              })
+            })
+          } else {
+            this.getProductByUrl(this.url, data, function () {
+            })
+          }
+        },
+//   取消搜索
+      cancelSearch: function () {
+        var self = this
+        var url = this.url
+        var data =  {}
+        self.firstData = []
+          //       不同的url加载不同的数据
+          if (this.secondUrl !== undefined) {
+            this.getProductByUrl(this.url, data, function () {
+              self.getProductByUrl(self.secondUrl, data, function (){
+              self.startTime = ''
+              self.endTime = ''
+              })
+            })
+          } else {
+            this.getProductByUrl(this.url, data, function () {
+              self.startTime = ''
+              self.endTime = ''
+            })
+          }
+      },
+//    全选上面表格加载下面数据
+      changeAll: function (checkAll) {
+        this.getProductByCheckData (this.url,checkAll)
+        this.getProductByCheckData (this.secondUrl,checkAll)
       },
 //      下面表格数据添加全部商品添加
       changeAllOperate: function (checkAll) {
         this.isAddFlag = checkAll
-        var goodslist = this.addData
+        var goodslist = this.secondData
         $.each(goodslist, function (index, val) {
           if (checkAll) {
-            val.checked = true
+            val.choice = true
           } else {
-            val.checked = false
+            val.choice = false
           }
         })
       },
 //     下面表格数据单选选择商品
       changeOperate: function (currentId, currentObjCheck) {
-        var goodslist = this.addData
+        var goodslist = this.secondData
         if (currentObjCheck) {
           $.each(goodslist, function (index, val) {
             if (val.id === currentId) {
-              val.checked = true
+              val.choice = true
             }
           })
         } else {
           $.each(goodslist, function (index, val) {
             if (val.id === currentId) {
-              val.checked = false
+              val.choice = false
             }
           })
         }
       },
       confirmClick: function () {
         this.instroduceDataModal = false
-        this.$dispatch('confirmAdd')
+        this.$dispatch('includeConfirmAdd')
       }
     },
     data: function () {
       return {
         isAdd: false,
         isAddFlag: false,
+        isCheckAllOne: false,
+        isCheckAllTwo: true,
+        isLoadFinish: false,
+        timeText: '请输入日期',
+        startTime: '',
+        endTime: '',
+        storeList: [],
+        selectedStore: '',
         page: [],
-        citeDataTitle: {
-          code: '配送出库单号',
-          store_name: '调出仓库',
-          number: '配送数量',
-          date: '配送日期',
-          create_person: '制单人',
-          check_person: '审核人'
-        },
-        citeData: [
-          {
-            'id': 1,
-            'checked': false,
-            'store_name': '模拟接口测试门店A',
-            'code': 'YHZYADH2016050110225801',
-            'number': 20,
-            'date': '2016-06-20 12:00:00',
-            'create_person': '张三',
-            'check_person': '李四'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'store_name': '模拟接口测试门店B',
-            'code': 'YHZYADH2016050110225801',
-            'number': 30,
-            'date': '2016-06-20 12:00:00',
-            'create_person': '张三',
-            'check_person': '李四'
-          }
-        ],
-        thisDataTitle: {
-          goods_code: '货号',
-          goods_name: '品名',
-          demanding_number: '要货数量',
-          distribution_number: '配送数量',
-          unit: '单位',
-          unit_specification: '单位规格'
-        },
-        thisData: [
-          {
-            'id': 1,
-            'store_distribution_id': 1,
-            'checked': false,
-            'goods_code': 'xyz201606271458011',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '伊利牛奶',
-            'unit': '箱',
-            'unit_specification': '1箱*20盒*250ml',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '牛角包',
-            'unit': '个',
-            'unit_specification': '1个',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 3,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '80',
-            'goods_name': '露西咖啡豆',
-            'unit': '包',
-            'unit_specification': '1包*2500g',
-            'created_at': '2016-06-20 12:00:00'
-          }
-        ],
-        thisData1: [
-          {
-            'id': 1,
-            'store_distribution_id': 1,
-            'checked': false,
-            'goods_code': 'xyz201606271458011',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '哇哈哈',
-            'unit': '箱',
-            'unit_specification': '1箱*20盒*250ml',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '70',
-            'goods_name': '牛角包1',
-            'unit': '个',
-            'unit_specification': '1个',
-            'created_at': '2016-06-20 12:00:00'
-          },
-          {
-            'id': 3,
-            'checked': false,
-            'store_distribution_id': 1,
-            'goods_code': 'xyz201606271458001',
-            'demanding_number': '50',
-            'distribution_number': '80',
-            'goods_name': '露西咖啡豆11',
-            'unit': '包',
-            'unit_specification': '1包*2500g',
-            'created_at': '2016-06-20 12:00:00'
-          }
-        ]
+        citeCheckAll: false,
+        secondDataCheckAll: false,
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <!--删除按钮-->
-  <span class="btn  btn-info btn-sm"  @click="isDelete($event)">删除</span>
+  <span class="btn btn-primary btn-sm"  @click="isDelete($event)">删除</span>
   <!--模态框-删除-->
   <modal :show.sync="deleteModal" :modal-size="deleteModalSize">
     <div slot="header">
@@ -42,11 +42,12 @@
       confirmDelelte: function () {
         var goodList = this.deleteData
         this.deleteModal = false
-        $.each(goodList, function (index, val) {
-          if (val.id === deleteId) {
-            goodList.splice(index, 1)
-          }
-        })
+        this.$dispatch('delete',deleteId)
+//        $.each(goodList, function (index, val) {
+//          if (val.id === deleteId) {
+//            goodList.splice(index, 1)
+//          }
+//        })
       }
     },
     data: function () {

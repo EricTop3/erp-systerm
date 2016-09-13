@@ -2,7 +2,7 @@
   <modal :show.sync="stockAddGoodModal"  :modal-size="stockAddGoodModalSize">
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-        aria-hidden="true">&times;</span></button>
+        aria-hidden="true" @click="stockAddGoodModal = false">&times;</span></button>
       <h4 class="modal-title">添加商品</h4>
     </div>
     <div slot="body">
@@ -14,26 +14,28 @@
           <div class="form-group ml10">
             <input type="text" class="form-control" placeholder="请输入商品名或商品编号" v-model="query.search">
           </div>
-          <span class="btn btn-info" @click="search()">搜索</span>
+          <span class="btn btn-info" @click="searchMethod">搜索</span>
           <span class="btn btn-warning" @click="cancel()">撤销搜索</span>
         </form>
       </div>
       <div class="container-fluid" style="height: 400px; overflow: auto;">
         <div class="row">
           <div class="col-sm-2" role="navigation" style="padding:0;">
-            <ul class="nav nav-stacked sidebar">
+            <ul class="nav nav-stacked dialog-sidebar">
               <li class="header">商品分类</li>
-              <li v-for="item in category" track-by="$index" :class="{'active':$index===0}" @click="fetchStockGood($event)">
+              <li class="active"  @click="fetchStockGood($event)">
+                <a href="javascript:void(0)">全部分类<span class="glyphicon glyphicon-chevron-right"></span></a></li>
+              </li>
+              <li v-for="item in category" track-by="$index"  @click="fetchStockGood($event)" :id="item.id" categoryFlag="false">
                 <a href="javascript:void(0)">{{item.display_name}}<span
                   class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
           </div>
-          <div class="col-sm-10" style="padding-right: 0;height:550px;overflow:auto;">
+          <div class="col-sm-10">
             <!--表格-->
-            <grid :check="true" :data="goodsList" :columns="goodsListTitle" :is-add-flag.sync="isAdd" v-on:change-all-operate="changeAllOperate" v-on:change-operate="changeOperate"></grid>
+            <grid :check="true" :check-all.sync="allChecked" :data="addData" :columns="goodsListTitle" :is-add-flag.sync="isAdd"></grid>
             <!--分页-->
-            <page :total='page.total' :current.sync='page.current_page' :display='page.per_page'
-                  :last-page='page.last_page'></page>
+            <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
           </div>
         </div>
       </div>
@@ -50,7 +52,7 @@
   import Grid from '../common/Grid'
   import Page from '../common/Page'
   import Modal from '../common/Modal'
-  import {requestUrl} from '../../publicFunction/index'
+  import {token,requestSystemUrl,getDataFromApi} from '../../publicFunction/index'
   export default {
     name: 'stockGoods',
     components: {
@@ -58,100 +60,91 @@
       Page: Page,
       Modal: Modal
     },
-    compiled: function () {
-//      分类
-      this.$http({
-        url: requestUrl + '/front-system/order/category',
-        method: 'get'
-      }).then(function (response) {
-        this.category = response.data.body.list
-      }, function (err) {
-        console.log(err)
-      })
-//       获取产品
-      this.requestApi({per_page: 16})
-      this.addData = this.goodsList
-    },
-    props: {
-      addData: [],
-      stockAddGoodModal: false,
-      stockAddGoodModalSize: 'modal-lg',
-      page: [
-        {
-          total: 10,
-          current_page: 1,
-          per_page: 10,
-          last_page: 1
-        }
-      ]
-    },
-    methods: {
-//      全选选择添加商品
-      changeAllOperate: function (checkAll) {
-        var goodslist = this.goodsList
-        $.each(goodslist, function (index, val) {
-          if (checkAll) {
-            val.checked = true
-          } else {
-            val.checked = false
-          }
+    events:{
+      pagechange: function(currentpage){
+        var self = this
+        var data = $.extend({page: currentpage, search: self.query.search},this.requestData)
+        this.allChecked = false
+        this.requestApi(data,function(){
+          $.each(self.getRenderData,function(index,val){
+            $.each(self.addData,function(index1,val1){
+               if(val.id ===val1.id){
+                 val1.choice= val.choice
+                 val1.again= val.again
+               }
+            })
+          })
         })
       },
-//     单选选择商品
-      changeOperate: function (currentId, currentObjCheck) {
-        var goodslist = this.goodsList
-        if (currentObjCheck) {
-          $.each(goodslist, function (index, val) {
-            if (val.id === currentId) {
-              val.checked = true
-            }
-          })
-        } else {
-          $.each(goodslist, function (index, val) {
-            if (val.id === currentId) {
-              val.checked = false
-            }
-          })
-        }
-      },
+     getGoodsWhenClick: function () {
+       var self = this
+       if(!this.isLoadFinish){
+//        分类
+         var self = this
+         getDataFromApi(self.categoryUrl,{},function(response){
+           self.category = response.data.body.list
+//           获取产品
+           self.requestApi(self.requestData,function(){
+               self.isLoadFinish = true
+             })
+         })
+       }
+     }
+    },
+    props: {
+      page: [],
+      addData: [],
+      requestData:{},
+      getRenderData: [],
+      goodsListTitle: {},
+      productUrl: '',
+      categoryUrl: '',
+      stockAddGoodModal: false,
+      stockAddGoodModalSize: 'modal-lg'
+    },
+    methods: {
 //     公共产品列表请求
-      requestApi: function (data) {
-        this.$http({
-          url: requestUrl + '/front-system/stock/goods',
-          method: 'get',
-          data: data
-        }).then(function (response) {
-          this.goodsList = response.data.body.list
-          this.page = response.data.body.pagination
-          this.addData = this.goodsList
-        }, function (err) {
-          console.log(err)
+      requestApi: function (data,callback) {
+        var self = this
+        getDataFromApi(this.productUrl,data,function(response){
+          self.addData = response.data.body.list
+          self.page = response.data.body.pagination
+          callback && callback ()
         })
       },
 //    根据分类进行产品请求
       fetchStockGood: function (event) {
         var currentObj = $(event.currentTarget)
-        this.query.category = currentObj.find('a').html()
-        var data = {
-          category: ' this.query.category',
-          per_page: 16
-        }
+        var currenHtml = $(event.currentTarget).find('a').text()
+        var categoryLoadFinish = $(event.currentTarget).attr('catagoryFlag')
+        console.log(categoryLoadFinish)
         currentObj.addClass('active').siblings('li').removeClass('active')
+        this.query.category = Number(currentObj.attr('id'))
+        var data = $.extend({category: this.query.category},this.requestData)
+        if(currenHtml === '全部分类'){
+          this.requestApi(this.requestData)
+        }else{
+//         获取产品
+          if(!categoryLoadFinish){
+            this.requestApi(data,function(){
+              $(event.currentTarget).attr('catagoryFlag',true)
+            })
+          }
+
+        }
         this.$dispatch('fetchProduct')
-//       获取产品
-        this.requestApi(data)
       },
 //      根据搜索进行产品请求
-      search: function () {
+      searchMethod: function () {
         var data = {
-          search: this.query.search,
-          per_page: 16
+          search: this.query.search
         }
         this.requestApi(data)
       },
 //      撤销搜索
       cancel: function () {
         var data = {}
+        this.query.search = ''
         this.requestApi(data)
       },
 //      点击确定添加按钮
@@ -168,89 +161,7 @@
           category: ''
         },
         category: [],
-        goodsListTitle: {
-          'goods_code': '货号',
-          'goods_name': '品名',
-          'day_sales': '日均销量',
-          'stock': '当前库存',
-          'unit': '单位',
-          'unit_specification': '单位规格',
-          'category': '商品分类'
-        },
-        goodsList: [
-          {
-            'id': 1,
-            'checked': false,
-            'goods_code': 'xyz201606271458011',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '伊利牛奶',
-            'stock': 0,
-            'unit': '箱',
-            'unit_specification': '1箱*20盒*250ml'
-          },
-          {
-            'id': 2,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '牛角包',
-            'stock': 20000,
-            'unit': '个',
-            'unit_specification': '1个'
-          },
-          {
-            'id': 3,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '露西咖啡豆',
-            'stock': 3000,
-            'unit': '包',
-            'unit_specification': '1包*2500g'
-          },
-          {
-            'id': 4,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '糖浆',
-            'stock': 2000,
-            'unit': '瓶',
-            'unit_specification': '1瓶*1000ml'
-          },
-          {
-            'id': 5,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '蔓越莓饼干',
-            'stock': 3000,
-            'unit': '盒',
-            'unit_specification': '1盒*12块'
-          },
-          {
-            'id': 6,
-            'checked': false,
-            'goods_code': 'xyz201606271458001',
-            'safety_stock': '50',
-            'day_sales': '22',
-            'category': '原材料',
-            'goods_name': '白砂糖',
-            'stock': 2000,
-            'unit': '包',
-            'unit_specification': '1包*0.5kg'
-          }
-        ]
+        allChecked: false
       }
     }
   }

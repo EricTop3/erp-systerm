@@ -1,14 +1,16 @@
 <template>
   <!--完成-->
-  <span class="btn btn-info btn-sm" data-toggle="modal" data-target="#inventory-audit-templ" @click="finish($event)">完成</span>
+  <span class="btn btn-success btn-sm" data-toggle="modal" data-target="#inventory-audit-templ" @click="finish($event)">完成</span>
 </template>
 <script>
   import $ from 'jquery'
+  import {finishRequest} from '../../publicFunction/index'
   var currentId = 0
   export default{
     name: 'list-finish',
     props: {
       list: [],
+      finishUrl: '',
       flag: false
     },
     methods: {
@@ -16,12 +18,16 @@
       finish: function (event) {
         var self=this
         currentId = Number($(event.currentTarget).parents('tr').attr('id'))
-        $.each(this.list, function (index, val) {
-          if (val.id === currentId &&(val.check === '已审核' || val.check_status === '已审核' )) {
-            val.check = '已完成'
-            val.check_status = '已完成'
-            self.$remove()
-          }
+        finishRequest(self.finishUrl +  currentId +'/finished',function () {
+          $.each(self.list, function (index, val) {
+            if (val.id === currentId &&(val.checked === '已审核')) {
+              val.checked = '已完成'
+              self.$remove()
+            }
+          })
+          self.$dispatch("finishToApi",currentId)
+        },function(err){
+          self.$dispatch("finishFail",err)
         })
       }
     }
