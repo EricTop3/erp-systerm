@@ -39,6 +39,7 @@
            this.highLight.stock = true
          }
          if(this.$route.path.indexOf('/admin/production/')>-1){
+
            this.highLight.product = true
          }
          if(this.$route.path.indexOf('/admin/retail/')>-1){
