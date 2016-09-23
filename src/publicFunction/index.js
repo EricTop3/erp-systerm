@@ -380,12 +380,18 @@
         if(systermAuthority.indexOf('manage-account-list')>-1){
           authorityModule.setting.push('adminAccount')
         }
+        if(authorityModule.setting.length===0){
+          authorityModule.setting[0] = ''
+        }
 //        采购权限处理
         if(systermAuthority.indexOf('purchase-order-list')>-1){
           authorityModule.purchase.push('order')
         }
         if(systermAuthority.indexOf('purchase-receipt-list')>-1){
           authorityModule.purchase.push('delivery')
+        }
+        if(authorityModule.purchase.length===0){
+          authorityModule.purchase[0] = ''
         }
 //         库存权限处理
         if(systermAuthority.indexOf("stock-look-list")>-1){
@@ -409,6 +415,9 @@
         if(systermAuthority.indexOf("requisition-total-list")>-1){
           authorityModule.stock.push('apply')
         }
+        if(authorityModule.stock.length===0){
+          authorityModule.stock[0] = ''
+        }
 //      生产权限处理
         if(systermAuthority.indexOf('factory-produce-list') > -1){
           authorityModule.product.push('factoryProduction')
@@ -428,12 +437,18 @@
         if(systermAuthority.indexOf('produce-appointment-list') > -1){
           authorityModule.product.push('creatOrder')
         }
+        if(authorityModule.product.length===0){
+          authorityModule.product[0] = ''
+        }
 //        零售权限
         if(systermAuthority.indexOf('settlement-total-list')>-1){
           authorityModule.retail.push('statistics')
         }
         if(systermAuthority.indexOf('settlement-administration-list')>-1){
           authorityModule.retail.push('manage')
+        }
+        if(authorityModule.retail.length===0){
+          authorityModule.retail[0] = ''
         }
         //大类权限
         if(systermAuthority.indexOf('setting')>-1){
