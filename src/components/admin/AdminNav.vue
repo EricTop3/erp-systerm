@@ -16,6 +16,7 @@
           <li v-if="authority.product"  :class="highLight.product ? 'active' : ''"><a v-link="{ path: '/admin/production/' +  authorityModule.product[0]}">生产</a></li>
           <li v-if="authority.retail"   :class="highLight.retail ? 'active' : ''"><a v-link="{ path: '/admin/retail/'+ authorityModule.retail[0]}">零售</a></li>
           <li v-if="authority.member"   :class="highLight.member ? 'active' : ''"><a v-link="{ path: '/admin/member'}" >会员</a></li>
+          <li :class="highLight.dataCenter ? 'active' : ''"><a v-link="{ path: '/admin/dataCenter/purchase' }" >数据中心</a></li>
           <!--<li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>-->
         </ul>
       </div>

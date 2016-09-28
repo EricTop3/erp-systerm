@@ -44,6 +44,40 @@ import CreateNewPurchaseDelivery from 'components/admin/purchase/CreateNewPurcha
 import PurchaseDetail from 'components/admin/purchase/PurchaseDetail'
 import PurchaseDeliveryDetail from 'components/admin/purchase/PurchaseDeliveryDetail'
 import Setting from 'components/admin/setting/Setting'
+import dataCenter from 'components/admin/data-center/purchase/OrderStatistics'
+import OrderStatistics from 'components/admin/data-center/purchase/OrderStatistics'
+import OrderStatisticsDetail from 'components/admin/data-center/purchase/OrderStatisticsDetail'
+import ReceivingStatistics from 'components/admin/data-center/purchase/ReceivingStatistics'
+import ReceivingStatisticsDetail from 'components/admin/data-center/purchase/ReceivingStatisticsDetail'
+import AllocateList from 'components/admin/data-center/instock/AllocateList'
+import AllocateListDetail from 'components/admin/data-center/instock/AllocateListDetail'
+import RequisitionList from 'components/admin/data-center/instock/RequisitionList'
+import RequisitionListDetail from 'components/admin/data-center/instock/RequisitionListDetail'
+import DistributionList from 'components/admin/data-center/instock/DistributionList'
+import DistributionListDetail from 'components/admin/data-center/instock/DistributionListDetail'
+import AllList from 'components/admin/data-center/instock/AllList'
+import AllListDetail from 'components/admin/data-center/instock/AllListDetail'
+import RemainderList from 'components/admin/data-center/instock/RemainderList'
+import RemainderListDetail from 'components/admin/data-center/instock/RemainderListDetail'
+import OrderSaleList from 'components/admin/data-center/instock/OrderSaleList'
+import OrderSaleListDetail from 'components/admin/data-center/instock/OrderSaleListDetail'
+import PutInList from 'components/admin/data-center/production/PutInList'
+import PutInListDetail from 'components/admin/data-center/production/PutInListDetail'
+import RechargeList from 'components/admin/data-center/member/RechargeList'
+import RechargeListDetail from 'components/admin/data-center/member/RechargeListDetail'
+import ConsumptionList from 'components/admin/data-center/member/ConsumptionList'
+import InformationList from 'components/admin/data-center/member/InformationList'
+import ConsumeList from 'components/admin/data-center/production/ConsumeList'
+import ConsumeListDetail from 'components/admin/data-center/production/ConsumeListDetail'
+import DefectiveList from 'components/admin/data-center/production/DefectiveList'
+import DefectiveListDetail from 'components/admin/data-center/production/DefectiveListDetail'
+import CheckList from 'components/admin/data-center/instock/CheckList'
+import CheckListDetail from 'components/admin/data-center/instock/CheckListDetail'
+import SaleOrderList from 'components/admin/data-center/sale/SaleOrderList'
+import SaleSettlementList from 'components/admin/data-center/sale/SaleSettlementList'
+import SaleRankingList from 'components/admin/data-center/sale/SaleRankingList'
+import SaleBankList from 'components/admin/data-center/sale/SaleBankList'
+import SaleBankListDetail from 'components/admin/data-center/sale/SaleBankListDetail'
 import SettingCreateNew from 'components/admin/setting/SettingCreateNew'
 import SettingEditProduct from 'components/admin/setting/SettingEditProduct'
 import SettingCategory from 'components/admin/setting/SettingCategory'
@@ -228,6 +262,123 @@ router.map({
   },
   '/admin/purchase': {
     component: Purchase
+  },
+  '/admin/dataCenter': {
+    component: dataCenter
+  },
+  '/admin/dataCenter/purchase': {
+    component: dataCenter
+  },
+  '/admin/dataCenter/purchase/orderStatistics': {
+    component: OrderStatistics
+  },
+  '/admin/dataCenter/purchase/orderStatistics/detail': {
+    component: OrderStatisticsDetail
+  },
+  '/admin/dataCenter/purchase/receivingStatistics': {
+    component: ReceivingStatistics
+  },
+  '/admin/dataCenter/purchase/receivingStatistics/detail': {
+    component: ReceivingStatisticsDetail
+  },
+  '/admin/dataCenter/instock': {
+    component: CheckList
+  },
+  '/admin/dataCenter/instock/checkList': {
+    component: CheckList
+  },
+  '/admin/dataCenter/instock/checkListDetail': {
+    component: CheckListDetail
+  },
+  '/admin/dataCenter/instock/allocateList': {
+    component: AllocateList
+  },
+  '/admin/dataCenter/instock/allocateListDetail': {
+    component: AllocateListDetail
+  },
+  '/admin/dataCenter/instock/requisitionList': {
+    component: RequisitionList
+  },
+  '/admin/dataCenter/instock/requisitionListDetail': {
+    component: RequisitionListDetail
+  },
+  '/admin/dataCenter/instock/distributionList': {
+    component: DistributionList
+  },
+  '/admin/dataCenter/instock/distributionListDetail': {
+    component: DistributionListDetail
+  },
+  '/admin/dataCenter/instock/allList': {
+    component: AllList
+  },
+  '/admin/dataCenter/instock/allListDetail': {
+    component: AllListDetail
+  },
+  '/admin/dataCenter/instock/remainderList': {
+    component: RemainderList
+  },
+  '/admin/dataCenter/instock/remainderListDetail': {
+    component: RemainderListDetail
+  },
+  '/admin/dataCenter/instock/orderSaleList': {
+    component: OrderSaleList
+  },
+  '/admin/dataCenter/instock/orderSaleListDetail': {
+    component: OrderSaleListDetail
+  },
+  '/admin/dataCenter/production': {
+    component: PutInList
+  },
+  '/admin/dataCenter/production/putInList': {
+    component: PutInList
+  },
+  '/admin/dataCenter/production/putInListDetail': {
+    component: PutInListDetail
+  },
+  '/admin/dataCenter/production/consumeList': {
+    component: ConsumeList
+  },
+  '/admin/dataCenter/production/consumeListDetail': {
+    component: ConsumeListDetail
+  },
+  '/admin/dataCenter/production/defectiveList': {
+    component: DefectiveList
+  },
+  '/admin/dataCenter/production/defectiveListDetail': {
+    component: DefectiveListDetail
+  },
+  '/admin/dataCenter/sale': {
+    component: SaleOrderList
+  },
+  '/admin/dataCenter/sale/orderList': {
+    component: SaleOrderList
+  },
+  '/admin/dataCenter/sale/settlementList': {
+    component: SaleSettlementList
+  },
+  '/admin/dataCenter/sale/rankingList': {
+    component: SaleRankingList
+  },
+  '/admin/dataCenter/sale/bankList': {
+    component: SaleBankList
+  },
+  '/admin/dataCenter/sale/bankListDetail': {
+    component: SaleBankListDetail
+  },
+  '/admin/dataCenter/member': {
+    component: RechargeList
+  },
+  '/admin/dataCenter/member/rechargeList': {
+    component: RechargeList
+  },
+  '/admin/dataCenter/member/rechargeListDetail': {
+    component: RechargeListDetail
+  },
+  '/admin/dataCenter/member/informationList': {
+    component: InformationList
+  },
+  '/admin/dataCenter/member/consumptionList': {
+    component: ConsumptionList
   },
   '/admin/purchase/order': {
     component: Purchase
