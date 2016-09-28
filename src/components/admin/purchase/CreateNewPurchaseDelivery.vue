@@ -294,7 +294,7 @@
           val.item_amount = Number(val.received_amount) + Number(val.additional_amount)
           val.item_refund = Number(val.refund_amount)
           val.item_main_reference_value = Number(val.main_reference_value)
-          val.item_price = Number (val.item_amount  * val.purchase_price * 100)
+          val.item_price = Number ((val.received_amount-val.item_refund)  * val.purchase_price * 100)
           self.summaryPrice += val.item_price
         })
         this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
@@ -305,7 +305,7 @@
         var result=[];
         for(var i=0;i<array.length;i++){
           if(hash[array[i][ObjPropInArr]]){
-            hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].  item_main_reference_value)
+            hash[array[i][ObjPropInArr]].item_main_reference_value=Number(array[i].item_main_reference_value) + Number( hash[array[i][ObjPropInArr]].item_main_reference_value)
             hash[array[i][ObjPropInArr]].item_amount=Number( hash[array[i][ObjPropInArr]].item_amount)+ array[i].item_amount
             hash[array[i][ObjPropInArr]].item_refund=Number(array[i].item_refund) + Number( hash[array[i][ObjPropInArr]].item_refund)
             hash[array[i][ObjPropInArr]].item_price+=array[i].item_price

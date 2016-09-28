@@ -16,6 +16,7 @@
           <li v-if="authority.product"  :class="highLight.product ? 'active' : ''"><a v-link="{ path: '/admin/production/' +  authorityModule.product[0]}">生产</a></li>
           <li v-if="authority.retail"   :class="highLight.retail ? 'active' : ''"><a v-link="{ path: '/admin/retail/'+ authorityModule.retail[0]}">零售</a></li>
           <li v-if="authority.member"   :class="highLight.member ? 'active' : ''"><a v-link="{ path: '/admin/member'}" >会员</a></li>
+          <li :class="highLight.dataCenter ? 'active' : ''"><a v-link="{ path: '/admin/dataCenter/purchase' }" >数据中心</a></li>
           <!--<li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>-->
         </ul>
       </div>
@@ -39,6 +40,7 @@
            this.highLight.stock = true
          }
          if(this.$route.path.indexOf('/admin/production/')>-1){
+
            this.highLight.product = true
          }
          if(this.$route.path.indexOf('/admin/retail/')>-1){
@@ -47,7 +49,6 @@
          if(this.$route.path.indexOf('/admin/member/')>-1){
            this.highLight.member = true
          }
-         console.log(this.highLight.setting)
 //         第一类大权限
            if(systermAuthority.indexOf('setting')>-1){
              this.authority.setting = true
@@ -86,12 +87,18 @@
          if(systermAuthority.indexOf('manage-account-list')>-1){
            this.authorityModule.setting.push('adminAccount')
          }
+         if(this.authorityModule.setting.length === 0){
+           this.authorityModule.setting[0] = ''
+         }
 //        采购权限处理
          if(systermAuthority.indexOf('purchase-order-list')>-1){
            this.authorityModule.purchase.push('order')
          }
          if(systermAuthority.indexOf('purchase-receipt-list')>-1){
            this.authorityModule.purchase.push('delivery')
+         }
+         if(this.authorityModule.purchase.length === 0){
+           this.authorityModule.purchase[0] = ''
          }
 //         库存权限处理
          if(systermAuthority.indexOf("stock-look-list")>-1){
@@ -115,6 +122,9 @@
          if(systermAuthority.indexOf("requisition-total-list")>-1){
            this.authorityModule.stock.push('apply')
          }
+         if(this.authorityModule.stock.length === 0){
+           this.authorityModule.stock[0] = ''
+         }
 //      生产权限处理
          if(systermAuthority.indexOf('factory-produce-list') > -1){
            this.authorityModule.product.push('factoryProduction')
@@ -134,6 +144,9 @@
          if(systermAuthority.indexOf('produce-appointment-list') > -1){
            this.authorityModule.product.push('creatOrder')
          }
+         if(this.authorityModule.product.length === 0){
+           this.authorityModule.product[0] = ''
+         }
 //        零售权限
          if(systermAuthority.indexOf('settlement-total-list')>-1){
            this.authorityModule.retail.push('statistics')
@@ -141,6 +154,11 @@
          if(systermAuthority.indexOf('settlement-administration-list')>-1){
            this.authorityModule.retail.push('manage')
          }
+         if(this.authorityModule.retail.length === 0){
+           this.authorityModule.retail[0] = ''
+         }
+         console.log("wang")
+         console.log( this.authorityModule.setting[0])
        },
        methods: {
          exit: function () {

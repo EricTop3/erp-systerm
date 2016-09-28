@@ -178,7 +178,7 @@
           postSiteDataToApi(requestUrl + '/front-system/stock/distribution', {
             items: goods,
             operated_at: self.date,
-            remarks: self.remarks,
+            note: self.remarks,
             warehouse_id: self.receiptsStore
           },function (response) {
             window.location.href = '/?#!/site/instock/AllotOutBills/'

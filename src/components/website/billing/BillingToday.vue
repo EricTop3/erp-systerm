@@ -139,7 +139,7 @@
             this.pay_method = '退货退款'
           }
           if (!value.document_number) {
-            value.document_number = '会员卡充值'
+            value.document_number =value.document_number  + '(会员卡充值)'
           }
         })
       },
