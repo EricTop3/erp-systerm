@@ -122,6 +122,17 @@ ul li{list-style: none;}
 /*导航路径*/
 .breadcrumb{background-color: #fff; line-height: 18px; font-size: 12px; padding-left: 0; margin-bottom: 0;}
 .breadcrumb > .active{color: #999;}
+/*导航路径-数据中心*/
+.breadcrumbs{background-color: #fff; line-height: 18px; font-size: 12px; padding-left: 0; margin-bottom: 0;}
+.breadcrumbs > .active{color: #f66061;}
+.breadcrumbs > .active a {color: #f66061;}
+.breadcrumbs a { color: #333;}
+.breadcrumbs a:hover { color: #f66061;}
+.breadcrumbs > li + li:before {
+  content: "| ";
+  padding: 0 5px;
+  color: #ccc;
+}
 /*this end*/
 /*页头*/
 .page-header{background-color: #f5f5f5; border: 1px solid #e5e5e5; margin: 0; padding: 20px; color: #888; margin-bottom: 20px;}
