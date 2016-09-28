@@ -20,9 +20,9 @@
           <form class="form-inline">
             <div class="form-group">
               <label>门店</label>
-              <select class="form-control" v-model="searchData.warehouse_id">
+              <select class="form-control" v-model="searchData.store_id">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
+                <option :value="item.id" v-for="item in providerList">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group">
@@ -116,7 +116,7 @@
           end_time: self.searchData.end_time,
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          warehouse_id: self.searchData.warehouse_id,
+          store_id: self.searchData.store_id,
           category_id: self.searchData.category_id,
           document_number: self.searchData.document_number,
           page: page
@@ -127,12 +127,12 @@
           self.modifyGetedData(self.listdata)
         },function(err){})
       },
-//      获取仓库列表
-      getProviderList: function(){
+//      获取门店列表（/backend-system/store/store）,仓库列表（/backend-system/warehouse-minimal-list）
+      getProviderList: function () {
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
-        getDataFromApi(url,data,function(response){
+        var url = requestSystemUrl + '/backend-system/store/store'
+        getDataFromApi(url, data, function (response) {
           self.providerList = response.data.body.list
         })
       },
@@ -156,7 +156,7 @@
         self.searchData.end_time = ''
         self.searchData.item_code = ''
         self.searchData.item_name = ''
-        self.searchData.warehouse_id = ''
+        self.searchData.store_id = ''
         self.searchData.category_id = ''
         self.searchData.document_number = ''
         this.getListData(1)
@@ -164,8 +164,14 @@
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if (value.total_sum != '') {
-              value.total_sum = '￥' + (value.total_sum * (0.01)).toFixed(2)
+          if (value.sell_unit != '') {
+              value.sell_unit = '￥' + (value.sell_unit * (0.01)).toFixed(2)
+          }
+          if (value.actual_price != '') {
+            value.actual_price = '￥' + (value.actual_price * (0.01)).toFixed(2)
+          }
+          if (value.actual_price_total != '') {
+            value.actual_price_total = '￥' + (value.actual_price_total * (0.01)).toFixed(2)
           }
           switch (value.checked) {
             case  1:
@@ -188,7 +194,7 @@
         var data =
           'item_name=' + this.searchData.item_name + '&' +
           'item_code=' + this.searchData.item_code + '&' +
-          'warehouse_id=' + this.searchData.warehouse_id + '&' +
+          'store_id=' + this.searchData.store_id + '&' +
           'start_time=' + this.searchData.start_time + '&' +
           'end_time=' + this.searchData.end_time + '&' +
           'category_id=' + this.searchData.category_id + '&' +
@@ -207,22 +213,22 @@
         gridColumns: {
           created_at: '下单时间',
           document_number: '小票编号',
-          creator_name: '操作人',
-          warehouse: '门店',
-          auditor_name: '分类',
+          seller_name: '操作人',
+          store_name: '门店',
+          category_name: '分类',
           item_code: '货号',
           item_name: '品名',
           unit_name: '单位',
           unit_specification: '单位规格',
-          demand_amount: '零售价',
-          purchase_unit_price: '实际价格',
-          total_sum: '金额'
+          sell_unit: '零售价',
+          actual_price: '实际价格',
+          actual_price_total: '金额'
         },
         productOperate: false,
         searchData: {
           start_time: '',
           end_time: '',
-          warehouse_id: '',
+          store_id: '',
           category: '',
           item_code: '',
           item_name: '',

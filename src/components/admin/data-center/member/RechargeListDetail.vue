@@ -127,11 +127,8 @@
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if (value.unit_price != '') {
-            value.unit_price = '￥' + (value.unit_price * (0.01)).toFixed(2)
-          }
-          if (value.price != '') {
-            value.price = '￥' + (value.price * (0.01)).toFixed(2)
+          if (value.total_sum != '') {
+            value.total_sum = '￥' + (value.total_sum * (0.01)).toFixed(2)
           }
         })
       }

@@ -41,7 +41,7 @@
             <span class="btn btn-warning" @click="searchCancel()">撤销搜索</span>
 
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <a v-link="{ path: '/admin/dataCenter/instock/RequisitionListDetail'}" class="btn btn-primary spanblocks fr mr10">明细</a>
+            <a v-link="{ path: '/admin/dataCenter/instock/requisitionListDetail'}" class="btn btn-primary spanblocks fr mr10">明细</a>
           </form>
         </div>
 

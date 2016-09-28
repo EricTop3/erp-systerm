@@ -48,7 +48,7 @@
           <tr>
             <td>
               <span class="pr50">零售总量：{{onedata.amount}}</span>
-              <span class="pr50">零售总额：{{onedata.price}}</span>
+              <span class="pr50">零售总额：{{onedata.total_sum}}</span>
             </td>
           </tr>
           </tbody>
@@ -149,6 +149,7 @@
         }
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body.list
+          self.onedata.total_sum = '￥' + (self.onedata.total_sum * (0.01)).toFixed(2)
         }, function (err) {
         })
       },

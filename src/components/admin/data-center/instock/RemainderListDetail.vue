@@ -208,12 +208,19 @@
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if (value.unit_price != '') {
-            value.unit_price = '￥' + (value.unit_price * (0.01)).toFixed(2)
+          if (value.current_stock_price != '') {
+            value.current_stock_price = '￥' + (value.current_stock_price * (0.01)).toFixed(2)
+          }
+          if (value.current_stock_total_sum != '') {
+            value.current_stock_total_sum = '￥' + (value.current_stock_total_sum * (0.01)).toFixed(2)
           }
           if (value.price != '') {
             value.price = '￥' + (value.price * (0.01)).toFixed(2)
           }
+          if (value.total_sum != '') {
+            value.total_sum = '￥' + (value.total_sum * (0.01)).toFixed(2)
+          }
+
           switch (value.checked) {
             case  1:
               value.checked = '未审核'
@@ -296,15 +303,15 @@
           goods_name: '品名',
           unit_name: '单位',
           unit_specification: '单位规格',
-          start_stock: '期初库存数量',
-          start_stock_price: '期初平均单价',
-          start_stock_total_sum: '期初金额',
-          in_stock: '期间入库数量',
-          in_stock_price: '期间入库平均单价',
-          in_stock_total_sum: '期间入库金额',
-          out_stock: '期间出库数量',
-          out_stock_price: '期间出库平均单价',
-          out_stock_total_sum: '期间出库金额',
+//          start_stock: '期初库存数量',
+//          start_stock_price: '期初平均单价',
+//          start_stock_total_sum: '期初金额',
+//          in_stock: '期间入库数量',
+//          in_stock_price: '期间入库平均单价',
+//          in_stock_total_sum: '期间入库金额',
+//          out_stock: '期间出库数量',
+//          out_stock_price: '期间出库平均单价',
+//          out_stock_total_sum: '期间出库金额',
           current_stock: '期末数量',
           current_stock_price: '期末平均单价',
           current_stock_total_sum: '期末金额',
