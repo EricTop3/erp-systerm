@@ -18,6 +18,7 @@
 <style scoped>
   a.active{
     color: #f96062;
+    
     background-color: #fff;
   }
 </style>
