@@ -1,11 +1,11 @@
-ad<template>
+<template>
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="row">
       <left-datacenter></left-datacenter>
-cadf        <!-- 路径导航 -->
+      <div class="col-lg-10">
+        <!-- 路径导航 -->
         <ol class="breadcrumb breadcrumbs">
-          
           <li class="active"><a v-link="{ path: '/admin/dataCenter/purchase/orderStatistics'}"> 采购订单统计</a></li>
           <li><a v-link="{ path: '/admin/dataCenter/purchase/receivingStatistics'}"> 采购收货单统计</a></li>
         </ol>

@@ -1,4 +1,5 @@
-ReceivingStatisticsDetail.vue<template>
+ReceivingStatisticsDetail.vue
+<template>
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="row">
