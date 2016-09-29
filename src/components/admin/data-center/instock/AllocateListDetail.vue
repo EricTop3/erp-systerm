@@ -27,6 +27,7 @@ ReceivingStatisticsDetail.vue
               </select>
             </div>
             <div class="form-group ml10">
+
               <label>调出仓库</label>
               <select class="form-control" v-model="searchData.out_warehouse_id">
                 <option value="">请选择</option>
