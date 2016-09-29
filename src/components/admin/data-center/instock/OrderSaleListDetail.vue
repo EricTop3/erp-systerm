@@ -79,7 +79,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import ErrorTip from '../../../common/ErrorTip'
-  import LeftDatacenter from '../../common/LeftDatacenter'
+  import LeftDatacenter from '../../common/LeftDatacenters'
   import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
   export default{
     components: {
