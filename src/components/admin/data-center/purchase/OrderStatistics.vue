@@ -1,4 +1,4 @@
-<template>
+ad<template>
   <admin-nav></admin-nav>
   <div class="container-fluid">
     <div class="row">
