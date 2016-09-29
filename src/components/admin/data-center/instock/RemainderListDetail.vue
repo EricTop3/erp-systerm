@@ -104,7 +104,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import ErrorTip from '../../../common/ErrorTip'
-  import LeftDatacenter from '../../common/LeftDatacenters'
+  import LeftDatacenter from '../../common/LeftDataCenters'
   import {
     requestUrl,
     requestSystemUrl,

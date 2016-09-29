@@ -1,3 +1,4 @@
+ReceivingStatisticsDetail.vue
 <template>
   <admin-nav></admin-nav>
   <div class="container-fluid">
@@ -26,6 +27,7 @@
               </select>
             </div>
             <div class="form-group ml10">
+
               <label>调出仓库</label>
               <select class="form-control" v-model="searchData.out_warehouse_id">
                 <option value="">请选择</option>
@@ -101,7 +103,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import ErrorTip from '../../../common/ErrorTip'
-  import LeftDatacenter from '../../common/LeftDatacenters'
+  import LeftDatacenter from '../../common/LeftDataCenters'
   import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
   export default{
     components: {
