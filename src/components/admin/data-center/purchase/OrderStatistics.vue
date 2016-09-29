@@ -13,6 +13,7 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
+
               <label>供应商</label>
               <select class="form-control" v-model="searchData.provider_id">
                 <option value="">请选择</option>
