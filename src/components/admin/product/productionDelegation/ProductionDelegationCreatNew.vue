@@ -106,6 +106,7 @@
   <introduce-data
     :title="origenData.title"
     :url="origenData.dataUrl"
+    :product-flag ="origenData.productFlag"
     :instroduce-data-modal.sync='modal.parentIntroModal'
     :instroduce-data-modal-size="modal.parentIntroModalSize"
     :first-data-title="origenData.firstDataTitle"
@@ -425,6 +426,7 @@
         },
         origenData: {
           title: '原始门店要货单',
+          productFlag: true,
           dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
           firstDataTitle: {
             "document_number": "要货单号",
