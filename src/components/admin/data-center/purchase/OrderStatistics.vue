@@ -13,6 +13,7 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
+
               <label>供应商</label>
               <select class="form-control" v-model="searchData.provider_id">
                 <option value="">请选择</option>
@@ -73,7 +74,7 @@
   import Summary from '../../../common/Summary'
   import DatePicker from  '../../../common/DatePicker'
   import ErrorTip from '../../../common/ErrorTip'
-  import LeftDatacenter from '../../common/LeftDatacenter'
+  import LeftDatacenter from '../../common/LeftDataCenters'
   import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
   export default{
     components: {
