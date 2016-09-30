@@ -177,7 +177,7 @@
     ready: function () {
       var self = this
 //    供应商请求接口
-      var url = requestSystemUrl + '/backend-system/provider/provider'
+      var url = requestSystemUrl + '/backend-system/provider/get/provider'
 //    获取供应商列表
       getDataFromApi(url,{},function(response){
         self.supplierList = response.data.body.list
@@ -385,7 +385,7 @@
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
-          categoryUrl: requestSystemUrl + '/backend-system/product/category',
+          categoryUrl: requestSystemUrl + '/backend-system/product/get/category',
           productData: {
             product_type: 2
           }

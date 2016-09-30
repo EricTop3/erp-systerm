@@ -165,7 +165,7 @@
     ready: function () {
       var self = this
 //    供应商请求接口
-      var url = requestSystemUrl + '/backend-system/provider/provider'
+      var url = requestSystemUrl + '/backend-system/provider/get/provider'
 //    获取仓库名称
       getDataFromApi( requestUrl + '/backend-system/warehouse-minimal-list',{type:2},function(response){
         self.alotStock = response.data.body.list
@@ -369,7 +369,7 @@
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
-          categoryUrl: requestSystemUrl + '/backend-system/product/category',
+          categoryUrl: requestSystemUrl + '/backend-system/product/get/category',
           productData: {
             product_type: 2
           }

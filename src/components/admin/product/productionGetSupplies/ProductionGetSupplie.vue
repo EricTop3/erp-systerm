@@ -328,7 +328,7 @@
         this.searchData.receive_end_time = ''
         this.getlistData(1)
       },
-//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
+//      获取生产车间名称
       getlistProviderA: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'

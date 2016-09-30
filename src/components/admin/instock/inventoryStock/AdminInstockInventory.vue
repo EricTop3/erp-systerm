@@ -103,12 +103,12 @@
         self.search.warehouseList = response.data.body.list
       })
 //    获取制单人(后台管理员)
-      var makUrl = requestSystemUrl + '/backend-system/store/account'
+      var makUrl = requestSystemUrl + '/backend-system/store/get/account'
       getDataFromApi(makUrl, {}, function (response) {
         self.search.orderMaker = response.data.body.list
       })
 //    获取制单人（前台用户名）
-      var storeAccountUrl = requestSystemUrl + '/backend-system/store/store-account'
+      var storeAccountUrl = requestSystemUrl + '/backend-system/store/get/account'
       getDataFromApi(storeAccountUrl, {}, function (response) {
         self.storeAccountData = response.data.body.list
       })

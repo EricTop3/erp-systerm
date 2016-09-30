@@ -175,7 +175,7 @@
         self.warehouseList = response.data.body.list
       })
 //      获取合作工厂cooperativeFactory
-      getDataFromApi(requestSystemUrl + '/backend-system/provider/provider', {}, function (response) {
+      getDataFromApi(requestSystemUrl + '/backend-system/provider/get/provider', {}, function (response) {
         self.cooperativeFactory = response.data.body.list
       })
     },

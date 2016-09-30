@@ -164,7 +164,7 @@
       getCategoryList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/product/category'
+        var url = requestSystemUrl + '/backend-system/product/get/category'
         getDataFromApi(url,data,function(response){
           self.categoryList = response.data.body.list
         })

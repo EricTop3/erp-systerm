@@ -114,7 +114,7 @@
       getProviderList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url,data,function(response){
           self.providerList = response.data.body.list
         })
@@ -123,7 +123,7 @@
       getPersonList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/store/store-account'
+        var url = requestSystemUrl + '/backend-system/store/get/account'
         getDataFromApi(url,data,function(response){
           self.personList = response.data.body.list
         })

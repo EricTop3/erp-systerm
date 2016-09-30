@@ -125,7 +125,7 @@
 //      分类列表数据渲染
       categoryListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/product/category'
+        var url = requestSystemUrl + '/backend-system/product/get/category'
         getDataFromApi(url, {}, function (response) {
           self.categoryData = response.data.body.list
         })
@@ -133,7 +133,7 @@
 //      门店列表数据渲染
       storeListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url, {}, function (response) {
           self.storeData = response.data.body.list
         })

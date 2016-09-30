@@ -154,7 +154,7 @@
       getProviderList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/provider/provider'
+        var url = requestSystemUrl + '/backend-system/provider/get/provider'
         getDataFromApi(url,data,function(response){
           self.providerList = response.data.body.list
         })

@@ -88,11 +88,11 @@
     ready: function (){
       var self = this
 //         获取制单人
-      getDataFromApi( requestUrl + '/backend-system/store/account',{},function(response){
+      getDataFromApi( requestUrl + '/backend-system/store/get/account',{},function(response){
         self.search.orderMaker = response.data.body.list
       })
 //    获取供应商
-      getDataFromApi(requestUrl + '/backend-system/provider/provider',{},function(response){
+      getDataFromApi(requestUrl + '/backend-system/provider/get/provider',{},function(response){
         self.search.providerList = response.data.body.list
       })
 //      获取仓库列表
