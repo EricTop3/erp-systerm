@@ -550,7 +550,7 @@
         var self = this
         this.PermissionModal = true
         this.isflag = false
-        var url = requestSystemUrl + '/backend-system/store/get/account/' + this.thisId + '/permissions'
+        var url = requestSystemUrl + '/backend-system/store/account/' + this.thisId + '/permissions'
 
         getDataFromApi(url, {}, function (response) {
           self.permissionsData = response.data.body.list
@@ -588,7 +588,7 @@
       },
 //      权限保存
       confirmPermission: function () {
-        var url = requestSystemUrl + '/backend-system/store/get/account/' + this.thisId + '/permissions'
+        var url = requestSystemUrl + '/backend-system/store/account/' + this.thisId + '/permissions'
         var permissions = []
         $.each($("#permissionsId input:checked"), function () {
           permissions.push($(this).val())
