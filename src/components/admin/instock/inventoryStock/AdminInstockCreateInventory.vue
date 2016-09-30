@@ -315,7 +315,7 @@
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
-          categoryUrl: requestSystemUrl + '/backend-system/product/category',
+          categoryUrl: requestSystemUrl + '/backend-system/product/get/category',
         }
       }
     }

@@ -12,31 +12,21 @@
           <li><a v-link="{ path: '/admin/dataCenter/instock/distributionList'}"> 配送单统计</a></li>
           <li><a v-link="{ path: '/admin/dataCenter/instock/allList'}"> 收发存汇总表</a></li>
           <li><a v-link="{ path: '/admin/dataCenter/instock/remainderList'}"> 存货总账</a></li>
-          <li class="active"><a v-link="{ path: '/admin/dataCenter/instock/remainderListDetail'}"> 存货总账明细</a></li>
+          <li class="active"><a v-link="{ path: '/admin/dataCenter/instock/remainderListDetail'}"> 存货明细账</a></li>
           <li><a v-link="{ path: '/admin/dataCenter/instock/orderSaleList'}"> 零售出库单统计</a></li>
         </ol>
         <!-- 页头 -->
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>出货仓库</label>
-              <select class="form-control" v-model="searchData.warehouse_id">
+              <label>分类</label>
+              <select class="form-control" v-model="searchData.category_id">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
+                <option :value="item.id" v-for="item in providerList">{{item.display_name}}</option>
               </select>
             </div>
+            
             <div class="form-group ml10">
-              <label>调入仓库</label>
-              <select class="form-control" v-model="searchData.stream_origin_id">
-                <option value="">请选择</option>
-                <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
-              </select>
-            </div>
-            <div class="form-group  ml10">
-              <label>货号</label>
-              <input type="text" class="form-control" placeholder="请输入货号" v-model="searchData.item_code">
-            </div>
-            <div class="form-group  ml10">
               <label>品名</label>
               <input type="text" class="form-control" placeholder="请输入商品名称" v-model="searchData.item_name">
             </div>
@@ -46,32 +36,7 @@
               -
               <date-picker :value.sync="searchData.end_time" time-text=结束时间></date-picker>
             </div>
-            <div class="form-group  ml10">
-              <label>配送单号</label>
-              <input type="text" class="form-control" placeholder="请输入单号" v-model="searchData.document_number">
-            </div>
-            <div class="form-group ml10">
-              <label>状态</label>
-              <select class="form-control" v-model="searchData.checked">
-                <option value="">请选择</option>
-                <option value="2">已完成</option>
-                <option value="1">已审核</option>
-                <option value="0">未审核</option>
-              </select>
-            </div>
-            <div class="form-group  ml10">
-              <label>制单人</label>
-              <select class="form-control" v-model="searchData.creator_id">
-                <option value="">请选择</option>
-                <option :value="item.id" v-for="item in personList">{{item.name}}</option>
-              </select>
-            </div>
-            <div class="form-group ml10">
-              <label>制单日期</label>
-              <date-picker :value.sync="searchData.start_receive_time" time-text=开始时间></date-picker>
-              -
-              <date-picker :value.sync="searchData.end_receive_time" time-text=结束时间></date-picker>
-            </div>
+
             <span class="btn btn-primary " @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="searchCancel()">撤销搜索</span>
 
@@ -80,7 +45,52 @@
         </div>
 
         <!-- 列表渲染表格 -->
-        <grid :data="listdata" :columns="gridColumns" :operate="productOperate"></grid>
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+          <tr class="text-center">
+            <td class="text-left">分类</td>
+            <td>货号</td>
+            <td>品名</td>
+            <td>单位</td>
+            <td>单位规格</td>
+            <td>期间入库数量</td>
+            <td>期间入库单价</td>
+            <td>期间入库金额</td>
+            <td>期间出库数量</td>
+            <td>期间出库平均单价</td>
+            <td>期间出库金额</td>
+            <td>即时库存数量</td>
+            <td>即时库存单价</td>
+            <td>即时库存金额</td>
+            <td>操作类型</td>
+            <td>操作时间</td>
+            <td>操作人</td>
+            <td>单号</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-center" v-for="item in listdata">
+            <td class="text-left">{{item.category_name}}</td>
+            <td>{{item.goods_code}}</td>
+            <td>{{item.goods_name}}</td>
+            <td>{{item.unit_name}}</td>
+            <td>{{item.unit_specification}}</td>
+            <td><template v-if="item.amount > 0">{{item.amount}}</template></td>
+            <td><template v-if="item.price > 0">￥ {{item.price}}</template></td>
+            <td><template v-if="item.total_sum > 0">￥ {{item.total_sum}}</template></td>
+            <td><template v-if="item.amount < 0">{{item.amount}}</template></td>
+            <td><template v-if="item.price < 0">￥ {{item.price}}</template></td>
+            <td><template v-if="item.total_sum < 0">￥ {{item.total_sum}}</template></td>
+            <td>{{item.current_stock}}</td>
+            <td>{{item.current_stock_price}}</td>
+            <td>{{item.current_stock_total_sum}}</td>
+            <td>{{item.operated_type}}</td>
+            <td>{{item.created_at}}</td>
+            <td>{{item.creator_name}}</td>
+            <td>{{item.document_number}}</td>
+          </tr>
+          </tbody>
+        </table>
 
         <!--翻页-->
         <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'
@@ -136,10 +146,8 @@
     ready: function () {
 //      获取列表数据
       this.getListData(1)
-//      获取仓库列表
+//      获取分类列表
       this.getProviderList()
-//      获取制单人列表
-      this.getPersonList()
     },
     methods: {
 //      获取数据列表
@@ -149,15 +157,8 @@
         var data = {
           start_time: self.searchData.start_time,
           end_time: self.searchData.end_time,
-          item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          creator_id: self.searchData.creator_id,
-          warehouse_id: self.searchData.warehouse_id,
-          stream_origin_id: self.searchData.stream_origin_id,
-          checked: self.searchData.checked,
-          start_receive_time: self.searchData.start_receive_time,
-          end_receive_time: self.searchData.end_receive_time,
-          document_number: self.searchData.document_number,
+          category_id: self.searchData.category_id,
           page: page
         }
         getDataFromApi(url, data, function (response) {
@@ -167,22 +168,13 @@
         }, function (err) {
         })
       },
-//      获取仓库列表
+//      获取分类列表/backend-system/product/category
       getProviderList: function () {
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+        var url = requestSystemUrl + '/backend-system/product/category'
         getDataFromApi(url, data, function (response) {
           self.providerList = response.data.body.list
-        })
-      },
-//      获取制单人列表
-      getPersonList: function () {
-        var self = this
-        var data = {}
-        var url = requestSystemUrl + '/backend-system/store/account'
-        getDataFromApi(url, data, function (response) {
-          self.personList = response.data.body.list
         })
       },
 //      搜索
@@ -194,15 +186,8 @@
         var self = this
         self.searchData.start_time = ''
         self.searchData.end_time = ''
-        self.searchData.item_code = ''
         self.searchData.item_name = ''
-        self.searchData.creator_id = ''
-        self.searchData.warehouse_id = ''
-        self.searchData.stream_origin_id = ''
-        self.searchData.checked = ''
-        self.searchData.start_receive_time = ''
-        self.searchData.end_receive_time = ''
-        self.searchData.document_number = ''
+        self.searchData.category_id = ''
         this.getListData(1)
       },
 //    对获取到的数据进行处理1
@@ -215,10 +200,10 @@
             value.current_stock_total_sum = '￥' + (value.current_stock_total_sum * (0.01)).toFixed(2)
           }
           if (value.price != '') {
-            value.price = '￥' + (value.price * (0.01)).toFixed(2)
+            value.price =(value.price * (0.01)).toFixed(2)
           }
           if (value.total_sum != '') {
-            value.total_sum = '￥' + (value.total_sum * (0.01)).toFixed(2)
+            value.total_sum =(value.total_sum * (0.01)).toFixed(2)
           }
 
           switch (value.checked) {
@@ -276,16 +261,9 @@
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/data-center/stock/log-collect-list'
         var data =
           'item_name=' + this.searchData.item_name + '&' +
-          'item_code=' + this.searchData.item_code + '&' +
-          'creator_id=' + this.searchData.creator_id + '&' +
-          'warehouse_id=' + this.searchData.warehouse_id + '&' +
-          'stream_origin_id=' + this.searchData.stream_origin_id + '&' +
+          'category_id=' + this.searchData.category_id + '&' +
           'start_time=' + this.searchData.start_time + '&' +
-          'end_time=' + this.searchData.end_time + '&' +
-          'checked=' + this.searchData.checked + '&' +
-          'document_number=' + this.searchData.document_number + '&' +
-          'start_receive_time=' + this.searchData.start_receive_time + '&' +
-          'end_receive_time=' + this.searchData.end_receive_time
+          'end_time=' + this.searchData.end_time
         return this.exportUrl = url + '/export-excel/all?' + data
       }
     },
@@ -303,18 +281,15 @@
           goods_name: '品名',
           unit_name: '单位',
           unit_specification: '单位规格',
-//          start_stock: '期初库存数量',
-//          start_stock_price: '期初平均单价',
-//          start_stock_total_sum: '期初金额',
-//          in_stock: '期间入库数量',
-//          in_stock_price: '期间入库平均单价',
-//          in_stock_total_sum: '期间入库金额',
-//          out_stock: '期间出库数量',
-//          out_stock_price: '期间出库平均单价',
-//          out_stock_total_sum: '期间出库金额',
-          current_stock: '期末数量',
-          current_stock_price: '期末平均单价',
-          current_stock_total_sum: '期末金额',
+          in_stock: '期间入库数量',
+          in_stock_price: '期间入库平均单价',
+          in_stock_total_sum: '期间入库金额',
+          out_stock: '期间出库数量',
+          out_stock_price: '期间出库平均单价',
+          out_stock_total_sum: '期间出库金额',
+          current_stock: '即时库存',
+          current_stock_price: '即时单价',
+          current_stock_total_sum: '即时金额',
           operated_type: '操作类型',
           created_at: '操作时间',
           creator_name: '操作人',
@@ -324,15 +299,8 @@
         searchData: {
           start_time: '',
           end_time: '',
-          creator_id: '',
-          warehouse_id: '',
-          stream_origin_id: '',
-          item_code: '',
-          item_name: '',
-          checked: '',
-          start_receive_time: '',
-          end_receive_time: '',
-          document_number: ''
+          category_id: '',
+          item_name: ''
         },
         modal: {
           errModal: false,

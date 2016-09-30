@@ -20,6 +20,13 @@
                 <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
               </select>
             </div>
+            <div class="form-group ml10">
+              <label>制单人</label>
+              <select class="form-control" v-model="searchData.creator_id">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in makerList" >{{item.name}}</option>
+              </select>
+            </div>
             <div class="form-group  ml10">
               <label>货号</label>
               <input type="text" class="form-control" placeholder="请输入货号" v-model="searchData.item_code">
@@ -106,6 +113,8 @@
       this.getListData(1)
 //      获取供应商列表
       this.getProviderList()
+//      获取制单人
+      this.getMakerList()
     },
     methods: {
 //      获取数据列表
@@ -118,6 +127,7 @@
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
           provider_id: self.searchData.provider_id,
+          creator_id: self.searchData.creator_id,
           checked: self.searchData.checked,
           start_receive_time: self.searchData.start_receive_time,
           end_receive_time: self.searchData.end_receive_time,
@@ -134,9 +144,16 @@
       getProviderList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/provider/provider'
+        var url = requestSystemUrl + '/backend-system/provider/get/provider'
         getDataFromApi(url,data,function(response){
           self.providerList = response.data.body.list
+        })
+      },
+//      获取制单人
+      getMakerList: function () {
+        var self = this
+        getDataFromApi( requestUrl + '/backend-system/store/account',{},function(response){
+          self.makerList = response.data.body.list
         })
       },
 //      搜索
@@ -151,6 +168,7 @@
         self.searchData.item_code = ''
         self.searchData.item_name = ''
         self.searchData.provider_id = ''
+        self.searchData.creator_id = ''
         self.searchData.checked = ''
         self.searchData.start_receive_time = ''
         self.searchData.end_receive_time = ''
@@ -188,6 +206,7 @@
           'item_name=' + this.searchData.item_name + '&' +
           'item_code=' + this.searchData.item_code + '&' +
           'provider_id=' + this.searchData.provider_id + '&' +
+          'creator_id=' + this.searchData.creator_id + '&' +
           'start_time=' + this.searchData.start_time + '&' +
           'end_time=' + this.searchData.end_time + '&' +
           'checked=' + this.searchData.checked + '&' +
@@ -204,6 +223,7 @@
         listdata: [],
         onedata: [],
         providerList: [],
+        makerList: [],
         gridColumns: {
           created_at: '制单日期',
           document_number: '采购单号',
@@ -223,6 +243,7 @@
         searchData: {
           start_time: '',
           end_time: '',
+          creator_id: '',
           provider_id: '',
           item_code: '',
           item_name: '',

@@ -15,7 +15,7 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>门店</label>
+              <label>仓库</label>
               <select class="form-control" v-model="searchData.store_id">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in providerList">{{item.display_name}}</option>
@@ -128,7 +128,7 @@
       getProviderList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url,data,function(response){
           self.providerList = response.data.body.list
         })
@@ -137,7 +137,7 @@
       getCategoryList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/product/category'
+        var url = requestSystemUrl + '/backend-system/product/get/category'
         getDataFromApi(url,data,function(response){
           self.categoryList = response.data.body.list
         })

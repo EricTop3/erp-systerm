@@ -117,7 +117,7 @@
 //      获取门店列表
           if(this.isPurchase){
             var self = this
-            getDataFromApi(requestUrl + '/backend-system/store/store',{},function (response){
+            getDataFromApi(requestUrl + '/backend-system/store/get/store',{},function (response){
               self.storeList = response.data.body.list
             })
           }

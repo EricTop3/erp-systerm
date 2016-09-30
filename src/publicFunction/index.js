@@ -220,7 +220,6 @@
           window.location.href = '?#!/admin/login'
         }
         if(err.status === 403){
-          window.history.back()
           window.alert("你没得权限操作")
         }
         error && error(err)
@@ -243,7 +242,6 @@
         }
         if(err.status === 403){
           window.history.back()
-          window.alert("你没得权限操作")
           console.log(ErrorTip)
         }
         error && error(err)

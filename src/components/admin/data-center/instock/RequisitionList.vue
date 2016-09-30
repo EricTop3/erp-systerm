@@ -171,8 +171,11 @@
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if (value.price != '') {
+          if (value.price != '' || value.price == 0) {
               value.price = '￥' + (value.price * (0.01)).toFixed(2)
+          }
+          if (value.unit_price != '' || value.unit_price == 0) {
+              value.unit_price = '￥' + (value.unit_price * (0.01)).toFixed(2)
           }
         })
       }
@@ -204,6 +207,7 @@
           unit_name: '单位',
           unit_specification: '单位规格',
           amount: '数量',
+          unit_price: '价格',
           price: '金额'
         },
         productOperate: false,

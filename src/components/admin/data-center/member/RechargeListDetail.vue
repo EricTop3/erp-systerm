@@ -115,11 +115,11 @@
         self.searchData.name = ''
         this.getListData(1)
       },
-//      获取门店列表（/backend-system/store/store）,仓库列表（/backend-system/warehouse-minimal-list）
+//      获取门店列表（/backend-system/store/get/store）,仓库列表（/backend-system/warehouse-minimal-list）
       getProviderList: function () {
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url, data, function (response) {
           self.providerList = response.data.body.list
         })
@@ -153,8 +153,8 @@
         providerList: [],
         gridColumns: {
           store_name: '门店',
-          vip_card_number: '会员姓名',
-          name: '会员状态',
+          vip_card_number: '会员卡号',
+          name: '会员姓名',
           type: '会员类型',
           created_at: '充值日期',
           document_number: '充值单号',

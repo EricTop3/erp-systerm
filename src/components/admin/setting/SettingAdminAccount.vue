@@ -23,7 +23,7 @@
             </div>
             <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr" @click="createModal=true">新建账号</span>
+            <span class="btn btn-info spanblocks fr" @click="createModal=true" v-if="authority.create">新建账号</span>
           </form>
         </div>
 
@@ -45,8 +45,8 @@
             <td><span v-for="entry in item.permissions" track-by="$index">{{entry}}</span></td>
             <td>{{item.status}}</td>
             <td>
-              <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span class="btn btn-default btn-sm" v-if="item.id != 1 &&  isHasGrant" @click="getPermission($event)">权限管理</span>
+              <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+              <span class="btn btn-default btn-sm" v-if="item.id != 1 &&  isHasGrant && authority.grantManagement" @click="getPermission($event)">权限管理</span>
 
             </td>
           </tr>
@@ -277,13 +277,23 @@
       this.getlistData(1)
       this.getlistProviderA()
       this.getlistProviderB()
+      //      权限判断
       if (systermAuthority.indexOf('grant') > -1) {
         this.isHasGrant = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-grant-management')>-1){
+        this.authority.grantManagement = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-edit')>-1){
+        this.authority.edit = true
       }
 //      this.getPermission()
     },
     methods: {
-//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
+//      获取生产车间名称
       getlistProviderA: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
@@ -348,7 +358,7 @@
 //      获取列表
       getlistData: function (page) {
         this.$http({
-          url: requestUrl + '/backend-system/store/account',
+          url: requestUrl + '/backend-system/store/get/account',
           method: 'get',
           data: {
             name: this.searchData.name || '',
@@ -399,7 +409,7 @@
 //      新增账号
       createSubmit: function () {
         this.$http.post(
-          requestUrl + '/backend-system/store/account',
+          requestUrl + '/backend-system/store/get/account',
           {
             account: this.postData.account,
             name: this.postData.name,
@@ -428,7 +438,7 @@
       edit: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/store/account/' + this.thisId,
+          url: requestUrl + '/backend-system/store/get/account/' + this.thisId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -441,7 +451,7 @@
 //      编辑后保存
       confirmEdit: function () {
         this.$http({
-          url: requestUrl + '/backend-system/store/account/' + this.thisId,
+          url: requestUrl + '/backend-system/store/get/account/' + this.thisId,
           method: 'put',
           data: {
             name: this.formData.name,
@@ -637,6 +647,11 @@
           account: '登录名',
           permissions: '权限',
           status: '状态'
+        },
+        authority: {
+          edit: false,
+          grantManagement: false,
+          create: false
         },
         postData: {
           account: '',

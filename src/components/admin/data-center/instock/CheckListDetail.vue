@@ -151,7 +151,7 @@
       getPersonList: function() {
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/store/account'
+        var url = requestSystemUrl + '/backend-system/store/get/account'
         getDataFromApi(url, data, function (response) {
           self.personList = response.data.body.list
         })
@@ -225,7 +225,7 @@
           item_name: '品名',
           unit_name: '单位',
           unit_specification: '单位规格',
-          system_stock: '数量',
+          system_stock: '系统库存量',
           main_reference_value: '实际库存量',
           difference: '差异库存'
         },

@@ -19,6 +19,13 @@
                 <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
               </select>
             </div>
+            <div class="form-group ml10">
+              <label>仓库</label>
+              <select class="form-control" v-model="searchData.warehouse_id">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in warehouserList">{{item.name}}</option>
+              </select>
+            </div>
             <div class="form-group  ml10">
               <label>货号</label>
               <input type="text" class="form-control" placeholder="请输入货号" v-model="searchData.item_code">
@@ -99,6 +106,8 @@
       this.getOneData(1)
 //      获取供应商列表
       this.getProviderList()
+//      获取仓库列表
+      this.getWarehouserList()
     },
     methods: {
 //      获取数据列表
@@ -111,6 +120,7 @@
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
           provider_id: self.searchData.provider_id,
+          warehouse_id: self.searchData.warehouse_id,
           page: page
         }
         getDataFromApi(url,data,function(response){
@@ -128,7 +138,8 @@
           end_time: self.searchData.end_time,
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          provider_id: self.searchData.provider_id
+          provider_id: self.searchData.provider_id,
+          warehouse_id: self.searchData.warehouse_id
         }
         getDataFromApi(url,data,function(response){
           self.onedata = response.data.body.list
@@ -139,9 +150,18 @@
       getProviderList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/provider/provider'
+        var url = requestSystemUrl + '/backend-system/provider/get/provider'
         getDataFromApi(url,data,function(response){
           self.providerList = response.data.body.list
+        })
+      },
+//      获取仓库列表
+      getWarehouserList: function(){
+        var self = this
+        var data = {}
+        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+        getDataFromApi(url,data,function(response){
+          self.warehouserList = response.data.body.list
         })
       },
 //      搜索
@@ -157,6 +177,7 @@
         self.searchData.item_code = ''
         self.searchData.item_name = ''
         self.searchData.provider_id = ''
+        self.searchData.warehouse_id = ''
         this.getListData(1)
         this.getOneData()
       },
@@ -180,6 +201,7 @@
           'item_name=' + this.searchData.item_name + '&' +
           'item_code=' + this.searchData.item_code + '&' +
           'provider_id=' + this.searchData.provider_id + '&' +
+          'warehouse_id=' + this.searchData.warehouse_id + '&' +
           'start_time=' + this.searchData.start_time + '&' +
           'end_time=' + this.searchData.end_time
         return this.exportUrl = url + '/export-excel?' + data
@@ -192,6 +214,7 @@
         listdata: [],
         onedata: [],
         providerList: [],
+        warehouserList: [],
         gridColumns: {
           warehouse: '仓库',
           provider_name: '供应商',
@@ -208,6 +231,7 @@
           start_time: '',
           end_time: '',
           provider_id: '',
+          warehouse_id: '',
           item_code: '',
           item_name: ''
         },

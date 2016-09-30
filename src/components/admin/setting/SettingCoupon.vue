@@ -13,7 +13,7 @@
 
         <!-- 页头 -->
         <div class="page-header">
-          <span class="btn btn-info fr spanblocks" @click="createModal=true">新增促销</span>
+          <span class="btn btn-info fr spanblocks" @click="createModal=true" v-if="authority.create">新增促销</span>
           <div class="clearboth"></div>
         </div>
 
@@ -38,8 +38,8 @@
             <td>{{item.begin_time}}</td>
             <td>{{item.end_time}}</td>
             <td>
-              <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span v-if="item.model!='Member'" class="btn btn-warning btn-sm" @click="deletes($event)">删除</span>
+              <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+              <span v-if="item.model!='Member' && authority.delete" class="btn btn-warning btn-sm" @click="deletes($event)" >删除</span>
             </td>
           </tr>
           </tbody>
@@ -207,7 +207,7 @@
   import Page from '../../common/Page'
   import ErrorTip from '../../common/ErrorTip'
   import DatePicker from  '../../common/DatePicker'
-  import {requestUrl, requestSystemUrl, token, searchRequest, exchangeData, error, putDataToApi, postDataToApi, getDataFromApi, deleteRequest} from '../../../publicFunction/index'
+  import {requestUrl, requestSystemUrl, token, searchRequest, exchangeData, error, putDataToApi, postDataToApi, getDataFromApi, deleteRequest,systermAuthority} from '../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
@@ -226,12 +226,22 @@
     },
     ready: function () {
       this.getlistData(1)
+//     权限判断
+      if(systermAuthority.indexOf('discount-setting-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('discount-setting-list-delete')>-1){
+        this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('discount-setting-list-edit')>-1){
+        this.authority.edit = true
+      }
     },
     methods: {
 //      列表数据渲染
       getlistData: function (page) {
         var self = this
-        var url = requestSystemUrl + '/backend-system/coupon/coupon'
+        var url = requestSystemUrl + '/backend-system/coupon/get/coupon'
         var data = {
           page: page || ''
         }
@@ -244,7 +254,7 @@
       edit: function (event) {
         this.editModal = true
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        var url = requestSystemUrl + '/backend-system/coupon/coupon/' +this.thisId
+        var url = requestSystemUrl + '/backend-system/coupon/get/coupon/' +this.thisId
         var self = this
         getDataFromApi(url,{},function (response) {
           self.formData = response.data.body
@@ -252,7 +262,7 @@
       },
 //      保存编辑
       confirmEdit: function () {
-        var url = requestSystemUrl + '/backend-system/coupon/coupon/' +this.thisId
+        var url = requestSystemUrl + '/backend-system/coupon/get/coupon/' +this.thisId
         var data = {
           display_name: this.formData.display_name,
           type: this.formData.type,
@@ -274,7 +284,7 @@
       },
 //      确认删除
       confirmDelete: function () {
-        var url = requestSystemUrl + '/backend-system/coupon/coupon/' + this.thisId
+        var url = requestSystemUrl + '/backend-system/coupon/get/coupon/' + this.thisId
         var self = this
         deleteRequest(url,function (response) {
           self.deleteModal = false
@@ -283,7 +293,7 @@
       },
 //      添加促销
       createSubmit: function () {
-        var url = requestSystemUrl + '/backend-system/coupon/coupon'
+        var url = requestSystemUrl + '/backend-system/coupon/get/coupon'
         var data = {
           display_name: this.addFormData.display_name,
           type: this.addFormData.type,
@@ -354,6 +364,11 @@
         thisId: '',
         listdata: [],
         page: [],
+        authority: {
+          edit: false,
+          delete: false,
+          create: false
+        },
         formData: {
           display_name: '',
           type: '',

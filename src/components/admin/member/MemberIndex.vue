@@ -232,15 +232,15 @@
 //      门店列表数据渲染
       storeListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url, {}, function (response) {
           self.storeData = response.data.body.list
         })
       },
-//      优惠类型列表获取 /backend-system/coupon/coupon
+//      优惠类型列表获取 /backend-system/coupon/get/coupon
       couponListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/coupon/coupon'
+        var url = requestSystemUrl + '/backend-system/coupon/get/coupon'
         getDataFromApi(url, {}, function (response) {
           self.couponData = response.data.body.list
         })

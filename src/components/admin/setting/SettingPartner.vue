@@ -32,16 +32,16 @@
             </div>
             <button type="submit" class="btn btn-primary" @click="search()">搜索</button>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr" @click="create()">新建合作方</span>
+            <span class="btn btn-info spanblocks fr" @click="create()"  v-if="authority.create">新建合作方</span>
           </form>
         </div>
 
         <!-- 表格 -->
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
-            <list-delete :delete-data="listdata"></list-delete>
-            <span class="btn btn-success btn-sm" @click="edit($event)">编辑</span>
-            <span class="btn btn-default btn-sm" @click="view($event)">查看</span>
+            <list-delete :delete-data="listdata" v-if="authority.delete"></list-delete>
+            <span class="btn btn-success btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+            <span class="btn btn-default btn-sm" @click="view($event)" v-if="authority.look">查看</span>
           </div>
         </grid>
         <!--分页-->
@@ -342,7 +342,8 @@
     exchangeData,
     postDataToApi,
     getDataFromApi,
-    deleteRequest
+    deleteRequest,
+    systermAuthority
   } from '../../../publicFunction/index'
   export default{
     components: {
@@ -363,19 +364,32 @@
       delete: function (id) {
         console.log(id)
         var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/provider/provider/' + id, function (response) {
+        deleteRequest(requestSystemUrl + '/backend-system/provider/get/provider/' + id, function (response) {
           self.getlistData(1)
         })
       }
     },
     ready: function () {
       this.getlistData(1)
+      //      权限判断
+      if(systermAuthority.indexOf('cooperation-setting-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('cooperation-setting-list-delete')>-1){
+        this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('cooperation-setting-list-edit')>-1){
+        this.authority.edit = true
+      }
+      if(systermAuthority.indexOf('cooperation-setting-list-index')>-1){
+        this.authority.look = true
+      }
     },
     methods: {
 //      列表数据渲染
       getlistData: function (page) {
         var self = this
-        var url = requestSystemUrl + '/backend-system/provider/provider'
+        var url = requestSystemUrl + '/backend-system/provider/get/provider'
         var data = {
           code: this.searchData.code || '',
           name: this.searchData.name || '',
@@ -421,7 +435,7 @@
           contact_phone: this.postData.contact_phone || '',
           contact_address: this.postData.contact_address || ''
         }
-        postDataToApi(requestUrl + '/backend-system/provider/provider', data, function (response) {
+        postDataToApi(requestUrl + '/backend-system/provider/get/provider', data, function (response) {
           self.createModal = false
           self.getlistData(1)
         })
@@ -438,7 +452,7 @@
       edit: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/provider/provider/' + this.thisId,
+          url: requestUrl + '/backend-system/provider/get/provider/' + this.thisId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -455,7 +469,7 @@
 //      编辑后保存
       confirmEdit: function () {
         this.$http({
-          url: requestUrl + '/backend-system/provider/provider/' + this.thisId,
+          url: requestUrl + '/backend-system/provider/get/provider/' + this.thisId,
           method: 'put',
           data: {
             type: this.postData.type,
@@ -481,7 +495,7 @@
       view: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/provider/provider/' + this.thisId,
+          url: requestUrl + '/backend-system/provider/get/provider/' + this.thisId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -577,6 +591,12 @@
           code: '',
           name: '',
           type: ''
+        },
+        authority: {
+          edit: false,
+          delete: false,
+          create: false,
+          look: false
         },
         postData: {
           type: '',
