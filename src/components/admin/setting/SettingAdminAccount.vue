@@ -23,7 +23,7 @@
             </div>
             <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr" @click="createModal=true">新建账号</span>
+            <span class="btn btn-info spanblocks fr" @click="createModal=true" v-if="authority.create">新建账号</span>
           </form>
         </div>
 
@@ -45,8 +45,8 @@
             <td><span v-for="entry in item.permissions" track-by="$index">{{entry}}</span></td>
             <td>{{item.status}}</td>
             <td>
-              <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span class="btn btn-default btn-sm" v-if="item.id != 1 &&  isHasGrant" @click="getPermission($event)">权限管理</span>
+              <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+              <span class="btn btn-default btn-sm" v-if="item.id != 1 &&  isHasGrant && authority.grantManagement" @click="getPermission($event)">权限管理</span>
 
             </td>
           </tr>
@@ -277,8 +277,18 @@
       this.getlistData(1)
       this.getlistProviderA()
       this.getlistProviderB()
+      //      权限判断
       if (systermAuthority.indexOf('grant') > -1) {
         this.isHasGrant = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-grant-management')>-1){
+        this.authority.grantManagement = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-edit')>-1){
+        this.authority.edit = true
       }
 //      this.getPermission()
     },
@@ -637,6 +647,11 @@
           account: '登录名',
           permissions: '权限',
           status: '状态'
+        },
+        authority: {
+          edit: false,
+          grantManagement: false,
+          create: false
         },
         postData: {
           account: '',

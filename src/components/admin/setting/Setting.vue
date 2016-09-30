@@ -57,15 +57,15 @@
             </div>
             <button class="btn btn-primary" @click="searchMethod">搜索</button>
             <span class="btn btn-warning"  @click="cancelSearch">撤销搜索</span>
-            <a v-link="{ path: '/admin/setting/commodity/createNew'}"><span class="btn btn-info spanblocks fr">新建商品</span></a>
+            <a v-link="{ path: '/admin/setting/commodity/createNew'}" v-if="authority.create"><span class="btn btn-info spanblocks fr">新建商品</span></a>
           </form>
         </div>
         <!-- 表格 -->
         <grid :data="productList" :columns="gridColumns" :operate="productOperate">
           <div slot="operateList">
-            <span class="btn btn-info btn-sm" @click="fluctuations($event)">价格波动</span>
-            <span class="btn btn-success btn-sm" @click="edit($event)">编辑</span>
-            <list-delete :delete-data.sync="productList"></list-delete>
+            <span class="btn btn-info btn-sm" @click="fluctuations($event)" v-if="authority.priceWave">价格波动</span>
+            <span class="btn btn-success btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+            <list-delete :delete-data.sync="productList" v-if="authority.delete"></list-delete>
           </div>
         </grid>
         <!-- 翻页 -->
@@ -106,7 +106,7 @@
   import AdminNav from '../AdminNav'
   import LeftSetting from '../common/LeftSetting'
   import ListDelete from '../../common/ListDelete'
-  import {requestUrl, requestSystemUrl,token, searchRequest,getDataFromApi,postDataToApi,exchangeData,deleteRequest} from '../../../publicFunction/index'
+  import {requestUrl, requestSystemUrl,token, searchRequest,getDataFromApi,postDataToApi,exchangeData,deleteRequest,systermAuthority} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -144,6 +144,19 @@
       })
 //    获取商品
       this.getlistData(1)
+//    权限判断
+      if(systermAuthority.indexOf('goods-setting-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('goods-setting-list-delete')>-1){
+        this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('goods-setting-list-edit')>-1){
+        this.authority.edit = true
+      }
+      if(systermAuthority.indexOf('goods-setting-list-price-wave')>-1){
+        this.authority.priceWave = true
+      }
     },
     methods: {
 //      列表数据渲染
@@ -311,6 +324,12 @@
         modal: {
           priceModal: false,
           priceModalSize: 'modal-lg'
+        },
+        authority: {
+          priceWave: false,
+          edit: false,
+          delete: false,
+          create: false
         },
         gridColumns: {
           id: '编号',
