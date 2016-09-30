@@ -25,6 +25,7 @@
                 <option :value="item.id" v-for="item in providerList">{{item.display_name}}</option>
               </select>
             </div>
+            
             <div class="form-group ml10">
               <label>品名</label>
               <input type="text" class="form-control" placeholder="请输入商品名称" v-model="searchData.item_name">
