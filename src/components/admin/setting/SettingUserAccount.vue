@@ -303,7 +303,7 @@
 //     新增门店确认
       addStoreConfirm: function () {
         var self = this
-        var addStoreUrl=requestSystemUrl + '/backend-system/store/get/store'
+        var addStoreUrl=requestSystemUrl + '/backend-system/store/store'
         var data = {
           code: this.store.storeCode,
           display_name: this.store.storeName
@@ -352,7 +352,7 @@
 //      确定新增店员
       addClerkConfirm: function () {
         var self = this
-        var addStoreUrl=requestSystemUrl + '/backend-system/store/get/account'
+        var addStoreUrl=requestSystemUrl + '/backend-system/store/account'
         var data = {
           store_id: Number(this.storeName),
           account: this.clerk.account,
@@ -416,7 +416,7 @@
           status: this.editClerkInfo.status,
           level: Number(this.editClerkInfo.level)
         }
-        putDataToApi(requestSystemUrl + '/backend-system/store/get/account/' + accountId,data,function(response){
+        putDataToApi(requestSystemUrl + '/backend-system/store/account/' + accountId,data,function(response){
           self.getAccountName({})
           self.modal.editModal  = false
         })
