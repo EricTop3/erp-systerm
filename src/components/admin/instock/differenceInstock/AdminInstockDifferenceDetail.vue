@@ -138,7 +138,7 @@
 //      仓库列表数据渲染
       warehouseListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store/warehouses-list'
+        var url = requestSystemUrl + '/backend-system/store/get/store/warehouses-list'
         getDataFromApi(url, {}, function (response) {
           self.warehouseData = response.data.body
         })

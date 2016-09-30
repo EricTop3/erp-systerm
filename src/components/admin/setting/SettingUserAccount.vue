@@ -247,7 +247,7 @@
 //      获取门店名称
       getstoreName: function () {
         var self = this
-        var storeUrl = requestSystemUrl + '/backend-system/store/store'
+        var storeUrl = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(storeUrl,{},function(response){
           self.storeList = response.data.body.list
         })
@@ -255,7 +255,7 @@
 //      获取账户名称
       getAccountName: function (data) {
         var self = this
-        var accountUrl = requestSystemUrl + '/backend-system/store/store-account'
+        var accountUrl = requestSystemUrl + '/backend-system/store/get/account'
         getDataFromApi(accountUrl,data,function(response){
           self.accountList = response.data.body.list
           self.page =response.data.body.pagination
@@ -293,7 +293,7 @@
 //     新增门店确认
       addStoreConfirm: function () {
         var self = this
-        var addStoreUrl=requestSystemUrl + '/backend-system/store/store'
+        var addStoreUrl=requestSystemUrl + '/backend-system/store/get/store'
         var data = {
           code: this.store.storeCode,
           display_name: this.store.storeName
@@ -342,7 +342,7 @@
 //      确定新增店员
       addClerkConfirm: function () {
         var self = this
-        var addStoreUrl=requestSystemUrl + '/backend-system/store/store-account'
+        var addStoreUrl=requestSystemUrl + '/backend-system/store/get/account'
         var data = {
           store_id: Number(this.storeName),
           account: this.clerk.account,
@@ -406,14 +406,14 @@
           status: this.editClerkInfo.status,
           level: Number(this.editClerkInfo.level)
         }
-        putDataToApi(requestSystemUrl + '/backend-system/store/store-account/' + accountId,data,function(response){
+        putDataToApi(requestSystemUrl + '/backend-system/store/get/account/' + accountId,data,function(response){
           self.getAccountName({})
           self.modal.editModal  = false
         })
       },
 //     搜索
       search: function () {
-        var url = requestSystemUrl + '/backend-system/store/store-account'
+        var url = requestSystemUrl + '/backend-system/store/get/account'
         var self = this
         var data = {
           store_code: this.storeName,
@@ -427,7 +427,7 @@
       },
 //     取消
       cancelSearch: function () {
-        var url = requestSystemUrl + '/backend-system/store/store-account'
+        var url = requestSystemUrl + '/backend-system/store/get/account'
         var self = this
         var data = {}
         searchRequest(url,data,function(response){

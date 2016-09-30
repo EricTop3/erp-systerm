@@ -125,11 +125,11 @@
         self.searchData.name = ''
         this.getListData(1)
       },
-//      获取门店列表（/backend-system/store/store）,仓库列表（/backend-system/warehouse-minimal-list）
+//      获取门店列表（/backend-system/store/get/store）,仓库列表（/backend-system/warehouse-minimal-list）
       getProviderList: function () {
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url, data, function (response) {
           self.providerList = response.data.body.list
         })

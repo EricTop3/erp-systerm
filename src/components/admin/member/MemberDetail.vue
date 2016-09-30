@@ -211,10 +211,10 @@
           self.page = response.data.body.list.pagination
         })
       },
-//      优惠类型列表获取 /backend-system/coupon/coupon
+//      优惠类型列表获取 /backend-system/coupon/get/coupon
       couponListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/coupon/coupon'
+        var url = requestSystemUrl + '/backend-system/coupon/get/coupon'
         getDataFromApi(url, {}, function (response) {
           self.couponData = response.data.body.list
         })

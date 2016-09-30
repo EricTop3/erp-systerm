@@ -238,11 +238,11 @@
     ready: function () {
       var self = this
 //    获取门店列表
-      getDataFromApi(requestSystemUrl + '/backend-system/store/store',{}, function (response) {
+      getDataFromApi(requestSystemUrl + '/backend-system/store/get/store',{}, function (response) {
         self.search.store = response.data.body.list
       })
 //    获取营业员
-      getDataFromApi(requestSystemUrl + '/backend-system/store/store-account',{}, function (response) {
+      getDataFromApi(requestSystemUrl + '/backend-system/store/get/store-account',{}, function (response) {
         self.search.clerk = response.data.body.list
       })
 //    加载列表

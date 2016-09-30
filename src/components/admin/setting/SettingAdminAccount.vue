@@ -283,7 +283,7 @@
 //      this.getPermission()
     },
     methods: {
-//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
+//      获取生产车间名称
       getlistProviderA: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
@@ -348,7 +348,7 @@
 //      获取列表
       getlistData: function (page) {
         this.$http({
-          url: requestUrl + '/backend-system/store/account',
+          url: requestUrl + '/backend-system/store/get/account',
           method: 'get',
           data: {
             name: this.searchData.name || '',
@@ -399,7 +399,7 @@
 //      新增账号
       createSubmit: function () {
         this.$http.post(
-          requestUrl + '/backend-system/store/account',
+          requestUrl + '/backend-system/store/get/account',
           {
             account: this.postData.account,
             name: this.postData.name,
@@ -428,7 +428,7 @@
       edit: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/store/account/' + this.thisId,
+          url: requestUrl + '/backend-system/store/get/account/' + this.thisId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -441,7 +441,7 @@
 //      编辑后保存
       confirmEdit: function () {
         this.$http({
-          url: requestUrl + '/backend-system/store/account/' + this.thisId,
+          url: requestUrl + '/backend-system/store/get/account/' + this.thisId,
           method: 'put',
           data: {
             name: this.formData.name,
@@ -550,7 +550,7 @@
         var self = this
         this.PermissionModal = true
         this.isflag = false
-        var url = requestSystemUrl + '/backend-system/store/account/' + this.thisId + '/permissions'
+        var url = requestSystemUrl + '/backend-system/store/get/account/' + this.thisId + '/permissions'
 
         getDataFromApi(url, {}, function (response) {
           self.permissionsData = response.data.body.list
@@ -588,7 +588,7 @@
       },
 //      权限保存
       confirmPermission: function () {
-        var url = requestSystemUrl + '/backend-system/store/account/' + this.thisId + '/permissions'
+        var url = requestSystemUrl + '/backend-system/store/get/account/' + this.thisId + '/permissions'
         var permissions = []
         $.each($("#permissionsId input:checked"), function () {
           permissions.push($(this).val())

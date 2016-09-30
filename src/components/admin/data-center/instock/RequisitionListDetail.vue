@@ -158,7 +158,7 @@
       getPersonList: function() {
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/store/account'
+        var url = requestSystemUrl + '/backend-system/store/get/account'
         getDataFromApi(url, data, function (response) {
           self.personList = response.data.body.list
         })

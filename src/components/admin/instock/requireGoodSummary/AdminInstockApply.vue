@@ -159,7 +159,7 @@
 //      制单人（门店店员）列表数据渲染
       userNamelistData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store-account'
+        var url = requestSystemUrl + '/backend-system/store/get/account'
         getDataFromApi(url, {}, function (response) {
           self.userNameListdata = response.data.body.list
         })
@@ -167,7 +167,7 @@
 //      要货门店（门店账号）列表数据渲染
       userAccountlistData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url, {}, function (response) {
           self.userAccountListdata = response.data.body.list
         })

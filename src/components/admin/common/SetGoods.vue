@@ -60,7 +60,7 @@
     compiled: function () {
 //      分类
       this.$http({
-        url: requestSystemUrl + '/backend-system/product/category',
+        url: requestSystemUrl + '/backend-system/product/get/category',
         method: 'get',
         headers: {'X-Overpowered-Token': token}
       }).then(function (response) {

@@ -142,7 +142,7 @@
     ready: function () {
       var self = this
 //      获取制单人
-      getDataFromApi( requestUrl + '/backend-system/store/account',{},function(response){
+      getDataFromApi( requestUrl + '/backend-system/store/get/account',{},function(response){
         self.orderMaker = response.data.body.list
       })
       this.listData({})

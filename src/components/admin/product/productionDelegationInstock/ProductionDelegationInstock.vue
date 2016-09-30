@@ -135,11 +135,11 @@
     ready: function () {
       var self = this
 //    获取制单人
-      getDataFromApi(requestUrl + '/backend-system/store/account', {}, function (response) {
+      getDataFromApi(requestUrl + '/backend-system/store/get/account', {}, function (response) {
         self.search.orderMaker = response.data.body.list
       })
 //      获取合作工厂cooperativeFactory
-      getDataFromApi(requestUrl + '/backend-system/provider/provider', {}, function (response) {
+      getDataFromApi(requestUrl + '/backend-system/provider/get/provider', {}, function (response) {
         self.search.cooperativeFactory = response.data.body.list
       })
       this.listData({})

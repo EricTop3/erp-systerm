@@ -362,7 +362,7 @@
         self.baseUnit = response.data.body.list
       })
 //      获取商品分类
-      getDataFromApi(requestSystemUrl + '/backend-system/product/category',{},function(response){
+      getDataFromApi(requestSystemUrl + '/backend-system/product/get/category',{},function(response){
         self.category = response.data.body.list
       })
     },

@@ -168,7 +168,7 @@
 //      获取列表
       getlistData: function (page) {
         this.$http({
-          url: requestUrl + '/backend-system/product/category',
+          url: requestUrl + '/backend-system/product/get/category',
           data: {page: page},
           method: 'get',
           headers: {'X-Overpowered-Token': token},
@@ -184,7 +184,7 @@
         this.editModal = true
         this.categoryId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/product/category/' + this.categoryId,
+          url: requestUrl + '/backend-system/product/get/category/' + this.categoryId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -196,7 +196,7 @@
 //      保存编辑
       confirmEdit: function () {
         this.$http({
-          url: requestUrl + '/backend-system/product/category/' + this.categoryId,
+          url: requestUrl + '/backend-system/product/get/category/' + this.categoryId,
           method: 'put',
           data: {
             display_name: this.formData.display_name,
@@ -218,7 +218,7 @@
 //      确认删除
       confirmDelete: function () {
         this.$http({
-          url: requestUrl + '/backend-system/product/category/' + this.categoryId,
+          url: requestUrl + '/backend-system/product/get/category/' + this.categoryId,
           method: 'delete',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -236,7 +236,7 @@
       createSubmit: function () {
         var self = this
         this.$http.post(
-          requestUrl + '/backend-system/product/category',
+          requestUrl + '/backend-system/product/get/category',
           {
             display_name: this.display_name,
             sort: this.sort
