@@ -50,7 +50,7 @@
         </div>
 
         <!-- 统计表格 -->
-        <table class="table table-striped table-border table-hover mt20" :data="onedata">
+        <table class="table table-striped table-border table-hover mt20" :data="onedata" style="display:none">
           <tbody>
           <tr>
             <td>

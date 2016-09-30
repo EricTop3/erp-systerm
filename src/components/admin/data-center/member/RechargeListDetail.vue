@@ -153,8 +153,8 @@
         providerList: [],
         gridColumns: {
           store_name: '门店',
-          vip_card_number: '会员姓名',
-          name: '会员状态',
+          vip_card_number: '会员卡号',
+          name: '会员姓名',
           type: '会员类型',
           created_at: '充值日期',
           document_number: '充值单号',

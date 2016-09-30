@@ -23,8 +23,8 @@
               </select>
             </div>
             <div class="form-group ml10">
-              <label>会员卡号</label>
-              <input type="text" class="form-control" placeholder="请输入卡号" v-model="searchData.member_card_number">
+              <label>会员姓名</label>
+              <input type="text" class="form-control" placeholder="请输入姓名" v-model="searchData.name">
             </div>
             <div class="form-group  ml10">
               <label>品名</label>
@@ -121,7 +121,7 @@
         var url = requestSystemUrl + '/backend-system/data-center/member/consumption-list'
         var data = {
           store_code: self.searchData.store_code,
-          member_card_number: self.searchData.member_card_number,
+          name: self.searchData.name,
           item_name: self.searchData.item_name,
           item_code: self.searchData.item_code,
           category_id: self.searchData.category_id,
@@ -143,7 +143,7 @@
       searchCancel: function () {
         var self = this
         self.searchData.store_code = ''
-        self.searchData.member_card_number = ''
+        self.searchData.name = ''
         self.searchData.item_name = ''
         self.searchData.item_code = ''
         self.searchData.category_id = ''
@@ -186,7 +186,7 @@
         var url = requestSystemUrl + '/backend-system/' + token + '/export' + '/data-center/member/consumption-list'
         var data =
           'store_code=' + this.searchData.store_code + '&' +
-          'member_card_number=' + this.searchData.member_card_number + '&' +
+          'name=' + this.searchData.name + '&' +
           'item_name=' + this.searchData.item_name + '&' +
           'item_code=' + this.searchData.item_code + '&' +
           'category_id=' + this.searchData.category_id + '&' +
@@ -219,7 +219,7 @@
         productOperate: false,
         searchData: {
           store_code: '',
-          member_card_number: '',
+          name: '',
           item_name: '',
           item_code: '',
           category_id: '',

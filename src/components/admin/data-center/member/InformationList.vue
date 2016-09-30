@@ -143,6 +143,9 @@
           if (value.total_price != '') {
             value.total_price = '￥' + (value.total_price * (0.01)).toFixed(2)
           }
+          if (value.consume_price != '') {
+            value.consume_price = '￥' + (value.consume_price * (0.01)).toFixed(2)
+          }
           if (value.status == 1) {
             value.status = '启用'
           } else {
@@ -176,8 +179,9 @@
           status: '会员状态',
           register_store_name: '开卡门店',
           mobile_phone: '联系电话',
-          consume_price: '累计消费金额',
           last_consume_time: '最近一次消费',
+          score: '累计积分',
+          consume_price: '累计消费金额',
           balance: '会员卡余额',
           total_price: '累计充值金额',
           total_count: '充值次数'
