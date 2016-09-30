@@ -14,10 +14,17 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>调入仓库</label>
+              <label>仓库</label>
               <select class="form-control" v-model="searchData.warehouse_id">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
+              </select>
+            </div>
+            <div class="form-group ml10">
+              <label>分类</label>
+              <select class="form-control" v-model="searchData.category_id">
+                <option value="">请选择</option>
+                <option :value="item.id" v-for="item in categoryList">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group  ml10">
@@ -103,6 +110,8 @@
       this.getOneData(1)
 //      获取仓库列表
       this.getProviderList()
+//      获取分类列表
+      this.getCategoryList()
     },
     methods: {
 //      获取数据列表
@@ -115,6 +124,7 @@
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
           warehouse_id: self.searchData.warehouse_id,
+          category_id: self.searchData.category_id,
           page: page
         }
         getDataFromApi(url,data,function(response){
@@ -132,7 +142,8 @@
           end_time: self.searchData.end_time,
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          warehouse_id: self.searchData.warehouse_id
+          warehouse_id: self.searchData.warehouse_id,
+          category_id: self.searchData.category_id
         }
         getDataFromApi(url,data,function(response){
           self.onedata = response.data.body.list
@@ -148,6 +159,15 @@
           self.providerList = response.data.body.list
         })
       },
+//      获取分类列表
+      getCategoryList: function(){
+        var self = this
+        var data = {}
+        var url = requestSystemUrl + '/backend-system/product/category'
+        getDataFromApi(url,data,function(response){
+          self.categoryList = response.data.body.list
+        })
+      },
 //      搜索
       searchMethod: function(page){
         this.getListData(page)
@@ -161,6 +181,7 @@
         self.searchData.item_code = ''
         self.searchData.item_name = ''
         self.searchData.warehouse_id = ''
+        self.searchData.category_id = ''
         this.getListData(1)
         this.getOneData()
       },
@@ -184,6 +205,7 @@
           'item_name=' + this.searchData.item_name + '&' +
           'item_code=' + this.searchData.item_code + '&' +
           'warehouse_id=' + this.searchData.warehouse_id + '&' +
+          'category_id=' + this.searchData.category_id + '&' +
           'start_time=' + this.searchData.start_time + '&' +
           'end_time=' + this.searchData.end_time
         return this.exportUrl = url + '/export-excel?' + data
@@ -196,6 +218,7 @@
         listdata: [],
         onedata: [],
         providerList: [],
+        categoryList: [],
         gridColumns: {
           store_name: '仓库',
           category_name: '分类',
@@ -212,6 +235,7 @@
           start_time: '',
           end_time: '',
           warehouse_id: '',
+          category_id: '',
           item_code: '',
           item_name: ''
         },

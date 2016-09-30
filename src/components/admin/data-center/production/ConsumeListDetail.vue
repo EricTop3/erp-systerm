@@ -15,7 +15,7 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>门店</label>
+              <label>仓库</label>
               <select class="form-control" v-model="searchData.store_id">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in providerList">{{item.display_name}}</option>

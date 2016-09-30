@@ -14,7 +14,7 @@
         <div class="page-header">
           <form class="form-inline">
             <div class="form-group">
-              <label>调入仓库</label>
+              <label>仓库</label>
               <select class="form-control" v-model="searchData.warehouse_id">
                 <option value="">请选择</option>
                 <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
@@ -46,8 +46,8 @@
           <tbody>
           <tr>
             <td>
-              <span class="pr50">入库总量：{{onedata.amount}}</span>
-              <span class="pr50">入库总额：{{onedata.price}}</span>
+              <span class="pr50">次品总量：{{onedata.amount}}</span>
+              <span class="pr50">次品总额：{{onedata.price}}</span>
             </td>
           </tr>
           </tbody>
@@ -202,7 +202,7 @@
           item_name: '品名',
           unit_name: '单位',
           unit_specification: '单位规格',
-          amount: '入库数量',
+          amount: '次品数量',
           unit_price: '单价',
           price: '金额'
         },

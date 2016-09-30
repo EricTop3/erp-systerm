@@ -43,8 +43,8 @@
           <tr>
             <td>
               <span class="pr50">零售总量：{{onedata.amount}}</span>
-              <span class="pr50">普通结算金额：{{onedata.total_sum}}</span>
-              <span class="pr50">会员卡结算金额：{{onedata.member_total_sum}}</span>
+              <span class="pr50">普通结算总额：{{onedata.total_sum}}</span>
+              <span class="pr50">会员卡结算总额：{{onedata.member_total_sum}}</span>
             </td>
           </tr>
           </tbody>
