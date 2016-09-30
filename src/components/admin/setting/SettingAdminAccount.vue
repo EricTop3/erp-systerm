@@ -409,7 +409,7 @@
 //      新增账号
       createSubmit: function () {
         this.$http.post(
-          requestUrl + '/backend-system/store/get/account',
+          requestUrl + '/backend-system/store/account',
           {
             account: this.postData.account,
             name: this.postData.name,
@@ -438,7 +438,7 @@
       edit: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/store/get/account/' + this.thisId,
+          url: requestUrl + '/backend-system/store/account/' + this.thisId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -451,7 +451,7 @@
 //      编辑后保存
       confirmEdit: function () {
         this.$http({
-          url: requestUrl + '/backend-system/store/get/account/' + this.thisId,
+          url: requestUrl + '/backend-system/store/account/' + this.thisId,
           method: 'put',
           data: {
             name: this.formData.name,
