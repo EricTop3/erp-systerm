@@ -49,12 +49,19 @@
             </div>
             <span class="btn btn-primary" @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-            <a v-link="{ path: '/admin/production/delegationInstock/ProductionDelegationInstockNew' }" class="btn btn-info spanblocks fr mr10">新建委外入库单</a>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a v-if="authority.create"
+               v-link="{ path: '/admin/production/delegationInstock/ProductionDelegationInstockNew' }"
+               class="btn btn-info spanblocks fr mr10">新建委外入库单</a>
+            <a v-if="authority.exports" :href="exports" target="_blank"><span
+              class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!-- 表格 -->
-        <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url="checkUrl"></summary>
+        <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url="checkUrl"
+                 :has-validate-authority="authority.validate"
+                 :has-look-authority="authority.look"
+                 :has-delete-authority="authority.delete"
+        ></summary>
       </div>
     </div>
   </div>
@@ -80,6 +87,7 @@
     deleteRequest,
     checkRequest,
     finishRequest,
+    systermAuthority,
     changeStatus
   } from '../../../../publicFunction/index'
   export default{
@@ -143,6 +151,27 @@
         self.search.cooperativeFactory = response.data.body.list
       })
       this.listData({})
+//    权限判断
+//      查看
+      if (systermAuthority.indexOf('outsource-produce-in-list-index') > -1) {
+        this.authority.look = true
+      }
+//      审核
+      if (systermAuthority.indexOf('outsource-produce-in-list-check') > -1) {
+        this.authority.validate = true
+      }
+//      删除
+      if (systermAuthority.indexOf('outsource-produce-in-list-delete') > -1) {
+        this.authority.delete = true
+      }
+//      导出
+      if (systermAuthority.indexOf('outsource-produce-in-list-export') > -1) {
+        this.authority.exports = true
+      }
+//      新建
+      if (systermAuthority.indexOf('outsource-produce-in-list-create') > -1) {
+        this.authority.create = true
+      }
     },
     methods: {
       listData: function (data) {
@@ -220,6 +249,13 @@
           stock_amount: '入库数量',
           defective_amount: '次品数量',
           total_sum: '加工费用'
+        },
+        authority: {
+          validate: false,
+          look: false,
+          delete: false,
+          exports: false,
+          create: false
         }
       }
     }

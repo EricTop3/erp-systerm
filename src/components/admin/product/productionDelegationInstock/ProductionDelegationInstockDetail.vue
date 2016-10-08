@@ -19,13 +19,15 @@
           :check-url="checkUrl"
           :edit-flag.sync = "editFlag"
           :is-exist.sync="isExist"
+          :has-validate-authority="authority.validate"
+          :has-edit-authority="authority.edit"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
           <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
-          <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
+          <a v-if="authority.exports" :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -111,6 +113,7 @@
     checkRequest,
     finishRequest,
     detailNull,
+    systermAuthority,
     changeStatus } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -199,6 +202,19 @@
     },
     ready: function () {
       this.listData()
+//    权限判断
+//      审核
+      if(systermAuthority.indexOf('outsource-produce-in-list-check') > -1){
+        this.authority.validate = true
+      }
+//      编辑
+      if(systermAuthority.indexOf('outsource-produce-in-list-edit') > -1){
+        this.authority.edit = true
+      }
+//      导出
+      if(systermAuthority.indexOf('outsource-produce-in-list-export') > -1){
+        this.authority.exports = true
+      }
     },
     methods: {
       listData: function (page) {
@@ -273,6 +289,11 @@
           defective_amount: "次品数量",
           unit_price:"加工单价",
           unit_specification: '单位规格'
+        },
+        authority: {
+          validate: false,
+          edit: false,
+          exports: false
         }
       }
     }

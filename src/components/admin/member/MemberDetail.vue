@@ -31,8 +31,8 @@
           <td>{{onedata.register_store_name}}</td>
           <td>{{onedata.status}}</td>
           <td>
-            <span class="btn btn-info btn-sm" @click="changeModal=true">变更</span>
-            <span class="btn btn-primary btn-sm" @click="edit()">编辑</span>
+            <span class="btn btn-info btn-sm" @click="changeModal=true" v-if="authority.change">变更</span>
+            <span class="btn btn-primary btn-sm" @click="edit()" v-if="authority.edit">编辑</span>
           </td>
         </tr>
         </tbody>
@@ -77,7 +77,7 @@
         <div class="form-group">
           <label for="" class="col-sm-4 control-label">微商城密码</label>
           <div class="col-sm-8">
-            <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！"  v-model="formData.password">
+            <input type="password" class="form-control" placeholder="登录密码，请谨慎填写！" v-model="formData.password">
           </div>
         </div>
         <div class="form-group">
@@ -89,13 +89,15 @@
         <div class="form-group">
           <label for="" class="col-sm-4 control-label">等&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;级</label>
           <div class="col-sm-8">
-            <select class="form-control"  v-model="formData.member_type_id">
+            <select class="form-control" v-model="formData.member_type_id">
               <option value="">请选择</option>
-              <option v-for="item in couponData" track-by="$index" v-if="item.model=='Member'" :value="item.id">{{item.display_name}}</option>
+              <option v-for="item in couponData" track-by="$index" v-if="item.model=='Member'" :value="item.id">
+                {{item.display_name}}
+              </option>
             </select>
           </div>
         </div>
-        <div class="form-group" >
+        <div class="form-group">
           <label class="col-sm-4 control-label">状态</label>
           <div class="col-sm-8 radio">
             <label><input type="radio" name="status" value="1" checked v-model="formData.status">启用</label>
@@ -135,7 +137,8 @@
         <div class="form-group">
           <label class="col-sm-4 control-label">变更数额</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" placeholder="" v-model="changeData.valueNum" @input="priceValidateA()">
+            <input type="text" class="form-control" placeholder="" v-model="changeData.valueNum"
+                   @input="priceValidateA()">
           </div>
         </div>
         <div class="form-group">
@@ -170,6 +173,7 @@
     searchRequest,
     exchangeData,
     putDataToApi,
+    systermAuthority,
     error
   } from '../../../publicFunction/index'
   export default{
@@ -192,6 +196,13 @@
       this.getlistData(1)
 //      获取优惠列表
       this.couponListData()
+//    权限判断
+      if (systermAuthority.indexOf('member-list-change') > -1) {
+        this.authority.change = true
+      }
+      if (systermAuthority.indexOf('member-list-edit') > -1) {
+        this.authority.edit = true
+      }
     },
     methods: {
 //      获取列表
@@ -239,7 +250,7 @@
           member_type_id: this.formData.member_type_id,
           status: this.formData.status
         }
-        putDataToApi(url,data,function (response) {
+        putDataToApi(url, data, function (response) {
           self.editModal = false
           self.getlistData(1)
         })
@@ -253,7 +264,7 @@
           value: this.changeData.value,
           note: this.changeData.note
         }
-        putDataToApi(url,data,function (response) {
+        putDataToApi(url, data, function (response) {
           self.changeModal = false
           self.getlistData(1)
         })
@@ -262,27 +273,27 @@
 
 //    对获取到的单条数据进行处理
       modifyGetedOneData: function (value) {
-        if(value.balance != ''){
+        if (value.balance != '') {
           value.balance = '￥' + (value.balance * 0.01).toFixed(2)
         }
-        if(value.status == '1'){
+        if (value.status == '1') {
           value.status = '启用'
-        }else if(value.status == '0'){
+        } else if (value.status == '0') {
           value.status = '停用'
-        }else{
-          value.status =''
+        } else {
+          value.status = ''
         }
       },
 //    对获取到de列表数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if(value.balance != ''){
+          if (value.balance != '') {
             value.balance = '￥' + (value.balance * 0.01).toFixed(2)
           }
-          if(value.balance_change != ''){
+          if (value.balance_change != '') {
             value.balance_change = '￥' + (value.balance_change * 0.01).toFixed(2)
           }
-          switch(value.operate_type){
+          switch (value.operate_type) {
             case 1:
               value.point_type = '会员卡充值'
               break;
@@ -293,15 +304,15 @@
               value.point_type = '退货退款'
               break;
             case 2:
-              if(value.balance_change == 0){
+              if (value.balance_change == 0) {
                 value.point_type = '订单交易'
-              }else{
+              } else {
                 value.point_type = '会员余额支付'
               }
               break;
           }
 
-          switch(value.note){
+          switch (value.note) {
             case 'alipay':
               value.note = '支付宝支付:' + value.trade_number
               break;
@@ -321,23 +332,23 @@
       priceValidateA: function () {
         var re = /^[-+]?\d+(\.\d+)?$/
         if (!re.test(this.changeData.valueNum)) {
-          this.changeData.valueNum =  ''
-        }else{
+          this.changeData.valueNum = ''
+        } else {
           var indexs = $("#operateMode option:selected").index()
-          if(indexs == 2 || indexs == 4){
+          if (indexs == 2 || indexs == 4) {
             this.changeData.value = (-1) * Number(this.changeData.valueNum)
-          }else{
-            this.changeData.value =this.changeData.valueNum
+          } else {
+            this.changeData.value = this.changeData.valueNum
           }
         }
       },
 //      改变方式
       changeMode: function (event) {
         var indexs = $("#operateMode option:selected").index()
-        if(indexs == 2 || indexs == 4){
+        if (indexs == 2 || indexs == 4) {
           this.changeData.value = (-1) * Number(this.changeData.valueNum)
-        }else{
-          this.changeData.value =this.changeData.valueNum
+        } else {
+          this.changeData.value = this.changeData.valueNum
         }
       }
     },
@@ -378,6 +389,10 @@
           value: '',
           valueNum: '',
           note: ''
+        },
+        authority: {
+          change: false,
+          edit: false
         }
       }
     }

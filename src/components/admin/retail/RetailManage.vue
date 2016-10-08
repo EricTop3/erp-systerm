@@ -35,7 +35,7 @@
             </div>
             <span class="btn btn-primary" @click=getlistData(1)>搜索</span>
             <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank" v-if="authority.exports"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
 
@@ -71,8 +71,8 @@
             <td>{{item.alipay_total_sum}}</td>
             <td>{{item.refund_total_sum}}</td>
             <td>
-              <span v-if="item.status=='未结账'" class="btn btn-primary btn-sm" @click="settlement($event)">结账</span>
-              <span class="btn btn-default btn-sm" @click="view($event)">查看</span>
+              <span v-if="item.status=='未结账' && authority.bills" class="btn btn-primary btn-sm" @click="settlement($event)">结账</span>
+              <span class="btn btn-default btn-sm" @click="view($event)" v-if="authority.view">查看</span>
             </td>
           </tr>
           </tbody>
@@ -126,6 +126,7 @@
     deleteRequest,
     finishRequest,
     putDataToApi,
+    systermAuthority,
     error
   } from '../../../publicFunction/index'
   export default{
@@ -149,6 +150,17 @@
     ready: function () {
       this.getlistData(1)
       this.storeListData()
+
+//    权限判断
+      if (systermAuthority.indexOf('settlement-administration-list-export') > -1) {
+        this.authority.exports = true
+      }
+      if (systermAuthority.indexOf('settlement-administration-list-index') > -1) {
+        this.authority.view = true
+      }
+      if (systermAuthority.indexOf('settlement-administration-list-over') > -1) {
+        this.authority.bills = true
+      }
     },
     methods: {
 //      列表数据渲染 /backend-system/stock/sale/log
@@ -274,7 +286,12 @@
           end_time: ''
         },
         settlementModal: false,
-        settlementModalSize: 'modal-sm'
+        settlementModalSize: 'modal-sm',
+        authority: {
+          exports: false,
+          view: false,
+          bills: false
+        }
       }
     }
   }

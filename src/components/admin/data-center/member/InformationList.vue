@@ -25,7 +25,7 @@
               <label>门店</label>
               <select class="form-control" v-model="searchData.store_id">
                 <option value="">请选择</option>
-                <option :value="item.code" v-for="item in providerList">{{item.display_name}}</option>
+                <option :value="item.id" v-for="item in providerList">{{item.display_name}}</option>
               </select>
             </div>
             <span class="btn btn-primary " @click="searchMethod(1)">搜索</span>
