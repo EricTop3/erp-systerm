@@ -61,8 +61,8 @@
             <span class="btn btn-primary" @click="searchMethod()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
 
-            <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/dispatching/create',exact: true}">新建配送出库单</span>
+            <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
+            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/instock/dispatching/create',exact: true}" v-if="authority.create">新建配送出库单</span>
           </form>
         </div>
 
@@ -74,6 +74,10 @@
           :check-url="checkUrl"
           :finish-url = "checkUrl"
           :finish-flag = "true"
+          :has-validate-authority="authority.validate"
+          :has-look-authority = "authority.look"
+          :has-finish-authority="authority.finish"
+          :has-delete-authority= "authority.delete"
         >
         </summary>
         <!--错误信息-->
@@ -102,6 +106,7 @@
     deleteRequest,
     checkRequest,
     finishRequest,
+    systermAuthority,
     changeStatus} from '../../../../publicFunction/index'
   export default{
     components: {
@@ -179,6 +184,25 @@
         self.warehouseList = response.data.body.list
       })
       this.listData({})
+//    权限判断
+      if(systermAuthority.indexOf('distribution-out-list-index') > -1) {
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('distribution-out-list-check') > -1) {
+        this.authority.validate = true
+      }
+      if(systermAuthority.indexOf('distribution-out-list-over') > -1) {
+        this.authority.finish = true
+      }
+      if(systermAuthority.indexOf('distribution-out-list-delete') > -1) {
+        this.authority.delete= true
+      }
+      if(systermAuthority.indexOf('distribution-out-list-create') > -1) {
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('distribution-out-list-export') > -1) {
+        this.authority.export = true
+      }
     },
     methods: {
 //      列表数据渲染
@@ -228,6 +252,14 @@
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/stock/distribution/',
         warehouseList: [],
+        authority: {
+          create: false,
+          export: false,
+          validate: false,
+          look: false,
+          finish: false,
+          delete: false
+        },
         modal:{
           errModal: false,
           errInfo: 'high,这是错误提示'

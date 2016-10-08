@@ -19,10 +19,12 @@
           :edit-flag.sync="editFlag"
           :check-url = 'checkUrl'
           :is-exist = 'isExist'
+          :has-validate-authority="authority.validate"
+          :has-edit-authority="authority.edit"
           >
         </summary-detail>
 
-        <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
+        <a :href="exports" target="_blank" v-if="authority.export"><span class="btn btn-info spanblocks fr" >导出</span></a>
         <!-- 列表表格 -->
         <table class="table table-striped table-border table-hover">
           <thead>
@@ -87,6 +89,7 @@
     deleteRequest,
     checkRequest,
     finishRequest,
+    systermAuthority,
     putDataToApi } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -158,6 +161,16 @@
     },
     ready: function () {
       this.listData()
+//      权限判断
+      if(systermAuthority.indexOf('stock-check-list-edit') > -1){
+        this.authority.edit =  true
+      }
+      if(systermAuthority.indexOf('stock-check-list-check') > -1){
+        this.authority.validate = true
+      }
+      if(systermAuthority.indexOf('stock-check-list-export') > -1){
+        this.authority.export = true
+      }
     },
     methods: {
       listData: function (page) {
@@ -192,6 +205,11 @@
         isExist: false,
         checkUrl: requestSystemUrl  + '/backend-system/stock/inventory/',
         editFlag: false,
+        authority: {
+          edit: false,
+          validate: false,
+          export: false,
+        },
         gridColumns: {
           document_number: '盘点单号',
           checked: '审核状态',

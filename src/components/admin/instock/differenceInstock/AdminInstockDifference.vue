@@ -39,14 +39,16 @@
             </div>
             <span class="btn btn-primary"  @click=getlistData()>查询</span>
             <span class="btn btn-warning" @click=cancelSearch()>撤销查询</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank" v-if="authority.export"><span class="btn btn-info spanblocks fr mr10" >导出</span></a>
           </form>
         </div>
         <!--表格-->
         <summary
           :table-header="gridColumns"
           :table-data="listdata"
-          :page="page">
+          :page="page"
+          :has-look-authority = "authority.look"
+        >
         </summary>
       </div>
     </div>
@@ -75,7 +77,8 @@
     getDataFromApi,
     deleteRequest,
     finishRequest,
-    error
+    error,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -103,6 +106,13 @@
       this.getlistData(1)
       this.categoryListData()
       this.warehouseListData()
+//     权限判断
+      if(systermAuthority.indexOf('stock-difference-list-index')> -1) {
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('stock-difference-list-export')> -1) {
+        this.authority.export = true
+      }
     },
     methods: {
 //      列表数据渲染
@@ -164,6 +174,10 @@
         timewidth: "timewidth",
         timetext1: "开始时间",
         timetext2: "结束时间",
+        authority: {
+          export: false,
+          look: false
+        },
         gridColumns: {
           item_code: "货号",
           item_name: "品名",

@@ -23,7 +23,7 @@
             </div>
             <span class="btn btn-primary" @click="searchListData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
           </form>
         </div>
         <!--详情页面单条数据-->
@@ -67,7 +67,8 @@
     getDataFromApi,
     deleteRequest,
     putDataToApi,
-    finishRequest
+    finishRequest,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -92,6 +93,10 @@
       this.getlistData(1)
 //      获取详情单条数据
       this.getOneData()
+//      权限判断
+      if(systermAuthority.indexOf('sale-out-list-export') > -1) {
+        this.authority.export = true
+      }
     },
     methods: {
 //      (获取详情)列表数据渲染
@@ -169,6 +174,9 @@
         onedata: [],
         page: [],
         gridOperate: false,
+        authority: {
+          export: false
+        },
         gridcolumns: {
           store_name: '门店',
           goods_code: '货号',

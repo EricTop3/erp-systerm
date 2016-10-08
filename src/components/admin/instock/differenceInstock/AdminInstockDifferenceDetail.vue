@@ -33,7 +33,7 @@
           :grid-operate="gridOperate">
         </summary-detail>
         <!--详情页面列表数据-->
-        <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr">导出</span></a>
+        <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr" v-if="authority.export">导出</span></a>
         <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
 
 
@@ -66,7 +66,8 @@
     getDataFromApi,
     deleteRequest,
     putDataToApi,
-    finishRequest
+    finishRequest,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -93,6 +94,10 @@
       this.getOneData()
 //      获取仓库列表
       this.warehouseListData()
+//   权限判断
+      if(systermAuthority.indexOf('stock-difference-list-export') > -1) {
+        this.authority.export = true
+      }
     },
     computed: {
 //      导出
@@ -166,6 +171,9 @@
         onedata: [],
         page: [],
         gridOperate: false,
+        authority: {
+          export: false
+        },
         gridcolumns: {
           item_code: '货号',
           item_name: '品名',
