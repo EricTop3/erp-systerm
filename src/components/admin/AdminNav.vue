@@ -49,6 +49,9 @@
          if(this.$route.path.indexOf('/admin/member/')>-1){
            this.highLight.member = true
          }
+         if(this.$route.path.indexOf('/admin/dataCenter/')>-1){
+           this.highLight.dataCenter = true
+         }
 //         第一类大权限
            if(systermAuthority.indexOf('settings')>-1){
              this.authority.setting = true
@@ -204,7 +207,8 @@
             stock: false,
             product: false,
             retail:false,
-            member:false
+            member:false,
+            dataCenter: false,
           },
           systerm: {
             account: systermAccount,
