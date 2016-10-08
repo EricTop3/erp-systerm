@@ -53,7 +53,7 @@
            if(systermAuthority.indexOf('setting')>-1){
              this.authority.setting = true
            }
-           if(systermAuthority.indexOf('purchase')>-1) {
+           if(systermAuthority.indexOf('purchase')>-1 ) {
              this.authority.purchase = true
            }
            if(systermAuthority.indexOf('warehouse')>-1) {

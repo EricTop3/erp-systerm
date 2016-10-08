@@ -59,6 +59,10 @@
           :check-url="checkUrl"
           :finish-url = "checkUrl"
           :finish-flag = "true"
+          :has-validate-authority="authority.validate"
+          :has-look-authority = "authority.look"
+          :has-finish-authority="authority.finish"
+          :has-delete-authority= "authority.delete"
         >
         </summary>
       </div>
@@ -77,7 +81,7 @@
   import Summary from '../../common/Summary'
   import DatePicker from  '../../common/DatePicker'
   import LeftPurchase from '../common/LeftPurchase'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,systermAuthority} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -116,6 +120,19 @@
         self.search.providerList = response.data.body.list
       })
       this.listData({})
+//    权限判断隐藏
+      if(systermAuthority.indexOf('purchase-order-list-index')){
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('purchase-order-list-check')){
+        this.authority.validate = true
+      }
+      if(systermAuthority.indexOf('purchase-order-list-over')){
+        this.authority.finish = true
+      }
+      if(systermAuthority.indexOf('purchase-order-list-delete')){
+        this.authority.delete = true
+      }
     },
     methods: {
       listData: function (data) {
@@ -173,6 +190,12 @@
         page: [],
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/purchase/purchase/',
+        authority: {
+          validate: false,
+          look: false,
+          finish: false,
+          delete: false
+        },
         time:{
           startTime:'',
           startTime1:'',

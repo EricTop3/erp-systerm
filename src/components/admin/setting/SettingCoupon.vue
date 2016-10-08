@@ -254,7 +254,7 @@
       edit: function (event) {
         this.editModal = true
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
-        var url = requestSystemUrl + '/backend-system/coupon/get/coupon/' +this.thisId
+        var url = requestSystemUrl + '/backend-system/coupon/coupon/' +this.thisId
         var self = this
         getDataFromApi(url,{},function (response) {
           self.formData = response.data.body
@@ -262,7 +262,7 @@
       },
 //      保存编辑
       confirmEdit: function () {
-        var url = requestSystemUrl + '/backend-system/coupon/get/coupon/' +this.thisId
+        var url = requestSystemUrl + '/backend-system/coupon/coupon/' +this.thisId
         var data = {
           display_name: this.formData.display_name,
           type: this.formData.type,
@@ -284,7 +284,7 @@
       },
 //      确认删除
       confirmDelete: function () {
-        var url = requestSystemUrl + '/backend-system/coupon/get/coupon/' + this.thisId
+        var url = requestSystemUrl + '/backend-system/coupon/coupon/' + this.thisId
         var self = this
         deleteRequest(url,function (response) {
           self.deleteModal = false
@@ -293,7 +293,7 @@
       },
 //      添加促销
       createSubmit: function () {
-        var url = requestSystemUrl + '/backend-system/coupon/get/coupon'
+        var url = requestSystemUrl + '/backend-system/coupon/coupon'
         var data = {
           display_name: this.addFormData.display_name,
           type: this.addFormData.type,
