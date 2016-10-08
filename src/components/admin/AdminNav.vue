@@ -50,22 +50,22 @@
            this.highLight.member = true
          }
 //         第一类大权限
-           if(systermAuthority.indexOf('setting')>-1){
+           if(systermAuthority.indexOf('settings')>-1){
              this.authority.setting = true
            }
-           if(systermAuthority.indexOf('purchase')>-1 ) {
+           if(systermAuthority.indexOf('purchases')>-1 ) {
              this.authority.purchase = true
            }
-           if(systermAuthority.indexOf('warehouse')>-1) {
+           if(systermAuthority.indexOf('warehouses')>-1) {
              this.authority.instock = true
            }
-           if(systermAuthority.indexOf('production')>-1){
+           if(systermAuthority.indexOf('productions')>-1){
              this.authority.product = true
            }
-           if(systermAuthority.indexOf('sale')>-1) {
+           if(systermAuthority.indexOf('sales')>-1) {
              this.authority.retail = true
            }
-           if(systermAuthority.indexOf('member')>-1) {
+           if(systermAuthority.indexOf('members')>-1) {
              this.authority.member = true
            }
 //         商品设置权限

@@ -449,22 +449,22 @@
           authorityModule.retail[0] = ''
         }
         //大类权限
-        if(systermAuthority.indexOf('setting')>-1){
+        if(systermAuthority.indexOf('settings')>-1){
           curRouter.push('setting/'+ authorityModule.setting[0])
         }
-        if(systermAuthority.indexOf('purchase')>-1){
+        if(systermAuthority.indexOf('purchases')>-1){
           curRouter.push('purchase/'+  authorityModule.purchase[0])
         }
-        if(systermAuthority.indexOf('warehouse')>-1) {
+        if(systermAuthority.indexOf('warehouses')>-1) {
           curRouter.push('instock/' +  authorityModule.stock[0])
         }
-        if(systermAuthority.indexOf('production')>-1){
+        if(systermAuthority.indexOf('productions')>-1){
           curRouter.push('production/'+  authorityModule.product[0])
         }
-        if(systermAuthority.indexOf('sale')>-1){
+        if(systermAuthority.indexOf('sales')>-1){
           curRouter.push('retail/'+  authorityModule.retail[0])
         }
-        if(systermAuthority.indexOf('member')>-1) {
+        if(systermAuthority.indexOf('members')>-1) {
           curRouter.push('member')
         }
         if(curRouter.length===0){
