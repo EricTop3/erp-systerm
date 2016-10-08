@@ -47,8 +47,8 @@
             </div>
             <span type="submit" class="btn btn-primary " @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-            <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr">新建采购单</a>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a v-link="{path: '/admin/purchase/order/createNewPurchase'}" class="btn btn-info spanblocks fr" v-if="authority.create">新建采购单</a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
           </form>
         </div>
         <!-- 表格 -->
@@ -121,17 +121,23 @@
       })
       this.listData({})
 //    权限判断隐藏
-      if(systermAuthority.indexOf('purchase-order-list-index')){
+      if(systermAuthority.indexOf('purchase-order-list-index') > -1){
         this.authority.look = true
       }
-      if(systermAuthority.indexOf('purchase-order-list-check')){
+      if(systermAuthority.indexOf('purchase-order-list-check') > -1){
         this.authority.validate = true
       }
-      if(systermAuthority.indexOf('purchase-order-list-over')){
+      if(systermAuthority.indexOf('purchase-order-list-over')  > -1){
         this.authority.finish = true
       }
-      if(systermAuthority.indexOf('purchase-order-list-delete')){
+      if(systermAuthority.indexOf('purchase-order-list-delete') > -1){
         this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('purchase-order-list-create') > -1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('purchase-order-list-export') > -1){
+        this.authority.export = true
       }
     },
     methods: {
@@ -191,6 +197,8 @@
         list: [],
         checkUrl: requestSystemUrl + '/backend-system/purchase/purchase/',
         authority: {
+          create: false,
+          export: false,
           validate: false,
           look: false,
           finish: false,

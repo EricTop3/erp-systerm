@@ -16,9 +16,9 @@
       </td>
       <td  v-if="operate">
         <slot name="operate">
-          <list-validate :list.sync="tableData" :flag.sync="validateFlag" :check-url="checkUrl" v-if="tableData.checked==='未审核'"></list-validate>
-          <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="tableData.checked==='未审核' && !isExist">编辑</span>
-          <span class="btn btn-success btn-sm" @click="save($event)" v-if="tableData.checked==='未审核' && isExist">保存</span>
+          <list-validate :list.sync="tableData" :flag.sync="validateFlag" :check-url="checkUrl" v-if="tableData.checked==='未审核' && hasValidateAuthority"></list-validate>
+          <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="tableData.checked==='未审核' && !isExist && hasEditeAuthority">编辑</span>
+          <span class="btn btn-success btn-sm" @click="save($event)" v-if="tableData.checked==='未审核' && isExist && hasEditeAuthority">保存</span>
         </slot>
       </td>
     </tr>
@@ -42,6 +42,8 @@
       editFlag: false,
       isExist: false,
       checkUrl: '',
+      hasValidateAuthority: false,
+      hasEditAuthority: false,
     },
     components: {
       Page: Page,
