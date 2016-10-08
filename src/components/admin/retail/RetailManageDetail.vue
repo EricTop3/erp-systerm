@@ -43,12 +43,12 @@
             <td>{{onedata.weixin_total_sum}}</td>
             <td>{{onedata.alipay_total_sum}}</td>
             <td>{{onedata.refund_total_sum}}</td>
-            <td><span v-if="onedata.status=='未结账'" class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
+            <td><span v-if="onedata.status=='未结账' && authority.bills" class="btn btn-primary btn-sm" @click="settlement()">结账</span></td>
           </tr>
           </tbody>
         </table>
         <!-- end表格1 -->
-        <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
+        <a :href="exports" target="_blank" v-if="authority.exports"><span class="btn btn-info spanblocks fr">导出</span></a>
         <!-- 表格2 详情页面列表数据-->
         <grid :data="listdata" :operate="gridOperate2" :columns="gridcolumns2"></grid>
         <!--分页-->
@@ -79,6 +79,7 @@
     getDataFromApi,
     deleteRequest,
     putDataToApi,
+    systermAuthority,
     finishRequest
   } from '../../../publicFunction/index'
   export default{
@@ -102,6 +103,13 @@
       this.getlistData(1)
 //      获取详情单条数据
       this.getOneData()
+//    权限判断
+      if (systermAuthority.indexOf('settlement-administration-list-export') > -1) {
+        this.authority.exports = true
+      }
+      if (systermAuthority.indexOf('settlement-administration-list-over') > -1) {
+        this.authority.bills = true
+      }
     },
     methods: {
 //      (获取详情)列表数据渲染
@@ -227,6 +235,10 @@
           vip_card_number: '会员卡号',
           coupon_strategy_name: '优惠方式',
           seller_name: '营业员'
+        },
+        authority: {
+          exports: false,
+          bills: false
         }
       }
     }

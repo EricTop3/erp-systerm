@@ -36,11 +36,11 @@
             <td>{{onedata.created_at}}</td>
             <td>{{onedata.operated_at}}</td>
             <td>
-              <span v-if="onedata.checked=='已审核' && onedata.operated_at!=''" class="btn btn-success btn-sm" @click="finish()">完成</span>
-              <span v-if="onedata.checked=='已审核' && onedata.operated_at==''" class="btn btn-info btn-sm" @click="picking()">领料</span>
-              <span v-if="onedata.checked=='未审核'" class="btn btn-danger btn-sm" @click="audit()">审核</span>
-              <span v-if="onedata.checked=='未审核' && !isExist" class="btn btn-danger btn-sm" @click="editMethod()">编辑</span>
-              <span v-if="onedata.checked=='未审核' && isExist" class="btn btn-success btn-sm" @click="saveGoods()">保存</span>
+              <span v-if="onedata.checked=='已审核' && onedata.operated_at!='' && authority.finish" class="btn btn-success btn-sm" @click="finish()">完成</span>
+              <span v-if="onedata.checked=='已审核' && onedata.operated_at=='' && authority.supplie" class="btn btn-info btn-sm" @click="picking()">领料</span>
+              <span v-if="onedata.checked=='未审核' && authority.validate" class="btn btn-danger btn-sm" @click="audit()">审核</span>
+              <span v-if="onedata.checked=='未审核' && !isExist && authority.edit" class="btn btn-danger btn-sm" @click="editMethod()">编辑</span>
+              <span v-if="onedata.checked=='未审核' && isExist && authority.edit" class="btn btn-success btn-sm" @click="saveGoods()">保存</span>
             </td>
           </tr>
           </tbody>
@@ -52,7 +52,7 @@
                                                                                          data-toggle="tab">领料明细</a></li>
           <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">领料汇总</a>
           </li>
-          <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
+          <a v-if="authority.exports"  :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -194,6 +194,7 @@
     checkRequest,
     finishRequest,
     putDataToApi,
+    systermAuthority,
     changeStatus
   } from '../../../../publicFunction/index'
   export default{
@@ -218,6 +219,27 @@
     ready: function () {
       this.getlistData(1)
       this.getOneData()
+//    权限判断
+//      领料
+      if(systermAuthority.indexOf('pick-total-list-pick') > -1){
+        this.authority.supplie = true
+      }
+//      审核
+      if(systermAuthority.indexOf('pick-total-list-check') > -1){
+        this.authority.validate = true
+      }
+//      完成
+      if(systermAuthority.indexOf('pick-total-list-over') > -1){
+        this.authority.finish = true
+      }
+//      编辑
+      if(systermAuthority.indexOf('pick-total-list-edit') > -1){
+        this.authority.edit = true
+      }
+//      导出
+      if(systermAuthority.indexOf('pick-total-list-export') > -1){
+        this.authority.exports = true
+      }
     },
     methods: {
 //      编辑
@@ -433,6 +455,13 @@
           end_time: '',
           receive_start_time: '',
           receive_end_time: ''
+        },
+        authority: {
+          validate: false, //审核
+          supplie: false, //领料
+          finish: false, //完成
+          edit: false, //删除
+          exports: false
         }
       }
     }
