@@ -51,9 +51,9 @@
             <span class="btn btn-primary" @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
 
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
             <span v-link="{ path:'/admin/instock/inventory/create' }"
-                  class="btn btn-info spanblocks fr mr10">新建盘点单</span>
+                  class="btn btn-info spanblocks fr mr10" v-if="authority.create">新建盘点单</span>
           </form>
         </div>
         <!-- 表格 -->
@@ -61,7 +61,11 @@
           :table-data="list"
           :table-header="gridColumns"
           :page="page"
-          :check-url="checkUrl">
+          :check-url="checkUrl"
+          :has-validate-authority="authority.validate"
+          :has-look-authority = "authority.look"
+          :has-delete-authority= "authority.delete"
+        >
         </summary>
       </div>
     </div>
@@ -83,7 +87,8 @@
     getDataFromApi,
     token,
     deleteRequest,
-    changeStatus
+    changeStatus,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -113,6 +118,22 @@
         self.storeAccountData = response.data.body.list
       })
       this.listData({})
+//    权限判断
+      if(systermAuthority.indexOf('stock-check-list-index') > -1){
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('stock-check-list-check') > -1){
+        this.authority.validate = true
+      }
+      if(systermAuthority.indexOf('stock-check-list-delete') > -1){
+        this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('stock-check-list-create') > -1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('stock-check-list-export') > -1){
+        this.authority.export = true
+      }
     },
     events: {
 //    审核错误提示
@@ -207,6 +228,13 @@
         list: [],
         storeAccountData: [],
         checkUrl: requestSystemUrl + '/backend-system/stock/inventory/',
+        authority: {
+          create: false,
+          export: false,
+          validate: false,
+          look: false,
+          delete: false
+        },
         gridColumns: {
           document_number: '盘点单号',
           checked: '审核状态',

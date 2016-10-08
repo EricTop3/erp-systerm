@@ -43,13 +43,13 @@
 
             <span class="btn btn-primary" @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
           </form>
         </div>
         <!-- 表格 -->
         <grid :data="productList" :columns="gridColumns" :operate="productOperate">
           <div slot="operateList">
-            <span class="btn btn-primary btn-sm" @click="checkDetail($event)">出入库明细</span>
+            <span class="btn btn-primary btn-sm" @click="checkDetail($event)" v-if="authority.show">出入库明细</span>
           </div>
         </grid>
 
@@ -81,7 +81,8 @@
     getDataFromApi,
     postDataToApi,
     exchangeData,
-    deleteRequest
+    deleteRequest,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default {
     components: {
@@ -118,12 +119,18 @@
       getDataFromApi(url, {}, function (response) {
         self.warehouseList = response.data.body.list
       })
-//      获取商品分类
+//    获取商品分类
       getDataFromApi(requestSystemUrl + '/backend-system/product/get/category', {}, function (response) {
         self.category = response.data.body.list
       })
       this.listData({})
-
+//   权限判断
+      if(systermAuthority.indexOf('stock-look-list-show') > -1){
+        this.authority.show = true
+      }
+      if(systermAuthority.indexOf('stock-look-list-export') > -1){
+        this.authority.export = true
+      }
     },
     methods: {
 //      列表数据渲染
@@ -193,6 +200,10 @@
         page: [],
         category: [],
         warehouseList: [],
+        authority: {
+          show: false,
+          export: false
+        },
         search: {
           selectedHouse: '',
           selectCategory: '',

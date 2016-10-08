@@ -44,7 +44,7 @@
           </tbody>
         </table>
 
-        <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+        <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10"  v-if="authority.export">导出</span></a>
         <!--详情页面列表数据-->
         <table class="table table-striped table-border table-hover">
           <thead>
@@ -100,7 +100,8 @@
     getDataFromApi,
     deleteRequest,
     putDataToApi,
-    finishRequest
+    finishRequest,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -139,6 +140,10 @@
       this.getlistData(1)
 //      获取详情单条数据
       this.getOneData()
+//       权限判断
+      if(systermAuthority.indexOf('requisition-total-list-export') > -1){
+        this.authority.export = true
+      }
     },
     methods: {
 //      (获取详情)列表数据渲染
@@ -176,6 +181,9 @@
     },
     data: function () {
       return {
+        authority: {
+          export: false
+        },
         thisId: '',
         listdata: [],
         onedata: [],
