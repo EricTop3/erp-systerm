@@ -49,11 +49,10 @@
             </div>
             <span type="submit" class="btn btn-primary" @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <span class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryProduction/factoryCreat'}">新建生产单</span>
+            <a :href="exports" target="_blank" v-if="authority.exports"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <span v-if="authority.create" class="btn btn-info spanblocks fr mr10" v-link="{ path: '/admin/production/factoryProduction/factoryCreat'}">新建生产单</span>
           </form>
         </div>
-
         <!-- 表格 -->
         <summary
           :table-data="list"
@@ -62,6 +61,10 @@
           :check-url="checkUrl"
           :finish-url="checkUrl"
           :finish-flag="true"
+          :has-validate-authority="authority.validate"
+          :has-look-authority = "authority.look"
+          :has-finish-authority="authority.finish"
+          :has-delete-authority= "authority.delete"
         >
         </summary>
         <!--错误信息-->
@@ -95,6 +98,7 @@
     deleteRequest,
     checkRequest,
     finishRequest,
+    systermAuthority,
     changeStatus} from '../../../../publicFunction/index'
   export default{
     components: {
@@ -146,6 +150,31 @@
         self.orderMaker = response.data.body.list
       })
       this.listData({})
+//    权限判断
+//      查看
+      if(systermAuthority.indexOf('factory-produce-list-index') > -1){
+        this.authority.look = true
+      }
+//      审核
+      if(systermAuthority.indexOf('factory-produce-list-check') > -1){
+        this.authority.validate = true
+      }
+//      完成
+      if(systermAuthority.indexOf('factory-produce-list-over') > -1){
+        this.authority.finish = true
+      }
+//      删除
+      if(systermAuthority.indexOf('factory-produce-list-delete') > -1){
+        this.authority.delete = true
+      }
+//      导出
+      if(systermAuthority.indexOf('factory-produce-list-export') > -1){
+        this.authority.exports = true
+      }
+//      新建
+      if(systermAuthority.indexOf('factory-produce-list-create') > -1){
+        this.authority.create = true
+      }
     },
     methods: {
 //      列表数据渲染
@@ -237,6 +266,14 @@
           end_receive_time: '',
           stream_origin_id: '',
           creator_id: ''
+        },
+        authority: {
+          validate: false,
+          look: false,
+          finish: false,
+          delete: false,
+          exports: false,
+          create: false
         }
       }
     }

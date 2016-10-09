@@ -42,7 +42,7 @@
         </table>
         <!-- end表格1 -->
 
-        <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+        <a :href="exports" target="_blank" v-if="authority.exports"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
         <!-- 表格2 -->
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
@@ -124,6 +124,7 @@
     deleteRequest,
     finishRequest,
     putDataToApi,
+    systermAuthority,
     error
   } from '../../../publicFunction/index'
   export default{
@@ -147,6 +148,10 @@
     ready: function () {
       this.getlistData(1)
       this.getOneData()
+//    权限判断
+      if (systermAuthority.indexOf('settlement-total-list-export') > -1) {
+        this.authority.exports = true
+      }
     },
     methods: {
 //      列表数据渲染 /backend-system/settlement/statistics/statistics
@@ -293,6 +298,9 @@
           store_id: '',
           start_time: '',
           end_time: ''
+        },
+        authority: {
+          exports: false
         }
       }
     }

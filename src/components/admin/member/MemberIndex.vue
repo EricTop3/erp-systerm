@@ -36,9 +36,9 @@
       <!-- 表格 -->
       <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
         <div slot="operateList">
-          <span class="btn btn-info btn-sm" @click="change($event)">变更</span>
-          <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-          <span class="btn btn-warning btn-sm" @click="view($event)">查看</span>
+          <span class="btn btn-info btn-sm" @click="change($event)" v-if="authority.change">变更</span>
+          <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+          <span class="btn btn-warning btn-sm" @click="view($event)" v-if="authority.view">查看</span>
         </div>
       </grid>
 
@@ -185,6 +185,7 @@
     searchRequest,
     exchangeData,
     putDataToApi,
+    systermAuthority,
     error
   } from '../../../publicFunction/index'
   export default{
@@ -209,6 +210,16 @@
       this.storeListData()
 //      优惠列表
       this.couponListData()
+//    权限判断
+      if (systermAuthority.indexOf('member-list-change') > -1) {
+        this.authority.change = true
+      }
+      if (systermAuthority.indexOf('member-list-edit') > -1) {
+        this.authority.edit = true
+      }
+      if (systermAuthority.indexOf('member-list-index') > -1) {
+        this.authority.view = true
+      }
     },
     methods: {
 //      获取列表
@@ -378,6 +389,11 @@
           value: '',
           valueNum: '',
           note: ''
+        },
+        authority: {
+          change: false,
+          edit: false,
+          view: false
         }
       }
     }

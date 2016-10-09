@@ -14,19 +14,23 @@
           <form class="form-inline">
             <div class="form-group">
               <label>门店</label>
-              <select class="form-control"  v-model="searchData.store_id">
+              <select class="form-control" v-model="searchData.store_id">
                 <option value="">请选择</option>
                 <option v-for="item in storeData" track-by="$index" :value="item.id">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group ml10">
               <label>时间段</label>
-              <date-picker :value.sync="searchData.start_time" :time-text="timetext1" :timewidth="timewidth"></date-picker> -
-              <date-picker :value.sync="searchData.end_time" :time-text="timetext2" :timewidth="timewidth"></date-picker>
+              <date-picker :value.sync="searchData.start_time" :time-text="timetext1"
+                           :timewidth="timewidth"></date-picker>
+              -
+              <date-picker :value.sync="searchData.end_time" :time-text="timetext2"
+                           :timewidth="timewidth"></date-picker>
             </div>
             <span class="btn btn-primary" @click=search()>搜索</span>
             <span class="btn btn-warning" @click=cancelSearch()>撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank" v-if="authority.exports"><span
+              class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
 
@@ -89,7 +93,7 @@
             <td>{{item.alipay_total_sum}}</td>
             <td>{{item.refund_total_sum}}</td>
             <td>
-              <span class="btn btn-info btn-sm" @click="view($event)">查看</span>
+              <span class="btn btn-info btn-sm" @click="view($event)" v-if="authority.view">查看</span>
             </td>
           </tr>
           </tbody>
@@ -127,6 +131,7 @@
     deleteRequest,
     finishRequest,
     putDataToApi,
+    systermAuthority,
     error
   } from '../../../publicFunction/index'
   export default{
@@ -150,7 +155,14 @@
     ready: function () {
       this.getlistData(1)
       this.getOneData()
-      this.storeListData()
+
+//    权限判断
+      if (systermAuthority.indexOf('settlement-total-list-export') > -1) {
+        this.authority.exports = true
+      }
+      if (systermAuthority.indexOf('settlement-total-list-index') > -1) {
+        this.authority.view = true
+      }
     },
     methods: {
 //      列表数据渲染 /backend-system/settlement/statistics/statistics
@@ -185,50 +197,50 @@
 //    对获取到de列表数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if(value.total_sum != '' && value.total_sum > 0 ){
+          if (value.total_sum != '' && value.total_sum > 0) {
             value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
           }
-          if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
+          if (value.vip_total_sum != '' && value.vip_total_sum > 0) {
             value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
           }
-          if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
+          if (value.cash_total_sum != '' && value.cash_total_sum > 0) {
             value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
           }
-          if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
+          if (value.pos_total_sum != '' && value.pos_total_sum > 0) {
             value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
           }
-          if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
+          if (value.weixin_total_sum != '' && value.weixin_total_sum > 0) {
             value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
           }
-          if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
+          if (value.alipay_total_sum != '' && value.alipay_total_sum > 0) {
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
           }
-          if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
+          if (value.refund_total_sum != '' && value.refund_total_sum > 0) {
             value.refund_total_sum = '￥' + (value.refund_total_sum * (-0.01)).toFixed(2)
           }
         })
       },
 //    对获取到的单条数据进行处理
       modifyGetedOneData: function (value) {
-        if(value.total_sum != '' && value.total_sum > 0 ){
+        if (value.total_sum != '' && value.total_sum > 0) {
           value.total_sum = '￥' + (value.total_sum * 0.01).toFixed(2)
         }
-        if(value.vip_total_sum != '' && value.vip_total_sum > 0 ){
+        if (value.vip_total_sum != '' && value.vip_total_sum > 0) {
           value.vip_total_sum = '￥' + (value.vip_total_sum * 0.01).toFixed(2)
         }
-        if(value.cash_total_sum != '' && value.cash_total_sum > 0 ){
+        if (value.cash_total_sum != '' && value.cash_total_sum > 0) {
           value.cash_total_sum = '￥' + (value.cash_total_sum * 0.01).toFixed(2)
         }
-        if(value.pos_total_sum != '' && value.pos_total_sum > 0 ){
+        if (value.pos_total_sum != '' && value.pos_total_sum > 0) {
           value.pos_total_sum = '￥' + (value.pos_total_sum * 0.01).toFixed(2)
         }
-        if(value.weixin_total_sum != '' && value.weixin_total_sum > 0 ){
+        if (value.weixin_total_sum != '' && value.weixin_total_sum > 0) {
           value.weixin_total_sum = '￥' + (value.weixin_total_sum * 0.01).toFixed(2)
         }
-        if(value.alipay_total_sum != '' && value.alipay_total_sum > 0 ){
+        if (value.alipay_total_sum != '' && value.alipay_total_sum > 0) {
           value.alipay_total_sum = '￥' + (value.alipay_total_sum * 0.01).toFixed(2)
         }
-        if(value.refund_total_sum != '' && value.refund_total_sum > 0 ){
+        if (value.refund_total_sum != '' && value.refund_total_sum > 0) {
           value.refund_total_sum = '￥' + (value.refund_total_sum * (-0.01)).toFixed(2)
         }
       },
@@ -247,9 +259,9 @@
       },
 //    搜索
       search: function () {
-        if(this.searchData.store_id){
+        if (this.searchData.store_id) {
           this.isflag = false
-        }else{
+        } else {
           this.isflag = true
         }
         this.getOneData()
@@ -301,6 +313,10 @@
           store_id: '',
           start_time: '',
           end_time: ''
+        },
+        authority: {
+          exports: false,
+          view: false
         }
       }
     }

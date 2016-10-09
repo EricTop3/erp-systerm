@@ -265,7 +265,7 @@
 //      获取账户名称
       getAccountName: function (data) {
         var self = this
-        var accountUrl = requestSystemUrl + '/backend-system/store/get/account'
+        var accountUrl = requestSystemUrl + '/backend-system/store/get/store-account'
         getDataFromApi(accountUrl,data,function(response){
           self.accountList = response.data.body.list
           self.page =response.data.body.pagination
@@ -352,7 +352,7 @@
 //      确定新增店员
       addClerkConfirm: function () {
         var self = this
-        var addStoreUrl=requestSystemUrl + '/backend-system/store/account'
+        var addStoreUrl=requestSystemUrl + '/backend-system/store/store-account'
         var data = {
           store_id: Number(this.storeName),
           account: this.clerk.account,
@@ -416,14 +416,14 @@
           status: this.editClerkInfo.status,
           level: Number(this.editClerkInfo.level)
         }
-        putDataToApi(requestSystemUrl + '/backend-system/store/account/' + accountId,data,function(response){
+        putDataToApi(requestSystemUrl + '/backend-system/store/store-account/' + accountId,data,function(response){
           self.getAccountName({})
           self.modal.editModal  = false
         })
       },
 //     搜索
       search: function () {
-        var url = requestSystemUrl + '/backend-system/store/get/account'
+        var url = requestSystemUrl + '/backend-system/store/get/store-account'
         var self = this
         var data = {
           store_code: this.storeName,
@@ -437,7 +437,7 @@
       },
 //     取消
       cancelSearch: function () {
-        var url = requestSystemUrl + '/backend-system/store/get/account'
+        var url = requestSystemUrl + '/backend-system/store/get/store-account'
         var self = this
         var data = {}
         searchRequest(url,data,function(response){

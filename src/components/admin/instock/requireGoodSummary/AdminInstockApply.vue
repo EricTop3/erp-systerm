@@ -58,7 +58,7 @@
             </div>
             <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
           </form>
         </div>
 
@@ -69,7 +69,10 @@
           :page="page"
           :check-url='checkUrl'
           :finish-url="checkUrl"
-          :finish-flag="true">
+          :finish-flag="true"
+          :has-look-authority = "authority.look"
+          :has-finish-authority = "authority.finish"
+        >
         </summary>
 
       </div>
@@ -102,7 +105,8 @@
     getDataFromApi,
     deleteRequest,
     finishRequest,
-    error
+    error,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -133,6 +137,16 @@
       this.getlistData(1)
       this.userNamelistData()
       this.userAccountlistData()
+//      权限判断
+      if(systermAuthority.indexOf('requisition-total-list-index') > -1){
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('requisition-total-list-over') > -1){
+        this.authority.finish = true
+      }
+      if(systermAuthority.indexOf('requisition-total-list-export') > -1){
+        this.authority.export = true
+      }
     },
     methods: {
 //      列表数据渲染
@@ -218,6 +232,11 @@
         timewidth: "timewidth",
         timetext1: "开始时间",
         timetext2: "结束时间",
+        authority: {
+          export: false,
+          finish: false,
+          look: false
+        },
         gridColumns: {
           order_number: "要货单号",
           checked: "状态",

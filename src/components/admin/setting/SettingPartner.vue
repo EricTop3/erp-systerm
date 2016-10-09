@@ -364,7 +364,7 @@
       delete: function (id) {
         console.log(id)
         var self = this
-        deleteRequest(requestSystemUrl + '/backend-system/provider/get/provider/' + id, function (response) {
+        deleteRequest(requestSystemUrl + '/backend-system/provider/provider/' + id, function (response) {
           self.getlistData(1)
         })
       }
@@ -435,7 +435,7 @@
           contact_phone: this.postData.contact_phone || '',
           contact_address: this.postData.contact_address || ''
         }
-        postDataToApi(requestUrl + '/backend-system/provider/get/provider', data, function (response) {
+        postDataToApi(requestUrl + '/backend-system/provider/provider', data, function (response) {
           self.createModal = false
           self.getlistData(1)
         })
@@ -452,7 +452,7 @@
       edit: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/provider/get/provider/' + this.thisId,
+          url: requestUrl + '/backend-system/provider/provider/' + this.thisId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {
@@ -469,7 +469,7 @@
 //      编辑后保存
       confirmEdit: function () {
         this.$http({
-          url: requestUrl + '/backend-system/provider/get/provider/' + this.thisId,
+          url: requestUrl + '/backend-system/provider/provider/' + this.thisId,
           method: 'put',
           data: {
             type: this.postData.type,
@@ -495,7 +495,7 @@
       view: function (event) {
         this.thisId = Number($(event.currentTarget).parents('tr').attr('id'))
         this.$http({
-          url: requestUrl + '/backend-system/provider/get/provider/' + this.thisId,
+          url: requestUrl + '/backend-system/provider/provider/' + this.thisId,
           method: 'get',
           headers: {'X-Overpowered-Token': token},
         }).then(function (response) {

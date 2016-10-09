@@ -16,7 +16,7 @@
           <li v-if="authority.product"  :class="highLight.product ? 'active' : ''"><a v-link="{ path: '/admin/production/' +  authorityModule.product[0]}">生产</a></li>
           <li v-if="authority.retail"   :class="highLight.retail ? 'active' : ''"><a v-link="{ path: '/admin/retail/'+ authorityModule.retail[0]}">零售</a></li>
           <li v-if="authority.member"   :class="highLight.member ? 'active' : ''"><a v-link="{ path: '/admin/member'}" >会员</a></li>
-          <li :class="highLight.dataCenter ? 'active' : ''"><a v-link="{ path: '/admin/dataCenter/purchase' }" >数据中心</a></li>
+          <li v-if="authority.dataCenter" :class="highLight.dataCenter ? 'active' : ''"><a v-link="{ path: '/admin/dataCenter/'+ authorityModule.dataCenter[0] }" >数据中心</a></li>
           <!--<li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>-->
         </ul>
       </div>
@@ -49,25 +49,31 @@
          if(this.$route.path.indexOf('/admin/member/')>-1){
            this.highLight.member = true
          }
+         if(this.$route.path.indexOf('/admin/dataCenter/')>-1){
+           this.highLight.dataCenter = true
+         }
 //         第一类大权限
-           if(systermAuthority.indexOf('setting')>-1){
+           if(systermAuthority.indexOf('settings')>-1){
              this.authority.setting = true
            }
-           if(systermAuthority.indexOf('purchase')>-1) {
+           if(systermAuthority.indexOf('purchases')>-1 ) {
              this.authority.purchase = true
            }
-           if(systermAuthority.indexOf('warehouse')>-1) {
+           if(systermAuthority.indexOf('warehouses')>-1) {
              this.authority.instock = true
            }
-           if(systermAuthority.indexOf('production')>-1){
+           if(systermAuthority.indexOf('productions')>-1){
              this.authority.product = true
            }
-           if(systermAuthority.indexOf('sale')>-1) {
+           if(systermAuthority.indexOf('sales')>-1) {
              this.authority.retail = true
            }
-           if(systermAuthority.indexOf('member')>-1) {
+           if(systermAuthority.indexOf('members')>-1) {
              this.authority.member = true
            }
+           if(systermAuthority.indexOf('data-centers')>-1) {
+             this.authority.dataCenter = true
+          }
 //         商品设置权限
          if(systermAuthority.indexOf('goods-setting-list')>-1){
            this.authorityModule.setting.push('commodity')
@@ -157,8 +163,22 @@
          if(this.authorityModule.retail.length === 0){
            this.authorityModule.retail[0] = ''
          }
-         console.log("wang")
-         console.log( this.authorityModule.setting[0])
+//       数据中心权限
+         if(systermAuthority.indexOf('purchase-list') > -1){
+           this.authorityModule.dataCenter.push('purchase')
+         }
+         if(systermAuthority.indexOf('stock-list') > -1){
+           this.authorityModule.dataCenter.push('instock')
+         }
+         if(systermAuthority.indexOf('produce-list') > -1){
+           this.authorityModule.dataCenter.push('production')
+         }
+         if(systermAuthority.indexOf('order-list') > -1){
+           this.authorityModule.dataCenter.push('sale')
+         }
+         if(systermAuthority.indexOf('member-list') > -1){
+           this.authorityModule.dataCenter.push('member')
+         }
        },
        methods: {
          exit: function () {
@@ -178,7 +198,8 @@
             stock: [],
             product: [],
             retail: [],
-            member: []
+            member: [],
+            dataCenter: []
           },
           highLight:{
             setting: false,
@@ -186,7 +207,8 @@
             stock: false,
             product: false,
             retail:false,
-            member:false
+            member:false,
+            dataCenter: false,
           },
           systerm: {
             account: systermAccount,
@@ -199,6 +221,7 @@
             product: false,
             retail: false,
             member: false,
+            dataCenter: false
           }
         }
       }

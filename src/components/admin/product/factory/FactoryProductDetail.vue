@@ -15,16 +15,20 @@
           :table-header="gridColumns"
           :table-data="list"
           :grid-operate="gridOperate"
-          :check-url = "checkUrl"
-          :edit-flag.sync = "editFlag"
+          :check-url="checkUrl"
+          :edit-flag.sync="editFlag"
           :is-exist="isExist"
-           >
+          :has-validate-authority="authority.validate"
+          :has-edit-authority="authority.edit"
+        >
         </summary-detail>
         <!--有列表切换的时候的情况-->
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
-          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
-          <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
+          <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)"
+                                                                                         data-toggle="tab">入库明细</a></li>
+          <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a>
+          </li>
+          <a :href="exports" target="_blank" v-if="authority.exports"><span class="btn btn-info spanblocks fr">导出</span></a>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -46,7 +50,10 @@
                 <td>{{entry.unit_specification}}</td>
                 <td>{{entry.origin_stock_amount}}{{entry.unit_name}}</td>
                 <td>{{entry.demand_amount}}{{entry.unit_name}}</td>
-                <td v-if='editFlag'><count :count.sync='entry.main_reference_value'></count>{{entry.unit_name}}</td>
+                <td v-if='editFlag'>
+                  <count :count.sync='entry.main_reference_value'></count>
+                  {{entry.unit_name}}
+                </td>
                 <td v-if='!editFlag'>{{entry.main_reference_value}}{{entry.unit_name}}</td>
                 <td>{{entry.reference_number}}</td>
               </tr>
@@ -55,7 +62,7 @@
           </div>
 
           <!-- 入库汇总 -->
-          <div role="tabpanel" class="tab-pane active"  v-if="summaryModal">
+          <div role="tabpanel" class="tab-pane active" v-if="summaryModal">
             <!--表格详情列表-->
             <table class="table table-striped table-bordered table-hover">
               <thead>
@@ -66,7 +73,8 @@
               </tr>
               </thead>
               <tbody>
-              <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index" :id="[entry.id ? entry.id : '']">
+              <tr class="text-center" v-for="entry in summarystockGoods" track-by="$index"
+                  :id="[entry.id ? entry.id : '']">
                 <td>{{entry.item_code}}</td>
                 <td>{{entry.item_name}}</td>
                 <td>{{entry.unit_specification}}</td>
@@ -99,7 +107,20 @@
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
   import ErrorTip from '../../../common/ErrorTip'
-  import {requestUrl,putDataToApi,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest} from '../../../../publicFunction/index'
+  import {
+    requestUrl,
+    putDataToApi,
+    requestSystemUrl,
+    getDataFromApi,
+    token,
+    exchangeData,
+    detailNull,
+    searchRequest,
+    deleteRequest,
+    checkRequest,
+    systermAuthority,
+    finishRequest
+  } from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -108,7 +129,7 @@
       AdminNav: AdminNav,
       Summary: Summary,
       DatePicker: DatePicker,
-      LeftProduction:LeftProduction,
+      LeftProduction: LeftProduction,
       SummaryDetail: SummaryDetail,
       Count: Count,
       ErrorTip: ErrorTip
@@ -118,7 +139,7 @@
       pagechange: function (currentpage) {
         var self = this
         this.$http({
-          url:requestSystemUrl + '/backend-system/purchase/purchase',
+          url: requestSystemUrl + '/backend-system/purchase/purchase',
           data: {
             page: currentpage
           },
@@ -135,19 +156,19 @@
 //      编辑
       editGoods: function (event) {
         this.editFlag = true
-        this.isExist =  true
+        this.isExist = true
       },
 //      删除请求
       deleteFromApi: function (id) {
         var self = this
-        deleteRequest(requestSystemUrl+ '/backend-system/produce/factory/'+ id,function(response){
+        deleteRequest(requestSystemUrl + '/backend-system/produce/factory/' + id, function (response) {
           console.log('deleted')
         })
       },
 //     完成請求
       finishFromApi: function (id) {
         var self = this
-        finishRequest(requestSystemUrl +'/backend-system/produce/factory/'+ id +'/finished',function(response){
+        finishRequest(requestSystemUrl + '/backend-system/produce/factory/' + id + '/finished', function (response) {
           console.log('finished')
         })
       },
@@ -156,7 +177,7 @@
         var self = this
         var id = this.$route.params.queryId
         var item = []
-        $.each(self.detailList,function (index,val) {
+        $.each(self.detailList, function (index, val) {
           var obj = {}
           obj['reference_id'] = val.item_id
           obj['id'] = val.id
@@ -167,21 +188,34 @@
         var data = {
           items: item
         }
-        var url = requestSystemUrl + '/backend-system/produce/factory/'+ id
-        putDataToApi(url,data,function (res) {
+        var url = requestSystemUrl + '/backend-system/produce/factory/' + id
+        putDataToApi(url, data, function (res) {
           self.isExist = false
           self.editFlag = false
           self.listData()
-        },function(err){
+        }, function (err) {
           self.isExist = true
           self.editFlag = true
           self.modal.errModal = true
-          self.modal.errInfo =  '服务器错误'
+          self.modal.errInfo = '服务器错误'
         })
       }
     },
     ready: function () {
       this.listData()
+//    权限判断
+//      审核
+      if(systermAuthority.indexOf('factory-produce-list-check') > -1){
+        this.authority.validate = true
+      }
+//      编辑
+      if(systermAuthority.indexOf('factory-produce-list-edit') > -1){
+        this.authority.edit = true
+      }
+//      导出
+      if(systermAuthority.indexOf('factory-produce-list-export') > -1){
+        this.authority.exports = true
+      }
     },
     methods: {
       listData: function (page) {
@@ -190,57 +224,57 @@
 //        获取商品列表详情
         var url = requestSystemUrl + '/backend-system/produce/factory/' + currentId
 //       获取单个列表详情
-        var purchaseUrl  = requestSystemUrl + '/backend-system/produce/factory/' + currentId + '/get'
+        var purchaseUrl = requestSystemUrl + '/backend-system/produce/factory/' + currentId + '/get'
 //       获取商品列表详情
-        getDataFromApi(url,{},function(response){
+        getDataFromApi(url, {}, function (response) {
           self.detailList = response.data.body.list
         })
 //        获取采购列表详情
-        getDataFromApi(purchaseUrl,{},function(response){
+        getDataFromApi(purchaseUrl, {}, function (response) {
           self.list = response.data.body
           exchangeData(self.list)
         })
       },
 //      切换
-    changeActive: function (event) {
-      var cur = $(event.currentTarget)
-      cur.addClass('active').siblings('li').removeClass('active')
-      switch (Number(cur.attr('id'))){
-        case 1:
-          this.detailModal = true
-          this.summaryModal = false
-          break
-        case 2:
-          this.detailModal = false
-          this.summaryModal = true
-          this.summary()
-      }
-    },
+      changeActive: function (event) {
+        var cur = $(event.currentTarget)
+        cur.addClass('active').siblings('li').removeClass('active')
+        switch (Number(cur.attr('id'))) {
+          case 1:
+            this.detailModal = true
+            this.summaryModal = false
+            break
+          case 2:
+            this.detailModal = false
+            this.summaryModal = true
+            this.summary()
+        }
+      },
       //          汇总方法
       summary: function () {
         var self = this
         self.summaryPrice = 0
         this.summarystockGoods = []
-        this.summarystockGoods =this.summarystockGoods.concat(self.detailList)
-        $.each(this.summarystockGoods,function (index,val){
+        this.summarystockGoods = this.summarystockGoods.concat(self.detailList)
+        $.each(this.summarystockGoods, function (index, val) {
           val.item_amount = val.main_reference_value
         })
-        this.summarystockGoods = this.summaryMethod ("item_code", this.summarystockGoods)
+        this.summarystockGoods = this.summaryMethod("item_code", this.summarystockGoods)
       },
 //     汇总方法
-      summaryMethod: function (ObjPropInArr, array){
-        var hash={};
-        var result=[];
-        for(var i=0;i<array.length;i++){
-          if(hash[array[i][ObjPropInArr]]){
-            hash[array[i][ObjPropInArr]].item_amount=Number(array[i].item_amount) + Number( hash[array[i][ObjPropInArr]].item_amount)
-            hash[array[i][ObjPropInArr]].demand_amount=Number(array[i]. demand_amount) + Number( hash[array[i][ObjPropInArr]].demand_amount)
-            hash[array[i][ObjPropInArr]].origin_stock_amount=Number(array[i].origin_stock_amount) + Number( hash[array[i][ObjPropInArr]].origin_stock_amount)
-          }else{
-            hash[array[i][ObjPropInArr]]=array[i];
+      summaryMethod: function (ObjPropInArr, array) {
+        var hash = {};
+        var result = [];
+        for (var i = 0; i < array.length; i++) {
+          if (hash[array[i][ObjPropInArr]]) {
+            hash[array[i][ObjPropInArr]].item_amount = Number(array[i].item_amount) + Number(hash[array[i][ObjPropInArr]].item_amount)
+            hash[array[i][ObjPropInArr]].demand_amount = Number(array[i].demand_amount) + Number(hash[array[i][ObjPropInArr]].demand_amount)
+            hash[array[i][ObjPropInArr]].origin_stock_amount = Number(array[i].origin_stock_amount) + Number(hash[array[i][ObjPropInArr]].origin_stock_amount)
+          } else {
+            hash[array[i][ObjPropInArr]] = array[i];
           }
         }
-        for(var j in hash){
+        for (var j in hash) {
           result.push(hash[j])
         }
         return result
@@ -258,14 +292,14 @@
         page: [],
         list: {},
         summarystockGoods: [],
-        checkUrl:requestSystemUrl+ '/backend-system/produce/factory/',
+        checkUrl: requestSystemUrl + '/backend-system/produce/factory/',
         detailList: [],
         editFlag: false,
         isExist: false,
         detailModal: true,
         summaryModal: false,
         gridOperate: true,
-        modal:{
+        modal: {
           errModal: false,
           errInfo: ''
         },
@@ -286,6 +320,11 @@
           demand_amount: '门店要货数量',
           main_reference_value: '生产数量',
           reference_number: '来源要货单号',
+        },
+        authority: {
+          validate: false,
+          edit: false,
+          exports: false
         }
       }
     }

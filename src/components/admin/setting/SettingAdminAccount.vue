@@ -328,26 +328,29 @@
           }
           $.each(val.permissions, function (current, currentVal) {
             switch (currentVal) {
-              case  'setting':
+              case  'settings':
                 val.permissions[current] = '设置 '
                 break
-              case  'purchase':
+              case  'purchases':
                 val.permissions[current] = '采购 '
                 break
-              case  'warehouse':
+              case  'warehouses':
                 val.permissions[current] = '仓库 '
                 break
-              case  'production':
+              case  'productions':
                 val.permissions[current] = '生产 '
                 break
-              case  'sale':
+              case  'sales':
                 val.permissions[current] = '零售 '
                 break
-              case  'member':
+              case  'members':
                 val.permissions[current] = '会员 '
                 break
-              case  'mini-mall':
+              case  'mini-malls':
                 val.permissions[current] = '微商城 '
+                break
+              case  'data-centers':
+                val.permissions[current] = '数据中心 '
                 break
               default:
                 val.permissions[current] = ''

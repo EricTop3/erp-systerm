@@ -18,6 +18,8 @@
           :edit-flag.sync="editFlag"
           :check-url = 'checkUrl'
           :is-exist = 'isExist'
+          :has-validate-authority="authority.validate"
+          :has-edit-authority="authority.edit"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -102,7 +104,7 @@
   import SummaryDetail from '../../../common/SummaryDetail'
   import Count from '../../../common/Count'
   import ErrorTip  from '../../../common/ErrorTip'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi} from '../../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,detailNull,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi,systermAuthority} from '../../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -186,6 +188,13 @@
     },
     ready: function () {
       this.listData()
+//     权限判断
+      if(systermAuthority.indexOf('distribution-out-list-check') > -1) {
+        this.authority.validate = true
+      }
+      if(systermAuthority.indexOf('distribution-out-list-edit') > -1) {
+        this.authority.edit = true
+      }
     },
     methods: {
       listData: function (page) {
@@ -262,6 +271,10 @@
         modal:{
           errModal: false,
           errInfo: 'high,这是错误提示'
+        },
+        authority: {
+          validate: false,
+          edit: false
         },
         gridColumns: {
           order_number: '配送单号',

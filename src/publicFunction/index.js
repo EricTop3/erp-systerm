@@ -345,7 +345,8 @@
       stock: [],
       product: [],
       retail: [],
-      member: []
+      member: [],
+      dataCenter: []
     }
     var curRouter = []
     cur.$http.post(loginUrl,data).then(function(response){
@@ -448,24 +449,46 @@
         if(authorityModule.retail.length===0){
           authorityModule.retail[0] = ''
         }
+        // 数据中心权限
+        if(systermAuthority.indexOf('purchase-list') > -1){
+          authorityModule.dataCenter.push('purchase')
+        }
+        if(systermAuthority.indexOf('stock-list') > -1){
+          authorityModule.dataCenter.push('instock')
+        }
+        if(systermAuthority.indexOf('produce-list') > -1){
+          authorityModule.dataCenter.push('production')
+        }
+        if(systermAuthority.indexOf('order-list') > -1){
+          authorityModule.dataCenter.push('sale')
+        }
+        if(systermAuthority.indexOf('member-list') > -1){
+          authorityModule.dataCenter.push('member')
+        }
+        if(authorityModule.dataCenter.length===0){
+           authorityModule.dataCenter[0] = ''
+        }
         //大类权限
-        if(systermAuthority.indexOf('setting')>-1){
+        if(systermAuthority.indexOf('settings')>-1){
           curRouter.push('setting/'+ authorityModule.setting[0])
         }
-        if(systermAuthority.indexOf('purchase')>-1){
+        if(systermAuthority.indexOf('purchases')>-1){
           curRouter.push('purchase/'+  authorityModule.purchase[0])
         }
-        if(systermAuthority.indexOf('warehouse')>-1) {
+        if(systermAuthority.indexOf('warehouses')>-1) {
           curRouter.push('instock/' +  authorityModule.stock[0])
         }
-        if(systermAuthority.indexOf('production')>-1){
+        if(systermAuthority.indexOf('productions')>-1){
           curRouter.push('production/'+  authorityModule.product[0])
         }
-        if(systermAuthority.indexOf('sale')>-1){
-          curRouter.push('retail/'+  authorityModule.retail[0])
+        if(systermAuthority.indexOf('sales')>-1){
+          curRouter.push('retail/' +  authorityModule.retail[0])
         }
-        if(systermAuthority.indexOf('member')>-1) {
+        if(systermAuthority.indexOf('members')>-1) {
           curRouter.push('member')
+        }
+        if(systermAuthority.indexOf('data-centers')>-1) {
+          curRouter.push('dataCenter/' + authorityModule.dataCenter[0])
         }
         if(curRouter.length===0){
           window.alert("你没有任何权限访问")
