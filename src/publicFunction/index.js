@@ -154,9 +154,14 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
-        console.log(err)
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 403){
+          window.location.href = '#!/admin/403'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
         }
       })
   }
@@ -171,6 +176,15 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 403){
+          window.location.href = '#!/admin/403'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         console.log(err)
       })
   }
@@ -220,7 +234,10 @@
           window.location.href = '?#!/admin/login'
         }
         if(err.status === 403){
-          window.alert("你没得权限操作")
+          window.location.href = '#!/admin/403'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
         }
         error && error(err)
       })
@@ -238,11 +255,13 @@
         callback && callback(response)
       }, function (err) {
         if(err.status === 401){
-          window.location.href = '?#!/site/login'
+          window.location.href = '?#!/admin/login'
         }
         if(err.status === 403){
-          window.history.back()
-          console.log(ErrorTip)
+          window.location.href = '#!/admin/403'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
         }
         error && error(err)
       })
@@ -259,7 +278,15 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
-        console.log(err)
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 403){
+          window.location.href = '#!/admin/403'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         error && error(err)
       })
   }
@@ -275,7 +302,15 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
-        console.log(err)
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 403){
+          window.location.href = '#!/admin/403'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         error && error(err)
       })
   }
@@ -291,8 +326,16 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 403){
+          window.location.href = '#!/admin/403'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         callbackErr && callbackErr(err)
-        console.log(err)
       })
   }
   //  对象为null的方法
@@ -491,8 +534,7 @@
           curRouter.push('dataCenter/' + authorityModule.dataCenter[0])
         }
         if(curRouter.length===0){
-          window.alert("你没有任何权限访问")
-          window.location.href = '#!/admin/login'
+          window.location.href = '#!/admin/403'
         }else {
           window.location.href = '#!/admin/' + curRouter[0]
         }
