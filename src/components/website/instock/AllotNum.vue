@@ -59,7 +59,16 @@
       </form>
     </div>
     <!--表格 -->
-    <summary :table-header="gridColumns" :table-data="list" :page="page" :check-url="checkUrl"></summary>
+    <summary
+      :table-header="gridColumns"
+      :table-data="list"
+      :page="page"
+      :check-url="checkUrl"
+      :has-validate-authority="true"
+      :has-look-authority = "true"
+      :has-finish-authority="true"
+      :has-delete-authority= "true"
+    ></summary>
   </div>
 </template>
 <script>

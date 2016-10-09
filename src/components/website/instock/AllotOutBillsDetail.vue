@@ -7,8 +7,14 @@
       <li class="active">收货单汇总</li>
       <li class="active">查看收货单汇总</li>
     </ol>
-    <summary-detail :table-header="gridColumns" :table-data="list"  :check-url="checkUrl"
-                    :edit-flag.sync = 'editFlag'>
+    <summary-detail
+      :table-header="gridColumns"
+      :table-data="list"
+      :check-url="checkUrl"
+      :edit-flag.sync = 'editFlag'
+      :has-validate-authority="true"
+      :has-edit-authority="true"
+    >
     </summary-detail>
     <!--表格详情列表-->
     <table class="table table-striped table-bordered table-hover">
