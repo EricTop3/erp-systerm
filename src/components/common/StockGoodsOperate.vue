@@ -33,7 +33,7 @@
           </div>
           <div class="col-sm-10">
             <!--表格-->
-            <grid :check="true" :check-all.sync="allChecked" :data="currentData" :columns="goodsListTitle" :is-add-flag.sync="isAdd"></grid>
+            <grid :check="true" :check-all.sync="allChecked" :data="currentData" :columns="goodsListTitle" :is-add-flag.sync="isAdd" :is-check-all="true"></grid>
             <!--分页-->
             <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
           </div>
