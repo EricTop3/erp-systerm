@@ -10,7 +10,7 @@
           <li><a v-link="{ path: '/admin/dataCenter/sale/settlementList'}"> 零售单统计表</a></li>
           <li><a v-link="{ path: '/admin/dataCenter/sale/rankingList'}"> 零售排行榜</a></li>
           <li><a v-link="{ path: '/admin/dataCenter/sale/bankList'}"> 收银账号统计表</a></li>
-          <li class="active"><a v-link="{ path: '/admin/dataCenter/sale/bankListDetail'}"> 收银账号统计表</a></li>
+          <li class="active"><a v-link="{ path: '/admin/dataCenter/sale/bankListDetail'}"> 收银账号明细表</a></li>
         </ol>
         <!-- 页头 -->
         <div class="page-header">

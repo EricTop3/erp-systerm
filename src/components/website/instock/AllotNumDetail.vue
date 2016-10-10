@@ -15,6 +15,8 @@
       :check-url = "checkUrl"
       :edit-flag.sync = "editFlag"
       :is-exist.sync = 'isExist'
+      :has-validate-authority="true"
+      :has-edit-authority="true"
     >
     </summary-detail>
     <!--有列表切换的时候的情况-->

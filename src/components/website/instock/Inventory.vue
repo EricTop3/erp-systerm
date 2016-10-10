@@ -41,7 +41,15 @@
     </div>
 
     <!--列表详情-->
-    <summary :table-header="gridColumns" :table-data="list" :check-url="checkUrl" :page="page" :special-show="specialShow"></summary>
+    <summary :table-header="gridColumns"
+             :table-data="list"
+             :check-url="checkUrl"
+             :page="page"
+             :special-show="specialShow"
+             :has-validate-authority="true"
+             :has-look-authority = "true"
+             :has-finish-authority="true"
+             :has-delete-authority= "true"></summary>
 
   </div>
 </template>

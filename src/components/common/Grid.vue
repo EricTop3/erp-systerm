@@ -9,8 +9,8 @@
       <th v-if="operate">操作</th>
     </tr>
     </thead>
-    <tbody>
-    <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']" >
+    <tbody v-if="!singleRowHide">
+    <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']">
       <td v-if="check"><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="singleCheck($event)"  v-model="entry.choice"></td>
       <td v-for="value in columns">
         {{entry[$key]}}
@@ -24,6 +24,13 @@
       </td>
     </tr>
     </tbody>
+    <tbody v-if="singleRowHide">
+      <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']" v-if="entry.is_today > 0">
+        <td v-for="value in columns">
+          {{entry[$key]}}
+        </td>
+      </tr>
+    </tbody>
   </table>
 </template>
 <script>
@@ -35,6 +42,7 @@
       data: {
         required: true,
       },
+      singleRowHide: false,
       isCheckAll: true,
       isAddFlag: false,
       check: false,

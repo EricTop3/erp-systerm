@@ -47,7 +47,18 @@
       </form>
     </div>
     <!--汇总列表-->
-    <summary :table-data="list" :table-header="gridColumns" :page="page" :check-url = 'checkUrl' :finish-url="checkUrl" :finish-flag="true"></summary>
+    <summary
+             :table-data="list"
+             :table-header="gridColumns"
+             :page="page"
+             :check-url = 'checkUrl'
+             :finish-url="checkUrl"
+             :finish-flag="true"
+             :has-validate-authority="true"
+             :has-look-authority = "true"
+             :has-finish-authority="true"
+             :has-delete-authority= "true">
+    </summary>
   </div>
 </template>
 <script>

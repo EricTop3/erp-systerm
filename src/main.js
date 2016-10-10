@@ -125,6 +125,8 @@ import AdminInstockProduction from 'components/admin/instock/productInstock/Admi
 import AdminInstockProductionDetail from 'components/admin/instock/productInstock/AdminInstockProductionDetail'
 import AdminMicroShopOrder from 'components/admin/micro-shop-order/MicroShopOrder'
 import AdminLogin from 'components/admin/login/AdminLogin'
+import Error404  from 'components/common/Error404.vue'
+import Error403  from 'components/common/Error403.vue'
 Vue.filter('priceChange', priceChange)
 Vue.use(VueRouter)
 Vue.use(VueRescource)
@@ -550,6 +552,12 @@ router.map({
   },
   '/admin/login': {
     component: AdminLogin
+  },
+  '/admin/404': {
+    component: Error404
+  },
+  '/admin/403': {
+    component: Error403
   }
 })
 router.redirect({
