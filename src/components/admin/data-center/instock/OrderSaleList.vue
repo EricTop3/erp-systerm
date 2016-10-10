@@ -19,9 +19,9 @@
           <form class="form-inline">
             <div class="form-group">
               <label>门店</label>
-              <select class="form-control" v-model="searchData.warehouse_id">
+              <select class="form-control" v-model="searchData.store_id">
                 <option value="">请选择</option>
-                <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
+                <option :value="item.id" v-for="item in providerList">{{item.display_name}}</option>
               </select>
             </div>
             <div class="form-group">
@@ -124,7 +124,7 @@
           end_time: self.searchData.end_time,
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          warehouse_id: self.searchData.warehouse_id,
+          store_id: self.searchData.store_id,
           category_id: self.searchData.category_id,
           page: page
         }
@@ -143,7 +143,7 @@
           end_time: self.searchData.end_time,
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          warehouse_id: self.searchData.warehouse_id,
+          store_id: self.searchData.store_id,
           category_id: self.searchData.category_id
         }
         getDataFromApi(url,data,function(response){
@@ -155,7 +155,7 @@
       getProviderList: function(){
         var self = this
         var data = {}
-        var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url,data,function(response){
           self.providerList = response.data.body.list
         })
@@ -181,7 +181,7 @@
         self.searchData.end_time = ''
         self.searchData.item_code = ''
         self.searchData.item_name = ''
-        self.searchData.warehouse_id = ''
+        self.searchData.store_id = ''
         self.searchData.category_id = ''
         this.getListData(1)
         this.getOneData()
@@ -214,7 +214,7 @@
         var data =
           'item_name=' + this.searchData.item_name + '&' +
           'item_code=' + this.searchData.item_code + '&' +
-          'warehouse_id=' + this.searchData.warehouse_id + '&' +
+          'store_id=' + this.searchData.store_id + '&' +
           'category_id=' + this.searchData.category_id + '&' +
           'start_time=' + this.searchData.start_time + '&' +
           'end_time=' + this.searchData.end_time
@@ -247,7 +247,7 @@
         searchData: {
           start_time: '',
           end_time: '',
-          warehouse_id: '',
+          store_id: '',
           category_id: '',
           item_code: '',
           item_name: ''

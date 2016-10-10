@@ -23,13 +23,10 @@
               <input type="text" class="form-control" placeholder="请输入姓名" v-model="searchData.name">
             </div>
             <div class="form-group ml10">
-              <label>门店</label>
-              <select class="form-control" v-model="searchData.store_id">
-                <option value="">请选择</option>
-                <option :value="item.code" v-for="item in providerList">{{item.display_name}}</option>
-              </select>
+              <label>充值日期</label>
+              <date-picker :value.sync="searchData.startTime" time-text=开始时间></date-picker> -
+              <date-picker :value.sync="searchData.endTime"  time-text=结束时间></date-picker>
             </div>
-
             <span class="btn btn-primary " @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="searchCancel()">撤销搜索</span>
 
@@ -94,6 +91,8 @@
         var data = {
           store_id: self.searchData.store_id,
           vip_card_number: self.searchData.vip_card_number,
+          start_time: self.searchData.startTime,
+          end_time: self.searchData.end_time,
           name: self.searchData.name,
           page: page
         }
@@ -113,6 +112,8 @@
         self.searchData.vip_card_number = ''
         self.searchData.store_id = ''
         self.searchData.name = ''
+        self.searchData.startTime = ''
+        self.searchData.endTime = ''
         this.getListData(1)
       },
 //      获取门店列表（/backend-system/store/get/store）,仓库列表（/backend-system/warehouse-minimal-list）
@@ -160,13 +161,14 @@
           document_number: '充值单号',
           total_sum: '充值金额',
           pay_method: '支付方式',
-          seller_name: '记账人',
-          seller_time: '记账日期'
+          seller_name: '记账人'
         },
         productOperate: false,
         searchData: {
           vip_card_number: '',
           name: '',
+          startTime: '',
+          endTime: '',
           store_id: ''
         },
         modal: {

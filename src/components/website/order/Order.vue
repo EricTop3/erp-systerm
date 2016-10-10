@@ -749,6 +749,7 @@
         this.$http({
           url: requestUrl + '/front-system/order/product',
           method: 'get',
+          headers: {'X-Overpowered-Token': token},
           data: {
             page: currenPage
           }

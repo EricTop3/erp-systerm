@@ -29,6 +29,13 @@
               <label>品名</label>
               <input type="text" class="form-control" placeholder="请输入商品名称" v-model="searchData.item_name">
             </div>
+            <div class="form-group">
+              <label>商品分类</label>
+              <select class="form-control" v-model="searchData.category_id">
+                <option value="">请选择</option>
+                <option v-for="item in category" :value="item.id">{{item.display_name}}</option>
+              </select>
+            </div>
             <div class="form-group ml10">
               <label>时间段</label>
               <date-picker :value.sync="searchData.start_time" time-text=开始时间></date-picker> -
@@ -109,6 +116,11 @@
       }
     },
     ready: function () {
+      var self = this
+//    获取商品分类
+      getDataFromApi(requestSystemUrl + '/backend-system/product/get/category',{},function(response){
+        self.category = response.data.body.list
+      })
 //      获取列表数据
       this.getListData(1)
 //      获取单条汇总数据
@@ -127,6 +139,7 @@
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
           store_code: self.searchData.store_code,
+          category_id :self.searchData.category_id,
           page: page
         }
         getDataFromApi(url, data, function (response) {
@@ -145,7 +158,7 @@
           end_time: self.searchData.end_time,
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          store_code: self.searchData.store_code
+          store_code: self.searchData.store_code,
         }
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body.list
@@ -175,6 +188,7 @@
         self.searchData.item_code = ''
         self.searchData.item_name = ''
         self.searchData.store_code = ''
+        self.searchData.category_id = ''
         this.getListData(1)
         this.getOneData()
       },
@@ -207,9 +221,11 @@
         listdata: [],
         onedata: [],
         providerList: [],
+        category: [],
         gridColumns: {
           created_at: '单据日期',
           store_name: '门店',
+          category_name: '分类',
           item_code: '货号',
           item_name: '品名',
           unit_name: '单位',
@@ -223,7 +239,8 @@
           end_time: '',
           store_code: '',
           item_code: '',
-          item_name: ''
+          item_name: '',
+          category_id: ''
         },
         modal: {
           errModal: false,
