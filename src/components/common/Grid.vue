@@ -1,5 +1,6 @@
 <template>
-  <table class="table table-striped table-bordered table-hover">
+  <div class="table-responsive">
+     <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr class="text-center">
       <th v-if="check"><label><input type="checkbox" @change="checkAllMethod()" v-model="checkAll" :disabled="data  && data.length<0" v-if="check && isCheckAll">全选</label></th>
@@ -32,6 +33,7 @@
       </tr>
     </tbody>
   </table>
+  </div>
 </template>
 <script>
   import $ from 'jquery'
