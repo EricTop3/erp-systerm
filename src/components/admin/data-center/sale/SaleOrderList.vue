@@ -29,7 +29,19 @@
               <label>品名</label>
               <input type="text" class="form-control" placeholder="请输入商品名称" v-model="searchData.item_name">
             </div>
-
+            <div class="form-group  ml10">
+              <label>会员卡号</label>
+              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="searchData.member_card_number">
+            </div>
+            <div class="form-group  ml10">
+              <label>小票编号</label>
+              <input type="text" class="form-control" placeholder="请输入会员卡号" v-model="searchData.order_number">
+            </div>
+            <div class="form-group ml10">
+              <label>单据日期</label>
+              <date-picker :value.sync="searchData.startTime" time-text=开始时间></date-picker> -
+              <date-picker :value.sync="searchData.endTime"  time-text=结束时间></date-picker>
+            </div>
             <span class="btn btn-primary " @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="searchCancel()">撤销搜索</span>
 
@@ -120,6 +132,10 @@
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
           store_code: self.searchData.store_code,
+          start_time: self.searchData.startTime,
+          end_time: self.searchData.endTime,
+          member_card_number: self.searchData.member_card_number,
+          order_number: self.searchData.order_number,
           page: page
         }
         getDataFromApi(url, data, function (response) {
@@ -165,6 +181,10 @@
         self.searchData.item_code = ''
         self.searchData.item_name = ''
         self.searchData.store_code = ''
+        self.searchData.member_card_number = '',
+        self.searchData.order_number= '',
+        self.searchData.startTime = ''
+        self.searchData.endTime = ''
         this.getListData(1)
         this.getOneData()
       },
@@ -221,7 +241,11 @@
         searchData: {
           store_code: '',
           item_code: '',
-          item_name: ''
+          item_name: '',
+          member_card_number: '',
+          order_number: '',
+          startTime: '',
+          endTime: ''
         },
         modal: {
           errModal: false,

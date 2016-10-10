@@ -30,6 +30,14 @@
               <input type="text" class="form-control" placeholder="请输入商品名称" v-model="searchData.item_name">
             </div>
             <div class="form-group  ml10">
+              <label>审核状态</label>
+              <select class="form-control" v-model="searchData.checked">
+                <option value="">请选择</option>
+                <option value="0">未审核</option>
+                <option value="1">已审核</option>
+              </select>
+            </div>
+            <div class="form-group  ml10">
               <label>制单人</label>
               <select class="form-control" v-model="searchData.creator_id">
                 <option value="">请选择</option>
@@ -126,6 +134,7 @@
           creator_id: self.searchData.creator_id,
           produce_warehouse_id: self.searchData.produce_warehouse_id,
           document_number: self.searchData.document_number,
+          checked: self.searchData.checked ,
           page: page
         }
         getDataFromApi(url,data,function(response){
@@ -169,6 +178,7 @@
         self.searchData.creator_id = ''
         self.searchData.produce_warehouse_id = ''
         self.searchData.document_number = ''
+        self.searchData.checked = ''
         this.getListData(1)
       },
 //    对获取到的数据进行处理1
@@ -247,6 +257,7 @@
           creator_id: '',
           item_code: '',
           item_name: '',
+          checked: '',
           produce_warehouse_id: '',
           document_number: ''
         },
