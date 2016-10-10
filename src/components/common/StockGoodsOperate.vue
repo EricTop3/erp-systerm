@@ -23,17 +23,17 @@
           <div class="col-sm-2" role="navigation" style="padding:0;">
             <ul class="nav nav-stacked dialog-sidebar">
               <li class="header">商品分类</li>
-              <li class="active"  @click="fetchStockGood($event)">
+              <li class="active"  @click="fetchStockGood($event)"   id= '0' data-flag="false" data-click="false">
                 <a href="javascript:void(0)">全部分类<span class="glyphicon glyphicon-chevron-right"></span></a></li>
               </li>
-              <li v-for="item in category" track-by="$index"  @click="fetchStockGood($event)" :id="item.id" categoryFlag="false">
+              <li v-for="item in category" track-by="$index"  @click="fetchStockGood($event)" :id="item.id" data-flag="false" data-click="false">
                 <a href="javascript:void(0)">{{item.display_name}}<span
                   class="glyphicon glyphicon-chevron-right"></span></a></li>
             </ul>
           </div>
           <div class="col-sm-10">
             <!--表格-->
-            <grid :check="true" :check-all.sync="allChecked" :data="addData" :columns="goodsListTitle" :is-add-flag.sync="isAdd"></grid>
+            <grid :check="true" :check-all.sync="allChecked" :data="currentData" :columns="goodsListTitle" :is-add-flag.sync="isAdd"></grid>
             <!--分页-->
             <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page'></page>
           </div>
@@ -83,8 +83,12 @@
          var self = this
          getDataFromApi(self.categoryUrl,{},function(response){
            self.category = response.data.body.list
+           $.each(self.category,function(index,val){
+             val.isCategoryLoadData =  false
+           })
+           var data = $.extend({category: self.query.category},self.requestData)
 //           获取产品
-           self.requestApi(self.requestData,function(){
+           self.requestApi(data,function(){
                self.isLoadFinish = true
              })
          })
@@ -107,31 +111,44 @@
       requestApi: function (data,callback) {
         var self = this
         getDataFromApi(this.productUrl,data,function(response){
-          self.addData = response.data.body.list
+          self.currentData = response.data.body.list
+          self.addData = self.addData.concat(self.currentData)
+          self.cachData.push({
+              category: data,
+              product: response.data.body.list
+          })
           self.page = response.data.body.pagination
           callback && callback ()
         })
       },
 //    根据分类进行产品请求
       fetchStockGood: function (event) {
+        var self = this
         var currentObj = $(event.currentTarget)
         var currenHtml = $(event.currentTarget).find('a').text()
-        var categoryLoadFinish = $(event.currentTarget).attr('catagoryFlag')
-        console.log(categoryLoadFinish)
+        var currentId = Number(currentObj.attr('id'))
+        var currentLoadFinished =currentObj.attr('data-flag')
+        var currentIsClick =currentObj.attr('data-click')
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.query.category = Number(currentObj.attr('id'))
         var data = $.extend({category: this.query.category},this.requestData)
-        if(currenHtml === '全部分类'){
-          this.requestApi(this.requestData)
-        }else{
+        console.log(data)
 //         获取产品
-          if(!categoryLoadFinish){
+          if(currentLoadFinished === 'false'){
             this.requestApi(data,function(){
-              $(event.currentTarget).attr('catagoryFlag',true)
+               currentObj.attr('data-flag',true)
+            })
+           } else {
+            $.each(this.cachData,function(index,val){
+              if(val.category.category ===currentId ){
+                self.currentData = val.product
+                if(currentIsClick === 'false'){
+                  self.addData = self.addData.concat(self.currentData)
+                  currentObj.attr('data-click',true)
+                }
+              }
             })
           }
-
-        }
         this.$dispatch('fetchProduct')
       },
 //      根据搜索进行产品请求
@@ -156,9 +173,11 @@
     data: function () {
       return {
         isAdd: false,
+        cachData: [],
+        currentData: [],
         query: {
           search: '',
-          category: ''
+          category: '0'
         },
         category: [],
         allChecked: false
