@@ -241,8 +241,8 @@ ReceivingStatisticsDetail.vue
         providerList: [],
         personList: [],
         gridColumns: {
-          warehouse_in: '调入仓库',
-          warehouse_out: '调出仓库',
+          warehouse_out: '调入仓库',
+          warehouse_in: '调出仓库',
           created_at: '制单日期',
           document_number: '调拨单号',
           creator_name: '制单人',

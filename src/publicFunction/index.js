@@ -157,9 +157,6 @@
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
         }
-        if(err.status === 403){
-          window.location.href = '#!/admin/403'
-        }
         if(err.status === 404){
           window.location.href = '#!/admin/404'
         }
@@ -178,9 +175,6 @@
       }, function (err) {
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
-        }
-        if(err.status === 403){
-          window.location.href = '#!/admin/403'
         }
         if(err.status === 404){
           window.location.href = '#!/admin/404'
@@ -233,9 +227,6 @@
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
         }
-        if(err.status === 403){
-          window.location.href = '#!/admin/403'
-        }
         if(err.status === 404){
           window.location.href = '#!/admin/404'
         }
@@ -256,9 +247,6 @@
       }, function (err) {
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
-        }
-        if(err.status === 403){
-          window.location.href = '#!/admin/403'
         }
         if(err.status === 404){
           window.location.href = '#!/admin/404'
@@ -281,9 +269,6 @@
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
         }
-        if(err.status === 403){
-          window.location.href = '#!/admin/403'
-        }
         if(err.status === 404){
           window.location.href = '#!/admin/404'
         }
@@ -305,9 +290,6 @@
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
         }
-        if(err.status === 403){
-          window.location.href = '#!/admin/403'
-        }
         if(err.status === 404){
           window.location.href = '#!/admin/404'
         }
@@ -328,9 +310,6 @@
       }, function (err) {
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
-        }
-        if(err.status === 403){
-          window.location.href = '#!/admin/403'
         }
         if(err.status === 404){
           window.location.href = '#!/admin/404'

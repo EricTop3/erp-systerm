@@ -50,12 +50,12 @@
           <tbody>
           <tr>
             <td>
-              <span class="pr50">期初库存汇总：{{onedata.amount}}</span>
-              <span class="pr50">期初库存总额：{{onedata.price}}</span>
-              <span class="pr50">期间入库汇总：{{onedata.price}}</span>
-              <span class="pr50">期间入库汇总额：{{onedata.price}}</span>
-              <span class="pr50">期末库存汇总：{{onedata.price}}</span>
-              <span class="pr50">期末库存总额：{{onedata.price}}</span>
+              <span class="pr50">期初库存汇总：{{onedata.start_stock}}</span>
+              <span class="pr50">期初库存总额：￥{{onedata.start_stock_total_sum}}</span>
+              <span class="pr50">期间入库汇总：{{onedata.in_stock}}</span>
+              <span class="pr50">期间入库汇总额：￥{{onedata.in_stock_total_sum}}</span>
+              <span class="pr50">期末库存汇总：{{onedata.current_stock}}</span>
+              <span class="pr50">期末库存总额：￥{{onedata.current_stock_total_sum}}</span>
             </td>
           </tr>
           </tbody>

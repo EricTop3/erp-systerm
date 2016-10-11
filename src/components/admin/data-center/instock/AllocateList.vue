@@ -209,8 +209,8 @@
         onedata: [],
         providerList: [],
         gridColumns: {
-          warehouse_in: '调入仓库',
-          warehouse_out: '调出仓库',
+          warehouse_out: '调入仓库',
+          warehouse_in: '调出仓库',
           item_code: '货号',
           item_name: '品名',
           unit_name: '单位',
