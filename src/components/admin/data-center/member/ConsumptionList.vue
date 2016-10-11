@@ -41,6 +41,11 @@
                 <option :value="item.id" v-for="item in categoryList">{{item.display_name}}</option>
               </select>
             </div>
+            <div class="form-group ml10">
+              <label>消费日期</label>
+              <date-picker :value.sync="searchData.start_time" time-text=开始时间></date-picker> -
+              <date-picker :value.sync="searchData.end_time"  time-text=结束时间></date-picker>
+            </div>
             <div class="form-group  ml10">
               <label>小票编号</label>
               <input type="text" class="form-control" placeholder="请输入编号" v-model="searchData.order_number">
@@ -126,6 +131,8 @@
           item_code: self.searchData.item_code,
           category_id: self.searchData.category_id,
           order_number: self.searchData.order_number,
+          start_time: self.searchData.start_time ,
+          end_time: self.searchData.end_time,
           page: page
         }
         getDataFromApi(url, data, function (response) {
@@ -148,6 +155,8 @@
         self.searchData.item_code = ''
         self.searchData.category_id = ''
         self.searchData.order_number = ''
+        self.searchData.start_time = ''
+        self.searchData.end_time = ''
         this.getListData(1)
       },
 //    对获取到的数据进行处理1
@@ -223,7 +232,9 @@
           item_name: '',
           item_code: '',
           category_id: '',
-          order_number: ''
+          order_number: '',
+          start_time: '',
+          end_time: ''
         },
         modal: {
           errModal: false,

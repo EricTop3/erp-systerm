@@ -142,7 +142,7 @@
           if (value.pay_method == 'refund') {
             this.pay_method = '退货退款'
           }
-          if (!value.document_number) {
+          if (value.document_type !== 'order') {
             value.document_number =value.document_number  + '(会员卡充值)'
           }
         })

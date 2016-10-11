@@ -49,7 +49,7 @@
         <table class="table table-striped table-border table-hover mt20" :data="onedata">
           <tbody>
           <tr>
-            <td><span class="pr50">要货数量汇总：{{onedata.amount}}</span> <span class="pr50">要货总金额：{{onedata.price}}</span></td>
+            <td><span class="pr50">要货数量汇总：{{onedata.amount}}</span> <span class="pr50">要货总金额：{{onedata.price | priceChange}}</span></td>
           </tr>
           </tbody>
         </table>
