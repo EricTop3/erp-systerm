@@ -159,9 +159,6 @@ var router = new VueRouter(
 // 创建的组件构造函数，也可以是一个组件选项对象。
 // 稍后我们会讲解嵌套路由
 router.map({
-  '/': {
-    component: Order
-  },
   '/site/order': {
     component: Order
   },
@@ -561,7 +558,7 @@ router.map({
   }
 })
 router.redirect({
-  '*': 'site/order'
+  '*': 'site/login'
 })
 // 现在我们可以启动应用了！
 // 路由器会创建一个 App 实例，并且挂载到选择符 #app 匹配的元素上。
