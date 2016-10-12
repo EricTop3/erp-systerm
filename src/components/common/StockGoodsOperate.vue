@@ -112,7 +112,12 @@
         var self = this
         getDataFromApi(this.productUrl,data,function(response){
           self.currentData = response.data.body.list
-          self.addData = self.addData.concat(self.currentData)
+          if(!self.addData){
+            self.addData = []
+            self.addData = self.addData.concat(self.currentData)
+          }else{
+            self.addData = self.addData.concat(self.currentData)
+          }
           self.page = response.data.body.pagination
           self.cachData.push({
             category: data,
