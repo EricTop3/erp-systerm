@@ -59,7 +59,9 @@
       checkAllMethod: function () {
         var self = this
         this.isAddFlag = this.checkAll
-        len = this.data.length && this.data.length > 0 ? this.data.length : 0
+        len = this.checkAll  ? this.data.length : 0
+        console.log(len)
+
         $.each(this.data, function (index, val) {
           val.choice = self.checkAll
         })
@@ -71,9 +73,9 @@
         var currentId = Number($(e.currentTarget).attr('id'))
         if (currentObjCheck === false) {
           this.checkAll = false
-          len--
+          --len
         } else {
-          len++
+          ++len
           this.isAddFlag = true
         }
         if (len === this.data.length && len != 0) {

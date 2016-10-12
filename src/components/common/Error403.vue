@@ -14,7 +14,7 @@
         <div class="modal-footer">
             <span class="btn btn-primary"
                   @click="returnLast">
-              返回上一步
+              重新登录
             </span>
         </div>
       </div>
@@ -27,7 +27,7 @@
     methods:{
       returnLast: function () {
         this.show = false
-        window.history.back()
+        window.location.href='#!/admin/login'
       }
     },
     data: function () {
