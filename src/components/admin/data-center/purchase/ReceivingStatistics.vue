@@ -19,6 +19,14 @@
                 <option :value="item.id" v-for="item in providerList">{{item.name}}</option>
               </select>
             </div>
+            <div class="form-group  ml10">
+              <label>审核状态</label>
+              <select class="form-control" v-model="searchData.checked">
+                <option value="">请选择</option>
+                <option value="0">未审核</option>
+                <option value="1">已审核</option>
+              </select>
+            </div>
             <div class="form-group ml10">
               <label>仓库</label>
               <select class="form-control" v-model="searchData.warehouse_id">
@@ -121,6 +129,7 @@
           item_name: self.searchData.item_name,
           provider_id: self.searchData.provider_id,
           warehouse_id: self.searchData.warehouse_id,
+          checked: self.searchData.checked,
           page: page
         }
         getDataFromApi(url,data,function(response){
@@ -139,7 +148,8 @@
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
           provider_id: self.searchData.provider_id,
-          warehouse_id: self.searchData.warehouse_id
+          warehouse_id: self.searchData.warehouse_id,
+          checked:  self.searchData.checked
         }
         getDataFromApi(url,data,function(response){
           self.onedata = response.data.body.list
@@ -178,6 +188,7 @@
         self.searchData.item_name = ''
         self.searchData.provider_id = ''
         self.searchData.warehouse_id = ''
+        self.searchData.checked = ''
         this.getListData(1)
         this.getOneData()
       },
@@ -233,7 +244,8 @@
           provider_id: '',
           warehouse_id: '',
           item_code: '',
-          item_name: ''
+          item_name: '',
+          checked: ''
         },
         modal: {
           errModal: false,
