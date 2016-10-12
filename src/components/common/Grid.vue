@@ -26,7 +26,8 @@
     </tr>
     </tbody>
     <tbody v-if="singleRowHide">
-      <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']" v-if="entry.is_today > 0">
+      <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']"
+          v-if="entry.is_today > 0 || entry.demand_amount > 0 || entry.amount > 0">
         <td v-for="value in columns">
           {{entry[$key]}}
         </td>
@@ -59,7 +60,9 @@
       checkAllMethod: function () {
         var self = this
         this.isAddFlag = this.checkAll
-        len = this.data.length && this.data.length > 0 ? this.data.length : 0
+        len = this.checkAll  ? this.data.length : 0
+        console.log(len)
+
         $.each(this.data, function (index, val) {
           val.choice = self.checkAll
         })
@@ -71,9 +74,9 @@
         var currentId = Number($(e.currentTarget).attr('id'))
         if (currentObjCheck === false) {
           this.checkAll = false
-          len--
+          --len
         } else {
-          len++
+          ++len
           this.isAddFlag = true
         }
         if (len === this.data.length && len != 0) {

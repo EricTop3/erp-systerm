@@ -25,6 +25,7 @@
                 <option value="">请选择</option>
                 <option value="0">未审核</option>
                 <option value="1">已审核</option>
+                <option value="2">已完成</option>
               </select>
             </div>
             <div class="form-group ml10">
@@ -65,7 +66,7 @@
         </table>
 
         <!-- 列表渲染表格 -->
-        <grid :data="listdata" :columns="gridColumns" :operate="productOperate"></grid>
+        <grid :data="listdata" :columns="gridColumns" :operate="productOperate" :single-row-hide="true" ></grid>
 
         <!--翻页-->
         <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page' v-if="listdata.length>0"></page>

@@ -112,12 +112,18 @@
         var self = this
         getDataFromApi(this.productUrl,data,function(response){
           self.currentData = response.data.body.list
-          self.addData = self.addData.concat(self.currentData)
-          self.cachData.push({
-              category: data,
-              product: response.data.body.list
-          })
+          if(!self.addData){
+            self.addData = []
+            self.addData = self.addData.concat(self.currentData)
+          }else{
+            self.addData = self.addData.concat(self.currentData)
+          }
           self.page = response.data.body.pagination
+          self.cachData.push({
+            category: data,
+            product: response.data.body.list,
+            page: response.data.body.pagination
+          })
           callback && callback ()
         })
       },
@@ -132,7 +138,6 @@
         currentObj.addClass('active').siblings('li').removeClass('active')
         this.query.category = Number(currentObj.attr('id'))
         var data = $.extend({category: this.query.category},this.requestData)
-        console.log(data)
 //         获取产品
           if(currentLoadFinished === 'false'){
             this.requestApi(data,function(){
@@ -142,6 +147,7 @@
             $.each(this.cachData,function(index,val){
               if(val.category.category ===currentId ){
                 self.currentData = val.product
+                self.page = val.page
                 if(currentIsClick === 'false'){
                   self.addData = self.addData.concat(self.currentData)
                   currentObj.attr('data-click',true)
