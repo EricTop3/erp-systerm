@@ -27,7 +27,7 @@
     </tbody>
     <tbody v-if="singleRowHide">
       <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']"
-          v-if="entry.is_today > 0 || entry.demand_amount > 0 || entry.amount > 0">
+          v-if="entry.is_today > 0 || entry.demand_amount > 0 || entry.amount > 0 || entry.main_reference_value > 0">
         <td v-for="value in columns">
           {{entry[$key]}}
         </td>
