@@ -21,6 +21,14 @@
               </select>
             </div>
             <div class="form-group  ml10">
+              <label>审核状态</label>
+              <select class="form-control" v-model="searchData.checked">
+                <option value="">请选择</option>
+                <option value="0">未审核</option>
+                <option value="1">已审核</option>
+              </select>
+            </div>
+            <div class="form-group  ml10">
               <label>货号</label>
               <input type="text" class="form-control" placeholder="请输入货号" v-model="searchData.item_code">
             </div>
@@ -115,6 +123,7 @@
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
           warehouse_id: self.searchData.warehouse_id,
+          checked: self.searchData.checked,
           page: page
         }
         getDataFromApi(url,data,function(response){
@@ -132,7 +141,8 @@
           end_time: self.searchData.end_time,
           item_code: self.searchData.item_code,
           item_name: self.searchData.item_name,
-          warehouse_id: self.searchData.warehouse_id
+          warehouse_id: self.searchData.warehouse_id,
+          checked: self.searchData.checked
         }
         getDataFromApi(url,data,function(response){
           self.onedata = response.data.body.list
@@ -161,6 +171,7 @@
         self.searchData.item_code = ''
         self.searchData.item_name = ''
         self.searchData.warehouse_id = ''
+        self.searchData.checked= ''
         this.getListData(1)
         this.getOneData()
       },
@@ -212,7 +223,8 @@
           end_time: '',
           warehouse_id: '',
           item_code: '',
-          item_name: ''
+          item_name: '',
+          checked: ''
         },
         modal: {
           errModal: false,
