@@ -64,7 +64,7 @@
         </table>
 
         <!-- 列表渲染表格 -->
-        <grid :data="listdata" :columns="gridColumns" :operate="productOperate"></grid>
+        <grid :data="listdata" :columns="gridColumns" :operate="productOperate" :single-row-hide="true"></grid>
 
         <!--翻页-->
         <page :total='page.total' :current.sync='page.current_page' :display='page.per_page' :last-page='page.last_page' v-if="listdata.length>0"></page>

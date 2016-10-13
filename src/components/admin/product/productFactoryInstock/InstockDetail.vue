@@ -314,8 +314,8 @@
         gridColumns2: {
           code: "货号",
           name: "品名",
-          total_stock: '入库数量',
           unit_space: '生产数量',
+          total_stock: '入库数量',
           required_amount: '次品数量',
           product_amount: '单位',
           unit_specifition: '单位规格',
