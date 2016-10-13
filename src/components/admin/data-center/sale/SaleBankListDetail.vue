@@ -160,6 +160,9 @@
           if (value.weixin_total_sum != '') {
             value.weixin_total_sum = '￥' + (value.weixin_total_sum * (0.01)).toFixed(2)
           }
+          if (value.pos_total_sum != '') {
+            value.pos_total_sum = '￥' + (value.pos_total_sum * (0.01)).toFixed(2)
+          }
         })
       }
     },
@@ -192,6 +195,7 @@
           weixin_total_sum: '微信支付',
           cash_total_sum: '现金',
           alipay_total_sum: '支付宝支付',
+          pos_total_sum: 'pos刷卡',
           price: '合计收银额'
         },
         productOperate: false,
