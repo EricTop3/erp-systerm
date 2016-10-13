@@ -251,7 +251,7 @@
         $.each(this.renderstockGoods, function (index, val) {
           var obj = {}
           obj.reference_id = val.id
-          obj.amount = val.stock_amount
+          obj.amount = val.main_reference_value
           obj.defective_amount = val.defective_amount
           obj.stock_amount = val.stock_amount
           if (val.defective_amount === '' || val.stock_amount === '') {
