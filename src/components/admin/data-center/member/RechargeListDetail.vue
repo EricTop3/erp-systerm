@@ -128,6 +128,23 @@
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
+          switch(value.pay_method){
+            case 'cash':
+              value.pay_method ="现金"
+              return
+            case 'weixin':
+              value.pay_method ="微信"
+              return
+            case 'alipay':
+              value.pay_method ="支付宝"
+              return
+            case 'vip':
+              value.pay_method ="会员卡余额"
+              return
+            case 'pos':
+              value.pay_method ="pos刷卡"
+              return
+          }
           if (value.total_sum != '') {
             value.total_sum = '￥' + (value.total_sum * (0.01)).toFixed(2)
           }

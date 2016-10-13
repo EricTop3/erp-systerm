@@ -143,7 +143,8 @@
       },
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
-        $.each(data, function (index, value) {
+        $.each(data, function (index, value){
+          value.charge_price =  "￥" + (Number(value.charge_price) * 0.01).toFixed(2)
           if (value.alipay_total_sum != '') {
             value.alipay_total_sum = '￥' + (value.alipay_total_sum * (0.01)).toFixed(2)
           }
