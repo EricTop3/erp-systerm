@@ -41,7 +41,7 @@
             <span class="btn btn-warning" @click="searchCancel()">撤销搜索</span>
 
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <a v-link="{ path: '/admin/dataCenter/instock/remainderListDetail'}" class="btn btn-primary spanblocks fr mr10">明细</a>
+            <!--<a v-link="{ path: '/admin/dataCenter/instock/remainderListDetail'}" class="btn btn-primary spanblocks fr mr10">明细</a>-->
           </form>
         </div>
 
@@ -174,10 +174,17 @@
       },
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
-        $.each(data, function (index, value) {
-          if (value.price != '') {
-            value.price = '￥' + (value.price * (0.01)).toFixed(2)
+        function priceDetail(price) {
+          if(price != ''){
+            price = '￥' + ((price * (0.01)).toFixed(2))
+            return price
           }
+        }
+        $.each(data, function (index, value) {
+          value.current_stock_price =  priceDetail(value.current_stock_price)
+          value.in_stock_price = priceDetail(value.in_stock_price)
+          value.out_stock_price = priceDetail(value.out_stock_price)
+          value.start_stock_price = priceDetail(value.start_stock_price)
         })
       }
     },
@@ -204,8 +211,8 @@
         gridColumns: {
           warehouse_name: '仓库',
           goods_code: '货号',
-          item_name: '品名',
-          goods_name: '单位',
+          goods_name: '品名',
+          unit_name: '单位',
           unit_specification: '单位规格',
           start_stock: '期初库存数量',
           start_stock_price: '期初平均单价',
