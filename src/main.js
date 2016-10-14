@@ -56,7 +56,6 @@ import RequisitionListDetail from 'components/admin/data-center/instock/Requisit
 import DistributionList from 'components/admin/data-center/instock/DistributionList'
 import DistributionListDetail from 'components/admin/data-center/instock/DistributionListDetail'
 import AllList from 'components/admin/data-center/instock/AllList'
-import AllListDetail from 'components/admin/data-center/instock/AllListDetail'
 import RemainderList from 'components/admin/data-center/instock/RemainderList'
 import RemainderListDetail from 'components/admin/data-center/instock/RemainderListDetail'
 import OrderSaleList from 'components/admin/data-center/instock/OrderSaleList'
@@ -309,9 +308,6 @@ router.map({
   },
   '/admin/dataCenter/instock/allList': {
     component: AllList
-  },
-  '/admin/dataCenter/instock/allListDetail': {
-    component: AllListDetail
   },
   '/admin/dataCenter/instock/remainderList': {
     component: RemainderList

@@ -36,7 +36,7 @@
     </table>
 
     <!-- 表格 -->
-    <grid :data="todayDetailGridData" :columns="todayDetailGridColumns" :single-row-hide="true"></grid>
+    <grid :data="todayDetailGridData" :columns="todayDetailGridColumns" :today-bill="true"></grid>
 
     <!--分页-->
     <page :total="page.total" :current.sync="page.current_page" :display="page.per_page"

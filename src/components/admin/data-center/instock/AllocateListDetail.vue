@@ -42,11 +42,6 @@ ReceivingStatisticsDetail.vue
               <label>品名</label>
               <input type="text" class="form-control" placeholder="请输入商品名称" v-model="searchData.item_name">
             </div>
-            <div class="form-group ml10">
-              <label>时间段</label>
-              <date-picker :value.sync="searchData.start_time" time-text=开始时间></date-picker> -
-              <date-picker :value.sync="searchData.end_time"  time-text=结束时间></date-picker>
-            </div>
             <div class="form-group  ml10">
               <label>制单人</label>
               <select class="form-control" v-model="searchData.creator_id">
@@ -69,8 +64,8 @@ ReceivingStatisticsDetail.vue
             </div>
             <div class="form-group ml10">
               <label>制单日期</label>
-              <date-picker :value.sync="searchData.start_receive_time" time-text=开始时间></date-picker> -
-              <date-picker :value.sync="searchData.end_receive_time"  time-text=结束时间></date-picker>
+              <date-picker :value.sync="searchData.start_time" time-text=开始时间></date-picker> -
+              <date-picker :value.sync="searchData.end_time"  time-text=结束时间></date-picker>
             </div>
             <span class="btn btn-primary " @click="searchMethod(1)">搜索</span>
             <span class="btn btn-warning" @click="searchCancel()">撤销搜索</span>
@@ -143,8 +138,6 @@ ReceivingStatisticsDetail.vue
           in_warehouse_id: self.searchData.in_warehouse_id,
           out_warehouse_id: self.searchData.out_warehouse_id,
           checked: self.searchData.checked,
-          start_receive_time: self.searchData.start_receive_time,
-          end_receive_time: self.searchData.end_receive_time,
           document_number: self.searchData.document_number,
           page: page
         }
@@ -186,8 +179,6 @@ ReceivingStatisticsDetail.vue
         self.searchData.in_warehouse_id = ''
         self.searchData.out_warehouse_id = ''
         self.searchData.checked = ''
-        self.searchData.start_receive_time = ''
-        self.searchData.end_receive_time = ''
         self.searchData.document_number = ''
         this.getListData(1)
       },
@@ -266,8 +257,6 @@ ReceivingStatisticsDetail.vue
           item_code: '',
           item_name: '',
           checked: '',
-          start_receive_time: '',
-          end_receive_time: '',
           document_number: ''
         },
         modal: {
