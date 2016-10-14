@@ -256,8 +256,8 @@
         providerList: [],
         personList: [],
         gridColumns: {
-          warehouse_name: '出货仓库',
-          stream_origin_name: '调入仓库',
+          stream_origin_name: '出货仓库',
+          warehouse_name: '调入仓库',
           created_at: '制单日期',
           document_number: '配送单号',
           creator_name: '制单人',

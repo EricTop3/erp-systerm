@@ -56,7 +56,7 @@
         <table class="table table-striped table-border table-hover mt20" :data="onedata">
           <tbody>
           <tr>
-            <td><span class="pr50">零售数量汇总：{{onedata.amount}}</span> <span class="pr50">零售总额：{{onedata.price}}</span> <span class="pr50">采购加工总额：{{onedata.price}}</span></td>
+            <td><span class="pr50">零售数量汇总：{{onedata.amount}}</span> <span class="pr50">零售总额：{{onedata.price | priceChange}}</span> <span class="pr50">采购加工总额：{{onedata.aruc | priceChange}}</span></td>
           </tr>
           </tbody>
         </table>

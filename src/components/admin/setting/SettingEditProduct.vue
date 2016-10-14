@@ -539,6 +539,7 @@
 //            判断货号是否重复
             if(err.data.body.validate_error.code && err.data.body.validate_error.code[0] == 'The code has already been taken.'){
               self.$validationSet.goodscode.required = true
+
             }
           })
         }
