@@ -119,15 +119,21 @@
           self.providerList = response.data.body.list
         })
       },
-//      获取营业员列表
+//      获取营业员列表 /store/get/store-account
       getPersonList: function(){
         var self = this
-        var data = {}
-        var url = requestSystemUrl + '/backend-system/store/get/account'
+        var data = {
+
+        }
+        var url = requestSystemUrl + '/backend-system/store/get/store-all-account'
         getDataFromApi(url,data,function(response){
           self.personList = response.data.body.list
         })
       },
+
+      
+
+
 //      搜索
       searchMethod: function(page){
         this.getListData(page)
