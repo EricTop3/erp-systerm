@@ -195,8 +195,33 @@
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
-          if (value.price != '') {
-            value.price = '￥' + (value.price * (0.01)).toFixed(2)
+          if (value.in_stock_price != '') {
+            value.in_stock_price = '￥' + (value.in_stock_price * (0.01)).toFixed(2)
+          }
+          if (value.in_stock_total_sum != '') {
+            value.in_stock_total_sum = '￥' + (value.in_stock_total_sum * (0.01)).toFixed(2)
+          }
+          if (value.out_stock_price != '') {
+            value.out_stock_price = '￥-' + (value.out_stock_price * (0.01)).toFixed(2)
+          }
+          if (value.out_stock_total_sum != '') {
+            value.out_stock_total_sum = '￥-' + (value.out_stock_total_sum * (0.01)).toFixed(2)
+          }
+          if (value.start_stock_price != '') {
+            value.start_stock_price = '￥' + (value.start_stock_price * (0.01)).toFixed(2)
+          }
+          if (value.start_stock_total_sum != '') {
+            value.start_stock_total_sum = '￥' + (value.start_stock_total_sum * (0.01)).toFixed(2)
+          }
+          if (value.current_stock_price != '') {
+            value.current_stock_price = '￥' + (value.current_stock_price * (0.01)).toFixed(2)
+          }
+          if (value.current_stock_total_sum != '') {
+            value.current_stock_total_sum = '￥' + (value.current_stock_total_sum * (0.01)).toFixed(2)
+          }
+
+          if(value.out_stock != ''){
+            value.out_stock =  parseFloat(value.out_stock*(-1)).toFixed(3)
           }
         })
       }

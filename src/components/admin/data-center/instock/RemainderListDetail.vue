@@ -76,11 +76,11 @@
             <td>{{item.unit_name}}</td>
             <td>{{item.unit_specification}}</td>
             <td><template v-if="item.amount > 0">{{item.amount}}</template></td>
-            <td><template v-if="item.price > 0">￥ {{item.price}}</template></td>
-            <td><template v-if="item.total_sum > 0">￥ {{item.total_sum}}</template></td>
+            <td><template v-if="item.amount > 0">{{item.price}}</template></td>
+            <td><template v-if="item.amount > 0">{{item.total_sum}}</template></td>
             <td><template v-if="item.amount < 0">{{item.amount}}</template></td>
-            <td><template v-if="item.price < 0">￥ {{item.price}}</template></td>
-            <td><template v-if="item.total_sum < 0">￥ {{item.total_sum}}</template></td>
+            <td><template v-if="item.amount < 0 && item.price !='0'">￥-{{item.price}}</template></td>
+            <td><template v-if="item.amount < 0 && item.total_sum !='0'">￥-{{item.total_sum}}</template></td>
             <td>{{item.current_stock}}</td>
             <td>{{item.current_stock_price}}</td>
             <td>{{item.current_stock_total_sum}}</td>
@@ -200,12 +200,11 @@
             value.current_stock_total_sum = '￥' + (value.current_stock_total_sum * (0.01)).toFixed(2)
           }
           if (value.price != '') {
-            value.price =(value.price * (0.01)).toFixed(2)
+            value.price = (value.price * (0.01)).toFixed(2)
           }
-          if (value.total_sum != '') {
-            value.total_sum =(value.total_sum * (0.01)).toFixed(2)
+          if (value.total_sum != '' && value.total_sum != 0) {
+            value.total_sum = (value.total_sum * (0.01)).toFixed(2)
           }
-
           switch (value.checked) {
             case  1:
               value.checked = '未审核'
