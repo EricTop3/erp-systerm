@@ -220,6 +220,7 @@
           item_name: '品名',
           unit_name: '单位',
           unit_specification: '单位规格',
+          amount: '数量',
           sell_unit: '零售价',
           actual_price: '实际价格',
           actual_price_total: '金额'
