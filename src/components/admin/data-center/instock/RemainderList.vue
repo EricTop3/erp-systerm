@@ -52,12 +52,14 @@
           <tbody>
           <tr>
             <td>
-              <span class="pr50">期初库存汇总：{{onedata.amount}}</span>
-              <span class="pr50">期初库存总额：{{onedata.price}}</span>
-              <span class="pr50">期间入库汇总：{{onedata.price}}</span>
-              <span class="pr50">期间入库汇总额：{{onedata.price}}</span>
-              <span class="pr50">期末库存汇总：{{onedata.price}}</span>
-              <span class="pr50">期末库存总额：{{onedata.price}}</span>
+              <span class="pr30">期初库存汇总：{{onedata.start_stock}}</span>
+              <span class="pr30">期初库存总额：{{onedata.start_stock_total_sum}}</span>
+              <span class="pr30">期间入库汇总：{{onedata.in_stock}}</span>
+              <span class="pr30">期间入库汇总额：{{onedata.in_stock_total_sum}}</span>
+              <span class="pr30">期间出库汇总：{{onedata.out_stock}}</span>
+              <span class="pr30">期间出库汇总额：{{onedata.out_stock_total_sum}}</span>
+              <span class="pr30">期末库存汇总：{{onedata.current_stock}}</span>
+              <span class="pr30">期末库存总额：{{onedata.current_stock_total_sum}}</span>
             </td>
           </tr>
           </tbody>
@@ -158,7 +160,10 @@
         }
         getDataFromApi(url, data, function (response) {
           self.onedata = response.data.body.list
-          self.onedata.price = '￥' + (self.onedata.price * 0.01).toFixed(2)
+          self.onedata.start_stock_total_sum = '￥' + (self.onedata.start_stock_total_sum * 0.01).toFixed(2)
+          self.onedata.in_stock_total_sum = '￥' + (self.onedata.in_stock_total_sum * 0.01).toFixed(2)
+          self.onedata.current_stock_total_sum = '￥' + (self.onedata.current_stock_total_sum * 0.01).toFixed(2)
+          self.onedata.out_stock_total_sum = '￥' + (self.onedata.out_stock_total_sum * 0.01).toFixed(2)
         }, function (err) {
         })
       },

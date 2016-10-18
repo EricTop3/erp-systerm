@@ -41,7 +41,7 @@
             <span class="btn btn-warning" @click="searchCancel()">撤销搜索</span>
 
             <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
-            <a v-link="{ path: '/admin/dataCenter/instock/remainderListDetail'}" class="btn btn-primary spanblocks fr mr10">明细</a>
+            <!--<a v-link="{ path: '/admin/dataCenter/instock/remainderListDetail'}" class="btn btn-primary spanblocks fr mr10">明细</a>-->
           </form>
         </div>
 
@@ -50,12 +50,14 @@
           <tbody>
           <tr>
             <td>
-              <span class="pr50">期初库存汇总：{{onedata.start_stock}}</span>
-              <span class="pr50">期初库存总额：￥{{onedata.start_stock_total_sum}}</span>
-              <span class="pr50">期间入库汇总：{{onedata.in_stock}}</span>
-              <span class="pr50">期间入库汇总额：￥{{onedata.in_stock_total_sum}}</span>
-              <span class="pr50">期末库存汇总：{{onedata.current_stock}}</span>
-              <span class="pr50">期末库存总额：￥{{onedata.current_stock_total_sum}}</span>
+              <span class="pr30">期初库存汇总：{{onedata.start_stock}}</span>
+              <span class="pr30">期初库存总额：{{onedata.start_stock_total_sum}}</span>
+              <span class="pr30">期间入库汇总：{{onedata.in_stock}}</span>
+              <span class="pr30">期间入库汇总额：{{onedata.in_stock_total_sum}}</span>
+              <span class="pr30">期间出库汇总：{{onedata.out_stock}}</span>
+              <span class="pr30">期间出库汇总额：{{onedata.out_stock_total_sum}}</span>
+              <span class="pr30">期末库存汇总：{{onedata.current_stock}}</span>
+              <span class="pr30">期末库存总额：{{onedata.current_stock_total_sum}}</span>
             </td>
           </tr>
           </tbody>
@@ -144,7 +146,10 @@
         }
         getDataFromApi(url,data,function(response){
           self.onedata = response.data.body.list
-          self.onedata.price ='￥' +  (self.onedata.price * 0.01).toFixed(2)
+          self.onedata.start_stock_total_sum ='￥' +  (self.onedata.start_stock_total_sum * 0.01).toFixed(2)
+          self.onedata.in_stock_total_sum ='￥' +  (self.onedata.in_stock_total_sum * 0.01).toFixed(2)
+          self.onedata.current_stock_total_sum ='￥' +  (self.onedata.current_stock_total_sum * 0.01).toFixed(2)
+          self.onedata.out_stock_total_sum ='￥' +  (self.onedata.out_stock_total_sum * 0.01).toFixed(2)
         },function(err){})
       },
 //      获取仓库列表
@@ -174,10 +179,21 @@
       },
 //    对获取到的数据进行处理1
       modifyGetedData: function (data) {
-        $.each(data, function (index, value) {
-          if (value.price != '') {
-            value.price = '￥' + (value.price * (0.01)).toFixed(2)
+        function priceDetail(price) {
+          if(price != ''){
+            price = '￥' + ((price * (0.01)).toFixed(2))
+            return price
           }
+        }
+        $.each(data, function (index, value) {
+          value.current_stock_price =  priceDetail(value.current_stock_price)
+          value.in_stock_price = priceDetail(value.in_stock_price)
+          value.out_stock_price = priceDetail(value.out_stock_price)
+          value.start_stock_price = priceDetail(value.start_stock_price)
+          value.start_stock_total_sum =  priceDetail(value.start_stock_total_sum)
+          value.in_stock_total_sum = priceDetail(value.in_stock_total_sum)
+          value.out_stock_total_sum = priceDetail(value.out_stock_total_sum)
+          value.current_stock_total_sum = priceDetail(value.current_stock_total_sum)
         })
       }
     },
@@ -204,17 +220,17 @@
         gridColumns: {
           warehouse_name: '仓库',
           goods_code: '货号',
-          item_name: '品名',
-          goods_name: '单位',
+          goods_name: '品名',
+          unit_name: '单位',
           unit_specification: '单位规格',
           start_stock: '期初库存数量',
           start_stock_price: '期初平均单价',
           start_stock_total_sum: '期初金额',
           in_stock: '期间入库数量',
-          in_stock_price: '期间入库单价',
+          in_stock_price: '期间入库平均单价',
           in_stock_total_sum: '期间入库金额',
           out_stock: '期间出库数量',
-          out_stock_price: '期间出库单价',
+          out_stock_price: '期间出库平均单价',
           out_stock_total_sum: '期间出库金额',
           current_stock: '期末库存数量',
           current_stock_price: '期末平均单价',
