@@ -177,11 +177,14 @@
         this.getListData(1)
         this.getOneData()
       },
-//    对获取到的数据进行处理1
+//    对获取到的数据进行处理
       modifyGetedData: function (data) {
         $.each(data, function (index, value) {
           if (value.total_sum != '') {
               value.total_sum = '￥' + (value.total_sum * (0.01)).toFixed(2)
+          }
+          if (value.unit_price != '') {
+            value.unit_price = '￥' + (value.unit_price * (0.01)).toFixed(2)
           }
         })
       }

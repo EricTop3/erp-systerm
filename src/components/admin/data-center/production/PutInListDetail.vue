@@ -56,6 +56,11 @@
               </select>
             </div>
             <div class="form-group ml10">
+              <label>制单日期</label>
+              <date-picker :value.sync="searchData.start_time" time-text=开始时间></date-picker> -
+              <date-picker :value.sync="searchData.end_time"  time-text=结束时间></date-picker>
+            </div>
+            <div class="form-group ml10">
               <label>收货日期</label>
               <date-picker :value.sync="searchData.start_receive_time" time-text=开始时间></date-picker> -
               <date-picker :value.sync="searchData.end_receive_time"  time-text=结束时间></date-picker>
@@ -232,7 +237,8 @@
         personList: [],
         gridColumns: {
           document_number: '收货单号',
-          created_at: '收货日期',
+          operated_at: '收货日期',
+          created_at: '制单日期',
           stream_target: '调入仓库',
           stream_origin: '生产工厂',
           creator_name: '制单人',
