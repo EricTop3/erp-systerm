@@ -40,6 +40,7 @@
             <td>系统库存量</td>
             <td>实际库存量</td>
             <td>差异库存量</td>
+            <td>价格</td>
             <td>单位</td>
             <td>单位规格</td>
             <td>操作</td>
@@ -58,6 +59,12 @@
             <td>
               <template v-if="entry.current_stock == ''">{{ - entry.system_stock}}</template>
               <template v-else>{{((entry.current_stock*1000 - entry.system_stock*1000)/1000).toFixed(3)}}</template>
+            </td>
+            <td>
+              <template v-if="entry.current_stock > entry.system_stock">
+                <count :count.sync ="entry.in_stock_price" :is-float="true"></count>
+              </template>
+              <template v-else></template>
             </td>
             <td>{{entry.production_unit_name}}</td>
             <td>{{entry.specification_unit}}</td>
@@ -235,12 +242,17 @@
       upLoadEnquiry: function () {
         var inventory = []
         var hasStock = false
+        var hasPrice = false
         $.each(this.dataArray, function (index, val) {
           var obj = {}
           obj['reference_id'] = val.id
           obj['current_stock'] = Number(val.current_stock)
+          obj['in_stock_price'] = Number(val.in_stock_price)
           if (val.current_stock == '') {
             hasStock = true
+          }
+          if(val.in_stock_price == '') {
+            hasPrice = true
           }
           inventory.push(obj)
         })
@@ -253,7 +265,10 @@
         } else if (hasStock) {
           this.modal.errModal = true
           this.modal.errInfo = 'high,你忘记实际库存量了'
-        } else {
+        } else if (hasPrice) {
+          this.modal.errModal = true
+          this.modal.errInfo = 'high,你忘记填写价格了'
+        }else {
 //       提交盘点请求
           var url = requestSystemUrl + '/backend-system/stock/inventory'
           var data = {

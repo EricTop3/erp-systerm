@@ -213,6 +213,7 @@
           unit_name: '单位',
           unit_specification: '单位规格',
           demand_amount: '数量',
+          unit_price: '单价',
           total_sum: '金额'
         },
         productOperate: false,
