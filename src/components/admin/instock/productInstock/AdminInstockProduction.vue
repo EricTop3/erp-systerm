@@ -49,7 +49,9 @@
         <summary
           :table-header="gridColumns"
           :table-data="listdata"
-          :page="page">
+          :page="page"
+          :has-look-authority = "authority.look"
+        >
         </summary>
 
       </div>
@@ -79,7 +81,9 @@
     getDataFromApi,
     deleteRequest,
     finishRequest,
-    error
+    error,
+    systermAccount,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -107,6 +111,13 @@
       this.getlistData(1)
       this.categoryListData()
       this.warehouseListData()
+//    权限判断
+      if(systermAuthority.indexOf('produce-out-list-index') > -1) {
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('produce-out-list-export') > -1) {
+        this.authority.export = true
+      }
     },
     methods: {
 //      列表数据渲染
@@ -129,7 +140,7 @@
 //      分类列表数据渲染
       categoryListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/product/category'
+        var url = requestSystemUrl + '/backend-system/product/get/category'
         getDataFromApi(url, {}, function (response) {
           self.categoryData = response.data.body.list
         })
@@ -137,7 +148,7 @@
 //      仓库列表数据渲染
       warehouseListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store/warehouses-list'
+        var url = requestSystemUrl + '/backend-system/store/get/store/warehouses-list'
         getDataFromApi(url, {}, function (response) {
           self.warehouseData = response.data.body
         })
@@ -168,6 +179,10 @@
         timewidth: "timewidth",
         timetext1: "开始时间",
         timetext2: "结束时间",
+        authority: {
+          export: false,
+          look: false
+        },
         gridColumns: {
           warehouse_name: "门店",
           goods_code: "货号",

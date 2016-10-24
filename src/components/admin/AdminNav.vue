@@ -16,6 +16,7 @@
           <li v-if="authority.product"  :class="highLight.product ? 'active' : ''"><a v-link="{ path: '/admin/production/' +  authorityModule.product[0]}">生产</a></li>
           <li v-if="authority.retail"   :class="highLight.retail ? 'active' : ''"><a v-link="{ path: '/admin/retail/'+ authorityModule.retail[0]}">零售</a></li>
           <li v-if="authority.member"   :class="highLight.member ? 'active' : ''"><a v-link="{ path: '/admin/member'}" >会员</a></li>
+          <li v-if="authority.dataCenter" :class="highLight.dataCenter ? 'active' : ''"><a v-link="{ path: '/admin/dataCenter/'+ authorityModule.dataCenter[0] }" >数据中心</a></li>
           <!--<li><a v-link="{ path: '/admin/micromall'}">微商城</a></li>-->
         </ul>
       </div>
@@ -39,6 +40,7 @@
            this.highLight.stock = true
          }
          if(this.$route.path.indexOf('/admin/production/')>-1){
+
            this.highLight.product = true
          }
          if(this.$route.path.indexOf('/admin/retail/')>-1){
@@ -47,26 +49,31 @@
          if(this.$route.path.indexOf('/admin/member/')>-1){
            this.highLight.member = true
          }
-         console.log(this.highLight.setting)
+         if(this.$route.path.indexOf('/admin/dataCenter/')>-1){
+           this.highLight.dataCenter = true
+         }
 //         第一类大权限
-           if(systermAuthority.indexOf('setting')>-1){
+           if(systermAuthority.indexOf('settings')>-1){
              this.authority.setting = true
            }
-           if(systermAuthority.indexOf('purchase')>-1) {
+           if(systermAuthority.indexOf('purchases')>-1 ) {
              this.authority.purchase = true
            }
-           if(systermAuthority.indexOf('warehouse')>-1) {
+           if(systermAuthority.indexOf('warehouses')>-1) {
              this.authority.instock = true
            }
-           if(systermAuthority.indexOf('production')>-1){
+           if(systermAuthority.indexOf('productions')>-1){
              this.authority.product = true
            }
-           if(systermAuthority.indexOf('sale')>-1) {
+           if(systermAuthority.indexOf('sales')>-1) {
              this.authority.retail = true
            }
-           if(systermAuthority.indexOf('member')>-1) {
+           if(systermAuthority.indexOf('members')>-1) {
              this.authority.member = true
            }
+           if(systermAuthority.indexOf('data-centers')>-1) {
+             this.authority.dataCenter = true
+          }
 //         商品设置权限
          if(systermAuthority.indexOf('goods-setting-list')>-1){
            this.authorityModule.setting.push('commodity')
@@ -86,12 +93,18 @@
          if(systermAuthority.indexOf('manage-account-list')>-1){
            this.authorityModule.setting.push('adminAccount')
          }
+         if(this.authorityModule.setting.length === 0){
+           this.authorityModule.setting[0] = ''
+         }
 //        采购权限处理
          if(systermAuthority.indexOf('purchase-order-list')>-1){
            this.authorityModule.purchase.push('order')
          }
          if(systermAuthority.indexOf('purchase-receipt-list')>-1){
            this.authorityModule.purchase.push('delivery')
+         }
+         if(this.authorityModule.purchase.length === 0){
+           this.authorityModule.purchase[0] = ''
          }
 //         库存权限处理
          if(systermAuthority.indexOf("stock-look-list")>-1){
@@ -115,6 +128,9 @@
          if(systermAuthority.indexOf("requisition-total-list")>-1){
            this.authorityModule.stock.push('apply')
          }
+         if(this.authorityModule.stock.length === 0){
+           this.authorityModule.stock[0] = ''
+         }
 //      生产权限处理
          if(systermAuthority.indexOf('factory-produce-list') > -1){
            this.authorityModule.product.push('factoryProduction')
@@ -134,12 +150,34 @@
          if(systermAuthority.indexOf('produce-appointment-list') > -1){
            this.authorityModule.product.push('creatOrder')
          }
+         if(this.authorityModule.product.length === 0){
+           this.authorityModule.product[0] = ''
+         }
 //        零售权限
          if(systermAuthority.indexOf('settlement-total-list')>-1){
            this.authorityModule.retail.push('statistics')
          }
          if(systermAuthority.indexOf('settlement-administration-list')>-1){
            this.authorityModule.retail.push('manage')
+         }
+         if(this.authorityModule.retail.length === 0){
+           this.authorityModule.retail[0] = ''
+         }
+//       数据中心权限
+         if(systermAuthority.indexOf('purchase-list') > -1){
+           this.authorityModule.dataCenter.push('purchase')
+         }
+         if(systermAuthority.indexOf('stock-list') > -1){
+           this.authorityModule.dataCenter.push('instock')
+         }
+         if(systermAuthority.indexOf('produce-list') > -1){
+           this.authorityModule.dataCenter.push('production')
+         }
+         if(systermAuthority.indexOf('order-list') > -1){
+           this.authorityModule.dataCenter.push('sale')
+         }
+         if(systermAuthority.indexOf('member-list') > -1){
+           this.authorityModule.dataCenter.push('member')
          }
        },
        methods: {
@@ -160,7 +198,8 @@
             stock: [],
             product: [],
             retail: [],
-            member: []
+            member: [],
+            dataCenter: []
           },
           highLight:{
             setting: false,
@@ -168,7 +207,8 @@
             stock: false,
             product: false,
             retail:false,
-            member:false
+            member:false,
+            dataCenter: false,
           },
           systerm: {
             account: systermAccount,
@@ -181,6 +221,7 @@
             product: false,
             retail: false,
             member: false,
+            dataCenter: false
           }
         }
       }

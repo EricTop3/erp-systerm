@@ -53,8 +53,8 @@
               </div>
               <span type="submit" class="btn btn-primary" @click="searchMethod(1)">搜索</span>
               <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-              <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr">新建收货单</a>
-              <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+              <a v-link="{ path: '/admin/purchase/delivery/createNewDelivery'}"  class="btn btn-info spanblocks fr" v-if="authority.create">新建收货单</a>
+              <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
             </form>
           </div>
 
@@ -64,6 +64,9 @@
             :table-data="list"
             :page.sync= "page"
             :check-url ="checkUrl"
+            :has-validate-authority="authority.validate"
+            :has-look-authority = "authority.look"
+            :has-delete-authority= "authority.delete"
           >
           </summary>
         </div>
@@ -77,7 +80,7 @@
   import LeftPurchase from '../common/LeftPurchase'
   import Summary from '../../common/Summary'
   import DatePicker from '../../common/DatePicker'
-  import {requestSystemUrl,requestUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus} from '../../../publicFunction/index'
+  import {requestSystemUrl,requestUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,changeStatus,systermAuthority} from '../../../publicFunction/index'
   export default{
     components:{
       AdminNav: AdminNav,
@@ -88,11 +91,11 @@
     ready: function (){
       var self = this
 //         获取制单人
-      getDataFromApi( requestUrl + '/backend-system/store/account',{},function(response){
+      getDataFromApi( requestUrl + '/backend-system/store/get/account',{},function(response){
         self.search.orderMaker = response.data.body.list
       })
 //    获取供应商
-      getDataFromApi(requestUrl + '/backend-system/provider/provider',{},function(response){
+      getDataFromApi(requestUrl + '/backend-system/provider/get/provider',{},function(response){
         self.search.providerList = response.data.body.list
       })
 //      获取仓库列表
@@ -103,6 +106,22 @@
         self.warehouseList = response.data.body.list
       })
       this.fetlistFormApi({})
+//    权限判断
+      if(systermAuthority.indexOf('purchase-receipt-list-index')  > -1){
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('purchase-receipt-list-check') > -1){
+        this.authority.validate = true
+      }
+      if(systermAuthority.indexOf('purchase-receipt-list-delete') > -1){
+        this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('purchase-receipt-list-create') > -1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('purchase-receipt-list-export') > -1){
+        this.authority.export = true
+      }
     },
     computed: {
 //      导出
@@ -141,6 +160,13 @@
         timetext1: '开始时间',
         timetext2: '结束时间',
         warehouseList: [],
+        authority: {
+          create: false,
+          export: false,
+          validate: false,
+          look: false,
+          delete: false
+        },
         gridColumns: {
           "document_number": "收货单号",
           "checked": "审核状态",

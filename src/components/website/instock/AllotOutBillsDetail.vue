@@ -4,11 +4,18 @@
     <!-- 路径导航 -->
     <ol class="breadcrumb">
       <li class="active"><span class="glyphicon glyphicon-home c-erp" aria-hidden="true"></span> 您当前的位置：库存首页</li>
-      <li class="active">收货单汇总</li>
-      <li class="active">查看收货单汇总</li>
+      <li class="active">调拨出库单汇总</li>
+      <li class="active">查看调拨出库单汇总</li>
     </ol>
-    <summary-detail :table-header="gridColumns" :table-data="list"  :check-url="checkUrl"
-                    :edit-flag.sync = 'editFlag'>
+    <summary-detail
+      :table-header="gridColumns"
+      :table-data="list"
+      :check-url="checkUrl"
+      :is-exist.sync= "isExist"
+      :edit-flag.sync = 'editFlag'
+      :has-validate-authority="true"
+      :has-edit-authority="true"
+    >
     </summary-detail>
     <!--表格详情列表-->
     <table class="table table-striped table-bordered table-hover">
@@ -68,7 +75,6 @@
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = self.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -87,6 +93,13 @@
           self.thisOneData()
 //      明细列表渲染
           self.listData({})
+          self.isExist = false
+          self.editFlag = false
+        },function(){
+            self.editFlag = true
+            self.isExist = true
+            self.modal.errModal = true
+            self.modal.errInfo = '服务器错误'
         })
       }
     },
@@ -123,6 +136,7 @@
         id: 0,
         page: [],
         list: [],
+        isExist: false,
         detailList: [],
         checkUrl: requestUrl + '/front-system/stock/distribution/',
         gridOperate: true,
@@ -135,11 +149,11 @@
           operated_at: '出货日期',
           amount: '要货数量'
         },
-        editFlag: false,
-        modal: {
+        modal:{
           errModal: false,
           errInfo: ''
         },
+        editFlag: false,
         gridColumns2: {
           item_code: '货号',
           item_name: '品名',

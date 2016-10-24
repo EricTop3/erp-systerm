@@ -46,7 +46,9 @@
         <summary
           :table-header="gridColumns"
           :table-data="listdata"
-          :page="page">
+          :page="page"
+          :has-look-authority = "authority.look"
+        >
         </summary>
       </div>
     </div>
@@ -75,7 +77,8 @@
     getDataFromApi,
     deleteRequest,
     finishRequest,
-    error
+    error,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -103,6 +106,13 @@
       this.getlistData(1)
       this.categoryListData()
       this.storeListData()
+//    权限判断
+      if(systermAuthority.indexOf('sale-out-list-index') > -1) {
+        this.authority.look = true
+      }
+      if(systermAuthority.indexOf('sale-out-list-export') > -1) {
+        this.authority.export = true
+      }
     },
     methods: {
 //      列表数据渲染 /backend-system/stock/sale/log
@@ -125,7 +135,7 @@
 //      分类列表数据渲染
       categoryListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/product/category'
+        var url = requestSystemUrl + '/backend-system/product/get/category'
         getDataFromApi(url, {}, function (response) {
           self.categoryData = response.data.body.list
         })
@@ -133,7 +143,7 @@
 //      门店列表数据渲染
       storeListData: function () {
         var self = this
-        var url = requestSystemUrl + '/backend-system/store/store'
+        var url = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(url, {}, function (response) {
           self.storeData = response.data.body.list
         })
@@ -176,6 +186,10 @@
           unit_name: "零售单位",
           unit_specification: "单位规格",
           category_name: "商品分类"
+        },
+        authority: {
+          export: false,
+          look: false
         },
         gridOperate: true,
         listdata: [],

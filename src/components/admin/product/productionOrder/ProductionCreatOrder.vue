@@ -53,7 +53,7 @@
             </div>
             <span type="submit" class="btn btn-primary" @click="searchMethod">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a v-if="authority.exports" :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
           </form>
         </div>
         <!--预约单列表-->
@@ -72,11 +72,11 @@
             {{entry[$key]}}
           </td>
           <td  :id="[entry.id ? entry.id : '']">
-            <span class="btn btn-primary btn-sm"  @click="cancelOrder($event)" v-if="entry.status==='已提交'">取消订单</span>
-            <span class="btn btn-info btn-sm"  @click="startProduct($event)" v-if="entry.status==='已提交'">开始生产</span>
-            <span class="btn btn-primary btn-sm"  @click="distribution($event)" v-if="entry.status==='生产中'">配送</span>
-            <span class="btn btn-primary btn-sm"  @click="finishOrder($event)" v-if="entry.status==='快递配送中'">客户签收</span>
-            <span class="btn btn-info btn-sm"  @click="lookDetail($event)">查看</span>
+            <span class="btn btn-primary btn-sm"  @click="cancelOrder($event)" v-if="entry.status==='已提交' && authority.cannel">取消订单</span>
+            <span class="btn btn-info btn-sm"  @click="startProduct($event)" v-if="entry.status==='已提交' && authority.start">开始生产</span>
+            <span class="btn btn-primary btn-sm"  @click="distribution($event)" v-if="entry.status==='生产中' && authority.delivery">配送</span>
+            <span class="btn btn-primary btn-sm"  @click="finishOrder($event)" v-if="entry.status==='快递配送中' && authority.signoff">客户签收</span>
+            <span class="btn btn-info btn-sm"  @click="lookDetail($event)" v-if="authority.view">查看</span>
           </td>
         </tr>
         </tbody>
@@ -218,7 +218,7 @@
   import Modal from '../../../common/Modal'
   import Page from '../../../common/Page'
   import DatePicker from '../../../common/DatePicker'
-  import {requestSystemUrl,getDataFromApi,putDataToApi,token} from '../../../../publicFunction/index'
+  import {requestSystemUrl,getDataFromApi,putDataToApi,systermAuthority,token} from '../../../../publicFunction/index'
   var orderId = 0
   var distributionId = 0
   var finishOrderId = 0
@@ -238,15 +238,40 @@
     ready: function () {
       var self = this
 //    获取门店列表
-      getDataFromApi(requestSystemUrl + '/backend-system/store/store',{}, function (response) {
+      getDataFromApi(requestSystemUrl + '/backend-system/store/get/store',{}, function (response) {
         self.search.store = response.data.body.list
       })
 //    获取营业员
-      getDataFromApi(requestSystemUrl + '/backend-system/store/store-account',{}, function (response) {
+      getDataFromApi(requestSystemUrl + '/backend-system/store/get/store-account',{}, function (response) {
         self.search.clerk = response.data.body.list
       })
 //    加载列表
      this.getOrderList({})
+//    权限判断
+//      取消
+      if(systermAuthority.indexOf('produce-appointment-list-cancel') > -1){
+        this.authority.cannel = true
+      }
+//      开始
+      if(systermAuthority.indexOf('produce-appointment-list-create') > -1){
+        this.authority.start = true
+      }
+//      配送
+      if(systermAuthority.indexOf('produce-appointment-list-distribution') > -1){
+        this.authority.delivery = true
+      }
+//      签收
+      if(systermAuthority.indexOf('produce-appointment-list-received') > -1){
+        this.authority.signoff = true
+      }
+//      查看
+      if(systermAuthority.indexOf('produce-appointment-list-index') > -1){
+        this.authority.view = true
+      }
+//      导出
+      if(systermAuthority.indexOf('produce-appointment-list-export') > -1){
+        this.authority.exports = true
+      }
     },
     methods: {
 //     获取列表方法
@@ -463,6 +488,14 @@
           skipModal: false,
           skipModalSize: 'modal-sm',
           errInfo: ''
+        },
+        authority: {
+          cannel: false,
+          start: false,
+          delivery: false,
+          signoff: false,
+          view: false,
+          exports: false
         }
       }
     }

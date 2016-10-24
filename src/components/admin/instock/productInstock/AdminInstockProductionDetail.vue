@@ -31,7 +31,8 @@
         <summary-detail
           :table-header="gridcolumns"
           :table-data="onedata"
-          :grid-operate="gridOperate">
+          :grid-operate="gridOperate"
+        >
         </summary-detail>
         <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr">导出</span></a>
         <!--详情页面列表数据-->
@@ -68,7 +69,8 @@
     getDataFromApi,
     deleteRequest,
     putDataToApi,
-    finishRequest
+    finishRequest,
+    systermAuthority
   } from '../../../../publicFunction/index'
   export default{
     components: {
@@ -93,6 +95,10 @@
       this.getlistData(1)
 //      获取详情单条数据
       this.getOneData()
+//      权限判断
+      if(systermAuthority.indexOf('produce-out-list-export') > -1) {
+        this.authority.export = true
+      }
     },
     computed: {
 //      导出
@@ -167,6 +173,9 @@
         onedata: [],
         page: [],
         gridOperate: false,
+        authority: {
+          export: false
+        },
         gridcolumns: {
           warehouse_name: '门店',
           goods_code: '货号',

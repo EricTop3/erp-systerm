@@ -23,7 +23,7 @@
             </div>
             <span class="btn btn-primary" @click="getlistData()">搜索</span>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr" @click="createModal=true">新建账号</span>
+            <span class="btn btn-info spanblocks fr" @click="createModal=true" v-if="authority.create">新建账号</span>
           </form>
         </div>
 
@@ -45,8 +45,8 @@
             <td><span v-for="entry in item.permissions" track-by="$index">{{entry}}</span></td>
             <td>{{item.status}}</td>
             <td>
-              <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-              <span class="btn btn-default btn-sm" v-if="item.id != 1 &&  isHasGrant" @click="getPermission($event)">权限管理</span>
+              <span class="btn btn-primary btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+              <span class="btn btn-default btn-sm" v-if="item.id != 1 &&  isHasGrant && authority.grantManagement" @click="getPermission($event)">权限管理</span>
 
             </td>
           </tr>
@@ -68,16 +68,29 @@
         aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">权限管理</h4>
     </div>
-    <div slot="body">
+    <div slot="body" style="height:400px; overflow:auto;">
       <form action="" method="post" class="form-inline" id="permissionsId">
         <template v-for="item in listPermissionData">
-          <div class="form-group">
-            <label class="checkbox-inline"><input type="checkbox" :value="item.value" @click="inputOne($event)"> <strong> {{item.display_name}}</strong></label>
-            <template v-if="item.children">
-            <label class="checkbox-inline" v-for="it in item.children"><input type="checkbox" :value="it.value" @click="inputTwo($event)"> {{it.display_name}}</label>
-            </template>
+          <div class="form-group thisInput">
+            <div class="flw100"><label class="checkbox-inline"><input type="checkbox" :value="item.value" @click="inputOne($event)"><strong> {{item.display_name}}</strong></label></div>
+            <div class="flw900">
+              <template v-if="item.children">
+                <div v-for="it in item.children">
+                  <template v-if="it.children">
+                    <div class="flw140"><label class="checkbox-inline"><input type="checkbox" :value="it.value" @click="inputTwo($event)"> <strong>{{it.display_name}}</strong></label></div>
+                    <div class="flw760"><template v-for="its in it.children"><label class="checkbox-inline"><input type="checkbox" :value="its.value"  @click="inputThree($event)">{{its.display_name}}</label></template></div>
+                    <div class="clearboth"></div>
+                  </template>
+                  <template v-else>
+                    <div class="flw140"><label class="checkbox-inline"><input type="checkbox" :value="it.value" @click="inputTwo($event)"> <strong>{{it.display_name}}</strong></label></div>
+                    <div class="flw760"></div>
+                    <div class="clearboth"></div>
+                  </template>
+                </div>
+              </template>
+            </div>
+            <div class="clearboth"></div>
           </div>
-          <br>
         </template>
       </form>
       <div v-if="isflag"><p class="error">请勾选相应的权限选项</p></div>
@@ -216,8 +229,15 @@
   <!--错误信息弹出-->
   <error-tip :err-modal.sync="messageTipModal" :err-info="messageTip"></error-tip>
 </template>
-<style>
-
+<style scoped>
+  .flw100,.flw900,.flw140,.flw760 { float: left;}
+  .flw100 { width:100px;}
+  .flw900{ width:900px;}
+  .flw140{ width:140px;}
+  .flw760{ width:760px;}
+  .clearboth { clear: both;}
+  .thisInput {line-height:30px;}
+  .thisInput input { margin-top:9px;}
 </style>
 <script>
   import $ from 'jquery'
@@ -257,13 +277,23 @@
       this.getlistData(1)
       this.getlistProviderA()
       this.getlistProviderB()
-      if(systermAuthority.indexOf('grant')>-1){
+      //      权限判断
+      if (systermAuthority.indexOf('grant') > -1) {
         this.isHasGrant = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-grant-management')>-1){
+        this.authority.grantManagement = true
+      }
+      if(systermAuthority.indexOf('manage-account-list-edit')>-1){
+        this.authority.edit = true
       }
 //      this.getPermission()
     },
     methods: {
-//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
+//      获取生产车间名称
       getlistProviderA: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
@@ -298,26 +328,29 @@
           }
           $.each(val.permissions, function (current, currentVal) {
             switch (currentVal) {
-              case  'setting':
+              case  'settings':
                 val.permissions[current] = '设置 '
                 break
-              case  'purchase':
+              case  'purchases':
                 val.permissions[current] = '采购 '
                 break
-              case  'warehouse':
+              case  'warehouses':
                 val.permissions[current] = '仓库 '
                 break
-              case  'production':
+              case  'productions':
                 val.permissions[current] = '生产 '
                 break
-              case  'sale':
+              case  'sales':
                 val.permissions[current] = '零售 '
                 break
-              case  'member':
+              case  'members':
                 val.permissions[current] = '会员 '
                 break
-              case  'mini-mall':
+              case  'mini-malls':
                 val.permissions[current] = '微商城 '
+                break
+              case  'data-centers':
+                val.permissions[current] = '数据中心 '
                 break
               default:
                 val.permissions[current] = ''
@@ -328,7 +361,7 @@
 //      获取列表
       getlistData: function (page) {
         this.$http({
-          url: requestUrl + '/backend-system/store/account',
+          url: requestUrl + '/backend-system/store/get/account',
           method: 'get',
           data: {
             name: this.searchData.name || '',
@@ -456,6 +489,16 @@
                 var childrenObj = {}
                 childrenObj['value'] = o
                 childrenObj['display_name'] = self.listPermission[i].children[o].display_name
+                if (self.listPermission[i].children[o].children) {
+                  var childrenDataTwo = []
+                  for (var j in self.listPermission[i].children[o].children) {
+                    var childrenObjTwo = {}
+                    childrenObjTwo['value'] = j
+                    childrenObjTwo['display_name'] = self.listPermission[i].children[o].children[j].display_name
+                    childrenDataTwo.push(childrenObjTwo)
+                  }
+                  childrenObj['children'] = childrenDataTwo
+                }
                 childrenData.push(childrenObj)
               }
               obj['children'] = childrenData
@@ -464,36 +507,57 @@
           }
           self.listPermissionData = listPermissionDataBox
           self.permission()
-        }, function(err){
+        }, function (err) {
 
-          if(err.data.code == '110003'){
+          if (err.data.code == '110003') {
             self.messageTipModal = true
             self.messageTip = '您的权限不够'
           }
         })
       },
 //      一级checkbox方法
-      inputOne: function(event){
+      inputOne: function (event) {
 //        判断是否为选中状态
         var isChecked = $(event.currentTarget).is(":checked")
-        if(isChecked){
-          $(event.currentTarget).parent(".checkbox-inline").siblings().find("input:checkbox").prop('checked', true)
-        }else{
-          $(event.currentTarget).parent(".checkbox-inline").siblings().find("input:checkbox").prop('checked', false)
+        if (isChecked) {
+          $(event.currentTarget).parents(".flw100").siblings(".flw900").find("input:checkbox").prop('checked', true)
+        } else {
+          $(event.currentTarget).parents(".flw100").siblings(".flw900").find("input:checkbox").prop('checked', false)
         }
       },
 //      二级checkbox方法
-      inputTwo: function(event){
+      inputTwo: function (event) {
+//        第一步：二级选择的时候，所有三级checked
+        var isChecked = $(event.currentTarget).is(":checked")
+        if (isChecked) {
+          $(event.currentTarget).parents(".flw140").siblings(".flw760").find("input:checkbox").prop('checked', true)
+        } else {
+          $(event.currentTarget).parents(".flw140").siblings(".flw760").find("input:checkbox").prop('checked', false)
+        }
+//        第二步：一级状态判断;
 //        获取到所有的二级input:checkbox
         var all_checked = true
-        var inputTwos = $(event.currentTarget).parents(".form-group").find("input:not(:first):checkbox") //除第一个checkbox
-        for(var i = 0 ; i < inputTwos.length ; i ++ ){
-          if(!$(inputTwos[i]).prop('checked')){
+        var inputTwos = $(event.currentTarget).parents(".flw900").find(".flw140").find("input:checkbox")
+        for (var i = 0; i < inputTwos.length; i++) {
+          if (!$(inputTwos[i]).prop('checked')) {
             all_checked = false
           }
         }
-        $(event.currentTarget).parents(".form-group").find("input:checkbox:first").prop("checked",all_checked) //获取到当前组第一个checkbox
+        $(event.currentTarget).parents(".flw900").siblings(".flw100").find("input:checkbox").prop("checked", all_checked) //获取到当前组顶级checkbox
       },
+//      三级checkbox方法
+      inputThree: function (event) {
+//        获取到同辈元素所有的三级input:checkbox
+        var all_checked = true
+        var inputThrees = $(event.currentTarget).parents(".flw760").find("input:checkbox")
+        for (var i = 0; i < inputThrees.length; i++) {
+          if (!$(inputThrees[i]).prop('checked')) {
+            all_checked = false
+          }
+        }
+        $(event.currentTarget).parents(".flw760").siblings(".flw140").find("input:checkbox").prop("checked", all_checked) //获取到当前组顶级checkbox
+      },
+
 //      账号权限管理(获取数据)
       permission: function () {
         var self = this
@@ -504,28 +568,30 @@
         getDataFromApi(url, {}, function (response) {
           self.permissionsData = response.data.body.list
           $("#permissionsId").find('input').prop('checked', false)
-          $.each(self.listPermissionData, function (current, value) {
-            if (value.children) {
-              $.each(self.permissionsData, function (index, val) {
-                if (value.value == val) {
-                  $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked',true)
-                  $("#permissionsId").find('input:checkbox[value=' + val + ']').parents(".form-group").find("input:checkbox").prop('checked', true)
-                }else{
-                  $.each(value.children, function (childrenCurrent, childrenValue) {
-//              再次循环比较返回来的值，看是否相等
-                    $.each(self.permissionsData, function (indexs, vals) {
-                      if (childrenValue.value == vals) {
-                        $("#permissionsId").find('input:checkbox[value=' + vals + ']').prop('checked', true)
+          $.each(self.listPermissionData, function (indexOne, valueOne) {
+            //对比一级
+            $.each(self.permissionsData, function (index, val) {
+              if (valueOne.value == val) {
+                $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked', true)
+              }
+            })
+            //对比二级
+            if(valueOne.children){
+              $.each(valueOne.children, function (indexTwo, valueTwo) {
+                $.each(self.permissionsData, function (index, val) {
+                  if (valueTwo.value == val) {
+                    $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked', true)
+                  }
+                })
+//                对比三级
+                if(valueTwo.children){
+                  $.each(valueTwo.children, function (indexThree, valueThree) {
+                    $.each(self.permissionsData, function (index, val) {
+                      if (valueThree.value == val) {
+                        $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked', true)
                       }
                     })
                   })
-                }
-              })
-            }else{
-//          循环比较返回来的值，看是否相等
-              $.each(self.permissionsData, function (index, val) {
-                if (value.value == val) {
-                  $("#permissionsId").find('input:checkbox[value=' + val + ']').prop('checked', true)
                 }
               })
             }
@@ -584,6 +650,11 @@
           account: '登录名',
           permissions: '权限',
           status: '状态'
+        },
+        authority: {
+          edit: false,
+          grantManagement: false,
+          create: false
         },
         postData: {
           account: '',

@@ -13,15 +13,15 @@
 
         <!-- 页头 -->
         <div class="page-header">
-          <span class="btn btn-info spanblocks fr" @click="createModal=true">新增分类</span>
+          <span class="btn btn-info spanblocks fr" @click="createModal=true" v-if="authority.create">新增分类</span>
           <div class="clearboth"></div>
         </div>
 
         <!-- 表格 -->
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
-            <span class="btn btn-primary btn-sm" @click="edit($event)">编辑</span>
-            <span class="btn btn-warning btn-sm" @click="deletes($event)">删除</span>
+            <span class="btn btn-primary btn-sm" @click="edit($event)"  v-if="authority.edit">编辑</span>
+            <span class="btn btn-warning btn-sm" @click="deletes($event)"  v-if="authority.delete">删除</span>
           </div>
         </grid>
 
@@ -38,7 +38,7 @@
     <div slot="header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="createModal=false"><span
         aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">新增分类</h4>
+      <h4 class="modal-title" >新增分类</h4>
     </div>
     <div slot="body">
       <validator name="validation1">
@@ -145,7 +145,7 @@
   import Modal from '../../common/Modal'
   import Page from '../../common/Page'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestUrl, token, searchRequest, exchangeData, error} from '../../../publicFunction/index'
+  import {requestUrl, token, searchRequest, exchangeData,systermAuthority,error} from '../../../publicFunction/index'
   export default{
     components: {
       AdminNav: AdminNav,
@@ -163,12 +163,22 @@
     },
     ready: function () {
       this.getlistData(1)
+//      权限判断
+      if(systermAuthority.indexOf('goods-category-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('goods-category-list-delete')>-1){
+        this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('goods-category-list-edit')>-1){
+        this.authority.edit = true
+      }
     },
     methods: {
 //      获取列表
       getlistData: function (page) {
         this.$http({
-          url: requestUrl + '/backend-system/product/category',
+          url: requestUrl + '/backend-system/product/get/category',
           data: {page: page},
           method: 'get',
           headers: {'X-Overpowered-Token': token},
@@ -318,6 +328,11 @@
         gridColumns: {
           sort: '序号',
           display_name: '一级分类'
+        },
+        authority: {
+          edit: false,
+          delete: false,
+          create: false
         },
         formData: []
       }

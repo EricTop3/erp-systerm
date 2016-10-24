@@ -47,7 +47,19 @@
         <a v-link="{ path: '/site/instock/AllotOut'}"><span class="btn btn-primary fr">新建出库</span></a>
       </form>
     </div>
-    <summary :table-header="gridColumns" :table-data="list"  :page="page" :check-url="checkUrl" :finish-url="checkUrl" :finish-flag="true"></summary>
+    <summary
+      :table-header="gridColumns"
+      :table-data="list"
+      :page="page"
+      :check-url="checkUrl"
+      :finish-url="checkUrl"
+      :finish-flag="true"
+      :has-validate-authority="true"
+      :has-look-authority = "true"
+      :has-finish-authority="true"
+      :has-delete-authority= "true"
+    >
+    </summary>
   </div>
   <!--错误信息-->
   <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>

@@ -33,14 +33,14 @@
           </div>
           <span class="btn btn-primary" @click="search">搜索</span>
           <span class="btn btn-warning" @click="cancelSearch">撤销搜索</span>
-          <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#person-add-templ" @click="addClerk">新增店员</span>
-          <span class="btn btn-info spanblocks fr mr10"  data-toggle="modal" data-target="#account-add-templ" @click="addStore">新增门店</span>
+          <span class="btn btn-info spanblocks fr" data-toggle="modal" data-target="#person-add-templ" @click="addClerk" v-if="authority.createClerk">新增店员</span>
+          <span class="btn btn-info spanblocks fr mr10"  data-toggle="modal" data-target="#account-add-templ" @click="addStore" v-if="authority.createStore">新增门店</span>
         </form>
       </div>
         <!--账户列表-->
       <grid :data="accountList" :operate="true" :columns="accountHeader">
         <div slot="operateList">
-          <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#person-edit-templ" @click="editClerk($event)">编辑</span>
+          <span class="btn btn-primary btn-sm" data-toggle="modal" data-target="#person-edit-templ" @click="editClerk($event)" v-if="authority.edit">编辑</span>
         </div>
       </grid>
         <!-- 翻页 -->
@@ -218,7 +218,7 @@
   import Grid from '../../common/Grid'
   import Page from '../../common/Page'
   import ErrorTip from '../../common/ErrorTip'
-  import {requestSystemUrl,getDataFromApi,postDataToApi, exchangeData,searchRequest,putDataToApi} from '../../../publicFunction/index'
+  import {requestSystemUrl,getDataFromApi,postDataToApi, exchangeData,searchRequest,putDataToApi,systermAuthority} from '../../../publicFunction/index'
   var accountId = 0
   export default{
     components:{
@@ -242,12 +242,22 @@
       this.getstoreName()
 //      获取账户名称
       this.getAccountName({})
+//       权限判断
+      if(systermAuthority.indexOf('store-account-list-create-store')>-1){
+        this.authority.createStore = true
+      }
+      if(systermAuthority.indexOf('store-account-list-create-clerk')>-1){
+        this.authority.createClerk = true
+      }
+      if(systermAuthority.indexOf('store-account-list-edit')>-1){
+        this.authority.edit = true
+      }
     },
     methods:{
 //      获取门店名称
       getstoreName: function () {
         var self = this
-        var storeUrl = requestSystemUrl + '/backend-system/store/store'
+        var storeUrl = requestSystemUrl + '/backend-system/store/get/store'
         getDataFromApi(storeUrl,{},function(response){
           self.storeList = response.data.body.list
         })
@@ -255,7 +265,7 @@
 //      获取账户名称
       getAccountName: function (data) {
         var self = this
-        var accountUrl = requestSystemUrl + '/backend-system/store/store-account'
+        var accountUrl = requestSystemUrl + '/backend-system/store/get/store-account'
         getDataFromApi(accountUrl,data,function(response){
           self.accountList = response.data.body.list
           self.page =response.data.body.pagination
@@ -413,7 +423,7 @@
       },
 //     搜索
       search: function () {
-        var url = requestSystemUrl + '/backend-system/store/store-account'
+        var url = requestSystemUrl + '/backend-system/store/get/store-account'
         var self = this
         var data = {
           store_code: this.storeName,
@@ -427,7 +437,7 @@
       },
 //     取消
       cancelSearch: function () {
-        var url = requestSystemUrl + '/backend-system/store/store-account'
+        var url = requestSystemUrl + '/backend-system/store/get/store-account'
         var self = this
         var data = {}
         searchRequest(url,data,function(response){
@@ -470,6 +480,11 @@
           password: '',
           status: 0,
           level: 0,
+        },
+        authority: {
+          edit: false,
+          createStore: false,
+          createClerk: false
         },
         modal: {
           addStoreModal: false,

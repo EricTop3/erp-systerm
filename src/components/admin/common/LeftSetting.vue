@@ -7,6 +7,7 @@
       <li v-if="authoritySetting.cooperation"><a v-link="{ path: '/admin/setting/partner',exact: true}">合作方设置</a></li>
       <li v-if="authoritySetting.storeAccount"><a v-link="{ path: '/admin/setting/userAccount',exact: true}">门店账号</a></li>
       <li v-if="authoritySetting.systermAccount"><a v-link="{ path: '/admin/setting/adminAccount',exact: true}">系统账号</a></li>
+
     </ul>
   </div>
 </template>

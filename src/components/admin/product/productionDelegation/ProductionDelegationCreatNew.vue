@@ -106,6 +106,7 @@
   <introduce-data
     :title="origenData.title"
     :url="origenData.dataUrl"
+    :product-flag ="origenData.productFlag"
     :instroduce-data-modal.sync='modal.parentIntroModal'
     :instroduce-data-modal-size="modal.parentIntroModalSize"
     :first-data-title="origenData.firstDataTitle"
@@ -196,7 +197,7 @@
     ready: function () {
       var self = this
 //    供应商请求接口
-      var url = requestSystemUrl + '/backend-system/provider/provider'
+      var url = requestSystemUrl + '/backend-system/provider/get/provider'
 //    获取供应商列表
       getDataFromApi(url,{},function(response){
         self.supplierList = response.data.body.list
@@ -418,13 +419,14 @@
         },
         request: {
           productUrl: requestSystemUrl +  '/backend-system/product/product',
-          categoryUrl: requestSystemUrl + '/backend-system/product/category',
+          categoryUrl: requestSystemUrl + '/backend-system/product/get/category',
           productData: {
             product_type: 1
           }
         },
         origenData: {
           title: '原始门店要货单',
+          productFlag: true,
           dataUrl: requestSystemUrl + '/backend-system/reference-document/requisition',
           firstDataTitle: {
             "document_number": "要货单号",

@@ -1,5 +1,6 @@
 <template>
-  <table class="table table-striped table-bordered table-hover">
+  <div class="table-responsive">
+     <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr class="text-center">
       <th v-if="check"><label><input type="checkbox" @change="checkAllMethod()" v-model="checkAll" :disabled="data  && data.length<0" v-if="check && isCheckAll">全选</label></th>
@@ -9,8 +10,8 @@
       <th v-if="operate">操作</th>
     </tr>
     </thead>
-    <tbody>
-    <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']" >
+    <tbody v-if="!singleRowHide && !todayBill">
+    <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']">
       <td v-if="check"><input type="checkbox"  :id="[entry.id ? entry.id : '']" @change="singleCheck($event)"  v-model="entry.choice"></td>
       <td v-for="value in columns">
         {{entry[$key]}}
@@ -24,7 +25,24 @@
       </td>
     </tr>
     </tbody>
+    <tbody v-if="singleRowHide">
+      <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']"
+          v-if="entry.is_today > 0 || entry.demand_amount > 0 || entry.amount > 0 || entry.main_reference_value > 0">
+        <td v-for="value in columns">
+          {{entry[$key]}}
+        </td>
+      </tr>
+    </tbody>
+     <tbody v-if="todayBill">
+     <tr class="text-center" v-for="entry in data" track-by="$index" :id="[entry.id ? entry.id : '']" :type="[entry.type ? entry.type : '']"
+         v-if="entry.is_today > 0 ">
+       <td v-for="value in columns">
+         {{entry[$key]}}
+       </td>
+     </tr>
+     </tbody>
   </table>
+  </div>
 </template>
 <script>
   import $ from 'jquery'
@@ -35,10 +53,12 @@
       data: {
         required: true,
       },
+      singleRowHide: false,
       isCheckAll: true,
       isAddFlag: false,
       check: false,
       checkAll: false,
+      todayBill: false,
       singleChecked: false,
       columns: {
         type: Object
@@ -49,7 +69,9 @@
       checkAllMethod: function () {
         var self = this
         this.isAddFlag = this.checkAll
-        len = this.data.length && this.data.length > 0 ? this.data.length : 0
+        len = this.checkAll  ? this.data.length : 0
+        console.log(len)
+
         $.each(this.data, function (index, val) {
           val.choice = self.checkAll
         })
@@ -61,9 +83,9 @@
         var currentId = Number($(e.currentTarget).attr('id'))
         if (currentObjCheck === false) {
           this.checkAll = false
-          len--
+          --len
         } else {
-          len++
+          ++len
           this.isAddFlag = true
         }
         if (len === this.data.length && len != 0) {

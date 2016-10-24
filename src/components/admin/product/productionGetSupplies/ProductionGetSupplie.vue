@@ -61,7 +61,7 @@
             </div>
             <span class="btn btn-primary mt10" @click="getlistData(1)">搜索</span>
             <span class="btn btn-warning mt10" @click="cancelSearch()">撤销搜索</span>
-            <a :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
+            <a v-if="authority.exports" :href="exports" target="_blank"><span class="btn btn-info spanblocks fr mr10 mt10">导出</span></a>
           </form>
         </div>
         <!-- 表格 -->
@@ -88,11 +88,11 @@
             <td>{{item.created_at}}</td>
             <td>{{item.operated_at}}</td>
             <td>
-              <span v-if="item.checked=='已审核' && item.operated_at!=''" class="btn btn-success btn-sm" @click="finish($event)">完成</span>
-              <span v-if="item.checked=='已审核' && item.operated_at==''" class="btn btn-info btn-sm" @click="picking($event)">领料</span>
-              <span v-if="item.checked=='未审核'" class="btn btn-danger btn-sm" @click="audit($event)">审核</span>
-              <span class="btn btn-primary btn-sm" @click="view($event)">查看</span>
-              <span v-if="item.checked=='未审核'" class="btn btn-default btn-sm" @click="deleteData($event)">删除</span>
+              <span v-if="item.checked=='已审核' && item.operated_at!='' && authority.finish" class="btn btn-success btn-sm" @click="finish($event)">完成</span>
+              <span v-if="item.checked=='已审核' && item.operated_at=='' && authority.supplie" class="btn btn-info btn-sm" @click="picking($event)">领料</span>
+              <span v-if="item.checked=='未审核' && authority.validate" class="btn btn-danger btn-sm" @click="audit($event)">审核</span>
+              <span v-if="authority.look" class="btn btn-primary btn-sm" @click="view($event)">查看</span>
+              <span v-if="item.checked=='未审核' && authority.delete" class="btn btn-default btn-sm" @click="deleteData($event)">删除</span>
             </td>
           </tr>
           </tbody>
@@ -199,6 +199,7 @@
     checkRequest,
     finishRequest,
     putDataToApi,
+    systermAuthority,
     changeStatus
   } from '../../../../publicFunction/index'
   export default{
@@ -222,6 +223,31 @@
       this.getlistProviderA()  //type = 2
       this.getlistProviderB()  //type = 3
       this.getlistData(1)
+//    权限判断
+//      查看
+      if(systermAuthority.indexOf('pick-total-list-index') > -1){
+        this.authority.look = true
+      }
+//      领料
+      if(systermAuthority.indexOf('pick-total-list-pick') > -1){
+        this.authority.supplie = true
+      }
+//      审核
+      if(systermAuthority.indexOf('pick-total-list-check') > -1){
+        this.authority.validate = true
+      }
+//      完成
+      if(systermAuthority.indexOf('pick-total-list-over') > -1){
+        this.authority.finish = true
+      }
+//      删除
+      if(systermAuthority.indexOf('pick-total-list-delete') > -1){
+        this.authority.delete = true
+      }
+//      导出
+      if(systermAuthority.indexOf('pick-total-list-export') > -1){
+        this.authority.exports = true
+      }
     },
     methods: {
 //      查看详情
@@ -328,7 +354,7 @@
         this.searchData.receive_end_time = ''
         this.getlistData(1)
       },
-//      获取生产车间名称 '/backend-system/provider/provider'   '/backend-system/store/store/warehouses-list'
+//      获取生产车间名称
       getlistProviderA: function () {
         var self = this
         var url = requestSystemUrl + '/backend-system/warehouse-minimal-list'
@@ -408,6 +434,14 @@
           end_time: '',
           receive_start_time: '',
           receive_end_time: ''
+        },
+        authority: {
+          validate: false, //审核
+          supplie: false, //领料
+          finish: false, //完成
+          look: false, //查看
+          delete: false, //删除
+          exports: false
         }
       }
     }

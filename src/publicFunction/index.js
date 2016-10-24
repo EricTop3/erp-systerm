@@ -154,9 +154,11 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
-        console.log(err)
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
         }
       })
   }
@@ -171,6 +173,12 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         console.log(err)
       })
   }
@@ -219,9 +227,8 @@
         if(err.status === 401){
           window.location.href = '?#!/admin/login'
         }
-        if(err.status === 403){
-          window.history.back()
-          window.alert("你没得权限操作")
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
         }
         error && error(err)
       })
@@ -239,12 +246,10 @@
         callback && callback(response)
       }, function (err) {
         if(err.status === 401){
-          window.location.href = '?#!/site/login'
+          window.location.href = '?#!/admin/login'
         }
-        if(err.status === 403){
-          window.history.back()
-          window.alert("你没得权限操作")
-          console.log(ErrorTip)
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
         }
         error && error(err)
       })
@@ -261,7 +266,12 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
-        console.log(err)
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         error && error(err)
       })
   }
@@ -277,7 +287,12 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
-        console.log(err)
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         error && error(err)
       })
   }
@@ -293,8 +308,13 @@
       .then(function (response) {
         callback && callback(response)
       }, function (err) {
+        if(err.status === 401){
+          window.location.href = '?#!/admin/login'
+        }
+        if(err.status === 404){
+          window.location.href = '#!/admin/404'
+        }
         callbackErr && callbackErr(err)
-        console.log(err)
       })
   }
   //  对象为null的方法
@@ -347,7 +367,8 @@
       stock: [],
       product: [],
       retail: [],
-      member: []
+      member: [],
+      dataCenter: []
     }
     var curRouter = []
     cur.$http.post(loginUrl,data).then(function(response){
@@ -380,12 +401,18 @@
         if(systermAuthority.indexOf('manage-account-list')>-1){
           authorityModule.setting.push('adminAccount')
         }
+        if(authorityModule.setting.length===0){
+          authorityModule.setting[0] = ''
+        }
 //        采购权限处理
         if(systermAuthority.indexOf('purchase-order-list')>-1){
           authorityModule.purchase.push('order')
         }
         if(systermAuthority.indexOf('purchase-receipt-list')>-1){
           authorityModule.purchase.push('delivery')
+        }
+        if(authorityModule.purchase.length===0){
+          authorityModule.purchase[0] = ''
         }
 //         库存权限处理
         if(systermAuthority.indexOf("stock-look-list")>-1){
@@ -409,6 +436,9 @@
         if(systermAuthority.indexOf("requisition-total-list")>-1){
           authorityModule.stock.push('apply')
         }
+        if(authorityModule.stock.length===0){
+          authorityModule.stock[0] = ''
+        }
 //      生产权限处理
         if(systermAuthority.indexOf('factory-produce-list') > -1){
           authorityModule.product.push('factoryProduction')
@@ -428,6 +458,9 @@
         if(systermAuthority.indexOf('produce-appointment-list') > -1){
           authorityModule.product.push('creatOrder')
         }
+        if(authorityModule.product.length===0){
+          authorityModule.product[0] = ''
+        }
 //        零售权限
         if(systermAuthority.indexOf('settlement-total-list')>-1){
           authorityModule.retail.push('statistics')
@@ -435,28 +468,52 @@
         if(systermAuthority.indexOf('settlement-administration-list')>-1){
           authorityModule.retail.push('manage')
         }
+        if(authorityModule.retail.length===0){
+          authorityModule.retail[0] = ''
+        }
+        // 数据中心权限
+        if(systermAuthority.indexOf('purchase-list') > -1){
+          authorityModule.dataCenter.push('purchase')
+        }
+        if(systermAuthority.indexOf('stock-list') > -1){
+          authorityModule.dataCenter.push('instock')
+        }
+        if(systermAuthority.indexOf('produce-list') > -1){
+          authorityModule.dataCenter.push('production')
+        }
+        if(systermAuthority.indexOf('order-list') > -1){
+          authorityModule.dataCenter.push('sale')
+        }
+        if(systermAuthority.indexOf('member-list') > -1){
+          authorityModule.dataCenter.push('member')
+        }
+        if(authorityModule.dataCenter.length===0){
+           authorityModule.dataCenter[0] = ''
+        }
         //大类权限
-        if(systermAuthority.indexOf('setting')>-1){
+        if(systermAuthority.indexOf('settings')>-1){
           curRouter.push('setting/'+ authorityModule.setting[0])
         }
-        if(systermAuthority.indexOf('purchase')>-1){
+        if(systermAuthority.indexOf('purchases')>-1){
           curRouter.push('purchase/'+  authorityModule.purchase[0])
         }
-        if(systermAuthority.indexOf('warehouse')>-1) {
+        if(systermAuthority.indexOf('warehouses')>-1) {
           curRouter.push('instock/' +  authorityModule.stock[0])
         }
-        if(systermAuthority.indexOf('production')>-1){
+        if(systermAuthority.indexOf('productions')>-1){
           curRouter.push('production/'+  authorityModule.product[0])
         }
-        if(systermAuthority.indexOf('sale')>-1){
-          curRouter.push('retail/'+  authorityModule.retail[0])
+        if(systermAuthority.indexOf('sales')>-1){
+          curRouter.push('retail/' +  authorityModule.retail[0])
         }
-        if(systermAuthority.indexOf('member')>-1) {
+        if(systermAuthority.indexOf('members')>-1) {
           curRouter.push('member')
         }
+        if(systermAuthority.indexOf('data-centers')>-1) {
+          curRouter.push('dataCenter/' + authorityModule.dataCenter[0])
+        }
         if(curRouter.length===0){
-          window.alert("你没有任何权限访问")
-          window.location.href = '#!/admin/login'
+          window.location.href = '#!/admin/403'
         }else {
           window.location.href = '#!/admin/' + curRouter[0]
         }

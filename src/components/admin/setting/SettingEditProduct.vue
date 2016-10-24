@@ -362,7 +362,7 @@
         self.baseUnit = response.data.body.list
       })
 //      获取商品分类
-      getDataFromApi(requestSystemUrl + '/backend-system/product/category',{},function(response){
+      getDataFromApi(requestSystemUrl + '/backend-system/product/get/category',{},function(response){
         self.category = response.data.body.list
       })
     },
@@ -539,6 +539,7 @@
 //            判断货号是否重复
             if(err.data.body.validate_error.code && err.data.body.validate_error.code[0] == 'The code has already been taken.'){
               self.$validationSet.goodscode.required = true
+
             }
           })
         }

@@ -14,6 +14,8 @@
       :check-url="checkUrl"
       :edit-flag.sync = 'editFlag'
       :is-exist.sync = 'isExist'
+      :has-validate-authority="true"
+      :has-edit-authority="true"
     >
     </summary-detail>
         <!--表格详情列表-->
@@ -44,6 +46,8 @@
           :last-page="page.last_page">
         </page>-->
       </div>
+  <!--错误信息-->
+  <error-tip :err-modal.sync="modal.errModal" :err-info="modal.errInfo"></error-tip>
 </template>
 
 <script>
@@ -93,7 +97,6 @@
 //      保存
       saveGoods: function (event) {
         var self = this
-        this.editFlag = false
         var id = self.$route.params.queryId
         var item = []
         $.each(self.detailList,function (index,val) {
@@ -109,11 +112,17 @@
         }
         var url = requestSystemUrl + '/front-system/stock/enquiry/'+ id
         putDataToApi(url,data,function (res) {
-          console.log('yes')
 //      单条数据渲染
           self.thisOneData()
 //      明细列表渲染
           self.listData({})
+          self.isExist = false
+          self.editFlag = false
+        },function (err){
+          self.editFlag = true
+          self.isExist = true
+          self.modal.errModal = true
+          self.modal.errInfo = '服务器错误'
         })
       }
     },
@@ -164,6 +173,10 @@
           created_at: '制单日期',
           delivery_date: '送货日期',
           amount: '要货数量'
+        },
+        modal:{
+          errModal: false,
+          errInfo: ''
         },
         gridOperate2: false,
         gridColumns2: {

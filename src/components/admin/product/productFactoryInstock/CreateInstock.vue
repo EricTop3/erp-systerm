@@ -253,7 +253,7 @@
           obj.reference_id = val.id
           obj.amount = val.stock_amount
           obj.defective_amount = val.defective_amount
-          obj.stock_amount = val.stock_amount
+          obj.stock_amount = val.main_reference_value
           if (val.defective_amount === '' || val.stock_amount === '') {
             uploadFlag = false
           }
@@ -402,7 +402,7 @@
         },
         request: {
           productUrl: requestSystemUrl + '/backend-system/product/product',
-          categoryUrl: requestSystemUrl + '/backend-system/product/category',
+          categoryUrl: requestSystemUrl + '/backend-system/product/get/category',
           productData: {
             product_type: 1
           }

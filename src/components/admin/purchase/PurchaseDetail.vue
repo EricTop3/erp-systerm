@@ -18,6 +18,8 @@
           :check-url="checkUrl"
           :edit-flag.sync ="editFlag"
           :is-exist.sync= "isExist"
+          :has-validate-authority="authority.validate"
+          :has-edit-authority="authority.edit"
         >
         </summary-detail>
         <!--有列表切换的时候的情况-->
@@ -25,7 +27,7 @@
             <li role="presentation" class="active" @click="changeActive($event)" id="1"><a href="javascript:void(0)" data-toggle="tab">入库明细</a></li>
             <li role="presentation" @click="changeActive($event)" id="2"><a href="javascript:void(0)" data-toggle="tab">入库汇总</a></li>
             <li class="summaryCount" v-if="summaryModal"><a href="javascript:void(0)">合计：￥{{summaryPrice|priceChange}}</a></li>
-            <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10">导出</span></a>
+            <a :href="exports" target="_blank" style="float:right;"><span class="btn btn-info spanblocks fr mr10" v-if="authority.export">导出</span></a>
           </ul>
           <!-- Tab panes -->
           <div class="tab-content">
@@ -110,7 +112,7 @@
   import LeftPurchase from '../common/LeftPurchase'
   import SummaryDetail from '../../common/SummaryDetail'
   import ErrorTip  from '../../common/ErrorTip'
-  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi} from '../../../publicFunction/index'
+  import {requestUrl,requestSystemUrl,getDataFromApi,token,exchangeData,searchRequest,deleteRequest,checkRequest,finishRequest,putDataToApi,systermAuthority} from '../../../publicFunction/index'
   export default{
     components: {
       Grid: Grid,
@@ -199,6 +201,16 @@
     },
     ready: function () {
       this.listData()
+//     权限判断
+      if(systermAuthority.indexOf('purchase-order-list-edit') > -1){
+       this.authority.edit = true
+      }
+      if(systermAuthority.indexOf('purchase-order-list-check') > -1){
+        this.authority.validate = true
+      }
+      if(systermAuthority.indexOf('purchase-order-list-export') > -1){
+        this.authority.export = true
+      }
     },
     methods: {
       listData: function (page) {
@@ -280,6 +292,11 @@
         isExist: false,
         detailModal: true,
         summaryModal: false,
+        authority: {
+          validate: false,
+          edit: false,
+          export: false
+        },
         modal:{
           errModal: false,
           errInfo: ''

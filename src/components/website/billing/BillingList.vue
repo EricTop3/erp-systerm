@@ -53,7 +53,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr class="text-center" v-for="item in historyGridData" :id="item.id">
+      <tr class="text-center" v-for="item in historyGridData" :id="item.id" v-if="item.dispaly > 1">
         <td class="text-left">{{item.document_number}}</td>
         <td>{{item.settled_at}}</td>
         <td>{{item.total_sum}}</td>
@@ -132,7 +132,7 @@
           page: page,
           per_page: 16
         }
-        
+
         getDataFromApi(url, data, function (response) {
           self.page = response.data.body.page.pagination
           self.historyGridData = response.data.body.list

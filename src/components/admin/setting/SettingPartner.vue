@@ -32,16 +32,16 @@
             </div>
             <button type="submit" class="btn btn-primary" @click="search()">搜索</button>
             <span class="btn btn-warning" @click="cancelSearch()">撤销搜索</span>
-            <span class="btn btn-info spanblocks fr" @click="create()">新建合作方</span>
+            <span class="btn btn-info spanblocks fr" @click="create()"  v-if="authority.create">新建合作方</span>
           </form>
         </div>
 
         <!-- 表格 -->
         <grid :data="listdata" :columns="gridColumns" :operate="gridOperate">
           <div slot="operateList">
-            <list-delete :delete-data="listdata"></list-delete>
-            <span class="btn btn-success btn-sm" @click="edit($event)">编辑</span>
-            <span class="btn btn-default btn-sm" @click="view($event)">查看</span>
+            <list-delete :delete-data="listdata" v-if="authority.delete"></list-delete>
+            <span class="btn btn-success btn-sm" @click="edit($event)" v-if="authority.edit">编辑</span>
+            <span class="btn btn-default btn-sm" @click="view($event)" v-if="authority.look">查看</span>
           </div>
         </grid>
         <!--分页-->
@@ -342,7 +342,8 @@
     exchangeData,
     postDataToApi,
     getDataFromApi,
-    deleteRequest
+    deleteRequest,
+    systermAuthority
   } from '../../../publicFunction/index'
   export default{
     components: {
@@ -370,12 +371,25 @@
     },
     ready: function () {
       this.getlistData(1)
+      //      权限判断
+      if(systermAuthority.indexOf('cooperation-setting-list-create')>-1){
+        this.authority.create = true
+      }
+      if(systermAuthority.indexOf('cooperation-setting-list-delete')>-1){
+        this.authority.delete = true
+      }
+      if(systermAuthority.indexOf('cooperation-setting-list-edit')>-1){
+        this.authority.edit = true
+      }
+      if(systermAuthority.indexOf('cooperation-setting-list-index')>-1){
+        this.authority.look = true
+      }
     },
     methods: {
 //      列表数据渲染
       getlistData: function (page) {
         var self = this
-        var url = requestSystemUrl + '/backend-system/provider/provider'
+        var url = requestSystemUrl + '/backend-system/provider/get/provider'
         var data = {
           code: this.searchData.code || '',
           name: this.searchData.name || '',
@@ -577,6 +591,12 @@
           code: '',
           name: '',
           type: ''
+        },
+        authority: {
+          edit: false,
+          delete: false,
+          create: false,
+          look: false
         },
         postData: {
           type: '',
